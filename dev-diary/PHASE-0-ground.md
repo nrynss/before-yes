@@ -158,6 +158,26 @@ Write `AGENTS.md`: the Go and Svelte versions, the dependency rule (Keel and Cha
 
 ---
 
+### T0.4a: Fixtures for Common Sense reviews and wider Reddit
+```yaml
+requires:   T0.4
+fixture-ok: no
+size:       S · mid
+owns:       testdata/titles/*/tavily-search-csm.json, testdata/titles/*/tavily-extract-csm.json, testdata/titles/*/tavily-search-reddit-*.json, tools/capture/
+status:     not-started
+```
+Split from T0.4 after the user added two sources to the gather plan (T3.1, items 3 and 4). T0.4 was already capturing under the old plan.
+
+Extend `tools/capture` to make T3.1's new calls for the four titles in `testdata/titles/README.md`, and save each raw response:
+- the Common Sense Media search on `commonsensemedia.org`, and the extract of the title's parent-reviews and kid-reviews pages;
+- the two Reddit searches, one for parents' experiences and one for the title's own community.
+
+Append each call's URL, status and credits to the title's `MANIFEST.md`. Record what the Common Sense review pages actually look like after extraction: whether reviews separate cleanly, how many each page holds, and whether reviewer type and position survive. T3.1 builds on that. The same key and secrecy rules as T0.4 apply.
+
+**Done when:** All four titles have the new files. MANIFEST.md records the credits per call. The handoff log describes the shape of an extracted Common Sense review page. A grep for the key across `testdata/` and `tools/` finds nothing.
+
+---
+
 ## Exit Criteria
 
 - [x] First commit on `main`, with `scratch/` and `.env` ignored.

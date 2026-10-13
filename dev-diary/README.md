@@ -176,7 +176,7 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 
 | Phase | Tasks complete | Status |
 |---|---|---|
-| P0 | 5 / 7 | In progress. T0.1, T0.2, T0.3, T0.6 and T0.7 are done. T0.4 and T0.5 are open. T0.5 is the user's. |
+| P0 | 5 / 8 | In progress. T0.1, T0.2, T0.3, T0.6 and T0.7 are done. T0.4, T0.4a and T0.5 are open. |
 | P1 | 0 / 4 | Not started. T1.1 and T1.2 drafted. |
 | P2 | 0 / 8 | Not started. T2.1–T2.4 drafted. |
 | P3 | 0 / 8 | Not started. T3.1–T3.4 drafted. |
@@ -190,6 +190,7 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 
 Newest first. One entry per closed task, finding, or split.
 
+- **Sources widened; T0.4 split.** The user added Common Sense Media parent and kid reviews and wider Reddit coverage to the gather plan (T3.1, items 3 and 4). Google Play stays out: no official API, and no scraping. T0.4 was already capturing under the old plan, so the new fixtures are T0.4a. The plan now costs about ten Tavily credits per title instead of six. T2.5 sizes the budget from the measured figure.
 - **T0.7 closed.** `AGENTS.md`, `tools/check.sh` and `.github/workflows/check.yml` are committed in `d0db00d` on branch `worktree-agent-a919bfa6edbb4fd6e`.
   - **AGENTS.md** links to the task rules in this README and copies none of them. It adds the stack, worktrees, file ownership, the gate, the `live` tag, secrets, commit rules, the no-dates rule and the review process.
   - **check.sh.** It runs `gofmt -l` over Go files outside `scratch/`. It runs `go vet` and `go test -race` over `go list ./...` with `scratch/` filtered out. It runs the web `lint`, `check` and `test` scripts only when `web/package.json` exists. It ends with one PASS or FAIL line.

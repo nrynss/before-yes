@@ -19,20 +19,24 @@ Every model and Tavily call goes through `pipeline.Meter`. Tests use a fake mete
 
 ### T3.1: Gather ★
 ```yaml
-requires:   T1.3, T2.2, T2.3
+requires:   T1.3, T2.2, T2.3, T0.4a
 fixture-ok: yes
 size:       M · frontier
 owns:       internal/pipeline/gather.go, internal/pipeline/gather_test.go
 status:     drafted
 ```
-A fixed source plan per title, about six Tavily credits:
+A fixed source plan per title, about ten Tavily credits:
 1. App Store search. If a hit's name starts with the title, read its reviews and description, and take its seller URL as the official host. A near miss is worse than no reviews, so a non-matching hit is ignored.
 2. Privacy policy and terms searches, narrowed to the official host when one is known. Extract the top hit of each.
-3. Forum search (Reddit, Common Sense Media, Mumsnet, Netmums), news search (fines, lawsuits, regulators, breaches), and rating search (ESRB, PEGI, parental controls), with raw content capped per document.
+3. **Common Sense Media parent and kid reviews.** Search `commonsensemedia.org` for the title's review page, then extract its parent-reviews and kid-reviews pages. Each review becomes its own document, with kind `csm-review`, the reviewer type (parent or kid), and its position on the page. A card can then cite "a parent on Common Sense Media" the way it cites "review 312". Read only public review pages, nothing behind a login.
+4. **Reddit, wider.** Two searches on `reddit.com`: one for parents' experiences (r/Parenting and similar) and one for the title's own community (its subreddit, where players report chat, scams and moderation). Keep raw content and a per-thread cap. The kind is `reddit`.
+5. Forum search (Mumsnet, Netmums), news search (fines, lawsuits, regulators, breaches), and rating search (ESRB, PEGI, parental controls), with raw content capped per document.
+
+These first-hand parent and kid reports matter most where there is no App Store feed: Android-only titles, console and PC games, and YouTube channels (T3.7). Google Play stays out: it has no official review API, and the brief rules out scraping.
 
 Record the source kinds that came back empty, for the card's small print.
 
-**Done when:** Against the T0.4 fixtures, each demo title gathers the expected documents. The policy and terms searches are narrowed to the official host. Credits match the plan.
+**Done when:** Against the T0.4 and T0.4a fixtures, each demo title gathers the expected documents, Common Sense reviews and Reddit threads included. The policy and terms searches are narrowed to the official host. Credits match the plan.
 
 ---
 
