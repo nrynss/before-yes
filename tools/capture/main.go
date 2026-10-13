@@ -9,8 +9,9 @@
 //	go run ./tools/capture -all
 //	go run ./tools/capture -all -only csm,reddit
 //
-// -only runs just the named T0.4a kinds (csm, reddit). It never calls the App
-// Store or the first Tavily kinds, and it adds to the T0.4 MANIFEST.md.
+// -only runs just the named kinds: csm and reddit (T0.4a), or advanced (T0.4b),
+// which runs alone. It never calls the App Store or the first Tavily kinds, and
+// it adds to the T0.4 MANIFEST.md.
 //
 // The Tavily key is read from TAVILY_KEY and sent only in the Authorization
 // header. It is never written to a file, printed, or put in a URL.
@@ -65,7 +66,7 @@ func main() {
 	all := flag.Bool("all", false, "capture the four demo titles into <dir>/<slug>")
 	dir := flag.String("dir", "testdata/titles", "root directory for -all")
 	pause := flag.Duration("pause", 500*time.Millisecond, "wait between App Store requests")
-	only := flag.String("only", "", "run only these T0.4a kinds, comma-separated: csm, reddit")
+	only := flag.String("only", "", "run only these kinds, comma-separated: csm, reddit (T0.4a) or advanced (T0.4b, alone)")
 	flag.Parse()
 
 	kinds, err := parseOnly(*only)
@@ -106,7 +107,7 @@ func main() {
 			if err := c.captureT04a(j.d, j.out, kinds); err != nil {
 				fail(fmt.Sprintf("%s: %v", j.d.Slug, err))
 			}
-			fmt.Printf("%s: T0.4a %s captured into %s\n", j.d.Slug, *only, j.out)
+			fmt.Printf("%s: -only %s captured into %s\n", j.d.Slug, *only, j.out)
 			continue
 		}
 		if err := c.capture(j.d, j.out); err != nil {

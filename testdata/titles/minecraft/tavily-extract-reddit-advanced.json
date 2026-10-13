@@ -1,0 +1,18 @@
+{
+  "results": [],
+  "failed_results": [
+    {
+      "url": "https://www.reddit.com/r/Minecraft/comments/1k7lbl8/help_a_tech_challenged_parent",
+      "error": "Failed to fetch url"
+    },
+    {
+      "url": "https://www.reddit.com/r/Minecraft/comments/1qfz5go/i_am_a_parent_who_does_not_play_anything_my_7",
+      "error": "Failed to fetch url"
+    }
+  ],
+  "response_time": 6.17,
+  "usage": {
+    "credits": 1
+  },
+  "request_id": "45955fa5-a6ff-43d5-8289-f389ca590577"
+}

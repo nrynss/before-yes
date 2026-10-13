@@ -1,0 +1,18 @@
+{
+  "results": [],
+  "failed_results": [
+    {
+      "url": "https://www.reddit.com/r/technology/comments/1s43p87/parents_should_monitor_children_247_on_roblox",
+      "error": "Failed to fetch url"
+    },
+    {
+      "url": "https://www.reddit.com/r/RobloxParents/comments/1togsyn/scout_a_roblox_safety_ai_for_parents_not",
+      "error": "Failed to fetch url"
+    }
+  ],
+  "response_time": 8.32,
+  "usage": {
+    "credits": 1
+  },
+  "request_id": "4f1b88a6-6dc8-44b0-a682-b6ffc5bd3cb3"
+}

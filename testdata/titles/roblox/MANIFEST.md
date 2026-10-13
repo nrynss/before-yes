@@ -56,3 +56,20 @@ Written by `tools/capture -only`. A run rewrites the files of the kinds it ran a
 
 - review pages for other titles, not used: https://www.commonsensemedia.org/website-reviews/brookhaven-rp, https://www.commonsensemedia.org/website-reviews/adopt-me
 - no Common Sense Media review page for slug "roblox" among 5 search hits; csm extract skipped
+
+## T0.4b
+
+Written by `tools/capture -only advanced`. A run rewrites this section. The Tavily key is never recorded here.
+
+- T0.4b Tavily credits for this title: 2
+
+### Files
+
+| File | Source | HTTP status | Fetched (UTC) | Tavily credits | Note |
+|---|---|---|---|---|---|
+| tavily-extract-csm-advanced.json | https://www.commonsensemedia.org/website-reviews/roblox/user-reviews/adult https://www.commonsensemedia.org/website-reviews/roblox/user-reviews/child | 200 | 2026-10-13T19:15:51Z | 1 | advanced; 2 results with text; failed_results: none |
+| tavily-extract-reddit-advanced.json | https://www.reddit.com/r/technology/comments/1s43p87/parents_should_monitor_children_247_on_roblox https://www.reddit.com/r/RobloxParents/comments/1togsyn/scout_a_roblox_safety_ai_for_parents_not | 200 | 2026-10-13T19:15:59Z | 1 | advanced; 0 results with text; failed_results: https://www.reddit.com/r/technology/comments/1s43p87/parents_should_monitor_children_247_on_roblox (Failed to fetch url); https://www.reddit.com/r/RobloxParents/comments/1togsyn/scout_a_roblox_safety_ai_for_parents_not (Failed to fetch url) |
+
+### Notes
+
+- none

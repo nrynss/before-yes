@@ -57,3 +57,20 @@ Written by `tools/capture -only`. A run rewrites the files of the kinds it ran a
 
 - review pages for other titles, not used: https://www.commonsensemedia.org/app-reviews/toca-life-world-build-stories, https://www.commonsensemedia.org/app-reviews/toca-life-city
 - no Common Sense Media review page for slug "toca-life-world" among 5 search hits; csm extract skipped
+
+## T0.4b
+
+Written by `tools/capture -only advanced`. A run rewrites this section. The Tavily key is never recorded here.
+
+- T0.4b Tavily credits for this title: 1
+
+### Files
+
+| File | Source | HTTP status | Fetched (UTC) | Tavily credits | Note |
+|---|---|---|---|---|---|
+| tavily-extract-csm-advanced.json | https://www.commonsensemedia.org/app-reviews/toca-life-world-build-stories/user-reviews/adult https://www.commonsensemedia.org/app-reviews/toca-life-world-build-stories/user-reviews/child | 200 | 2026-10-13T19:16:39Z | 1 | advanced; 2 results with text; failed_results: none |
+| tavily-extract-reddit-advanced.json | https://www.reddit.com/r/tocaboca/comments/1t2ue21/toca_world_should_have_a_monthly_subscription https://www.reddit.com/r/tocaboca/comments/1qkq5hs/can_you_tell_me_about_toca_boca | 200 | 2026-10-13T19:16:50Z | 0 | advanced; 0 results with text; failed_results: https://www.reddit.com/r/tocaboca/comments/1t2ue21/toca_world_should_have_a_monthly_subscription (Failed to fetch url); https://www.reddit.com/r/tocaboca/comments/1qkq5hs/can_you_tell_me_about_toca_boca (Failed to fetch url) |
+
+### Notes
+
+- none

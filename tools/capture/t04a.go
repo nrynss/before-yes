@@ -51,10 +51,10 @@ func parseOnly(s string) (map[string]bool, error) {
 	for _, k := range strings.Split(s, ",") {
 		k = strings.TrimSpace(k)
 		switch k {
-		case kindCSM, kindReddit:
+		case kindCSM, kindReddit, kindAdvanced:
 			kinds[k] = true
 		default:
-			return nil, fmt.Errorf("-only: unknown kind %q (want csm or reddit)", k)
+			return nil, fmt.Errorf("-only: unknown kind %q (want csm, reddit or advanced)", k)
 		}
 	}
 	return kinds, nil
@@ -65,6 +65,12 @@ func parseOnly(s string) (map[string]bool, error) {
 // section, and only the rows of the kinds it ran. The credits of rows it
 // replaces stay in the section's total.
 func (c *capturer) captureT04a(d demo, out string, only map[string]bool) error {
+	if only[kindAdvanced] {
+		if len(only) > 1 {
+			return fmt.Errorf("-only advanced runs alone; it cannot be combined with csm or reddit")
+		}
+		return c.captureT04b(d, out)
+	}
 	manifest := filepath.Join(out, "MANIFEST.md")
 	old, err := os.ReadFile(manifest)
 	if err != nil {

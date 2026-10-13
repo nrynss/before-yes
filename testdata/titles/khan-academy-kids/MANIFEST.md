@@ -56,3 +56,20 @@ Written by `tools/capture -only`. A run rewrites the files of the kinds it ran a
 ### Notes
 
 - review pages for other titles, not used: https://www.commonsensemedia.org/website-reviews/khan-academy
+
+## T0.4b
+
+Written by `tools/capture -only advanced`. A run rewrites this section. The Tavily key is never recorded here.
+
+- T0.4b Tavily credits for this title: 2
+
+### Files
+
+| File | Source | HTTP status | Fetched (UTC) | Tavily credits | Note |
+|---|---|---|---|---|---|
+| tavily-extract-csm-advanced.json | https://www.commonsensemedia.org/app-reviews/khan-academy-kids/user-reviews/adult https://www.commonsensemedia.org/app-reviews/khan-academy-kids/user-reviews/child | 200 | 2026-10-13T19:16:30Z | 1 | advanced; 2 results with text; failed_results: none |
+| tavily-extract-reddit-advanced.json | https://www.reddit.com/r/videos/comments/got5ih/khan_academy_is_struggling_with_rising_demand https://www.reddit.com/r/homeschool/comments/1irs0ld/want_to_try_khan_academy_kids_for_our_little_ones | 200 | 2026-10-13T19:16:38Z | 1 | advanced; 0 results with text; failed_results: https://www.reddit.com/r/homeschool/comments/1irs0ld/want_to_try_khan_academy_kids_for_our_little_ones (Failed to fetch url); https://www.reddit.com/r/videos/comments/got5ih/khan_academy_is_struggling_with_rising_demand (Failed to fetch url) |
+
+### Notes
+
+- none
