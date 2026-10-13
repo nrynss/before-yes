@@ -148,7 +148,7 @@ requires:   T0.1
 fixture-ok: yes
 size:       S · mid
 owns:       AGENTS.md, tools/check.sh, .github/workflows/check.yml
-status:     not-started
+status:     done
 ```
 Write `AGENTS.md`: the Go and Svelte versions, the dependency rule (Keel and Chaaya are declared dependencies, standard library first otherwise), file ownership, the `live` build tag for `b` tasks, and the review process.
 
@@ -165,4 +165,5 @@ Write `AGENTS.md`: the Go and Svelte versions, the dependency rule (Keel and Cha
 - [ ] Every secret resolves through `before-yes config`, and no key is in git.
 - [ ] Three demo titles and one alternative chosen.
 - [ ] Fixtures for all three titles committed, with Tavily credits per title recorded.
-- [ ] `tools/check.sh` green locally and in CI.
+- [x] `tools/check.sh` green locally and in CI.
+  - CI cannot run until the repository has a remote. The workflow is written and its YAML is valid, but it has not run.

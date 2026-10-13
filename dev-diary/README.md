@@ -10,7 +10,7 @@ Where a phase document and the brief conflict, the brief wins. Record the discre
 
 Each phase document gives an engineer starting cold the complete context for its tasks.
 
-**Current status:** P0 in progress. T0.1–T0.3 are done. An earlier backend draft sits in `scratch/` at the repository root, uncommitted and unreviewed. Tasks it covers show `status: drafted`, which means there is code to start from, not that the task is done. See [Starting from the scratch draft](#starting-from-the-scratch-draft).
+**Current status:** P0 in progress. T0.1–T0.3, T0.6 and T0.7 are done. An earlier backend draft sits in `scratch/` at the repository root, uncommitted and unreviewed. Tasks it covers show `status: drafted`, which means there is code to start from, not that the task is done. See [Starting from the scratch draft](#starting-from-the-scratch-draft).
 
 ---
 
@@ -176,7 +176,7 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 
 | Phase | Tasks complete | Status |
 |---|---|---|
-| P0 | 4 / 7 | In progress. T0.1, T0.2, T0.3 and T0.6 are done. T0.4, T0.5 and T0.7 are open. T0.5 is the user's. |
+| P0 | 5 / 7 | In progress. T0.1, T0.2, T0.3, T0.6 and T0.7 are done. T0.4 and T0.5 are open. T0.5 is the user's. |
 | P1 | 0 / 4 | Not started. T1.1 and T1.2 drafted. |
 | P2 | 0 / 8 | Not started. T2.1–T2.4 drafted. |
 | P3 | 0 / 8 | Not started. T3.1–T3.4 drafted. |
@@ -189,6 +189,22 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 ## Handoff Log
 
 Newest first. One entry per closed task, finding, or split.
+
+- **T0.7 closed.** `AGENTS.md`, `tools/check.sh` and `.github/workflows/check.yml` are committed in `d0db00d` on branch `worktree-agent-a919bfa6edbb4fd6e`.
+  - **AGENTS.md** links to the task rules in this README and copies none of them. It adds the stack, worktrees, file ownership, the gate, the `live` tag, secrets, commit rules, the no-dates rule and the review process.
+  - **check.sh.** It runs `gofmt -l` over Go files outside `scratch/`. It runs `go vet` and `go test -race` over `go list ./...` with `scratch/` filtered out. It runs the web `lint`, `check` and `test` scripts only when `web/package.json` exists. It ends with one PASS or FAIL line.
+  - **Gate proof.** Each case ran in this worktree with a throwaway package, and both were deleted afterwards.
+    - Clean tree: PASS, exit 0.
+    - `tmpgate/bad.go`, badly formatted: FAIL at gofmt, exit 1. `go vet` and `go test` were not reached.
+    - `tmpgate/x_test.go` asserting `1 != 2`, correctly formatted: FAIL at `go test -race`, exit 1.
+    - `tmpgate/x_test.go` passing: PASS, exit 0.
+    - `scratch/zz/` with badly formatted code and a failing test: PASS, exit 0. The draft is excluded from gofmt, vet and test.
+    - After both were removed: PASS, exit 0.
+  - **Surprising: no packages.** With no Go packages, `go vet ./...` and `go test -race ./...` both exit 1 ("no packages to vet" and "no packages to test"). `go list ./...` exits 0 with a warning. The script skips vet and test only when the filtered package list is empty. A real vet or test failure still fails the gate.
+  - **Surprising: `scratch/` is in scope for `./...`.** `go list ./...` returns `scratch/` packages when the directory exists. Without the filter, the gate would vet and test the unreviewed draft.
+  - **CI has not run.** There is no remote. The YAML parses. `actions/setup-go` reads `go.mod`, so it must supply Go 1.27.1. That version was not checked against the action's manifest. Node 24 and pnpm 11 are set up only when `web/package.json` exists.
+  - **Branch name.** This task's branch is `worktree-agent-a919bfa6edbb4fd6e`. The `task-<id>-<slug>` rule in AGENTS.md would name it `task-t0.7-repo-conventions`. Rename it if the convention should hold for this task.
+  - **Keel version.** `go.mod` still names Keel v0.7.0, and BRIEF.md says v0.7.0. The v0.7.1 bump belongs to the first Keel task. T0.7 did not change `go.mod`.
 
 - **T0.6 closed.** The user checked the name. "Before Yes" stays.
 - **Keel v0.7.1 adopted.** The user confirmed v0.7.1 will fix #82 and #83 and be the last Keel change. The "Keel v0.7.1" section above gives the bump rule. T1.4, T2.4 and T4.1 now target the fixes, not the workarounds.
