@@ -36,8 +36,11 @@ fi
 
 # go vet and go test exit 1 when ./... matches no packages, so skip them in that case.
 # scratch/ is gitignored and holds the earlier draft, so its packages are excluded too.
+# -e keeps listing when a package in scratch/ has an unresolvable import. Without it, go list
+# aborts before the filter runs. Packages outside scratch/ still reach vet and test, where a
+# load or compile error fails the gate.
 echo "== go list"
-all_pkgs="$(go list ./...)"
+all_pkgs="$(go list -e -f '{{.ImportPath}}' ./...)"
 pkgs="$(printf '%s\n' "$all_pkgs" | grep -v '/scratch/' || true)"
 if [ -z "$pkgs" ]; then
   echo "note: ./... matches no Go packages outside scratch/; skipping go vet and go test"
