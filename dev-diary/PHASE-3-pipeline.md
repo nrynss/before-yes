@@ -36,6 +36,12 @@ These first-hand parent and kid reports matter most where there is no App Store 
 
 Record the source kinds that came back empty, for the card's small print.
 
+**Known problems from the T0.4 fixtures** ([review](adversarial-review/t0.4-round1.md)). Solve these here:
+- **The official host is missing for half the titles.** Minecraft's App Store hit has no seller URL. Toca's store name ("Toca Boca World: Game & Play") fails the prefix rule. Find the developer's host another way. One option: take the domain of the policy search's top hit when it matches the App Store developer name. Show that it does not admit a look-alike domain.
+- **Policy text can be missing.** Khan Academy Kids' policy and terms searches both return the homepage, and Tavily's extract fails on it. When the top hit is a homepage or fails to extract, try the next hit, or a link named privacy or terms. The card must say so when no policy text could be read; it must not grade the data area as if the policy said nothing.
+- **Credits:** trust Tavily's `usage.credits`, not the price list.
+- `tools/capture` copies `plan()`. Once `internal/pipeline` exists, make the capture tool use it.
+
 **Done when:** Against the T0.4 and T0.4a fixtures, each demo title gathers the expected documents, Common Sense reviews and Reddit threads included. The policy and terms searches are narrowed to the official host. Credits match the plan.
 
 ---

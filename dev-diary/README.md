@@ -176,7 +176,7 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 
 | Phase | Tasks complete | Status |
 |---|---|---|
-| P0 | 5 / 8 | In progress. T0.1, T0.2, T0.3, T0.6 and T0.7 are done. T0.4, T0.4a and T0.5 are open. |
+| P0 | 7 / 8 | In progress. T0.1–T0.7 are done. T0.4a (Common Sense and Reddit fixtures) is open. |
 | P1 | 0 / 4 | Not started. T1.1 and T1.2 drafted. |
 | P2 | 0 / 8 | Not started. T2.1–T2.4 drafted. |
 | P3 | 0 / 8 | Not started. T3.1–T3.4 drafted. |
@@ -190,6 +190,14 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 
 Newest first. One entry per closed task, finding, or split.
 
+- **T0.4 and T0.5 closed.** Review: [t0.4-round1.md](adversarial-review/t0.4-round1.md), APPROVE.
+  - `testdata/titles/` holds four titles: Roblox, Khan Academy Kids, Minecraft and the Toca Life World alternative. Each has the App Store search, 10 review pages (500 reviews), five Tavily searches, an extract and a MANIFEST. `testdata/titles/README.md` holds the chosen set and its ages.
+  - Tavily credits: 22 in total (Roblox 6, Toca 6, Khan 5, Minecraft 5).
+  - `tools/capture` is the capture program. It copies gather.go's `plan()` rather than importing it, so keep the two in step until T3.1 can share the plan.
+  - Toca's App Store name is "Toca Boca World: Game & Play".
+  - The official-host rule and Khan's missing policy text are filed against T3.1 as OOS1 and OOS2.
+  - Tavily's reported extract credits do not follow the price list (OOS3). Trust `usage.credits` over the price list.
+  - The credit totals and hosts are in each MANIFEST.md. Do not re-derive them.
 - **Sources widened; T0.4 split.** The user added Common Sense Media parent and kid reviews and wider Reddit coverage to the gather plan (T3.1, items 3 and 4). Google Play stays out: no official API, and no scraping. T0.4 was already capturing under the old plan, so the new fixtures are T0.4a. The plan now costs about ten Tavily credits per title instead of six. T2.5 sizes the budget from the measured figure.
 - **T0.7 closed.** `AGENTS.md`, `tools/check.sh` and `.github/workflows/check.yml` are committed in `d0db00d` on branch `worktree-agent-a919bfa6edbb4fd6e`.
   - **AGENTS.md** links to the task rules in this README and copies none of them. It adds the stack, worktrees, file ownership, the gate, the `live` tag, secrets, commit rules, the no-dates rule and the review process.
