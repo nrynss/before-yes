@@ -10,7 +10,7 @@ Where a phase document and the brief conflict, the brief wins. Record the discre
 
 Each phase document gives an engineer starting cold the complete context for its tasks.
 
-**Current status:** P0 in progress. T0.1–T0.3, T0.6 and T0.7 are done. An earlier backend draft sits in `scratch/` at the repository root, uncommitted and unreviewed. Tasks it covers show `status: drafted`, which means there is code to start from, not that the task is done. See [Starting from the scratch draft](#starting-from-the-scratch-draft).
+**Current status:** P0 is done. P1 and P2 can start. An earlier backend draft sits in `scratch/` at the repository root, uncommitted and unreviewed. Tasks it covers show `status: drafted`, which means there is code to start from, not that the task is done. See [Starting from the scratch draft](#starting-from-the-scratch-draft).
 
 ---
 
@@ -176,7 +176,7 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 
 | Phase | Tasks complete | Status |
 |---|---|---|
-| P0 | 7 / 9 | In progress. T0.1–T0.7 are done. T0.4a is blocked on T0.4b, the advanced-extract probe for Common Sense and Reddit. |
+| P0 | 9 / 9 | Done. Two exit criteria wait on later tasks: a live Nano call (T2.1b) and the config check (T4.4). CI waits on a remote. |
 | P1 | 0 / 4 | Not started. T1.1 and T1.2 drafted. |
 | P2 | 0 / 8 | Not started. T2.1–T2.4 drafted. |
 | P3 | 0 / 8 | Not started. T3.1–T3.4 drafted. |
@@ -190,6 +190,13 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 
 Newest first. One entry per closed task, finding, or split.
 
+- **T0.4b closed; T0.4a closed; P0 done.** Review: [t0.4b-round1.md](adversarial-review/t0.4b-round1.md).
+  - The advanced extract (7 credits) still returned no individual Common Sense reviews.
+  - The Roblox and Minecraft review pages no longer exist. They redirect to parent guides, and Tavily reported the 404 text as a successful result.
+  - Every Reddit thread extract failed ("Failed to fetch url").
+  - **The user's decision:** snippets only. Common Sense reviews are out of the plan. The two Reddit searches stay, and each snippet is a document. The plan costs about eight credits per title.
+  - Tavily spent across P0: 42 credits (T0.4 22, T0.4a 13, T0.4b 7).
+  - `tools/capture`'s `csm` and `advanced` kinds are retired probes. T3.1 does not reuse them.
 - **T0.4a merged as partial; T0.4b added.** Review: [t0.4a-round1.md](adversarial-review/t0.4a-round1.md).
   - `tools/capture -only csm,reddit` captures Common Sense and Reddit for each title without repeating earlier captures. 13 credits were spent.
   - A basic Tavily extract returns no individual Common Sense reviews: only a count and an unattributed summary, which must never be used as a review.
