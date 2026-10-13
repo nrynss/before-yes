@@ -92,7 +92,7 @@ requires:   T0.3, T0.5
 fixture-ok: no
 size:       M · mid
 owns:       testdata/titles/, tools/capture/
-status:     not-started
+status:     done
 ```
 Capture the public material the pipeline reads, for each of the three demo titles, into `testdata/titles/<slug>/`:
 
@@ -106,6 +106,8 @@ The capture is a committed program in `tools/capture/`, not a pasted transcript,
 
 Everything captured is public. Do not capture anything that needs a login.
 
+**Credits spent:** Roblox 6, Toca Life World 6, Khan Academy Kids 5, Minecraft 5 (22 in total, reported by Tavily; see [testdata/titles/README.md](../testdata/titles/README.md)).
+
 **Done when:** Three title directories exist with every file listed above, `MANIFEST.md` records credits per title, and re-running the capture reproduces the same file set.
 
 ---
@@ -116,7 +118,7 @@ requires:   []
 fixture-ok: no
 size:       XS · user
 owns:       testdata/titles/README.md
-status:     not-started
+status:     done
 ```
 The video needs one title that passes, one that is **yes with these settings**, and one that is **no** because of a review quote. The brief's anchor is a title where the policy says chat is filtered and a review says the filter failed.
 
@@ -183,7 +185,7 @@ Append each call's URL, status and credits to the title's `MANIFEST.md`. Record 
 - [x] First commit on `main`, with `scratch/` and `.env` ignored.
 - [ ] A successful Nano completion on Token Factory, with the credit balance recorded.
 - [ ] Every secret resolves through `before-yes config`, and no key is in git.
-- [ ] Three demo titles and one alternative chosen.
-- [ ] Fixtures for all three titles committed, with Tavily credits per title recorded.
+- [x] Three demo titles and one alternative chosen.
+- [x] Fixtures for all three titles committed, with Tavily credits per title recorded.
 - [x] `tools/check.sh` green locally.
 - [ ] `tools/check.sh` green in CI (needs a remote).
