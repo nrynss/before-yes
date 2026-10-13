@@ -1,0 +1,173 @@
+# P3: Pipeline (Track B)
+
+```yaml
+id:       P3
+size:     L
+requires: [P1, T0.4]
+blocks:   P4 jobs, P6
+parallel: medium
+runs-parallel-with: P2, P4, P5
+```
+
+**Goal:** Turn a title and an age into a card that holds up: gather the evidence, read every source into quoted findings with Nano, judge the checklist with Super, find safer alternatives, and prove the result on the three demo titles.
+
+**Where the product lives:** Reading everything and linking every claim to its source is what separates Before Yes from a chatbot. This phase is that difference. Prompt and judgement tasks are frontier work, verified by measuring against the fixtures, not by reading the output and finding it plausible.
+
+Every model and Tavily call goes through `pipeline.Meter`. Tests use a fake meter that records spend per pool and kind.
+
+---
+
+### T3.1: Gather ★
+```yaml
+requires:   T1.3, T2.2, T2.3
+fixture-ok: yes
+size:       M · frontier
+owns:       internal/pipeline/gather.go, internal/pipeline/gather_test.go
+status:     drafted
+```
+A fixed source plan per title, about six Tavily credits:
+1. App Store search. If a hit's name starts with the title, read its reviews and description, and take its seller URL as the official host. A near miss is worse than no reviews, so a non-matching hit is ignored.
+2. Privacy policy and terms searches, narrowed to the official host when one is known. Extract the top hit of each.
+3. Forum search (Reddit, Common Sense Media, Mumsnet, Netmums), news search (fines, lawsuits, regulators, breaches), and rating search (ESRB, PEGI, parental controls), with raw content capped per document.
+
+Record the source kinds that came back empty, for the card's small print.
+
+**Done when:** Against the T0.4 fixtures, each demo title gathers the expected documents. The policy and terms searches are narrowed to the official host. Credits match the plan.
+
+---
+
+### T3.2: Reader (Nano) ★
+```yaml
+requires:   T1.2, T3.1
+fixture-ok: yes
+size:       L · frontier
+owns:       internal/pipeline/doc.go, internal/pipeline/read.go, internal/pipeline/read_test.go
+status:     drafted
+```
+**Chunking.** Token Factory serves Nano with a 32k context and 4k output tokens. Reviews share a chunk. A long document is split on paragraph or sentence boundaries, with a small overlap and rune-safe cuts, and every piece keeps its document's ref. Each segment is labelled `[R312]` for a review or `[D3]` for a document.
+
+**Prompt.** One finding per claim, each with a ref, area, claim, stance, and a 10 to 40 word verbatim quote. No outside knowledge. Skip bug reports and gameplay talk. Mark first-hand reports as such in the claim. Thinking off: it is billed as output.
+
+**Verification.** Every finding is checked against the whole text of the document its ref names (T1.2). A ref outside the chunk counts as unquoted. Calls run with bounded concurrency. A chunk whose call fails is counted and skipped. A check fails only if every chunk fails.
+
+**Done when:** With recorded Nano replies for the fixtures, the review 312 equivalent in the "no" title survives as a risk finding, every invented quote is dropped, and drop counts are reported by reason.
+
+---
+
+### T3.3: Judge (Super) and the conflict pass ★
+```yaml
+requires:   T1.1, T3.2
+fixture-ok: yes
+size:       L · frontier
+owns:       internal/pipeline/judge.go, internal/pipeline/judge_test.go
+status:     drafted
+```
+Super receives the child's age, the six area questions, and every verified finding: id, area, stance, source kind or review number, claim, and quote. It returns one grade per area, citing finding ids. A grade cannot cite anything else.
+
+The prompt states the weighting rule from the brief: a first-hand report of what happened outweighs what a policy or store listing claims, and one credible report that a filter or age gate failed for a young child can decide an area.
+
+**Conflict pass.** An area with both a risk and a mitigation finding is re-judged alone, with thinking on. The second grade replaces the first only for the areas it answers. If the second pass fails, the first grades stand.
+
+Every grade then goes through `checklist.Enforce`, and the verdict comes from `checklist.Decide`.
+
+**Done when:** With recorded Super replies, the "no" title's contact area is flagged on the review 312 finding, the conflict pass runs only on conflicted areas, and a grade citing a made-up id is demoted.
+
+---
+
+### T3.4: Collect, decide, and the evidence cache ★
+```yaml
+requires:   T3.2, T3.3
+fixture-ok: yes
+size:       M · mid
+owns:       internal/pipeline/pipeline.go, internal/pipeline/pipeline_test.go
+status:     drafted
+```
+Split the run into `Collect(title) → Evidence` and `Decide(evidence, age) → Card`. Collect is where the Tavily credits and most model tokens go. It is cached by title, plan version, storefront and reader model, so asking about the same title for another age costs one judge call.
+
+The card cites the findings its grades rest on, plus every risk finding, so a parent can see everything the judge weighed. Stats record read and judge cost separately.
+
+**Done when:** An end-to-end test with fakes shows review 312 deciding the card. A second age on the same evidence makes no reader or Tavily call. Cost on the card equals what the meter recorded.
+
+---
+
+### T3.5: Safer alternatives ★
+```yaml
+requires:   T3.4
+fixture-ok: yes
+size:       L · frontier
+owns:       internal/pipeline/alternatives.go, internal/pipeline/alternatives_test.go
+status:     not-started
+```
+The brief: safer alternatives, found with Tavily and checked the same way. Tavily is load-bearing twice, gathering evidence and finding alternatives, which is the case for the Best Use of Tavily award.
+
+When a card is **no** or **yes with settings**, search for two or three alternatives in the same genre for the same age. Run each candidate through `Collect` and `Decide`, cached like any title. Keep only candidates whose verdict beats the original's. Show each with its verdict and a link to its own card.
+
+Alternatives multiply cost. They are bounded by count, run after the main card is shown, and refused by the meter like anything else. A card is complete without them, and alternatives that are still pending say so.
+
+**Done when:** Against fixtures, the "no" title yields at least one alternative with a better verdict and its own card id. A budget refusal leaves the main card intact.
+
+---
+
+### T3.6: Quality pass on the three titles ★
+```yaml
+requires:   T3.4, T0.5
+fixture-ok: yes
+size:       M · frontier
+owns:       tools/eval/, testdata/eval/
+status:     not-started
+```
+For each demo title and age, write down by hand what a careful parent reading the same material would conclude: area by area, with the quotes that matter. Store it in `testdata/eval/`.
+
+`tools/eval` runs the pipeline over the fixtures with recorded model replies and compares. It reports per area: grade agreement, decisive quotes found or missed, quote drop rate, cost.
+
+This is how prompt changes are judged from here on: by the eval, not by reading one output.
+
+**Done when:** `tools/eval` runs offline and prints the comparison for all three titles, and the handoff log records the baseline.
+
+---
+
+### T3.6b: Quality pass, live on Token Factory
+```yaml
+requires:   T3.6, T2.1b
+fixture-ok: no
+size:       M · frontier
+owns:       tools/eval/live.go, testdata/eval/replies/
+status:     not-started
+```
+Run the eval with real Nano and Super on Token Factory, then with the free stand-ins, and record both. This answers the brief's open question about real Nano quality against the stand-in.
+
+Save the replies as the recorded replies T3.2, T3.3 and T3.6 replay. Record measured cost per title for T2.5.
+
+If a demo title lands on a different verdict from T0.5's expectation, the evidence decides, not the expectation. Report it to the user, who picks again from the shortlist.
+
+**Done when:** Live results for both model sets are in the handoff log, recorded replies are committed, and cost per title is measured.
+
+---
+
+### T3.7: Kinds of title
+```yaml
+requires:   T3.1
+fixture-ok: yes
+size:       M · frontier
+owns:       internal/pipeline/kind.go, internal/pipeline/kind_test.go
+status:     not-started
+```
+The brief names four kinds: iOS app or game, Android-only app or game, console or PC game, YouTube channel. Detect the kind from the App Store result and the rating search, and adjust the plan:
+- **Android-only:** Tavily only. No Play Store scraping.
+- **Console or PC:** weight the ESRB and PEGI rating pages.
+- **YouTube channel:** news, forums, and channel coverage.
+
+Whether the YouTube Data API's made-for-kids status adds anything is an open question in the brief. Answer it here, and record the answer even if the answer is no.
+
+**Done when:** One fixture per kind gathers the right plan, the card shows the kind, and the YouTube question is answered in the handoff log.
+
+---
+
+## Exit Criteria
+
+- [ ] Review 312 decides the card end to end, by test.
+- [ ] No finding reaches a card without a verified quote.
+- [ ] A second age on cached evidence makes no Tavily or reader call.
+- [ ] Alternatives found with Tavily and checked the same way.
+- [ ] Offline eval baseline and live Token Factory results recorded.
+- [ ] All four kinds of title handled.
