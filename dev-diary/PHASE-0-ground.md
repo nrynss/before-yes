@@ -188,7 +188,7 @@ requires:   T0.4a
 fixture-ok: no
 size:       S · mid
 owns:       testdata/titles/*/tavily-extract-csm-advanced.json, testdata/titles/*/tavily-extract-reddit-advanced.json, tools/capture/
-status:     not-started
+status:     done
 ```
 Split from T0.4a, which showed that a basic Tavily extract returns no individual Common Sense reviews (only "Based on N parent reviews" and an unattributed summary), and that Reddit search results carry no thread text (`raw_content` is null on all 64 hits). The user chose to probe Tavily's advanced extract before deciding how T3.1 uses these sources. See [the T0.4a review](adversarial-review/t0.4a-round1.md).
 
@@ -199,6 +199,8 @@ For the four titles, run `extract_depth: "advanced"`:
 Record credits per call. Then answer the T0.4a inspection questions again for the advanced output: do individual reviews come through, are their boundaries clear, do reviewer type, rating, age and date survive, and does a Reddit thread extract hold the post and its comments?
 
 **Done when:** The advanced extracts are committed for all four titles, with credits in each `MANIFEST.md`. The handoff log answers each inspection question with a short anonymised excerpt, and says plainly whether each source is usable for T3.1.
+
+**Credits (T0.4b):** Roblox 2, Minecraft 2, Khan Academy Kids 2, Toca Life World 1 (7 in total, reported by Tavily; see the T0.4b section of each `MANIFEST.md`).
 
 ---
 
