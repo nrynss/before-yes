@@ -10,7 +10,7 @@ Where a phase document and the brief conflict, the brief wins. Record the discre
 
 Each phase document gives an engineer starting cold the complete context for its tasks.
 
-**Current status:** Planning. No phase has started. An earlier backend draft sits in `scratch/` at the repository root, uncommitted and unreviewed. Tasks it covers show `status: drafted`, which means there is code to start from, not that the task is done. See [Starting from the scratch draft](#starting-from-the-scratch-draft).
+**Current status:** P0 in progress. T0.1–T0.3 are done. An earlier backend draft sits in `scratch/` at the repository root, uncommitted and unreviewed. Tasks it covers show `status: drafted`, which means there is code to start from, not that the task is done. See [Starting from the scratch draft](#starting-from-the-scratch-draft).
 
 ---
 
@@ -164,7 +164,7 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 
 | Phase | Tasks complete | Status |
 |---|---|---|
-| P0 | 0 / 7 | Not started. T0.2, T0.3, T0.5 and T0.6 are the user's. |
+| P0 | 3 / 7 | In progress. T0.1–T0.3 are done. T0.4–T0.7 are open. T0.5 and T0.6 are the user's. |
 | P1 | 0 / 4 | Not started. T1.1 and T1.2 drafted. |
 | P2 | 0 / 8 | Not started. T2.1–T2.4 drafted. |
 | P3 | 0 / 8 | Not started. T3.1–T3.4 drafted. |
@@ -177,6 +177,13 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 ## Handoff Log
 
 Newest first. One entry per closed task, finding, or split.
+
+- **T0.1, T0.2, T0.3 closed.**
+  - **T0.1 (repository).** `go.mod` and `go.sum` moved from `scratch/` to the repository root in the main checkout at `/home/nryn/work/before-yes`, for T0.1. Both are committed in `1aa4bf9`. `scratch/go.mod` and `scratch/go.sum` are gone. Nothing under `scratch/` and no `.env` is tracked. `.gitignore` covers `scratch/`, `.env`, `.env.*` with `!.env.example`, `data/`, `*.db`, `*.db-wal`, `*.db-shm`, `web/build/`, `node_modules/` and `before-yes.toml`. No entry was missing.
+  - **`.env`.** Mode `0600`, and ignored by git. Variable names only: `NVIDIA_KEY`, `NEBIUS_KEY`, `TAVILY_KEY`, `OPENROUTER_KEY`. Quoted-value lines: 4 (all four names above). `export`-prefixed lines: 0. The user must remove the surrounding quotes from those four lines before any secret reference resolves. Keel's `env_file` expects bare `NAME=value` lines. The user should also remove any `export ` prefix, if one is added later. No value was printed or committed.
+  - **T0.3 (settings and keys).** `before-yes.toml.example` and `docs/keys.md` committed in `f710055`. The example gained top-level `judge_fast` and `judge_think` keys, which had been missing. Their values are UNCONFIRMED until T2.1b. The commented OpenRouter tables now say to repoint `[secrets.reader]` and `[secrets.judge]` at `OPENROUTER_KEY`. `docs/keys.md` now says the same.
+  - **T0.3 deferred.** The check that every secret resolves through `before-yes config` cannot run yet. `before-yes config` is scratch code owned by T4.4. Deferred to T4.4.
+  - **T0.2 rests on the user's confirmation.** The user confirmed the Token Factory account is active. The credit balance is not yet recorded. T2.1b's live call will prove Nano works.
 
 - **Planning.** Phase documents written. The backend draft moved to `scratch/` (see [Starting from the scratch draft](#starting-from-the-scratch-draft)). Notes from that draft, for whoever picks up the tasks it touches:
   - Token Factory base URL is `https://api.tokenfactory.nebius.com/v1`. Model ids `nvidia/nvidia-nemotron-3-nano-30b-a3b` and `nvidia/nemotron-3-super-120b-a12b` come from public examples, not Nebius docs. T2.1b confirms them against `GET /v1/models`.

@@ -22,7 +22,7 @@ requires:   []
 fixture-ok: no
 size:       XS · light
 owns:       .gitignore, LICENSE, README.md (stub), go.mod, go.sum
-status:     not-started
+status:     done
 ```
 `git init` has run, but nothing is committed. The working tree holds `BRIEF.md`, `LICENSE` (Apache-2.0, copied from Keel), `dev-diary/`, `scratch/` (the earlier backend draft), and a `.env` the user created.
 
@@ -40,7 +40,7 @@ requires:   []
 fixture-ok: no
 size:       XS · user
 owns:       none
-status:     not-started
+status:     done
 ```
 The Devpost FAQ warns that some countries cannot onboard to Token Factory billing yet. There is no workaround on Devpost's side, and the Nebius Discord handles each case individually.
 
@@ -50,6 +50,8 @@ If onboarding fails, raise it on the Nebius Discord at once and record it here a
 
 **Done when:** One successful Nano completion on Token Factory, and the handoff log records the credit balance it showed.
 
+**Status note:** The user confirmed the account is active. The credit balance is not yet recorded. T2.1b's live call will prove Nano works.
+
 ---
 
 ### T0.3: Keys and settings file
@@ -58,7 +60,7 @@ requires:   T0.2
 fixture-ok: no
 size:       S · user
 owns:       before-yes.toml.example, docs/keys.md
-status:     not-started
+status:     done
 ```
 An agent writes `before-yes.toml.example` and `docs/keys.md`. The user creates the keys and puts them on the dev machine.
 
@@ -158,7 +160,7 @@ Write `AGENTS.md`: the Go and Svelte versions, the dependency rule (Keel and Cha
 
 ## Exit Criteria
 
-- [ ] First commit on `main`, with `scratch/` and `.env` ignored.
+- [x] First commit on `main`, with `scratch/` and `.env` ignored.
 - [ ] A successful Nano completion on Token Factory, with the credit balance recorded.
 - [ ] Every secret resolves through `before-yes config`, and no key is in git.
 - [ ] Three demo titles and one alternative chosen.
