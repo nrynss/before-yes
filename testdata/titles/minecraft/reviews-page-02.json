@@ -1,0 +1,2568 @@
+{
+  "feed": {
+    "author": {
+      "name": {
+        "label": "iTunes Store"
+      },
+      "uri": {
+        "label": "http://www.apple.com/itunes/"
+      }
+    },
+    "entry": [
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1780759682"
+          },
+          "name": {
+            "label": "Cat lover224"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-10T18:16:53-07:00"
+        },
+        "im:rating": {
+          "label": "4"
+        },
+        "im:version": {
+          "label": "26.52"
+        },
+        "id": {
+          "label": "14651911880"
+        },
+        "title": {
+          "label": "My friend cant join"
+        },
+        "content": {
+          "label": "Ye",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=479516143&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1154551770"
+          },
+          "name": {
+            "label": "why will it not let me"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-10T18:16:18-07:00"
+        },
+        "im:rating": {
+          "label": "1"
+        },
+        "im:version": {
+          "label": "26.52"
+        },
+        "id": {
+          "label": "14651910346"
+        },
+        "title": {
+          "label": "SCAMMMUUHHHHH"
+        },
+        "content": {
+          "label": "okay so basically i was trying to purchase the new villager add on for 6.99 last night and every single time it said i didn’t have enough “minecoins”  i tried buying them separately too which still didn’t work and i thought this all was really weird because every single time it said the purchase was successful and i tried it again tonight and just got charged 40 dollars. i still don’t have the add on btw.  i just really want to know what to do.",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=479516143&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1635822713"
+          },
+          "name": {
+            "label": "DG TUX"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-10T17:56:59-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "26.52"
+        },
+        "id": {
+          "label": "14651860354"
+        },
+        "title": {
+          "label": "If you’re looking to buy this…"
+        },
+        "content": {
+          "label": "Okay, here’s the deal, Minecraft is great! I play it all the time! It helps my best friends and I stay together even though one of the trio moved to Michigan! I would recommend, don’t join random people’s servers, don’t chat to random people, don’t send friend requests to random people, and definitely be appropriate! I’ve encountered several incidents with strangers in public lobbies talking sus. Guess what happened? They got banned. If you do get kicked out don’t rejoin, you’ll be banned. Multiple things cost money, some things are free, either way, Minecraft is still playable. You don’t need a bunch of add ons. Some add on are free. Some aren’t. Anyhow, Minecraft is amazing. Every now and then, you’ll learn something! You don’t HAVE to get it’s. But you should.",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=479516143&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1346831175"
+          },
+          "name": {
+            "label": "Lord tweedle the third"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-10T17:42:34-07:00"
+        },
+        "im:rating": {
+          "label": "4"
+        },
+        "im:version": {
+          "label": "26.52"
+        },
+        "id": {
+          "label": "14651823369"
+        },
+        "title": {
+          "label": "I like this"
+        },
+        "content": {
+          "label": "This is a good game, but the add ons are too expensive for me. This is still a great game.",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=479516143&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1821792720"
+          },
+          "name": {
+            "label": "Kayarules"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-10T17:42:30-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "26.52"
+        },
+        "id": {
+          "label": "14651823178"
+        },
+        "title": {
+          "label": "Game is amazing"
+        },
+        "content": {
+          "label": "I just got this game but I’ve had experience before with knockoffs. But now I can use mods and I’m currently playing the nerf map",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=479516143&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1337383064"
+          },
+          "name": {
+            "label": "cellbrains"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-10T17:32:42-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "26.52"
+        },
+        "id": {
+          "label": "14651798171"
+        },
+        "title": {
+          "label": "Five stars for Java, not bedrock"
+        },
+        "content": {
+          "label": "Bedrock is polluted by Microsoft",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=479516143&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1860554513"
+          },
+          "name": {
+            "label": "Damn wth"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-10T17:26:36-07:00"
+        },
+        "im:rating": {
+          "label": "3"
+        },
+        "im:version": {
+          "label": "26.52"
+        },
+        "id": {
+          "label": "14651782431"
+        },
+        "title": {
+          "label": "Fix your game"
+        },
+        "content": {
+          "label": "It was good as first as a mobile player but now it constantly kicks me out it sucks on mobile after the update",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=479516143&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "1"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "1"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1669531846"
+          },
+          "name": {
+            "label": "Kat plays ☺️"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-10T17:14:55-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "26.52"
+        },
+        "id": {
+          "label": "14651752836"
+        },
+        "title": {
+          "label": "The most amazing game ever"
+        },
+        "content": {
+          "label": "I love Minecraft I started playing recently and I love it so much all the great structures and villages but I never seen a pillager mansion 😕 and I looked and looked but I can find it and there are still bugs but that’s ok and I wish they can add the smart phone add on so it comes in every server that people make that would be amazing mojang 😃",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=479516143&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1121909562"
+          },
+          "name": {
+            "label": "Drivingfish"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-10T17:13:01-07:00"
+        },
+        "im:rating": {
+          "label": "4"
+        },
+        "im:version": {
+          "label": "26.52"
+        },
+        "id": {
+          "label": "14651748032"
+        },
+        "title": {
+          "label": "Why???"
+        },
+        "content": {
+          "label": "Why is there a bite in the pumpkin pie \nWhy do ghasts cry?\nWHY???",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=479516143&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id104198393"
+          },
+          "name": {
+            "label": "jgil6"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-10T17:03:20-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "26.52"
+        },
+        "id": {
+          "label": "14651723245"
+        },
+        "title": {
+          "label": "Minecraft"
+        },
+        "content": {
+          "label": "Please add the RPG add-on And the dungeon crawler add-on and the structures armors weapons add-on to the marketplace pass please don’t take out add-ons like the adventure craft add-on, the eternal caves, add-on, and bring back better on bedrock please and please make a week where everything is free in the marketplace when I say everything I mean everything I am talking add-ons worlds mashup packs, texture packs and skin packs oh yeah, and fix the GAME!",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=479516143&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1414897867"
+          },
+          "name": {
+            "label": "♱TIMBER♱"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-10T16:25:27-07:00"
+        },
+        "im:rating": {
+          "label": "4"
+        },
+        "im:version": {
+          "label": "26.52"
+        },
+        "id": {
+          "label": "14651630945"
+        },
+        "title": {
+          "label": "Fun but also not fun"
+        },
+        "content": {
+          "label": "Alone its kind of boring but with friends really funnn. That's why I'm giving 4 stars ⭐",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=479516143&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1470983201"
+          },
+          "name": {
+            "label": "Aardvarkfart591"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-10T15:55:30-07:00"
+        },
+        "im:rating": {
+          "label": "2"
+        },
+        "im:version": {
+          "label": "26.52"
+        },
+        "id": {
+          "label": "14651558648"
+        },
+        "title": {
+          "label": "The reason I rate it two stars"
+        },
+        "content": {
+          "label": "My Minecraft keeps getting me off every time I try to get one mod in a world. It is the. projectile silent, breakpoint early access.",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=479516143&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1856527052"
+          },
+          "name": {
+            "label": "The Perfect Game(er)"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-10T15:35:41-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "26.52"
+        },
+        "id": {
+          "label": "14651510931"
+        },
+        "title": {
+          "label": "Very good needs something"
+        },
+        "content": {
+          "label": "Let us walk on powder snow with frost walker boots plz I accidentally wasted XP thinking I could walk over powder snow with frost walker boots this would make the game so much better and I love the cushions but minecoins are only obtainable with money, it’s just making the person feel like they spent money on currency, not mods and java edition doesn’t have minecoins let us get free mods",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=479516143&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1470411010"
+          },
+          "name": {
+            "label": "revivalserver"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-10T15:30:55-07:00"
+        },
+        "im:rating": {
+          "label": "4"
+        },
+        "im:version": {
+          "label": "26.52"
+        },
+        "id": {
+          "label": "14651499324"
+        },
+        "title": {
+          "label": "Issue with error code Tuff"
+        },
+        "content": {
+          "label": "Same issue with error code tuff. Everytime I try to sign in it always put me on a error code tuff everytime",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=479516143&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id390951386"
+          },
+          "name": {
+            "label": "Parker chumbley"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-10T15:14:14-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "26.52"
+        },
+        "id": {
+          "label": "14651458529"
+        },
+        "title": {
+          "label": "Good game"
+        },
+        "content": {
+          "label": "Oh my gosh that is a great game",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=479516143&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1415971670"
+          },
+          "name": {
+            "label": "Верните новые рекомендации"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-10T14:38:54-07:00"
+        },
+        "im:rating": {
+          "label": "4"
+        },
+        "im:version": {
+          "label": "26.52"
+        },
+        "id": {
+          "label": "14651370573"
+        },
+        "title": {
+          "label": "Over a network without an Internet connection"
+        },
+        "content": {
+          "label": "Hello, please make it possible to play online without the Internet. So the game is good👍",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=479516143&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1746583973"
+          },
+          "name": {
+            "label": "KAMRON Willis"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-10T14:26:53-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "26.52"
+        },
+        "id": {
+          "label": "14651340077"
+        },
+        "title": {
+          "label": "Let’s go"
+        },
+        "content": {
+          "label": "This is the best game ever no doubt",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=479516143&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id361148308"
+          },
+          "name": {
+            "label": "HSISGSIS123"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-10T14:08:20-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "26.52"
+        },
+        "id": {
+          "label": "14651291637"
+        },
+        "title": {
+          "label": ": )"
+        },
+        "content": {
+          "label": "So this game is really cool, and I love pranking my friends in it",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=479516143&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id440108712"
+          },
+          "name": {
+            "label": "Sincere Khali"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-10T12:48:24-07:00"
+        },
+        "im:rating": {
+          "label": "1"
+        },
+        "im:version": {
+          "label": "26.52"
+        },
+        "id": {
+          "label": "14651071998"
+        },
+        "title": {
+          "label": "Scam"
+        },
+        "content": {
+          "label": "I Bought Minecoins it scam me he is a scammer",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=479516143&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1576144818"
+          },
+          "name": {
+            "label": "KrisMax~"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-10T12:29:36-07:00"
+        },
+        "im:rating": {
+          "label": "1"
+        },
+        "im:version": {
+          "label": "26.52"
+        },
+        "id": {
+          "label": "14651017196"
+        },
+        "title": {
+          "label": "Same Minecraft, Ruined by Poor Optimization"
+        },
+        "content": {
+          "label": "I’d wanted to buy Minecraft for my iPad Pro M5 for a very long time, but I ended up disappointed… The game’s optimization is terrible: with the new graphics, the FPS is unstable, it’s not enjoyable to play, and there are constant stutters and other issues. And these are far from the highest settings for the new graphics. Keep in mind that I’m using a device with an M5 chip; I dread to imagine what it’s like on an iPhone with an A-series chip… Even with the old graphics, there are occasional micro-stutters, which, in my opinion, is unacceptable. Without a gamepad or a mouse and keyboard, it’s impossible to play. I remember that back in the day, touchscreen controls in Pocket Edition were much more responsive and convenient. Other than that, it’s the same Minecraft, but considering the optimization, I’d think twice before spending my money on it…",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=479516143&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1857257731"
+          },
+          "name": {
+            "label": "LizardKing1234 ￼"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-10T11:14:17-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "26.52"
+        },
+        "id": {
+          "label": "14650783919"
+        },
+        "title": {
+          "label": "I can’t wait for the Sift !!!"
+        },
+        "content": {
+          "label": "Love the game five out of five stars there is nothing to complain about all I think is that they should add the sift update faster hurry up and just get the sift out. I can’t wait for it. I mean it’s been ages since we got new dimension in Minecraft and I just think we need the sift already! I mean, just get it out so that we can have new mobs and stuff. I don’t even have Minecraft dungeons or Minecraft dungeons 2 so just add it already!!!",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=479516143&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1720774444"
+          },
+          "name": {
+            "label": "Cagsghsygskjghsjks"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-10T11:05:37-07:00"
+        },
+        "im:rating": {
+          "label": "4"
+        },
+        "im:version": {
+          "label": "26.52"
+        },
+        "id": {
+          "label": "14650756182"
+        },
+        "title": {
+          "label": "Love it!"
+        },
+        "content": {
+          "label": "I love this game SO MUCH but maybe add java to mobile?",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=479516143&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1743456238"
+          },
+          "name": {
+            "label": "Dygsbenefits"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-10T10:57:24-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "26.52"
+        },
+        "id": {
+          "label": "14650730007"
+        },
+        "title": {
+          "label": "Yes!"
+        },
+        "content": {
+          "label": "Dose every thing it flames!realy fun.",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=479516143&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1289862820"
+          },
+          "name": {
+            "label": "gd nnjhdcv"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-10T10:08:11-07:00"
+        },
+        "im:rating": {
+          "label": "4"
+        },
+        "im:version": {
+          "label": "26.52"
+        },
+        "id": {
+          "label": "14650567131"
+        },
+        "title": {
+          "label": "Takes too long to update"
+        },
+        "content": {
+          "label": "I like Minecraft you can build stuff and be creative, but it takes too long to update. I really have to to wait for two hours for like it to be updated. I like it but make the update a little bit shorter.",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=479516143&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1873809644"
+          },
+          "name": {
+            "label": "Woskksksksisk"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-10T10:07:17-07:00"
+        },
+        "im:rating": {
+          "label": "1"
+        },
+        "im:version": {
+          "label": "26.52"
+        },
+        "id": {
+          "label": "14650564162"
+        },
+        "title": {
+          "label": "DO NOT BUY ANYTHING ON APPLE"
+        },
+        "content": {
+          "label": "So I bought some mods and later I went to go get something else on my App Store and I couldn’t cause it needed my credit card for some reason so I put it in and it takes off more money from my card insane for this game and now I bought something else again cause I thought it was a glitch and now it’s doing it again. I can’t buy any apps without paying now. I already paid for it now I have to pay for it again.",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=479516143&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1978112182"
+          },
+          "name": {
+            "label": "HenryMinecrsft"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-10T09:46:09-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "26.52"
+        },
+        "id": {
+          "label": "14650491477"
+        },
+        "title": {
+          "label": "Real mood"
+        },
+        "content": {
+          "label": "One word. Peak",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=479516143&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1637901879"
+          },
+          "name": {
+            "label": "MinecraftIsGOAT😀😀😀😁😁😁"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-10T09:11:04-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "26.52"
+        },
+        "id": {
+          "label": "14650368809"
+        },
+        "title": {
+          "label": "Hi"
+        },
+        "content": {
+          "label": "I’m just here to say that this game is really good :)",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=479516143&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id405955213"
+          },
+          "name": {
+            "label": "hiding reviews?"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-10T08:36:08-07:00"
+        },
+        "im:rating": {
+          "label": "1"
+        },
+        "im:version": {
+          "label": "26.52"
+        },
+        "id": {
+          "label": "14650243990"
+        },
+        "title": {
+          "label": "I paid and it stole my money"
+        },
+        "content": {
+          "label": "So I was going to pay for a mod and I paid four dollars and then it said thanks for your purchase and then I didn’t give me any coins",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=479516143&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1458955615"
+          },
+          "name": {
+            "label": "Private nothing"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-10T08:07:18-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "26.52"
+        },
+        "id": {
+          "label": "14650139057"
+        },
+        "title": {
+          "label": "BEST GAME EVER"
+        },
+        "content": {
+          "label": "DUDE BEST GAME EVER I LOVE THE DAPPLED FOREST ITS JUST SUCH A GOOD GAAAAAAAAAAAAAAAAAAME!!!!!!!!",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=479516143&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id479233461"
+          },
+          "name": {
+            "label": "Завтра513"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-10T07:34:47-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "26.52"
+        },
+        "id": {
+          "label": "14650018695"
+        },
+        "title": {
+          "label": "МисТерр РандОм💪"
+        },
+        "content": {
+          "label": "Без слов,это очень крутая игра",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=479516143&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1468277560"
+          },
+          "name": {
+            "label": "A cezberger"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-10T07:18:14-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "26.52"
+        },
+        "id": {
+          "label": "14649957890"
+        },
+        "title": {
+          "label": "I LOVE IT"
+        },
+        "content": {
+          "label": "this is the best but can you add 2 new mobs for me can you add another boss like… a crab boss I just love crabs and add a some new farm plants like eggplants and bananas and monkeys to go with them this would make Minecraft even better and make it so you can find monkeys in the jungle and you can tame them with bananas please I love monkeys too and they can throw bananas if hurt like add tigers too to be a predator for monkeys also the minecoins won’t purchase idk why but.. please fix it",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=479516143&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1651081021"
+          },
+          "name": {
+            "label": "Developer report"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-10T06:45:12-07:00"
+        },
+        "im:rating": {
+          "label": "4"
+        },
+        "im:version": {
+          "label": "26.52"
+        },
+        "id": {
+          "label": "14649837191"
+        },
+        "title": {
+          "label": "It’s fine"
+        },
+        "content": {
+          "label": "The best game but just one thing WHEN CAN WE HAVE A END DIMENSION UPDATE!? and when can we have some cutscenes?",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=479516143&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1921463711"
+          },
+          "name": {
+            "label": "67suckses"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-10T06:44:54-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "26.52"
+        },
+        "id": {
+          "label": "14649836187"
+        },
+        "title": {
+          "label": "Option are endless"
+        },
+        "content": {
+          "label": "There is so many blocks you can do anything.\nThere is also 3 different modes",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=479516143&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1368576144"
+          },
+          "name": {
+            "label": "Aidan money"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-10T06:44:34-07:00"
+        },
+        "im:rating": {
+          "label": "4"
+        },
+        "im:version": {
+          "label": "26.52"
+        },
+        "id": {
+          "label": "14649834948"
+        },
+        "title": {
+          "label": "It is allright not recommending Mobley"
+        },
+        "content": {
+          "label": "No mobile don’t it is to small and it is easy to accidentally pressed something you don’t want to",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=479516143&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id884867212"
+          },
+          "name": {
+            "label": "GBARNMONEY"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-10T05:50:37-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "26.52"
+        },
+        "id": {
+          "label": "14649646122"
+        },
+        "title": {
+          "label": "THE ABSOLUTE GOAT!"
+        },
+        "content": {
+          "label": "THE RONALDO/MESI OF GAMES! WAY BETTER THAN ROBLOX!",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=479516143&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1624276298"
+          },
+          "name": {
+            "label": "sonicfan1768"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-10T05:43:20-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "26.52"
+        },
+        "id": {
+          "label": "14649621587"
+        },
+        "title": {
+          "label": "Oops didn’t submit"
+        },
+        "content": {
+          "label": "Anyways I’ve played since 2019 (hence the name Minecraftfansince19) and my 2 YEAR OLD BROTHER LOVES IT HE WONT EVEN LET ME GET OUT OF IT THANK YOU MOJANG FOR MINECRAFT!!!!!! ❤️",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=479516143&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1297953151"
+          },
+          "name": {
+            "label": "Basuea mc"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-10T05:38:05-07:00"
+        },
+        "im:rating": {
+          "label": "1"
+        },
+        "im:version": {
+          "label": "26.52"
+        },
+        "id": {
+          "label": "14649603827"
+        },
+        "title": {
+          "label": "Basuea"
+        },
+        "content": {
+          "label": "Como puede ser que no aregles sus bugs",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=479516143&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "1"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1250661458"
+          },
+          "name": {
+            "label": "EndergodGD/mc/terraria/…"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-09T23:24:25-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "26.52"
+        },
+        "id": {
+          "label": "14648629476"
+        },
+        "title": {
+          "label": "Terraria vs Minecraft"
+        },
+        "content": {
+          "label": "Terraria vs Minecraft is not optional",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=479516143&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id695844164"
+          },
+          "name": {
+            "label": "TheTacoEmpress"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-09T22:28:43-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "26.52"
+        },
+        "id": {
+          "label": "14648508477"
+        },
+        "title": {
+          "label": "Amazing game! But.."
+        },
+        "content": {
+          "label": "I’ve been playing Minecraft ever since beds were red, and I’ve always loved Minecraft, but me and my friends have been noticing that my game has been lagging, I can see my skins but they can’t see my skin and when I import a skin, and go to put on a cape, it changed back to Alex, sometimes I even appear invisible because my friends can’t see my skin, please fix this mobile bug !",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=479516143&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1179471849"
+          },
+          "name": {
+            "label": "Y0G1RL"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-09T21:50:13-07:00"
+        },
+        "im:rating": {
+          "label": "4"
+        },
+        "im:version": {
+          "label": "26.52"
+        },
+        "id": {
+          "label": "14648425632"
+        },
+        "title": {
+          "label": "Great Game, Multiple Opportunities, Slow Loading."
+        },
+        "content": {
+          "label": "Hello! I would like to say this game is wonderful, it has been a comfort game for years and I love it. The updates help make you have more opportunities, such as roleplaying, 1v1s, building, and more! But I would like to report that sometimes my Minecraft loads very slowly when logging in, if I could have an answer that would be wonderous! And also, whenever I use an imported skin when I log back in it doesnt load in and it sends me back to the original skin such as Steve or Alex. Thank you for reading!",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=479516143&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id246557302"
+          },
+          "name": {
+            "label": "YesJESUSlovesME"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-09T21:40:00-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "26.52"
+        },
+        "id": {
+          "label": "14648403550"
+        },
+        "title": {
+          "label": "The best!!!"
+        },
+        "content": {
+          "label": "Ive been playing this for 10 years and never get bored! There’s literally nothing wrong about Minecraft! Thank u so much!!!",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=479516143&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1315891295"
+          },
+          "name": {
+            "label": "TV TIME Charolet"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-09T21:04:15-07:00"
+        },
+        "im:rating": {
+          "label": "1"
+        },
+        "im:version": {
+          "label": "26.52"
+        },
+        "id": {
+          "label": "14648324945"
+        },
+        "title": {
+          "label": "Bug"
+        },
+        "content": {
+          "label": "I CAN'T CRAWL BROTHER IT'S BROKEN",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=479516143&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1743661336"
+          },
+          "name": {
+            "label": "Best game ever made by mojang"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-09T21:00:48-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "26.52"
+        },
+        "id": {
+          "label": "14648317233"
+        },
+        "title": {
+          "label": "Hi"
+        },
+        "content": {
+          "label": "Best game ever will u add deer and u can tame it with sweet berries like the fox???thanks best game ever here is a piece of candy!!my treat!!!!!!!!!!!!🍬🍬🍬🤭",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=479516143&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1512983194"
+          },
+          "name": {
+            "label": "MolotovGirl101"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-09T20:18:28-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "26.52"
+        },
+        "id": {
+          "label": "14648221282"
+        },
+        "title": {
+          "label": "Amazing"
+        },
+        "content": {
+          "label": "I love this I have so many amazing worlds I play with all my friends",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=479516143&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1977871542"
+          },
+          "name": {
+            "label": "euong。"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-09T19:41:18-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "26.52"
+        },
+        "id": {
+          "label": "14648132903"
+        },
+        "title": {
+          "label": "终于下载到mc了😭"
+        },
+        "content": {
+          "label": "尝尝鲜",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=479516143&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id294191435"
+          },
+          "name": {
+            "label": "pink prettylicious"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-09T19:06:51-07:00"
+        },
+        "im:rating": {
+          "label": "2"
+        },
+        "im:version": {
+          "label": "26.52"
+        },
+        "id": {
+          "label": "14648047919"
+        },
+        "title": {
+          "label": "even peaceful isn’t peaceful"
+        },
+        "content": {
+          "label": "love the world, hate the game \nall  of the tiny rules like my dropped items disappearing just felt like hidden credit card fees",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=479516143&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id770146428"
+          },
+          "name": {
+            "label": "Stupid, stupid stupid, dumb,"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-09T18:08:20-07:00"
+        },
+        "im:rating": {
+          "label": "1"
+        },
+        "im:version": {
+          "label": "26.52"
+        },
+        "id": {
+          "label": "14647899394"
+        },
+        "title": {
+          "label": "Need a Microsoft account"
+        },
+        "content": {
+          "label": "So stupid you need a Microsoft account for everything you can’t even download free mods the only way you can do that is by going on an app that basically cost money and even if you did somehow get that for free, it doesn’t even work it. Verity doesn’t even talk. I was trying to get the Verity mod and I downloaded it on the Minecraft, but he couldn’t even talk. I looked up problems and I tried everything it said to do, but it didn’t work stupidest app ever even though I still play",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=479516143&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "1"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1810271253"
+          },
+          "name": {
+            "label": "xMapleG3mzz!"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-09T17:52:36-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "26.52"
+        },
+        "id": {
+          "label": "14647859531"
+        },
+        "title": {
+          "label": "Awesome game!"
+        },
+        "content": {
+          "label": "I love this game! Although a day or two ago, I noticed all my skins are Steve. I always import skins and whenever I close the app they turn back into Steve! Even all the other default skins look like Steve. Could you please fix this issue? I don’t know why it’s happening, and I do not want to be Steve. Have a good day or night! :3",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=479516143&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1499617744"
+          },
+          "name": {
+            "label": "TwixxelTWIX"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-09T17:45:47-07:00"
+        },
+        "im:rating": {
+          "label": "3"
+        },
+        "im:version": {
+          "label": "26.52"
+        },
+        "id": {
+          "label": "14647842581"
+        },
+        "title": {
+          "label": "Keeps saying update but it wont let me"
+        },
+        "content": {
+          "label": "Good but i cant join my cousin",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=479516143&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1954955236"
+          },
+          "name": {
+            "label": "HolyScammermygod"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-09T16:33:13-07:00"
+        },
+        "im:rating": {
+          "label": "1"
+        },
+        "im:version": {
+          "label": "26.52"
+        },
+        "id": {
+          "label": "14647662362"
+        },
+        "title": {
+          "label": "Realms"
+        },
+        "content": {
+          "label": "I bought realms and when I returned to make one it says “error” try again later and I can’t get a refund beacause it’s through Apple",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=479516143&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      }
+    ],
+    "updated": {
+      "label": "2026-10-13T11:58:30-07:00"
+    },
+    "rights": {
+      "label": "Copyright 2008 Apple Inc."
+    },
+    "title": {
+      "label": "iTunes Store: Customer Reviews"
+    },
+    "icon": {
+      "label": "http://itunes.apple.com/favicon.ico"
+    },
+    "link": [
+      {
+        "attributes": {
+          "rel": "alternate",
+          "type": "text/html",
+          "href": "https://music.apple.com/WebObjects/MZStore.woa/wa/viewGrouping?cc=us&id=1"
+        }
+      },
+      {
+        "attributes": {
+          "rel": "self",
+          "href": "https://itunes.apple.com/us/rss/customerreviews/page=2/id=479516143/sortby=mostrecent/json"
+        }
+      },
+      {
+        "attributes": {
+          "rel": "first",
+          "href": "https://itunes.apple.com/us/rss/customerreviews/page=1/id=479516143/sortby=mostrecent/xml?urlDesc=/customerreviews/page=2/id=479516143/sortby=mostrecent/json"
+        }
+      },
+      {
+        "attributes": {
+          "rel": "last",
+          "href": "https://itunes.apple.com/us/rss/customerreviews/page=10/id=479516143/sortby=mostrecent/xml?urlDesc=/customerreviews/page=2/id=479516143/sortby=mostrecent/json"
+        }
+      },
+      {
+        "attributes": {
+          "rel": "previous",
+          "href": "https://itunes.apple.com/us/rss/customerreviews/page=1/id=479516143/sortby=mostrecent/xml?urlDesc=/customerreviews/page=2/id=479516143/sortby=mostrecent/json"
+        }
+      },
+      {
+        "attributes": {
+          "rel": "next",
+          "href": "https://itunes.apple.com/us/rss/customerreviews/page=3/id=479516143/sortby=mostrecent/xml?urlDesc=/customerreviews/page=2/id=479516143/sortby=mostrecent/json"
+        }
+      }
+    ],
+    "id": {
+      "label": "https://itunes.apple.com/us/rss/customerreviews/page=2/id=479516143/sortby=mostrecent/json"
+    }
+  }
+}

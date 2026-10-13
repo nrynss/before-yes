@@ -1,0 +1,53 @@
+{
+  "query": "Minecraft privacy policy",
+  "follow_up_questions": null,
+  "answer": null,
+  "images": [],
+  "results": [
+    {
+      "url": "https://www.minecraft.net/en-us/usage-guidelines",
+      "title": "Minecraft Usage Guidelines for Fans and Creators | Minecraft | Minecraft",
+      "content": "The Minecraft End User License Agreement (EULA), Microsoft Service Agreement, and Privacy Policy (“policies”) are legal agreements between you and us (Mojang AB and Microsoft). The policies relate to your use of the Minecraft products and govern your use of our website, your account, and how we settle disputes. It is your responsibility to understand and follow the policies. [...] All servers, entitlements, and advertising are suitable for audiences of all ages (for example, gambling, pornography, violence, terrorism, explicit lyrics, or other unsafe/mature content) and they don’t harm the Minecraft brand\n You make it clear that you are responsible for all end user data privacy and protection requirements [...] Do not do anything or include anything that makes people think that what you are sharing could be interpreted as  official or approved by, endorsed by, associated with, supported by, or connected to us\n Do not be unlawful, deceptive, obscene, harmful, or abusive\n Do not do anything that would harm or damage our name, brand, or assets (for example: gambling, pornography, violence, terrorism, or other unsafe/mature content)",
+      "score": 0.8524574,
+      "raw_content": null,
+      "id": "890ec1-00"
+    },
+    {
+      "url": "https://minecraftshop.com/pages/privacy-policy",
+      "title": "Snow Commerce Privacy Policy | Official Minecraft Shop",
+      "content": "This online privacy policy applies only to information collected through our website and not to information collected offline.\n\n## 14. Terms of Use\n\nPlease also visit our Terms of Use section establishing the terms of use, disclaimers, and limitations of liability governing the use of our website.\n\n### Data Request\n\nSign up and save\n\nSubscribe to our newsletter for 15% off your next purchase. Plus, get first access to special offers and the latest Minecraft merch! [...] complete compliance transparency. This Privacy Policy describes the information that is collected from you. This Privacy Policy describes the information that we collect from you, how we collect this information, and what we do with it after we collect it. By using the Website, you are accepting the practices described in this Privacy Policy. If you have any questions or comments regarding this Privacy Policy, please contact us at snowreport@snowcommerce.com. [...] We implement multiple security measures to maintain the safety of your Personal Information. Your Personal Information is contained behind secured networks and is only accessible by a limited number of persons who have special access rights to such systems and are required to keep the information confidential. When you place orders or access your personal information, we offer the use of a secure server. All sensitive/credit information you supply is transmitted via Secure Socket Layer (SSL)",
+      "score": 0.81595254,
+      "raw_content": null,
+      "id": "4a38c4-01"
+    },
+    {
+      "url": "https://proton.me/cs/blog/minecraft-parental-controls",
+      "title": "Does Minecraft have parental controls? | Proton",
+      "content": "Microsoft’s privacy policy(nové okno) states that it and Mojang collect account information, including your email address, gamer tag, avatars, age range, and the information associated with your gamer tag. The company may also collect usage data, like when you sign in and out of Xbox, when you make purchases, the games you play, the apps you use, your game progress, play time per game, in-game activity, rankings, gamer profiles, and other gaming statistics. [...] You can configure your child’s privacy settings within Minecraft to limit data sharing and manage their safety and communication preferences. If you download Minecraft on a smartphone, you will be prompted to allow Minecraft to track your activity across other companies’ apps and websites. Always select Ask App Not To Track.\n\n## Help your child avoid distressing content [...] Encourage regular conversations about online experiences and concerns, like harassment, hate speech, or inappropriate content they might see in online communities or in gameplay.\n\n### Set boundaries\n\nEstablish clear rules for online interactions and time allowed for playing Minecraft or other video games. Watch for problematic behaviors and gaming habits, like not finishing homework, foregoing sleep to play Minecraft, or not socializing with friends.\n\n### Use strong passwords",
+      "score": 0.81524754,
+      "raw_content": null,
+      "id": "9356d0-02"
+    },
+    {
+      "url": "https://www.minecraftexperience.com/privacy-policy",
+      "title": "Privacy Policy",
+      "content": "This page serves to inform you of our policies on the collection, use and disclosure of personal information regarding anyone who chooses to use our services",
+      "score": 0.22392853,
+      "raw_content": null,
+      "id": "8546cb-03"
+    },
+    {
+      "url": "https://support.xbox.com/en-US/help/family-online-safety/online-safety/manage-a-members-safety-settings-to-access-minecraft-features",
+      "title": "Manage a member’s safety settings to access Minecraft features | XBOX Support",
+      "content": "## Resources\n\n   XBOX News\n   Feedback\n   Community Standards\n   Photosensitive seizure warning\n   Product safety\n\n## For developers\n\n   Games\n   ID@XBOX\n   Windows\n   Creators Program\n   Designed for XBOX\n\nUnited States - English\n\nYour Privacy Choices\n\nConsumer Health Privacy\n\n   Sitemap\n   Privacy\n   Terms of use\n   Trademarks\n   Safety & eco\n   About our ads\n   © Microsoft 2026 [...] Organizers in an XBOX family group can make sure that members can play all or some features of one of our favorite family-friendly titles, Minecraft. From single player mining to multiplayer servers, Minecraft offers something for all ages. \n\nTo learn more about family group safety settings, see: \n\nManage XBOX online safety and privacy settings\n\nManage a member’s content in the XBOX Family Settings app\n\n__ Expand all\n\n### What is the difference between Minecraft titles and game modes? [...] Developer & IT \n\n   Azure\n   Developer Center\n   Documentation\n   Microsoft Learn\n   Microsoft Tech Community\n   Azure Marketplace\n   AppSource\n   Visual Studio\n\nOther\n\n   Microsoft Rewards\n   Free downloads & security\n   Education\n   Gift cards\n   Licensing\n   Unlocked stories\n\nView Sitemap\n\nCancel \n\nSearch\n\nME\n\n1.   Home Home__\n2.   Family & online safety Family & online safety\n\n# Manage a member’s safety settings to access Minecraft features",
+      "score": 0.19613276,
+      "raw_content": null,
+      "id": "e32bf7-04"
+    }
+  ],
+  "response_time": 1.11,
+  "usage": {
+    "credits": 1
+  },
+  "request_id": "1295dc9d-09a4-4519-a353-baaed0d9b6e3"
+}

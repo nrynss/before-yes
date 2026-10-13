@@ -1,0 +1,2568 @@
+{
+  "feed": {
+    "author": {
+      "name": {
+        "label": "iTunes Store"
+      },
+      "uri": {
+        "label": "http://www.apple.com/itunes/"
+      }
+    },
+    "entry": [
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1300641251"
+          },
+          "name": {
+            "label": "EmmaWhe"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-09T19:36:59-07:00"
+        },
+        "im:rating": {
+          "label": "4"
+        },
+        "im:version": {
+          "label": "1.140"
+        },
+        "id": {
+          "label": "14648122323"
+        },
+        "title": {
+          "label": "I love the game"
+        },
+        "content": {
+          "label": "I love this game but I wish we could make our own pets and have multiplayer.i still love it tho!",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1208138685&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1852772800"
+          },
+          "name": {
+            "label": "The w best app"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-09T19:35:41-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "1.140"
+        },
+        "id": {
+          "label": "14648119107"
+        },
+        "title": {
+          "label": "I love this game"
+        },
+        "content": {
+          "label": "I would highly suggest this app if are one of those people who wants to relax and decorate for an event and have your dream stuff.",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1208138685&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1852737729"
+          },
+          "name": {
+            "label": "Coraline529"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-09T19:35:08-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "1.140"
+        },
+        "id": {
+          "label": "14648117709"
+        },
+        "title": {
+          "label": "My review"
+        },
+        "content": {
+          "label": "Hello i don’t know why I don’t have the Halloween update can you fix that",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1208138685&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1387407823"
+          },
+          "name": {
+            "label": "Coconut!14"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-09T19:28:46-07:00"
+        },
+        "im:rating": {
+          "label": "3"
+        },
+        "im:version": {
+          "label": "1.140"
+        },
+        "id": {
+          "label": "14648102030"
+        },
+        "title": {
+          "label": "Toca boca… I don’t like the new music"
+        },
+        "content": {
+          "label": "Me and my little sister always hum the song so loudly and it makes us happy, I want my sister to experience the old post office when she’s older. I haven’t updated my game yet because of these updates",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1208138685&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1678469595"
+          },
+          "name": {
+            "label": "School sucks124"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-09T19:15:08-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "1.140"
+        },
+        "id": {
+          "label": "14648068451"
+        },
+        "title": {
+          "label": "I love the game,  but please read me"
+        },
+        "content": {
+          "label": "OK, don’t give me wrong but I love the game. I absolutely love it but their prices are a little crazy so if they could just bring the prices down, that would be a perfect game better than avatar world and I’ve never had a bug, but please make it multiplayer please please please please please and then it would be the most perfect game",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1208138685&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1649566594"
+          },
+          "name": {
+            "label": "M&m the girl"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-09T19:10:59-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "1.140"
+        },
+        "id": {
+          "label": "14648058264"
+        },
+        "title": {
+          "label": "Best rp game Everrrrrr"
+        },
+        "content": {
+          "label": "Best rp game Everrrrrr because it makes me forget about the parts of life that made me cry or like are not somthing I like. The parts the game I love are like the decorating because I feel like they make me more creative and I feel like I have to be creative in life if I don’t like get my ways and yeah so Toca your doing a great job keep going.",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1208138685&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1977861296"
+          },
+          "name": {
+            "label": "Bakauglygirl"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-09T18:57:34-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "1.140"
+        },
+        "id": {
+          "label": "14648024440"
+        },
+        "title": {
+          "label": "I love Toca Boca world"
+        },
+        "content": {
+          "label": "Toca Boca is the animated house of bloxburg",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1208138685&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1736335713"
+          },
+          "name": {
+            "label": "🦩milkshake🦩🌈🍉🧊"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-09T18:55:27-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "1.140"
+        },
+        "id": {
+          "label": "14648018985"
+        },
+        "title": {
+          "label": "I love it but…"
+        },
+        "content": {
+          "label": "I love this game so much and I have been playing it for so long but for some reason reason when I’m trying to build my house it kicks me out and just restarts me.",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1208138685&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1723860198"
+          },
+          "name": {
+            "label": "Yasnhudah"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-09T18:55:26-07:00"
+        },
+        "im:rating": {
+          "label": "1"
+        },
+        "im:version": {
+          "label": "1.140"
+        },
+        "id": {
+          "label": "14648018963"
+        },
+        "title": {
+          "label": "The halloween update is fire🔥 but…"
+        },
+        "content": {
+          "label": "Hi toca boca i know yall Got the halloween update but it’s lagging a LOT!When I started playing and actualizar the game or app it took me straight to the office and When i tried moving the screen it did Not move so please Fix this glitch beacuase I wan’t to play so Bad so please do something about this ☹️",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1208138685&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1934612224"
+          },
+          "name": {
+            "label": "𝓛𝓲𝔃𝔃𝓲𝓮 ￼"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-09T18:45:55-07:00"
+        },
+        "im:rating": {
+          "label": "4"
+        },
+        "im:version": {
+          "label": "1.140"
+        },
+        "id": {
+          "label": "14647995169"
+        },
+        "title": {
+          "label": "𝓣𝓱𝓮 𝓻𝓮𝓪𝓢𝓸𝓷 𝓘 𝓛𝓲𝓴𝓮 𝓣𝓸𝓬𝓪 𝓑𝓸𝓬𝓪"
+        },
+        "content": {
+          "label": "The reason why I like Toca Boca is that you can make  characters and you can make a house and put furniture in 𝓲𝓽.",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1208138685&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id783923577"
+          },
+          "name": {
+            "label": "abiloks"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-09T18:35:58-07:00"
+        },
+        "im:rating": {
+          "label": "1"
+        },
+        "im:version": {
+          "label": "1.140"
+        },
+        "id": {
+          "label": "14647969699"
+        },
+        "title": {
+          "label": "This is outrageous😡"
+        },
+        "content": {
+          "label": "I have been playing this game for years and I really liked it but there’s something I just want to say Are you serious? I paid for the hospital place and now it’s free!? The people who paid for that should just get a  refund cause this is not fair We paid for that and now you just handing it out free? like just give me the damn refund tho fix your damn game too 😖 .",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1208138685&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1977852762"
+          },
+          "name": {
+            "label": "Roobydooby6767"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-09T18:33:24-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "1.140"
+        },
+        "id": {
+          "label": "14647963209"
+        },
+        "title": {
+          "label": "This game is so much fun!"
+        },
+        "content": {
+          "label": "This game is really fun and so entertaining. I love it because it has no ads and i know people don’t like ads… but it is also so fun to create you own avatars and build onto your city and your pretend family. But I mostly love it because you don’t need wifi! I know this is not completely related to the conversation especially because I’m just an 11 year old writing the truth about the most fun game on earth but, one time me and my family went to t-mobile to get my sister a new phone and we went at night time to transfer her info and I had my iPad with me for entertainment and my dads phone was also getting transferred so I was showing him the games on my iPad and I showed him this game and we were playing with it until we were done getting everything transferred and it was expected to take two hours and before we knew it, time flew by in the blink of an eye. Anyways, this is a free,fun,no ads no Wi-Fi game that I highly recommend to anyone and everyone who sees    This. P.s this took me three hours to write so please agree with meee. P.p.s can the developer please reply to me that would be a blessing thank you. I have always wanted to be the one to have the developer reply so can you please??? Thanks",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1208138685&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1738709002"
+          },
+          "name": {
+            "label": "Addiee!🐨"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-09T18:29:09-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "1.140"
+        },
+        "id": {
+          "label": "14647952350"
+        },
+        "title": {
+          "label": "In love"
+        },
+        "content": {
+          "label": "My best friend is so stuck on getting off the game for how common and relaxing it is. There’s no ads no Wi-Fi included and updates almost every season and it’s literally the best. I read a five star for a reason.",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1208138685&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1806411209"
+          },
+          "name": {
+            "label": "Toca boca fan not youtuber"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-09T18:22:34-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "1.140"
+        },
+        "id": {
+          "label": "14647935641"
+        },
+        "title": {
+          "label": "El major juego"
+        },
+        "content": {
+          "label": "I like this game but there a little twist ...... every time I take something somewhere it like completely disappears randomly please fix that glitch",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1208138685&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1695035994"
+          },
+          "name": {
+            "label": "Person3578"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-09T18:20:34-07:00"
+        },
+        "im:rating": {
+          "label": "2"
+        },
+        "im:version": {
+          "label": "1.140"
+        },
+        "id": {
+          "label": "14647930494"
+        },
+        "title": {
+          "label": "Pls read!"
+        },
+        "content": {
+          "label": "I LOVE THIS GAME!! But during the Halloween update Toca Boca keeps logging me out and I hate it and i really want this to be Gone pls I love this game and I can’t play it anymore because of this 😭😢🥺😩",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1208138685&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1587949558"
+          },
+          "name": {
+            "label": "M￼ad 😡"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-09T18:12:53-07:00"
+        },
+        "im:rating": {
+          "label": "1"
+        },
+        "im:version": {
+          "label": "1.140"
+        },
+        "id": {
+          "label": "14647910942"
+        },
+        "title": {
+          "label": "😡"
+        },
+        "content": {
+          "label": "There is no my gift or whatever and I want my 2024 package and it’s not there and if you don’t give it to me, I’m gonna tell him every single person. I know that Toca Boca is the game ever",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1208138685&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1599325931"
+          },
+          "name": {
+            "label": "bobbbeheye"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-09T18:06:49-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "1.140"
+        },
+        "id": {
+          "label": "14647895500"
+        },
+        "title": {
+          "label": "Post office problem"
+        },
+        "content": {
+          "label": "Hi in the new enbox at the post office I noticed that it doesn't have all of the gifts",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1208138685&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1632593477"
+          },
+          "name": {
+            "label": "tuytdfhjhgffgh"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-09T18:05:32-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "1.138.1"
+        },
+        "id": {
+          "label": "14647892205"
+        },
+        "title": {
+          "label": "Bro this game is so good but I have one question"
+        },
+        "content": {
+          "label": "Omg I am obsessed with this game I play it literally 24 seven I love it so much there’s no ads which I hate games that it’s so annoying and you can create characters you can literally do so much you can make them a home you could literally give your character a whole backstory it’s so fun y’all should play it and the free gifts or actually so cute The only thing you have to buy packs would like makes sense but like I love buying packs the packs are actually so cute I love the yu/mi furniture pack and outfit pack you’re actually literally so cute I am obsessed I love this game so much but I have one question could ya’ll have a contest like people pitch ideas for like a pack and like a whole thing a outfit pack a furniture pack and like a whole house and then you guys would pick the best winner",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1208138685&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1482172335"
+          },
+          "name": {
+            "label": "Swanprincess<3"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-09T18:04:26-07:00"
+        },
+        "im:rating": {
+          "label": "4"
+        },
+        "im:version": {
+          "label": "1.140"
+        },
+        "id": {
+          "label": "14647889447"
+        },
+        "title": {
+          "label": "Very fun, but I can’t get in now!"
+        },
+        "content": {
+          "label": "I love Toca Boca, it is super fun to create houses and characters and I love making stories with them! However with the most recent update, I cannot enter the app. Also I just updated and went in and the screen was green and purple and was right but as soon as I clicked a building I was kicked out. The second time opening there was no green and purple and I was kicked immediately after hitting the play button.",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1208138685&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1958781195"
+          },
+          "name": {
+            "label": "The son of Albert Einstein"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-09T17:55:28-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "1.140"
+        },
+        "id": {
+          "label": "14647866669"
+        },
+        "title": {
+          "label": "#5 STARS"
+        },
+        "content": {
+          "label": "Who ever made this WAS A GENIUS",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1208138685&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1434020604"
+          },
+          "name": {
+            "label": "MiaMysticGamer"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-09T17:51:50-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "1.140"
+        },
+        "id": {
+          "label": "14647857641"
+        },
+        "title": {
+          "label": "Important"
+        },
+        "content": {
+          "label": "I love the game but when I rested it my gifts were apparently supposed to stay there but now all of my gifts I don’t have them anymore and that made me mad but other wise I love the game except that issue.",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1208138685&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1751678749"
+          },
+          "name": {
+            "label": "Selena Caroline"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-09T17:43:16-07:00"
+        },
+        "im:rating": {
+          "label": "3"
+        },
+        "im:version": {
+          "label": "1.140"
+        },
+        "id": {
+          "label": "14647836232"
+        },
+        "title": {
+          "label": "GREAT but….."
+        },
+        "content": {
+          "label": "I love toca world I been playing it since I was 5 now I am ten but I use to play it on my iPad and had to pay a lot for things but then I got a phone but I need a card to pay on my phone so I can’t get any houses or places it is great but maybe add more free stuff for the people that can’t afford it or pay I would love that free characters furniture places houses would be amazing I hope this helps a lot just make sure you get all the updates there amazing just pls pls pls pls pls pls pls more more more free STUFF🥺🥺🥺🥺🥺🥺 also pls bring back katseye and songs from Olivia Rodrigo please 🙏make everything free or just more places it is almost my best friend birthday and she can’t buy anything either she would love that also make the big family house free for her and me she is turning 9 plus her birthday is on October 24",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1208138685&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id194355788"
+          },
+          "name": {
+            "label": "Jocy-per"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-09T17:36:22-07:00"
+        },
+        "im:rating": {
+          "label": "4"
+        },
+        "im:version": {
+          "label": "1.140"
+        },
+        "id": {
+          "label": "14647818893"
+        },
+        "title": {
+          "label": "WE NEED MOLTIPLAYER"
+        },
+        "content": {
+          "label": "YOU BETTER ADD MOLTIPLAYER",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1208138685&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1695608232"
+          },
+          "name": {
+            "label": "Cinnamon_apple_pie🍎🥧✩"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-09T17:32:28-07:00"
+        },
+        "im:rating": {
+          "label": "1"
+        },
+        "im:version": {
+          "label": "1.140"
+        },
+        "id": {
+          "label": "14647809038"
+        },
+        "title": {
+          "label": "I HATE IT"
+        },
+        "content": {
+          "label": "I had all my houses finished and I have 29 houses and they each took me 4 days to finish and when I was roplaying my world just automatically reset out off no where and everything got deleted and I had a mental breakdown and had to got to my therapy appointment early horrible experience",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1208138685&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1747842545"
+          },
+          "name": {
+            "label": "Toca Boca complement"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-09T17:26:13-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "1.140"
+        },
+        "id": {
+          "label": "14647793336"
+        },
+        "title": {
+          "label": "Toca Boca compliments"
+        },
+        "content": {
+          "label": "I would recommend it. It’s fun. You can be creative. You can do a ton of role-plays it’s kind of like Roblox but if you think of it as a cartoon version, I love it and I’m sure you will love it too",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1208138685&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1398056407"
+          },
+          "name": {
+            "label": "ANIMAL JAM ROCKS!!"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-09T17:21:48-07:00"
+        },
+        "im:rating": {
+          "label": "2"
+        },
+        "im:version": {
+          "label": "1.140"
+        },
+        "id": {
+          "label": "14647782083"
+        },
+        "title": {
+          "label": "Gets kinda boring after like 4 years.."
+        },
+        "content": {
+          "label": "I loved this game it was my favorite! But after I constantly played for like 3-4 years it got super boring… I didn’t know what to do and now I play Animal jam, highly recommended, but as I was saying it got super boring- I haven’t played since like- Easter mabey..? Anyway when I was like 6 or 7- Six seven! I spent so much money on this game- your welcome by the way owners- but I just quit for a while, joined, lost my account, spent a lot of money, played on my tablet, spent money, quit, ( THIS WAS MY FREAKING ALLOWANCE BTW) and I might join back but.. I just think the characters are corny and think they should interact with stuff like all the “rip offs” which I find better- but anyways- bye..",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1208138685&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1690124456"
+          },
+          "name": {
+            "label": "￼🎀✨katseye fan✨🎀"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-09T17:18:59-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "1.140"
+        },
+        "id": {
+          "label": "14647774902"
+        },
+        "title": {
+          "label": "Amazing but I wanna ask"
+        },
+        "content": {
+          "label": "OK Toca I’ve been wanting to ask every time it’s your birthday you get a free item from the shop. Do you think you could do that if you can please do🙏☺️",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1208138685&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1781750723"
+          },
+          "name": {
+            "label": "Alaynathecoolkid"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-09T17:13:43-07:00"
+        },
+        "im:rating": {
+          "label": "4"
+        },
+        "im:version": {
+          "label": "1.140"
+        },
+        "id": {
+          "label": "14647761822"
+        },
+        "title": {
+          "label": "Fun but…"
+        },
+        "content": {
+          "label": "This game is fun and all but maybe you can add more Girl hair and clothes",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1208138685&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id545215079"
+          },
+          "name": {
+            "label": "Betty Boop."
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-09T17:11:46-07:00"
+        },
+        "im:rating": {
+          "label": "4"
+        },
+        "im:version": {
+          "label": "1.140"
+        },
+        "id": {
+          "label": "14647756991"
+        },
+        "title": {
+          "label": "I kinda recommend you don’t play it"
+        },
+        "content": {
+          "label": "It’s not letting me play or buy anything it’s only loading and I refreshed it I deleted it and got it back and then I tried to shut down my iPad but it still doesn’t work it’s only loading over and over and it’s been a week now and I still can’t play.🙄😭😡",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1208138685&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1754846461"
+          },
+          "name": {
+            "label": "Bellaboo😭✌️💀"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-09T17:10:09-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "1.140"
+        },
+        "id": {
+          "label": "14647752818"
+        },
+        "title": {
+          "label": "Best game"
+        },
+        "content": {
+          "label": "Updates",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1208138685&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1823661407"
+          },
+          "name": {
+            "label": "Doofenmsurf"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-09T17:03:07-07:00"
+        },
+        "im:rating": {
+          "label": "3"
+        },
+        "im:version": {
+          "label": "1.140"
+        },
+        "id": {
+          "label": "14647734938"
+        },
+        "title": {
+          "label": "I can’t restore my previous purchases"
+        },
+        "content": {
+          "label": "Recently, I reinstalled the game because it was offloaded for a while because I wasn’t playing it. When I tried restoring purchases again like I would normally do if I want to play the game, it didn’t. I have no clue why it did that. I didn’t have any  past problems restoring my previoud purchases before. Is there a solution? ;)",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1208138685&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1433950475"
+          },
+          "name": {
+            "label": "Chl bars"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-09T17:02:50-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "1.140"
+        },
+        "id": {
+          "label": "14647734221"
+        },
+        "title": {
+          "label": "i love this game"
+        },
+        "content": {
+          "label": "There’s no ads so cool",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1208138685&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1977835376"
+          },
+          "name": {
+            "label": "panda_ilikecats"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-09T16:58:06-07:00"
+        },
+        "im:rating": {
+          "label": "2"
+        },
+        "im:version": {
+          "label": "1.140"
+        },
+        "id": {
+          "label": "14647722394"
+        },
+        "title": {
+          "label": "inventory"
+        },
+        "content": {
+          "label": "It makes me so mad that you can’t put things back in the inventory. before the new update, I had it all organized, And now the new weekly gifts go all over the floor. Especially if you accidentally take something out you are now stuck with that item.",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1208138685&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id389612411"
+          },
+          "name": {
+            "label": "Cinderella Disney￼"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-09T16:55:11-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "1.140"
+        },
+        "id": {
+          "label": "14647715466"
+        },
+        "title": {
+          "label": "Love it but some questions"
+        },
+        "content": {
+          "label": "One time when I was moving out of a house one bag left so I had three but I couldn’t find the fourth one but still love the game even my baby cousin likes it and she’s THREE",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1208138685&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1665149824"
+          },
+          "name": {
+            "label": "Yuritzy’s"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-09T16:49:17-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "1.140"
+        },
+        "id": {
+          "label": "14647701055"
+        },
+        "title": {
+          "label": "Love it"
+        },
+        "content": {
+          "label": "Parents you have to let your child play in the game and upload this game pl🙏🙏🙏🙏🙏🙏🙏🙏🙏🙏🙏🙏🙏🙏🙏🙏🙏🙏🙏🙏🙏🙏🙏🙏🙏🙏🙏",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1208138685&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id136764367"
+          },
+          "name": {
+            "label": "🥒 PICKLE 2"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-09T16:44:58-07:00"
+        },
+        "im:rating": {
+          "label": "4"
+        },
+        "im:version": {
+          "label": "1.140"
+        },
+        "id": {
+          "label": "14647690640"
+        },
+        "title": {
+          "label": "BUGS😐🫤😑"
+        },
+        "content": {
+          "label": "I really like this game, but there is a lot of bugs so can you please fix those please? Thank you.",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1208138685&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1627129329"
+          },
+          "name": {
+            "label": "Marshalllllsssssss"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-09T16:43:47-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "1.140"
+        },
+        "id": {
+          "label": "14647687723"
+        },
+        "title": {
+          "label": "I love I'm this game!!!"
+        },
+        "content": {
+          "label": "Hey toca Boca, may you give my money back I paid for the hospital and it's now free to everyone?? Oh yea thank you for making this game I play this game in my free time or everything.",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1208138685&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1654903540"
+          },
+          "name": {
+            "label": "789Sushi!"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-09T16:40:30-07:00"
+        },
+        "im:rating": {
+          "label": "4"
+        },
+        "im:version": {
+          "label": "1.140"
+        },
+        "id": {
+          "label": "14647679928"
+        },
+        "title": {
+          "label": "I love it but…."
+        },
+        "content": {
+          "label": "I want to be able to play with other people like other apps like avatar world and you have to pay for pretty much everything but other wise it’s very fun to play on a rainy day or any day",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1208138685&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id121873733"
+          },
+          "name": {
+            "label": "Katemcgocu"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-09T16:34:47-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "1.140"
+        },
+        "id": {
+          "label": "14647666096"
+        },
+        "title": {
+          "label": "Fun"
+        },
+        "content": {
+          "label": "Soooooooooooooo fun!!!!!!!!",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1208138685&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1673470236"
+          },
+          "name": {
+            "label": ":Aniyah"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-09T16:33:50-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "1.140"
+        },
+        "id": {
+          "label": "14647663785"
+        },
+        "title": {
+          "label": "Zoey"
+        },
+        "content": {
+          "label": "It is so good and you can do rolplays oh YouTube",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1208138685&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1871973231"
+          },
+          "name": {
+            "label": "Evwnwnw"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-09T16:32:55-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "1.140"
+        },
+        "id": {
+          "label": "14647661627"
+        },
+        "title": {
+          "label": "Best game ever"
+        },
+        "content": {
+          "label": "I’m obsessed with toca Boca. It’s super well, everything. Please don’t delete the mushroom man thing from the holaween update",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1208138685&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1331588785"
+          },
+          "name": {
+            "label": "💅🏻Stella Bella"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-09T16:27:06-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "1.140"
+        },
+        "id": {
+          "label": "14647647481"
+        },
+        "title": {
+          "label": "I loveeee this gameee!!!"
+        },
+        "content": {
+          "label": "I've been playing game for 4 years now and it has to be the most addicting game EVER",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1208138685&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id6858106"
+          },
+          "name": {
+            "label": "😁😄😃😀😆 love it"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-09T16:25:59-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "1.140"
+        },
+        "id": {
+          "label": "14647644706"
+        },
+        "title": {
+          "label": "Love it love it"
+        },
+        "content": {
+          "label": "So fun really calming Halloween is the best because they have the best updates really calm. I decorate the houses too much.😅😂 just great",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1208138685&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1855804681"
+          },
+          "name": {
+            "label": "Disney Halloween"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-09T16:08:53-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "1.140"
+        },
+        "id": {
+          "label": "14647602873"
+        },
+        "title": {
+          "label": "Good reveal"
+        },
+        "content": {
+          "label": "Game is awesome. I would add some more free furniture like beds and couches.",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1208138685&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1652996584"
+          },
+          "name": {
+            "label": "Moto_Cozy"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-09T16:08:44-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "1.140"
+        },
+        "id": {
+          "label": "14647602535"
+        },
+        "title": {
+          "label": "I love toca Boca"
+        },
+        "content": {
+          "label": "I love this app! It's so calming and all the new updates are just so precious and cute! I 100% recommend this game, download it now!",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1208138685&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1631160344"
+          },
+          "name": {
+            "label": "Oliver💗💗"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-09T16:01:03-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "1.140"
+        },
+        "id": {
+          "label": "14647583820"
+        },
+        "title": {
+          "label": "Amoooo"
+        },
+        "content": {
+          "label": "Amo este juego lo conoci a mis 7 añitos cuando mi primo me lo enseño y si es muy creativo e increible but preferiria que agregaran cosas para los/las niñ@s que no tienen tarjeta para comprar cosas incluyendome jsjsj aunque ya me compre algo pero esta biennnnf.",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1208138685&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1977824078"
+          },
+          "name": {
+            "label": "Slay baddie Toca lover"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-09T15:58:13-07:00"
+        },
+        "im:rating": {
+          "label": "4"
+        },
+        "im:version": {
+          "label": "1.140"
+        },
+        "id": {
+          "label": "14647577023"
+        },
+        "title": {
+          "label": "SO fun"
+        },
+        "content": {
+          "label": "Ok I love this game the concept is so fun. But if you’re looking for something free you might have to rethink. Toca Boca has free stuff but its kinds mid. I f your willing to pay for packs it will be way better",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1208138685&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1407585051"
+          },
+          "name": {
+            "label": "Dear Toca, Boca Junior"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-09T15:48:18-07:00"
+        },
+        "im:rating": {
+          "label": "3"
+        },
+        "im:version": {
+          "label": "1.140"
+        },
+        "id": {
+          "label": "14647552946"
+        },
+        "title": {
+          "label": "So frustrated"
+        },
+        "content": {
+          "label": "I restarted my Toca Boca to refresh it cause it wasn’t working one day and I already reported that in all my stuff like the school the beach, the hotel it everything’s like gone. I only have the free things in my homes so I’m so frustrated so if you guys can bring me all those things back please and thank you. Please read this developer.",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1208138685&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1587278109"
+          },
+          "name": {
+            "label": "Ella Kolosov"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-09T15:44:41-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "1.140"
+        },
+        "id": {
+          "label": "14647544084"
+        },
+        "title": {
+          "label": "Awesome 😎💅"
+        },
+        "content": {
+          "label": "No ads but don’t kill your phone because it’s too fun \nYou can play it all day long and still want more",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1208138685&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1651540119"
+          },
+          "name": {
+            "label": "Dc.Mcstuffins"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-09T15:42:16-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "1.140"
+        },
+        "id": {
+          "label": "14647538234"
+        },
+        "title": {
+          "label": "Love it"
+        },
+        "content": {
+          "label": "I love this game so so so much, but could you pleaseeeee add as feature to play with friends??? I’m begging you pleaseeee.",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1208138685&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      }
+    ],
+    "updated": {
+      "label": "2026-10-13T11:59:01-07:00"
+    },
+    "rights": {
+      "label": "Copyright 2008 Apple Inc."
+    },
+    "title": {
+      "label": "iTunes Store: Customer Reviews"
+    },
+    "icon": {
+      "label": "http://itunes.apple.com/favicon.ico"
+    },
+    "link": [
+      {
+        "attributes": {
+          "rel": "alternate",
+          "type": "text/html",
+          "href": "https://music.apple.com/WebObjects/MZStore.woa/wa/viewGrouping?cc=us&id=1"
+        }
+      },
+      {
+        "attributes": {
+          "rel": "self",
+          "href": "https://itunes.apple.com/us/rss/customerreviews/page=10/id=1208138685/sortby=mostrecent/json"
+        }
+      },
+      {
+        "attributes": {
+          "rel": "first",
+          "href": "https://itunes.apple.com/us/rss/customerreviews/page=1/id=1208138685/sortby=mostrecent/xml?urlDesc=/customerreviews/page=10/id=1208138685/sortby=mostrecent/json"
+        }
+      },
+      {
+        "attributes": {
+          "rel": "last",
+          "href": "https://itunes.apple.com/us/rss/customerreviews/page=10/id=1208138685/sortby=mostrecent/xml?urlDesc=/customerreviews/page=10/id=1208138685/sortby=mostrecent/json"
+        }
+      },
+      {
+        "attributes": {
+          "rel": "previous",
+          "href": "https://itunes.apple.com/us/rss/customerreviews/page=9/id=1208138685/sortby=mostrecent/xml?urlDesc=/customerreviews/page=10/id=1208138685/sortby=mostrecent/json"
+        }
+      },
+      {
+        "attributes": {
+          "rel": "next",
+          "href": "https://itunes.apple.com/us/rss/customerreviews/page=10/id=1208138685/sortby=mostrecent/xml?urlDesc=/customerreviews/page=10/id=1208138685/sortby=mostrecent/json"
+        }
+      }
+    ],
+    "id": {
+      "label": "https://itunes.apple.com/us/rss/customerreviews/page=10/id=1208138685/sortby=mostrecent/json"
+    }
+  }
+}

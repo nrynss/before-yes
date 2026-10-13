@@ -1,0 +1,22 @@
+{
+  "query": "Khan Academy Kids children safety fine lawsuit FTC regulator data breach",
+  "follow_up_questions": null,
+  "answer": null,
+  "images": [],
+  "results": [
+    {
+      "url": "https://www.cbsnews.com/news/weight-watchers-diet-kids-ftc",
+      "title": "Weight Watchers diet app collected data on kids as young as 8, FTC says",
+      "content": "WW unit allegedly violated child privacy law by collecting personal information without parental consent.",
+      "score": 0.15870851,
+      "published_date": "Fri, 04 Mar 2022 00:00:00 GMT",
+      "raw_content": null,
+      "id": "93efb3-00"
+    }
+  ],
+  "response_time": 1.49,
+  "usage": {
+    "credits": 1
+  },
+  "request_id": "b46fc8a1-1850-4e8a-ab49-737d6f335c1e"
+}

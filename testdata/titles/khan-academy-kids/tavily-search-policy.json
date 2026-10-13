@@ -1,0 +1,21 @@
+{
+  "query": "Khan Academy Kids privacy policy",
+  "follow_up_questions": null,
+  "answer": null,
+  "images": [],
+  "results": [
+    {
+      "url": "https://www.khankids.org",
+      "title": "Free Learning App for Kids Ages 2-8",
+      "content": "We don't sell personal information. · We don't show ads in the app, and we don't let third parties track your child across other apps or websites. · We collect as",
+      "score": 0.51442534,
+      "raw_content": null,
+      "id": "80add9-00"
+    }
+  ],
+  "response_time": 2.77,
+  "usage": {
+    "credits": 1
+  },
+  "request_id": "dbc3c7ef-d5e2-4316-937b-9266e0388db6"
+}

@@ -1,0 +1,2568 @@
+{
+  "feed": {
+    "author": {
+      "name": {
+        "label": "iTunes Store"
+      },
+      "uri": {
+        "label": "http://www.apple.com/itunes/"
+      }
+    },
+    "entry": [
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id287696372"
+          },
+          "name": {
+            "label": "H Taylor 13"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2025-02-22T08:21:49-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "7.0.3"
+        },
+        "id": {
+          "label": "12342050483"
+        },
+        "title": {
+          "label": "Love it"
+        },
+        "content": {
+          "label": "My 4.5 year old loves it!",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1378467217&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id199436386"
+          },
+          "name": {
+            "label": "Tuscig"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2025-02-22T07:56:40-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "7.0.3"
+        },
+        "id": {
+          "label": "12341959069"
+        },
+        "title": {
+          "label": "Wow"
+        },
+        "content": {
+          "label": "What an opportunity. Can't believe its free. My kid is loving it",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1378467217&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1736698398"
+          },
+          "name": {
+            "label": "Dear Santa to jace toy"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2025-02-18T15:11:50-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "7.0.3"
+        },
+        "id": {
+          "label": "12327396524"
+        },
+        "title": {
+          "label": "Super Simple"
+        },
+        "content": {
+          "label": "Khan Acadmey Kids",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1378467217&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id646261301"
+          },
+          "name": {
+            "label": "Mook072"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2025-02-18T12:13:16-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "7.0.3"
+        },
+        "id": {
+          "label": "12326928926"
+        },
+        "title": {
+          "label": "Best learning app for kids"
+        },
+        "content": {
+          "label": "My daughter improved her learning skill so fast from this app. The most important thing is they can combine learning and fun together.",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1378467217&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1572331043"
+          },
+          "name": {
+            "label": "Sofi____^v^💫"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2025-02-16T10:14:01-07:00"
+        },
+        "im:rating": {
+          "label": "3"
+        },
+        "im:version": {
+          "label": "7.0.3"
+        },
+        "id": {
+          "label": "12318790115"
+        },
+        "title": {
+          "label": "Where is the verify email button?"
+        },
+        "content": {
+          "label": "I don’t see a verify email button all I see is next button and I can’t log in",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1378467217&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id16209945"
+          },
+          "name": {
+            "label": "who fan for life"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2025-02-15T10:39:01-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "7.0.3"
+        },
+        "id": {
+          "label": "12314810842"
+        },
+        "title": {
+          "label": "Thank you!!"
+        },
+        "content": {
+          "label": "My 7 yr old granddaughter has dyslexia and is struggling so badly with reading.  She has gotten to the point where she hates reading. It’s so hard to see. But, she does enjoy reading along with your books. She knows she can get help with a word by just touching on it instead of having to ask for help. She will read on your app for an hour! All this and it’s free. Thank you!",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1378467217&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id554504612"
+          },
+          "name": {
+            "label": "THIS IS A BIG THING"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2025-02-11T13:30:39-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "7.0.3"
+        },
+        "id": {
+          "label": "12299649156"
+        },
+        "title": {
+          "label": "My brother needs to be 2nd grade"
+        },
+        "content": {
+          "label": "Please",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1378467217&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1452316667"
+          },
+          "name": {
+            "label": "Goodmanunschool"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2025-02-11T09:05:50-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "7.0.3"
+        },
+        "id": {
+          "label": "12298857950"
+        },
+        "title": {
+          "label": "🤩🤩🤩🤩🤩🤩🤩"
+        },
+        "content": {
+          "label": "My kids are learning for ever❤️❤️❤️❤️",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1378467217&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1679984513"
+          },
+          "name": {
+            "label": "Missie bobisie"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2025-02-10T17:01:01-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "7.0.3"
+        },
+        "id": {
+          "label": "12296209942"
+        },
+        "title": {
+          "label": "Best app"
+        },
+        "content": {
+          "label": "I love this app because\nI can learn a lot  it is\nThe best learning app",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1378467217&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id204264540"
+          },
+          "name": {
+            "label": "Kree Pandey"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2025-02-09T10:08:00-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "7.0.3"
+        },
+        "id": {
+          "label": "12291050480"
+        },
+        "title": {
+          "label": "Khan academy kids"
+        },
+        "content": {
+          "label": "Khan  kids",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1378467217&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1753535580"
+          },
+          "name": {
+            "label": "Fox girlyyyyyy!!!,!,"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2025-02-08T15:52:12-07:00"
+        },
+        "im:rating": {
+          "label": "4"
+        },
+        "im:version": {
+          "label": "7.0.3"
+        },
+        "id": {
+          "label": "12287894906"
+        },
+        "title": {
+          "label": "Um one thing"
+        },
+        "content": {
+          "label": "I really like this app but there’s one thing that needs more you know so I think that there should be more updates because there’s like I’ve read all the books and watched all the shows videos so yeah that’s what I said and there isn’t any commercials or ads it’s just you can change things a lot but there’s games you can get presents for free but there’s just kind of boring after a few days but and then like or weeks if you don’t get bored easily so that is what I have to say not what you guys have to say bye",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1378467217&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id468314940"
+          },
+          "name": {
+            "label": "Riley Gerber"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2025-02-08T12:30:39-07:00"
+        },
+        "im:rating": {
+          "label": "3"
+        },
+        "im:version": {
+          "label": "7.0.3"
+        },
+        "id": {
+          "label": "12287351892"
+        },
+        "title": {
+          "label": "Not the best app"
+        },
+        "content": {
+          "label": "My child is in 3rd grade and the app only has pre-k to 2nd grade. she loved it last year but now it’s not as fun anymore because it is not her level anymore. 3 stars",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1378467217&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id861993337"
+          },
+          "name": {
+            "label": "Momma Bear 8616"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2025-02-06T17:51:44-07:00"
+        },
+        "im:rating": {
+          "label": "4"
+        },
+        "im:version": {
+          "label": "7.0.3"
+        },
+        "id": {
+          "label": "12279967745"
+        },
+        "title": {
+          "label": "NOT FOR OLDER KIDS"
+        },
+        "content": {
+          "label": "I gave the review four stars solely for the reason that this fantastic app sadly cuts off learning for children above second grade.  My daughter absolutely loves this app for learning through fun and games.  She has been playing this app for years and sadly it cannot take her any further. I can’t seem to find anything like it for her educational level and it’s sad.  PLEASE PLEASE PLEASE AT LEAST GO UP TO GRADE 5!",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1378467217&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "1"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "1"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id681225537"
+          },
+          "name": {
+            "label": "RPryce"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2025-02-04T11:52:30-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "7.0.3"
+        },
+        "id": {
+          "label": "12270959153"
+        },
+        "title": {
+          "label": "Very happy"
+        },
+        "content": {
+          "label": "My 3 year old knows it's a learning app but she still thinks it's a treat to get to \"play\" every day. A couple glitches here and there but overall well done. Thank you.",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1378467217&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1702975439"
+          },
+          "name": {
+            "label": "🧁🥫🍤🧁"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2025-02-04T10:37:50-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "7.0.3"
+        },
+        "id": {
+          "label": "12270737462"
+        },
+        "title": {
+          "label": "Well done"
+        },
+        "content": {
+          "label": "Good app",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1378467217&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id583937723"
+          },
+          "name": {
+            "label": "Erps mother"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2025-02-04T10:27:40-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "7.0.3"
+        },
+        "id": {
+          "label": "12270706228"
+        },
+        "title": {
+          "label": "Beeeeest app ever!!!!!!!!!!"
+        },
+        "content": {
+          "label": "I called my kids for supper but nobody came! I went to chek on them and I saw them glued to this game and I was wondering what it was. The next thing I new my kids were coming home with all a’s on their tests and that’s when I truly new what this game was thankes to this game!",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1378467217&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id265748193"
+          },
+          "name": {
+            "label": "KikiTrott"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2025-02-02T05:53:55-07:00"
+        },
+        "im:rating": {
+          "label": "1"
+        },
+        "im:version": {
+          "label": "7.0.3"
+        },
+        "id": {
+          "label": "12261580565"
+        },
+        "title": {
+          "label": "Kids don’t get it your parents have to get it"
+        },
+        "content": {
+          "label": "How to use your email address like all all the learning games I’ve been using so if you could please change it I would like you to\nThank you",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1378467217&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id101623280"
+          },
+          "name": {
+            "label": "sharps1007"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2025-01-30T08:59:28-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "7.0.2"
+        },
+        "id": {
+          "label": "12249552532"
+        },
+        "title": {
+          "label": "Amazing & FREE"
+        },
+        "content": {
+          "label": "I love this app for my toddler. I wish I knew about it sooner. It’s so delightfully cute and age appropriate in how it engages her and provides positive reinforcement. The structure of short engagements is perfect for a 10-minute a day game. And that’s how she looks at it: as a fun game! I can’t believe it’s all free!",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1378467217&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1284689327"
+          },
+          "name": {
+            "label": "Karen gaines"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2025-01-29T12:01:46-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "7.0.2"
+        },
+        "id": {
+          "label": "12246167498"
+        },
+        "title": {
+          "label": "AMAZING"
+        },
+        "content": {
+          "label": "I am a tutor for speech physical etc you get it and I love this app and it has no free trials no payments just plain on FREE I luv it so much!",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1378467217&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id213670755"
+          },
+          "name": {
+            "label": "fire extenguisher"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2025-01-28T10:37:19-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "7.0.2"
+        },
+        "id": {
+          "label": "12242021933"
+        },
+        "title": {
+          "label": "Grandkids"
+        },
+        "content": {
+          "label": "I used Khan Academy years ago when I volunteered at an after school program. I saw the kids that were failing go to straight A’s. Now I have grandkids and wanted to help them with learning so I found this younger kids version and they love it! Thanks for a great program!",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1378467217&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1445135022"
+          },
+          "name": {
+            "label": "Sammy 4987"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2025-01-26T13:06:55-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "7.0.2"
+        },
+        "id": {
+          "label": "12234578371"
+        },
+        "title": {
+          "label": "Good"
+        },
+        "content": {
+          "label": "It’s fun",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1378467217&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1243381137"
+          },
+          "name": {
+            "label": "perfect💗😁"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2025-01-25T12:54:51-07:00"
+        },
+        "im:rating": {
+          "label": "4"
+        },
+        "im:version": {
+          "label": "7.0.2"
+        },
+        "id": {
+          "label": "12230445714"
+        },
+        "title": {
+          "label": "READ BEFORE BUYING"
+        },
+        "content": {
+          "label": "So I was looking for math games for my ten year old and this popped up. I went though and it had super easy questions. I looked and it was ages two though eight. Not saying this is bad but third grade and up should not play.",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1378467217&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id16270132"
+          },
+          "name": {
+            "label": "SantoshSingh108"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2025-01-25T09:13:48-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "7.0.2"
+        },
+        "id": {
+          "label": "12229740905"
+        },
+        "title": {
+          "label": "Fun and Educational (no strings attached)"
+        },
+        "content": {
+          "label": "This is an incredible app that grows with your child. It is engaging in all the right ways.",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1378467217&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1639860291"
+          },
+          "name": {
+            "label": "Ms. S Price"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2025-01-25T06:35:30-07:00"
+        },
+        "im:rating": {
+          "label": "2"
+        },
+        "im:version": {
+          "label": "7.0.2"
+        },
+        "id": {
+          "label": "12229164640"
+        },
+        "title": {
+          "label": "Lack of compatibility other devices /No Customer Support Team"
+        },
+        "content": {
+          "label": "When I first created an account I had a teachers account and when I tried to connect it to my Academy of kids account for my students I was not able to log in and connect them for homeschool learning. I try switching it to Teacher/Coach account it's still no longer work I've also. I've also tried to connect it or share the link through the computer and when I log in from my account or try to login with Academy kids, it doesn't work. Also, Academy is only compatible with cellular or tablet devices. it is not available for Windows 10 or any of those computers so my students and children cannot complete their assignments on the browser. It is specifically made to where you can only download it to your tablet or mobile device. My students do not have cellular devices or even tablets at this current moment, so they are not able to complete their assignments that I assigned to them through Academy kids when I try to assign them assignments through Khan Academy portal I can't even connect students. Furthermore, I try reaching out to support team or just a person that is not AI and couldn't get a hold of anyone.",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1378467217&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1747133231"
+          },
+          "name": {
+            "label": "Want to try but can’t"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2025-01-22T16:27:48-07:00"
+        },
+        "im:rating": {
+          "label": "1"
+        },
+        "im:version": {
+          "label": "7.0.2"
+        },
+        "id": {
+          "label": "12218664235"
+        },
+        "title": {
+          "label": "Glitches"
+        },
+        "content": {
+          "label": "Every game we open gives an error and we can’t do anything.",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1378467217&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1474854190"
+          },
+          "name": {
+            "label": "Juju_piayz1"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2025-01-22T12:52:12-07:00"
+        },
+        "im:rating": {
+          "label": "3"
+        },
+        "im:version": {
+          "label": "7.0.2"
+        },
+        "id": {
+          "label": "12218031634"
+        },
+        "title": {
+          "label": "Needs more harder levels"
+        },
+        "content": {
+          "label": "I need harder educational levels to learn more.",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1378467217&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id984400626"
+          },
+          "name": {
+            "label": "Papi mami y los peques"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2025-01-21T22:57:54-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "7.0.2"
+        },
+        "id": {
+          "label": "12214918107"
+        },
+        "title": {
+          "label": "The best ever"
+        },
+        "content": {
+          "label": "Calidad I love it",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1378467217&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1739016304"
+          },
+          "name": {
+            "label": "Eva🌮"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2025-01-20T12:48:15-07:00"
+        },
+        "im:rating": {
+          "label": "1"
+        },
+        "im:version": {
+          "label": "7.0.2"
+        },
+        "id": {
+          "label": "12209147421"
+        },
+        "title": {
+          "label": "So hard to pick"
+        },
+        "content": {
+          "label": "My daughter stop using it. It’s so hard to pick a game that she likes.😫😫",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1378467217&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id124035937"
+          },
+          "name": {
+            "label": "AppleNicknamesAreTerrible"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2025-01-18T11:10:03-07:00"
+        },
+        "im:rating": {
+          "label": "1"
+        },
+        "im:version": {
+          "label": "7.0.2"
+        },
+        "id": {
+          "label": "12200456973"
+        },
+        "title": {
+          "label": "Was great and now it crashes"
+        },
+        "content": {
+          "label": "Only one of my kids can use the app, when we select the other child’s account the app crashes.",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1378467217&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1726627874"
+          },
+          "name": {
+            "label": "Smart child for me"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2025-01-16T15:40:26-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "7.0.2"
+        },
+        "id": {
+          "label": "12193067001"
+        },
+        "title": {
+          "label": "Wow!🤯"
+        },
+        "content": {
+          "label": "My child is smarter than never before!",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1378467217&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1638588023"
+          },
+          "name": {
+            "label": "Jamsparrow45"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2025-01-15T16:04:58-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "7.0.2"
+        },
+        "id": {
+          "label": "12189149046"
+        },
+        "title": {
+          "label": "E"
+        },
+        "content": {
+          "label": "I hate you",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1378467217&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id368933013"
+          },
+          "name": {
+            "label": "EzzieMama"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2025-01-15T14:04:29-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "7.0.2"
+        },
+        "id": {
+          "label": "12188834769"
+        },
+        "title": {
+          "label": "Perfection"
+        },
+        "content": {
+          "label": "An absolute gem. This app is built to help your child through every stage of reading and comprehension. There are categories for topics like wildlife and sports as well, perfect for teaching about respecting animals or about teamwork. I cannot recommend this app enough. Some of the lesson based stories have such good morals it makes me tear up! Please create a feature where we can favorite stories into their own category. There are a few I like to remind my little one of daily 🩷",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1378467217&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "2"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id897220838"
+          },
+          "name": {
+            "label": "……...哇"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2025-01-12T14:00:58-07:00"
+        },
+        "im:rating": {
+          "label": "1"
+        },
+        "im:version": {
+          "label": "7.0.2"
+        },
+        "id": {
+          "label": "12177072082"
+        },
+        "title": {
+          "label": "Worst game ever"
+        },
+        "content": {
+          "label": "Bad",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1378467217&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "1"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id412774213"
+          },
+          "name": {
+            "label": "Chellie3for3"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2025-01-11T12:44:16-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "7.0.2"
+        },
+        "id": {
+          "label": "12172724295"
+        },
+        "title": {
+          "label": "Excellent app for young ones!!!"
+        },
+        "content": {
+          "label": "Granddaughter has loved this app 🤩",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1378467217&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1477228873"
+          },
+          "name": {
+            "label": "Lily🏳️‍🌈"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2025-01-10T11:25:58-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "7.0.2"
+        },
+        "id": {
+          "label": "12168337975"
+        },
+        "title": {
+          "label": "Perfect!"
+        },
+        "content": {
+          "label": "I love that my kid is learning and playing at the same time!",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1378467217&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id42394661"
+          },
+          "name": {
+            "label": "Sbianco"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2025-01-06T12:15:09-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "7.0.2"
+        },
+        "id": {
+          "label": "12153098654"
+        },
+        "title": {
+          "label": "Amazing!"
+        },
+        "content": {
+          "label": "This app is very good for teaching your kids. But there is some problems. Let’s start with the good things:\n\nFor my daughter, before she learnt how to read, she used this app, because I had hopes in it teaching her how to read. She used it, and it seemed there was no progress, for months on end she would just listen to the audio version of the books, until one day, she came up to me and said “mom, I wanna learn how to read.” \n\nI was so proud! This app gave the encouragement for her to learn how to read, seeing all the fun books, and she wanted to look at the pictures, without waiting for the audio of the book on that page to be done, and now she could both read, and look at the picture books, without having to wait!\n\nThis app teaches your kid creativity. When my daughters older brothers tried to stop her from using the creative activities, I didn’t even stop her from using them, and told her brothers to stop. And now, she’s one of the most creative kids I’ve ever seen! She’s covered a part of a wall in her room with her own drawings. To me, if this app made her more creative, just imagine what she will do next. She’s already planning on making her own YouTube channel!\n\nNow let’s move onto suggestions:\n\nWhat if you made tutorials on how to draw, write letters, and write sentences? You kinda already do that with the letters, but in the app, you have to write digitally, what if you made it so it doesn’t switch you to  the drawing activities, and you write with a pencil and paper while watching the app?\n\nNext, maybe you should make more age groups and grades? My daughter is now in fifth grade, and the app is only available ages 5-8. It’s really hard to find learning apps for a 5th grader, which isn’t just math, science, literature or other subjects, I want an app that’s all in one. Maybe you could make a few more grades for the app?\n\nNext, let’s move onto the problem:\n\nMy daughter, when she was in about 2nd grade, she kept switching her account to kindergarten. Maybe could you could make it so switching grades wasn’t so available to kids, and you can add a passcode on it, so they don’t switch the grades?\n\nOther then those, this is a great app! And I highly recommend it, wether it’s an after school program, or for homeschool, it can be for either. It’s a fun, easy, and educational experience, which I can confirm, belong in a school system.\n\nSo overall:10/10, would highly recommend this app.",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1378467217&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id697549617"
+          },
+          "name": {
+            "label": "Cool reviews on here"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2025-01-06T10:49:13-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "7.0.2"
+        },
+        "id": {
+          "label": "12152840729"
+        },
+        "title": {
+          "label": "Me birthday"
+        },
+        "content": {
+          "label": "Happy birthday K.B.T. HOME",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1378467217&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id107799822"
+          },
+          "name": {
+            "label": "turbo_sloth"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2025-01-04T12:56:15-07:00"
+        },
+        "im:rating": {
+          "label": "4"
+        },
+        "im:version": {
+          "label": "7.0.2"
+        },
+        "id": {
+          "label": "12145283719"
+        },
+        "title": {
+          "label": "Great app but some significant usability issues"
+        },
+        "content": {
+          "label": "Great app with lots of content across reading, writing, math, general knowledge. My one big complaint is that during each lesson there is a home icon button that exits out of the current lesson with no confirmation. You lose your progress and can’t immediately open the lesson back up (unless you find it in the library). Another random lesson opens. This happens so often with my young kids, and it’s so frustrating. Can you please add a confirmation dialog if the home button is pressed before the lesson is over?",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1378467217&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1606004662"
+          },
+          "name": {
+            "label": "Stella3256"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2025-01-04T12:45:44-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "7.0.2"
+        },
+        "id": {
+          "label": "12145253447"
+        },
+        "title": {
+          "label": "Amazing"
+        },
+        "content": {
+          "label": "So it’s perfect no adds no money and you can use it anywhere anytime and just A+",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1378467217&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id16168227"
+          },
+          "name": {
+            "label": "AngieC2484"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2025-01-01T14:29:41-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "7.0.2"
+        },
+        "id": {
+          "label": "12133167572"
+        },
+        "title": {
+          "label": "Great educational app!"
+        },
+        "content": {
+          "label": "My kids absolutely love this app, and so do I. It makes learning fun! I love how many options for learning there are. It’s a great app, really cute, well done, and keeps my kids engaged (they’re 6 and 7). Highly recommend",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1378467217&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1380062794"
+          },
+          "name": {
+            "label": "ryleigh annn"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2024-12-29T15:29:39-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "7.0.2"
+        },
+        "id": {
+          "label": "12121468270"
+        },
+        "title": {
+          "label": "download this app it says your name, but it needs, but it needs a grown-up"
+        },
+        "content": {
+          "label": "don't download it I downloaded to",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1378467217&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1737743881"
+          },
+          "name": {
+            "label": "OliveJackson"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2024-12-29T05:39:42-07:00"
+        },
+        "im:rating": {
+          "label": "1"
+        },
+        "im:version": {
+          "label": "7.0.2"
+        },
+        "id": {
+          "label": "12119665931"
+        },
+        "title": {
+          "label": "Doesn’t seem to work anymore"
+        },
+        "content": {
+          "label": "Touch option seems to be disabled",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1378467217&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1618350092"
+          },
+          "name": {
+            "label": "Meeeeciiiooh"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2024-12-28T19:39:06-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "7.0.2"
+        },
+        "id": {
+          "label": "12118185486"
+        },
+        "title": {
+          "label": "Fun and educational"
+        },
+        "content": {
+          "label": "No ad super educational but fun. There are lots of off-line games that you can play and educational stuff stuff two years plus the best app I’ve ever downloaded!!!!!",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1378467217&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id34204833"
+          },
+          "name": {
+            "label": "anne apple pie"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2024-12-26T17:05:45-07:00"
+        },
+        "im:rating": {
+          "label": "1"
+        },
+        "im:version": {
+          "label": "7.0.2"
+        },
+        "id": {
+          "label": "12109798592"
+        },
+        "title": {
+          "label": "i hate you 😤"
+        },
+        "content": {
+          "label": "I hate this game it is sooooooooooooo bad why did you lie to me your a liar!",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1378467217&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "1"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id612879419"
+          },
+          "name": {
+            "label": "ADJ123z"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2024-12-25T08:02:27-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "7.0.2"
+        },
+        "id": {
+          "label": "12104389165"
+        },
+        "title": {
+          "label": "Great for kids"
+        },
+        "content": {
+          "label": "Great for kids",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1378467217&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1735883154"
+          },
+          "name": {
+            "label": "Avenoff20"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2024-12-24T18:38:23-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "7.0.2"
+        },
+        "id": {
+          "label": "12102364928"
+        },
+        "title": {
+          "label": "Language"
+        },
+        "content": {
+          "label": "Can’t find language settings boo",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1378467217&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id131725197"
+          },
+          "name": {
+            "label": "Sat120"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2024-12-23T14:39:49-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "7.0.2"
+        },
+        "id": {
+          "label": "12098105643"
+        },
+        "title": {
+          "label": "Great content"
+        },
+        "content": {
+          "label": "I’ve been monitoring my kids use on electronics- this one def hits the mark- great learning while enjoying the graphics. Glad I downloaded it!",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1378467217&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1481043224"
+          },
+          "name": {
+            "label": "Sjjenddn8jdmdmdjdkekesjjssjs"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2024-12-22T20:42:44-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "7.0.2"
+        },
+        "id": {
+          "label": "12095195172"
+        },
+        "title": {
+          "label": "LOVELY❤️❤️❤️❤️❤️"
+        },
+        "content": {
+          "label": "This game is great! It has helped my kids learn math easily and love seeing them come to me and show me how many stars they got on a lesson. I wanted my prior for them to learn math better and This game is extremely effective to them and exceptional for them to get on there iPads and play! It gives me so much joy when the get 105's on their math questions. This game is absolutely beautiful and amazing! Both of the boys have no problem when I ask them a math question and they get it right on the first try! Thank you so much for making this game for my two little boys❤️👍",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1378467217&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id156999943"
+          },
+          "name": {
+            "label": "Hambone22au"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2024-12-21T08:48:43-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "7.0.2"
+        },
+        "id": {
+          "label": "12089392775"
+        },
+        "title": {
+          "label": "Excellent for kids"
+        },
+        "content": {
+          "label": "My son loves this and asks to do it everyday! He listens, learns, and understands. Highly recommend!",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1378467217&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1734055597"
+          },
+          "name": {
+            "label": "dani lou jack"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2024-12-19T15:54:35-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "7.0.2"
+        },
+        "id": {
+          "label": "12082880077"
+        },
+        "title": {
+          "label": "KHAN ACADEMY KIDS"
+        },
+        "content": {
+          "label": "I love the create on Khan Academy",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=1378467217&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      }
+    ],
+    "updated": {
+      "label": "2026-10-13T11:58:12-07:00"
+    },
+    "rights": {
+      "label": "Copyright 2008 Apple Inc."
+    },
+    "title": {
+      "label": "iTunes Store: Customer Reviews"
+    },
+    "icon": {
+      "label": "http://itunes.apple.com/favicon.ico"
+    },
+    "link": [
+      {
+        "attributes": {
+          "rel": "alternate",
+          "type": "text/html",
+          "href": "https://music.apple.com/WebObjects/MZStore.woa/wa/viewGrouping?cc=us&id=1"
+        }
+      },
+      {
+        "attributes": {
+          "rel": "self",
+          "href": "https://itunes.apple.com/us/rss/customerreviews/page=10/id=1378467217/sortby=mostrecent/json"
+        }
+      },
+      {
+        "attributes": {
+          "rel": "first",
+          "href": "https://itunes.apple.com/us/rss/customerreviews/page=1/id=1378467217/sortby=mostrecent/xml?urlDesc=/customerreviews/page=10/id=1378467217/sortby=mostrecent/json"
+        }
+      },
+      {
+        "attributes": {
+          "rel": "last",
+          "href": "https://itunes.apple.com/us/rss/customerreviews/page=10/id=1378467217/sortby=mostrecent/xml?urlDesc=/customerreviews/page=10/id=1378467217/sortby=mostrecent/json"
+        }
+      },
+      {
+        "attributes": {
+          "rel": "previous",
+          "href": "https://itunes.apple.com/us/rss/customerreviews/page=9/id=1378467217/sortby=mostrecent/xml?urlDesc=/customerreviews/page=10/id=1378467217/sortby=mostrecent/json"
+        }
+      },
+      {
+        "attributes": {
+          "rel": "next",
+          "href": "https://itunes.apple.com/us/rss/customerreviews/page=10/id=1378467217/sortby=mostrecent/xml?urlDesc=/customerreviews/page=10/id=1378467217/sortby=mostrecent/json"
+        }
+      }
+    ],
+    "id": {
+      "label": "https://itunes.apple.com/us/rss/customerreviews/page=10/id=1378467217/sortby=mostrecent/json"
+    }
+  }
+}

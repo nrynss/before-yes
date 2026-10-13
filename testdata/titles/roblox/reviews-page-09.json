@@ -1,0 +1,2568 @@
+{
+  "feed": {
+    "author": {
+      "name": {
+        "label": "iTunes Store"
+      },
+      "uri": {
+        "label": "http://www.apple.com/itunes/"
+      }
+    },
+    "entry": [
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1867218242"
+          },
+          "name": {
+            "label": "Rea reaaaaaaaaaaa"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-11T12:26:54-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "2.742.1053"
+        },
+        "id": {
+          "label": "14655054153"
+        },
+        "title": {
+          "label": "Myaaaaaaa"
+        },
+        "content": {
+          "label": "Roblox is the best app I can ever imagine all the other games. I don’t really like but Roblox keeps me happy my friends. I just love Roblox and I’ll be very sad if y’all delete Roblox, of course but please I get this a five star don’t delete it. I promise don’t I won’t ever cuss again on voice chat just keep Roblox. Don’t delete it no time soon.",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=431946152&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1821588531"
+          },
+          "name": {
+            "label": "Helena#dyucshn"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-11T12:26:54-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "2.742.1053"
+        },
+        "id": {
+          "label": "14655054149"
+        },
+        "title": {
+          "label": "Hehe"
+        },
+        "content": {
+          "label": "Hehe",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=431946152&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1659461042"
+          },
+          "name": {
+            "label": "1 fan stranger things"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-11T12:25:30-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "2.742.1053"
+        },
+        "id": {
+          "label": "14655049929"
+        },
+        "title": {
+          "label": "Yesss"
+        },
+        "content": {
+          "label": "I LoVE IT",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=431946152&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1962478612"
+          },
+          "name": {
+            "label": "Evethepuppet"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-11T12:22:24-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "2.742.1053"
+        },
+        "id": {
+          "label": "14655040321"
+        },
+        "title": {
+          "label": "Roblox"
+        },
+        "content": {
+          "label": "Roblox is super fun! Unlike Minecraft it has more games of many kinds and also for parents you can control Roblox recently updated so now it’s safer!",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=431946152&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id350632767"
+          },
+          "name": {
+            "label": "Crossfitawesome"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-11T12:21:57-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "2.742.1053"
+        },
+        "id": {
+          "label": "14655038888"
+        },
+        "title": {
+          "label": "Linm"
+        },
+        "content": {
+          "label": "Much",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=431946152&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1977654906"
+          },
+          "name": {
+            "label": "Salamieppstein2"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-11T12:19:44-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "2.742.1053"
+        },
+        "id": {
+          "label": "14655032093"
+        },
+        "title": {
+          "label": "Roblox is the goat"
+        },
+        "content": {
+          "label": "It’s shows the creativity people need to their day to day lives",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=431946152&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1301396465"
+          },
+          "name": {
+            "label": "Game Day Super Bowl"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-11T12:18:22-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "2.742.1053"
+        },
+        "id": {
+          "label": "14655027930"
+        },
+        "title": {
+          "label": "Robloz"
+        },
+        "content": {
+          "label": "Roblox is so so Fuñnnn Because Roblox havens Flag Football",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=431946152&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1020792200"
+          },
+          "name": {
+            "label": "TBriggsNicole"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-11T12:18:07-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "2.742.1053"
+        },
+        "id": {
+          "label": "14655027196"
+        },
+        "title": {
+          "label": "Love this game cause they got 1 millions of games of games. I never can stop playing this."
+        },
+        "content": {
+          "label": "Oh my God",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=431946152&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1650869214"
+          },
+          "name": {
+            "label": "Lia SILLYZ"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-11T12:17:59-07:00"
+        },
+        "im:rating": {
+          "label": "1"
+        },
+        "im:version": {
+          "label": "2.742.1053"
+        },
+        "id": {
+          "label": "14655026744"
+        },
+        "title": {
+          "label": "Getting banned for no reason…"
+        },
+        "content": {
+          "label": "While playing adopt me, I got banned for a bit while being a hairstylist, for no reason at all, and this has happened before!",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=431946152&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1559740053"
+          },
+          "name": {
+            "label": "Cora love this game"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-11T12:15:47-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "2.742.1053"
+        },
+        "id": {
+          "label": "14655019966"
+        },
+        "title": {
+          "label": "Best game ever!"
+        },
+        "content": {
+          "label": "I love all the games in Roblox!\nRoblox just gives lots of opportunities and it helps me not be bored. I recommend playing games like Dress to impress and berry avenue! Best game EVER!!!",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=431946152&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1943021398"
+          },
+          "name": {
+            "label": "Bring back burger barn"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-11T12:14:58-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "2.742.1053"
+        },
+        "id": {
+          "label": "14655017512"
+        },
+        "title": {
+          "label": "Pls bring back the burger barn in Brookhaven"
+        },
+        "content": {
+          "label": "I know at least almost everyone misses burger barn",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=431946152&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1965522149"
+          },
+          "name": {
+            "label": "mm2cool227"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-11T12:14:42-07:00"
+        },
+        "im:rating": {
+          "label": "2"
+        },
+        "im:version": {
+          "label": "2.742.1053"
+        },
+        "id": {
+          "label": "14655016664"
+        },
+        "title": {
+          "label": "U need to fix this."
+        },
+        "content": {
+          "label": "Ever since the ai face thing Roblox has been TERRIBLE! My friend is 9 and she in the 21+ age group! And why didn’t we need our parents now? Why are you making us show our faces? This is really bad. Your ai face age groups is getting ages WRONG! Also when people are playing role play games we randomly get tagged. And the tagging DOSENT stop for 2-5 minutes. You literally said that players only get tagged when we say something inappropriate. So fix that bug. That bug has been here for so long!and why do our parents need to play Roblox? Why do they need to show their I.D.? I EXTREMELY recommend that you fix this.",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=431946152&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1815519906"
+          },
+          "name": {
+            "label": "Karmy’s"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-11T12:13:01-07:00"
+        },
+        "im:rating": {
+          "label": "1"
+        },
+        "im:version": {
+          "label": "2.742.1053"
+        },
+        "id": {
+          "label": "14655011413"
+        },
+        "title": {
+          "label": "Disappointed"
+        },
+        "content": {
+          "label": "I am very sad that they added age group I can’t even talk to my friends becuase they are in 15-16 because the picture told them that when they are 11 years old lile me please fix it and remove this system but the game is fun but not without firends",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=431946152&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id994598801"
+          },
+          "name": {
+            "label": "Fasoupil"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-11T12:08:10-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "2.742.1053"
+        },
+        "id": {
+          "label": "14654996066"
+        },
+        "title": {
+          "label": "roblox is amazingg"
+        },
+        "content": {
+          "label": "roblox is always fun and evryone is so nice",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=431946152&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1663476165"
+          },
+          "name": {
+            "label": "No nos ilusionen de esa manera"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-11T12:04:39-07:00"
+        },
+        "im:rating": {
+          "label": "1"
+        },
+        "im:version": {
+          "label": "2.742.1053"
+        },
+        "id": {
+          "label": "14654984918"
+        },
+        "title": {
+          "label": "Desactivar el🤮"
+        },
+        "content": {
+          "label": "No 👎",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=431946152&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1978542883"
+          },
+          "name": {
+            "label": "Man truss"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-11T12:03:50-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "2.742.1053"
+        },
+        "id": {
+          "label": "14654982348"
+        },
+        "title": {
+          "label": "Love this game this game is so the"
+        },
+        "content": {
+          "label": "This is like a good experience for me. There’s so many other games I can choose to play not many games have this thank you Roblox.",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=431946152&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1956901195"
+          },
+          "name": {
+            "label": "Roku el mejor"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-11T12:03:45-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "2.742.1053"
+        },
+        "id": {
+          "label": "14654982062"
+        },
+        "title": {
+          "label": "Amo este justo"
+        },
+        "content": {
+          "label": "Este juego lo juego desde ase tres años y lla tengo 10 años y lo sigo jugando y lo amo y me trae muy bonitos recuerdos 😭😭😭😭",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=431946152&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1733282262"
+          },
+          "name": {
+            "label": "Littleminer5"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-11T12:01:20-07:00"
+        },
+        "im:rating": {
+          "label": "2"
+        },
+        "im:version": {
+          "label": "2.742.1053"
+        },
+        "id": {
+          "label": "14654974392"
+        },
+        "title": {
+          "label": "Why"
+        },
+        "content": {
+          "label": "Can you please get back to old Roblox",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=431946152&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1857360747"
+          },
+          "name": {
+            "label": "Master of mini creatures"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-11T12:00:17-07:00"
+        },
+        "im:rating": {
+          "label": "2"
+        },
+        "im:version": {
+          "label": "2.742.1053"
+        },
+        "id": {
+          "label": "14654970942"
+        },
+        "title": {
+          "label": "Roblox"
+        },
+        "content": {
+          "label": "I love it, but I got scammed on adopt me I would like my stuff back and to get to keep then stuff she traded me.",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=431946152&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1594888310"
+          },
+          "name": {
+            "label": "❤️tiktok🖤"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-11T11:58:50-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "2.742.1053"
+        },
+        "id": {
+          "label": "14654966495"
+        },
+        "title": {
+          "label": "fun"
+        },
+        "content": {
+          "label": "very cool fun game!",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=431946152&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1353765148"
+          },
+          "name": {
+            "label": "ur local Mexican boy"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-11T11:57:20-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "2.742.1053"
+        },
+        "id": {
+          "label": "14654961789"
+        },
+        "title": {
+          "label": "e"
+        },
+        "content": {
+          "label": "eeee",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=431946152&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1736759070"
+          },
+          "name": {
+            "label": "Nocontextneeded"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-11T11:56:07-07:00"
+        },
+        "im:rating": {
+          "label": "2"
+        },
+        "im:version": {
+          "label": "2.742.1053"
+        },
+        "id": {
+          "label": "14654957934"
+        },
+        "title": {
+          "label": "Eh"
+        },
+        "content": {
+          "label": "Fine I guess, crashes a lot though.",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=431946152&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1943333436"
+          },
+          "name": {
+            "label": "Bella Madison hillin"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-11T11:52:38-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "2.742.1053"
+        },
+        "id": {
+          "label": "14654946949"
+        },
+        "title": {
+          "label": "Bella"
+        },
+        "content": {
+          "label": "I love Roblox so much you can make a lot of friends and there’s so much games. I just\n love Roblox so much. It’s the best game ever like I don’t need no more games\n .I just need this one game. It’s the best best game in the whole entire world.",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=431946152&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1154293561"
+          },
+          "name": {
+            "label": "Nashmiat jordan"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-11T11:51:22-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "2.742.1053"
+        },
+        "id": {
+          "label": "14654942993"
+        },
+        "title": {
+          "label": "i love itt"
+        },
+        "content": {
+          "label": "its my favorite game",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=431946152&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1707984764"
+          },
+          "name": {
+            "label": "Dy Yusuf"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-11T11:37:19-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "2.742.1053"
+        },
+        "id": {
+          "label": "14654897721"
+        },
+        "title": {
+          "label": "Best game"
+        },
+        "content": {
+          "label": "My favorite game",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=431946152&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1410575915"
+          },
+          "name": {
+            "label": "hdbddgdgbd"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-11T11:36:59-07:00"
+        },
+        "im:rating": {
+          "label": "1"
+        },
+        "im:version": {
+          "label": "2.742.1053"
+        },
+        "id": {
+          "label": "14654896572"
+        },
+        "title": {
+          "label": "Roblox"
+        },
+        "content": {
+          "label": "I ABSOLUTELY HATE THIS GAME! EVERYONE IN THIS APP\nIS A LIAR, CHEATER, HACKER, AND ALL OF THE ABOVE. THIS GAME LAGS TOO MUCH! THIS PROBLEM NEEDS TO BE FIXED IMMEDIATELY!",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=431946152&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1789465428"
+          },
+          "name": {
+            "label": "Rattyratfat"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-11T11:36:28-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "2.742.1053"
+        },
+        "id": {
+          "label": "14654894876"
+        },
+        "title": {
+          "label": "Roblox"
+        },
+        "content": {
+          "label": "I love Roblox but not my lack of robux",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=431946152&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1474236330"
+          },
+          "name": {
+            "label": "ELLIS>:)"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-11T11:36:18-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "2.742.1053"
+        },
+        "id": {
+          "label": "14654894306"
+        },
+        "title": {
+          "label": "FUNNNN"
+        },
+        "content": {
+          "label": "Very fun!!! Perfect for all ages 6+",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=431946152&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1978534988"
+          },
+          "name": {
+            "label": "2/1/25"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-11T11:34:44-07:00"
+        },
+        "im:rating": {
+          "label": "3"
+        },
+        "im:version": {
+          "label": "2.742.1053"
+        },
+        "id": {
+          "label": "14654889294"
+        },
+        "title": {
+          "label": "Good game screen time bad"
+        },
+        "content": {
+          "label": "So I love Playing Roblox but the problem is the stupidity screen time  that when I’m on the middle of a quest or on an RP it would always lock me out:( also it’s because my mom thinks it’s a game and thinks it’s funny to put my screen time at LIKE 1 FREAKING HOUR",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=431946152&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1568179069"
+          },
+          "name": {
+            "label": "LenTheGamer0"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-11T11:34:28-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "2.742.1053"
+        },
+        "id": {
+          "label": "14654888447"
+        },
+        "title": {
+          "label": "From Lennoxchip"
+        },
+        "content": {
+          "label": "I love Roblox!! Fun games, meet new people, and creating cute outfits! 🙂",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=431946152&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1978534365"
+          },
+          "name": {
+            "label": "Y6t6hugt"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-11T11:33:18-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "2.742.1053"
+        },
+        "id": {
+          "label": "14654884613"
+        },
+        "title": {
+          "label": "Kedttf"
+        },
+        "content": {
+          "label": "6",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=431946152&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1654951504"
+          },
+          "name": {
+            "label": "Bad game adds"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-11T11:33:10-07:00"
+        },
+        "im:rating": {
+          "label": "1"
+        },
+        "im:version": {
+          "label": "2.742.1053"
+        },
+        "id": {
+          "label": "14654884170"
+        },
+        "title": {
+          "label": "Bad"
+        },
+        "content": {
+          "label": "I need to scan a QR code to add a passkey and age verification",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=431946152&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1783474290"
+          },
+          "name": {
+            "label": "Demon slayer fan keyboard"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-11T11:31:37-07:00"
+        },
+        "im:rating": {
+          "label": "4"
+        },
+        "im:version": {
+          "label": "2.742.1053"
+        },
+        "id": {
+          "label": "14654879198"
+        },
+        "title": {
+          "label": "I don't really like."
+        },
+        "content": {
+          "label": "Put more demon slayer games on here",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=431946152&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1051689741"
+          },
+          "name": {
+            "label": "mandysmeds"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-11T11:31:06-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "2.742.1053"
+        },
+        "id": {
+          "label": "14654877433"
+        },
+        "title": {
+          "label": "LeBron James"
+        },
+        "content": {
+          "label": "I give this a five star because it’s just so fun oh and also you’re fat.",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=431946152&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1758951177"
+          },
+          "name": {
+            "label": "Brain rotdvvhj"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-11T11:30:41-07:00"
+        },
+        "im:rating": {
+          "label": "3"
+        },
+        "im:version": {
+          "label": "2.742.1053"
+        },
+        "id": {
+          "label": "14654876109"
+        },
+        "title": {
+          "label": "Roblox"
+        },
+        "content": {
+          "label": "You need to add more games. It’s kind of getting boring playing the old games. add more and new games. fun games.",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=431946152&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1787781028"
+          },
+          "name": {
+            "label": "🙈🤍💤"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-11T11:29:46-07:00"
+        },
+        "im:rating": {
+          "label": "4"
+        },
+        "im:version": {
+          "label": "2.742.1053"
+        },
+        "id": {
+          "label": "14654873071"
+        },
+        "title": {
+          "label": "amazing game but 1 problem.."
+        },
+        "content": {
+          "label": "hello roblox. whenever i try to message 1 of my friends i get suspended for 5-30 minutes. im confused about this because im not saying anything inappropriate. i just want to talk to my friends and have fun nothing inappropriate. please fix this.",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=431946152&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1324741602"
+          },
+          "name": {
+            "label": "Hannifromnjz"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-11T11:29:39-07:00"
+        },
+        "im:rating": {
+          "label": "1"
+        },
+        "im:version": {
+          "label": "2.742.1053"
+        },
+        "id": {
+          "label": "14654872684"
+        },
+        "title": {
+          "label": "glitching"
+        },
+        "content": {
+          "label": "OK, so I’m trying to get into Roblox right now and every single time I had to go into it. The screen is just fully white and it just flashes black nothing is showing up. I turned off my iPad and turned it back on. I even deleted some apps, thinking that it was my storage I have been playing this game since 2019. Please fix your app",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=431946152&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1971716327"
+          },
+          "name": {
+            "label": "Abbythagirl"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-11T11:28:32-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "2.742.1053"
+        },
+        "id": {
+          "label": "14654869181"
+        },
+        "title": {
+          "label": "Love Roblox 💕"
+        },
+        "content": {
+          "label": "I love Roblox and I never get of this game and this is the only game I play for real so I really love Roblox💕",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=431946152&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1940391933"
+          },
+          "name": {
+            "label": "￼ я люблю играть"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-11T11:28:03-07:00"
+        },
+        "im:rating": {
+          "label": "4"
+        },
+        "im:version": {
+          "label": "2.742.1053"
+        },
+        "id": {
+          "label": "14654867557"
+        },
+        "title": {
+          "label": "Чат не работает"
+        },
+        "content": {
+          "label": "Ну за то что отлично",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=431946152&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1978531452"
+          },
+          "name": {
+            "label": "Richard is the best"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-11T11:26:59-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "2.742.1053"
+        },
+        "id": {
+          "label": "14654864047"
+        },
+        "title": {
+          "label": "Sports stuff can come alive"
+        },
+        "content": {
+          "label": "I love that game",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=431946152&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id197162702"
+          },
+          "name": {
+            "label": "AVERYEY _188"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-11T11:26:45-07:00"
+        },
+        "im:rating": {
+          "label": "1"
+        },
+        "im:version": {
+          "label": "2.742.1053"
+        },
+        "id": {
+          "label": "14654863363"
+        },
+        "title": {
+          "label": "Someone hacking me I don’t like"
+        },
+        "content": {
+          "label": "So I logged on and I saw a couple games that I never played and I remember that I got a Roblox sign that said your account has been launched by the same account so I was confused I did not like this or maybe because I friended a hacker.",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=431946152&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id930998386"
+          },
+          "name": {
+            "label": "awsome2526"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-11T11:26:36-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "2.742.1053"
+        },
+        "id": {
+          "label": "14654862849"
+        },
+        "title": {
+          "label": "Good"
+        },
+        "content": {
+          "label": "Has lots of games",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=431946152&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1955210168"
+          },
+          "name": {
+            "label": "BestBloxia"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-11T11:25:33-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "2.742.1053"
+        },
+        "id": {
+          "label": "14654859390"
+        },
+        "title": {
+          "label": "Best game"
+        },
+        "content": {
+          "label": "The best game in history i love it!❤️",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=431946152&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1922532939"
+          },
+          "name": {
+            "label": "De see dog g V by"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-11T11:22:31-07:00"
+        },
+        "im:rating": {
+          "label": "1"
+        },
+        "im:version": {
+          "label": "2.742.1053"
+        },
+        "id": {
+          "label": "14654849456"
+        },
+        "title": {
+          "label": "VC IS CRAZY"
+        },
+        "content": {
+          "label": "BRO DAVID BUASIKUKI FIX YOUR VC BRO MY VC GOT BANNED FOR NOTHING AND MY VC WAS MUTED DONT INSTALL THIS GAME THIS IS STUPID",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=431946152&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1669352080"
+          },
+          "name": {
+            "label": "Coolnoyl"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-11T11:20:30-07:00"
+        },
+        "im:rating": {
+          "label": "4"
+        },
+        "im:version": {
+          "label": "2.742.1053"
+        },
+        "id": {
+          "label": "14654842937"
+        },
+        "title": {
+          "label": "Love this game"
+        },
+        "content": {
+          "label": "This is a very interesting fun game.",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=431946152&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id338347398"
+          },
+          "name": {
+            "label": "OHSbux"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-11T11:20:29-07:00"
+        },
+        "im:rating": {
+          "label": "1"
+        },
+        "im:version": {
+          "label": "2.742.1053"
+        },
+        "id": {
+          "label": "14654842895"
+        },
+        "title": {
+          "label": "Kill off dynamic faces!!!!!!!!!!"
+        },
+        "content": {
+          "label": "Everything’s good except dynamic faces!!!!!!!!!",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=431946152&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1705253436"
+          },
+          "name": {
+            "label": "Hahha_later 2"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-11T11:17:52-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "2.742.1053"
+        },
+        "id": {
+          "label": "14654834461"
+        },
+        "title": {
+          "label": "Favorite game"
+        },
+        "content": {
+          "label": "Can you send me Robux",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=431946152&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1649895466"
+          },
+          "name": {
+            "label": "Me llamo Vital"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-11T11:17:01-07:00"
+        },
+        "im:rating": {
+          "label": "4"
+        },
+        "im:version": {
+          "label": "2.742.1053"
+        },
+        "id": {
+          "label": "14654831644"
+        },
+        "title": {
+          "label": "Música"
+        },
+        "content": {
+          "label": "No puedo escuchar música mientras juego Roblox",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=431946152&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1578628809"
+          },
+          "name": {
+            "label": "𝓐𝓿𝓪12"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-11T11:16:49-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "2.742.1053"
+        },
+        "id": {
+          "label": "14654831015"
+        },
+        "title": {
+          "label": "A fun nice game you can play anytime My favorite game now is Barry Avenue in rifles."
+        },
+        "content": {
+          "label": "𝓖𝓮𝓽 𝓽𝓱𝓲𝓼 𝓪𝓹𝓹",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=431946152&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      },
+      {
+        "author": {
+          "uri": {
+            "label": "https://itunes.apple.com/us/reviews/id1438548991"
+          },
+          "name": {
+            "label": "Max’s review"
+          },
+          "label": ""
+        },
+        "updated": {
+          "label": "2026-10-11T11:15:19-07:00"
+        },
+        "im:rating": {
+          "label": "5"
+        },
+        "im:version": {
+          "label": "2.742.1053"
+        },
+        "id": {
+          "label": "14654826123"
+        },
+        "title": {
+          "label": "Mama"
+        },
+        "content": {
+          "label": "Mommy’s got rizz",
+          "attributes": {
+            "type": "text"
+          }
+        },
+        "link": {
+          "attributes": {
+            "rel": "related",
+            "href": "https://itunes.apple.com/us/review?id=431946152&type=Purple%20Software"
+          }
+        },
+        "im:voteSum": {
+          "label": "0"
+        },
+        "im:contentType": {
+          "attributes": {
+            "term": "Application",
+            "label": "Application"
+          }
+        },
+        "im:voteCount": {
+          "label": "0"
+        }
+      }
+    ],
+    "updated": {
+      "label": "2026-10-13T11:57:35-07:00"
+    },
+    "rights": {
+      "label": "Copyright 2008 Apple Inc."
+    },
+    "title": {
+      "label": "iTunes Store: Customer Reviews"
+    },
+    "icon": {
+      "label": "http://itunes.apple.com/favicon.ico"
+    },
+    "link": [
+      {
+        "attributes": {
+          "rel": "alternate",
+          "type": "text/html",
+          "href": "https://music.apple.com/WebObjects/MZStore.woa/wa/viewGrouping?cc=us&id=1"
+        }
+      },
+      {
+        "attributes": {
+          "rel": "self",
+          "href": "https://itunes.apple.com/us/rss/customerreviews/page=9/id=431946152/sortby=mostrecent/json"
+        }
+      },
+      {
+        "attributes": {
+          "rel": "first",
+          "href": "https://itunes.apple.com/us/rss/customerreviews/page=1/id=431946152/sortby=mostrecent/xml?urlDesc=/customerreviews/page=9/id=431946152/sortby=mostrecent/json"
+        }
+      },
+      {
+        "attributes": {
+          "rel": "last",
+          "href": "https://itunes.apple.com/us/rss/customerreviews/page=10/id=431946152/sortby=mostrecent/xml?urlDesc=/customerreviews/page=9/id=431946152/sortby=mostrecent/json"
+        }
+      },
+      {
+        "attributes": {
+          "rel": "previous",
+          "href": "https://itunes.apple.com/us/rss/customerreviews/page=8/id=431946152/sortby=mostrecent/xml?urlDesc=/customerreviews/page=9/id=431946152/sortby=mostrecent/json"
+        }
+      },
+      {
+        "attributes": {
+          "rel": "next",
+          "href": "https://itunes.apple.com/us/rss/customerreviews/page=10/id=431946152/sortby=mostrecent/xml?urlDesc=/customerreviews/page=9/id=431946152/sortby=mostrecent/json"
+        }
+      }
+    ],
+    "id": {
+      "label": "https://itunes.apple.com/us/rss/customerreviews/page=9/id=431946152/sortby=mostrecent/json"
+    }
+  }
+}

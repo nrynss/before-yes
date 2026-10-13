@@ -1,0 +1,21 @@
+{
+  "query": "Khan Academy Kids terms of service",
+  "follow_up_questions": null,
+  "answer": null,
+  "images": [],
+  "results": [
+    {
+      "url": "https://www.khankids.org",
+      "title": "Free Learning App for Kids Ages 2-8",
+      "content": "A free, 5-star rated (Common Sense Media) learning app for kids ages 2–8, with thousands of games, books, and lessons in reading, math, and SEL.",
+      "score": 0.050578702,
+      "raw_content": null,
+      "id": "fd2b4c-00"
+    }
+  ],
+  "response_time": 2.38,
+  "usage": {
+    "credits": 1
+  },
+  "request_id": "785126de-04c2-4b62-b53e-17316237d9b8"
+}
