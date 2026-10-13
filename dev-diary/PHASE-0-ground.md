@@ -166,7 +166,7 @@ requires:   T0.4
 fixture-ok: no
 size:       S · mid
 owns:       testdata/titles/*/tavily-search-csm.json, testdata/titles/*/tavily-extract-csm.json, testdata/titles/*/tavily-search-reddit-*.json, tools/capture/
-status:     not-started
+status:     done
 ```
 Split from T0.4 after the user added two sources to the gather plan (T3.1, items 3 and 4). T0.4 was already capturing under the old plan.
 
@@ -175,6 +175,8 @@ Extend `tools/capture` to make T3.1's new calls for the four titles in `testdata
 - the two Reddit searches, one for parents' experiences and one for the title's own community.
 
 Append each call's URL, status and credits to the title's `MANIFEST.md`. Record what the Common Sense review pages actually look like after extraction: whether reviews separate cleanly, how many each page holds, and whether reviewer type and position survive. T3.1 builds on that. The same key and secrecy rules as T0.4 apply.
+
+**Credits spent:** Roblox 4, Minecraft 3, Khan Academy Kids 3, Toca Life World 3 (13 in total, reported by Tavily; the T0.4a section of each MANIFEST.md has the calls).
 
 **Done when:** All four titles have the new files. MANIFEST.md records the credits per call. The handoff log describes the shape of an extracted Common Sense review page. A grep for the key across `testdata/` and `tools/` finds nothing.
 
