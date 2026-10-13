@@ -1,0 +1,31 @@
+name: check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+
+      - uses: actions/setup-node@v4
+        if: hashFiles('web/package.json') != ''
+        with:
+          node-version: '24'
+
+      - uses: pnpm/action-setup@v4
+        if: hashFiles('web/package.json') != ''
+        with:
+          version: 11
+
+      - run: ./tools/check.sh
