@@ -165,5 +165,5 @@ Write `AGENTS.md`: the Go and Svelte versions, the dependency rule (Keel and Cha
 - [ ] Every secret resolves through `before-yes config`, and no key is in git.
 - [ ] Three demo titles and one alternative chosen.
 - [ ] Fixtures for all three titles committed, with Tavily credits per title recorded.
-- [x] `tools/check.sh` green locally and in CI.
-  - CI cannot run until the repository has a remote. The workflow is written and its YAML is valid, but it has not run.
+- [x] `tools/check.sh` green locally.
+- [ ] `tools/check.sh` green in CI (needs a remote).
