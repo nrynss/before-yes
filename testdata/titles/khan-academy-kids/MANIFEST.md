@@ -35,3 +35,24 @@ Written by `tools/capture`. The Tavily key is read from `TAVILY_KEY` and is neve
 ## Notes
 
 - reviews stopped at the feed's page limit of 10
+
+## T0.4a
+
+Written by `tools/capture -only`. A run rewrites the files of the kinds it ran and keeps the other rows. The credits of replaced calls stay in the total. The Tavily key is never recorded here.
+
+- Common Sense review page: https://www.commonsensemedia.org/app-reviews/khan-academy-kids
+- Credits on calls replaced by later runs: 0
+- T0.4a Tavily credits for this title: 3
+
+### Files
+
+| File | Source | HTTP status | Fetched (UTC) | Tavily credits | Note |
+|---|---|---|---|---|---|
+| tavily-extract-csm.json | https://api.tavily.com/extract | 200 | 2026-10-13T19:09:06Z | 0 | urls: https://www.commonsensemedia.org/app-reviews/khan-academy-kids/user-reviews/adult https://www.commonsensemedia.org/app-reviews/khan-academy-kids/user-reviews/child |
+| tavily-search-csm.json | https://api.tavily.com/search | 200 | 2026-10-13T19:09:05Z | 1 | review page: https://www.commonsensemedia.org/app-reviews/khan-academy-kids |
+| tavily-search-reddit-community.json | https://api.tavily.com/search | 200 | 2026-10-13T19:09:12Z | 1 | 8 results, 0 with raw_content |
+| tavily-search-reddit-parents.json | https://api.tavily.com/search | 200 | 2026-10-13T19:09:09Z | 1 | 8 results, 0 with raw_content |
+
+### Notes
+
+- review pages for other titles, not used: https://www.commonsensemedia.org/website-reviews/khan-academy

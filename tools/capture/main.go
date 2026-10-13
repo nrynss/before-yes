@@ -7,6 +7,10 @@
 //	set -a; . /path/to/before-yes/.env; set +a
 //	go run ./tools/capture -slug roblox -title "Roblox" -id 431946152 -out testdata/titles/roblox
 //	go run ./tools/capture -all
+//	go run ./tools/capture -all -only csm,reddit
+//
+// -only runs just the named T0.4a kinds (csm, reddit). It never calls the App
+// Store or the first Tavily kinds, and it adds to the T0.4 MANIFEST.md.
 //
 // The Tavily key is read from TAVILY_KEY and sent only in the Authorization
 // header. It is never written to a file, printed, or put in a URL.
@@ -61,7 +65,13 @@ func main() {
 	all := flag.Bool("all", false, "capture the four demo titles into <dir>/<slug>")
 	dir := flag.String("dir", "testdata/titles", "root directory for -all")
 	pause := flag.Duration("pause", 500*time.Millisecond, "wait between App Store requests")
+	only := flag.String("only", "", "run only these T0.4a kinds, comma-separated: csm, reddit")
 	flag.Parse()
+
+	kinds, err := parseOnly(*only)
+	if err != nil {
+		fail(err.Error())
+	}
 
 	type job struct {
 		d   demo
@@ -92,6 +102,13 @@ func main() {
 		now:    time.Now,
 	}
 	for _, j := range jobs {
+		if kinds != nil {
+			if err := c.captureT04a(j.d, j.out, kinds); err != nil {
+				fail(fmt.Sprintf("%s: %v", j.d.Slug, err))
+			}
+			fmt.Printf("%s: T0.4a %s captured into %s\n", j.d.Slug, *only, j.out)
+			continue
+		}
 		if err := c.capture(j.d, j.out); err != nil {
 			fail(fmt.Sprintf("%s: %v", j.d.Slug, err))
 		}
@@ -118,7 +135,7 @@ type capturer struct {
 // capture writes one title's fixtures and MANIFEST.md. The manifest is written
 // even when a step fails, so spent credits are never lost from the record.
 func (c *capturer) capture(d demo, out string) error {
-	r := &titleRun{c: c, out: out}
+	r := &titleRun{c: c, out: out, guard: maxTitleCredits}
 	err := r.run(d)
 	if werr := r.writeManifest(d); werr != nil && err == nil {
 		err = werr
@@ -144,9 +161,12 @@ type titleRun struct {
 	notes      []string
 	spent      float64 // reported Tavily credits so far
 	unreported int     // Tavily calls with no usage.credits
+	guard      float64 // stop the title once spent passes this
 	host       string
 	trackName  string
 	reviews    int
+	csmRan     bool   // T0.4a: the csm kind ran in this run
+	csmPage    string // T0.4a: the Common Sense review page, if one was found
 }
 
 func (r *titleRun) note(format string, args ...any) {
@@ -322,8 +342,8 @@ func (r *titleRun) keepTavily(name string, resp response) error {
 		last.credits = "not reported"
 		r.unreported++
 	}
-	if r.spent > maxTitleCredits {
-		return fmt.Errorf("spent %.1f Tavily credits, over the guard of %d; stopped", r.spent, maxTitleCredits)
+	if r.spent > r.guard {
+		return fmt.Errorf("spent %.1f Tavily credits, over the guard of %g; stopped", r.spent, r.guard)
 	}
 	return nil
 }
