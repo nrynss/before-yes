@@ -102,7 +102,7 @@ Write down the routes and their bodies:
 
 Errors use Keel's `wire` envelope. Before Yes adds its own codes: `budget_exhausted`, `no_sources`, `check_failed`, `live_checks_off`, `busy`. Keel's gate adds `rate_limited` and `passcode_required`.
 
-A failed job's terminal event always carries Keel's `job_failed`. The specific code travels in the job's result data, which Keel keeps on failure, and `GET /api/checks/{id}` surfaces it. Write the Keel issue text for a per-job error code in the handoff log (README guideline 7).
+A failed job's terminal event always carries Keel's `job_failed`. The specific code travels in the job's result data, which Keel keeps on failure, and `GET /api/checks/{id}` surfaces it. This gap is filed as [nrynss/keel#83](https://github.com/nrynss/keel/issues/83). If it lands before this task closes, use its code on the terminal instead of the result data.
 
 The progress event's `detail` carries `{"message": "..."}`, for example "reading 312 reviews".
 
@@ -116,4 +116,4 @@ The progress event's `detail` carries `{"message": "..."}`, for example "reading
 - [ ] The quote check rejects a changed word and an invented quote, by test.
 - [ ] Example evidence and card payloads committed, one card per verdict.
 - [ ] API and error codes documented, with examples.
-- [ ] The Keel issue text for job error codes is in the handoff log.
+- [x] The Keel gap for job error codes is filed as nrynss/keel#83.

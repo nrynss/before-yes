@@ -189,5 +189,5 @@ Newest first. One entry per closed task, finding, or split.
   - Token Factory base URL is `https://api.tokenfactory.nebius.com/v1`. Model ids `nvidia/nvidia-nemotron-3-nano-30b-a3b` and `nvidia/nemotron-3-super-120b-a12b` come from public examples, not Nebius docs. T2.1b confirms them against `GET /v1/models`.
   - Token Factory serves Nano with a 32k context and 4k output tokens, so reader chunks stay near 4k input tokens.
   - Apple's review feed was checked live (Roblox, id 431946152): 50 entries a page, review text in `content.label`, rating in `im:rating.label`.
-  - Possible Keel issue: `cost/sqlitestore` uses fixed table names, so two budget pools cannot share one database file. Workaround in the draft: one file per pool.
-  - Possible Keel issue: a failed job's terminal event always carries `job_failed`. The draft returns a typed outcome in the job's data, which Keel keeps on failure, and `GET /api/checks/{id}` surfaces it.
+  - Keel gap, filed as [nrynss/keel#82](https://github.com/nrynss/keel/issues/82): `cost/sqlitestore` uses fixed table names, so two budget pools cannot share one database file. Workaround in the draft: one file per pool.
+  - Keel gap, filed as [nrynss/keel#83](https://github.com/nrynss/keel/issues/83): a failed job's terminal event always carries `job_failed`. The draft returns a typed outcome in the job's data, which Keel keeps on failure, and `GET /api/checks/{id}` surfaces it.
