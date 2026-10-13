@@ -1,0 +1,112 @@
+# Before Yes settings. Copy this file to before-yes.toml (gitignored) and edit the copy.
+#
+# This file holds REFERENCES to keys, never key values. Keel refuses a literal
+# secret here. Each [secrets.*] table names an env file and a variable inside it.
+# The keys themselves stay in /home/nryn/work/before-yes/.env (mode 0600, gitignored).
+# See docs/keys.md for where each key comes from.
+
+# Where the server listens and where its data lives.
+listen   = "127.0.0.1:8090"
+data_dir = "data"
+web_dir  = "web/build"
+
+# live = false answers only from cached cards. Use it for judging week.
+live = true
+
+# App Store storefront whose reviews are read, and how many review pages.
+country      = "us"
+review_pages = 10
+
+# How long a card is reused, and how long the sources for a title are reused.
+card_max_age_hours     = 168
+evidence_max_age_hours = 168
+
+# Judge thinking switches, merged into the judge's request bodies. Top-level
+# keys must stay above the first table header. The main pass turns thinking
+# off, and the conflict pass turns it on. UNCONFIRMED: the switch name comes
+# from the model test. Confirm it against Token Factory at T2.1b.
+judge_fast  = { chat_template_kwargs = { enable_thinking = false } }
+judge_think = { chat_template_kwargs = { enable_thinking = true } }
+
+# Reader: Nemotron 3 Nano on Token Factory. Reads review chunks and sources.
+# Prices are dollars per million tokens.
+[reader]
+provider   = "tokenfactory"
+base_url   = "https://api.tokenfactory.nebius.com/v1"
+# UNCONFIRMED: check this model id against GET /v1/models at T2.1b before relying on it.
+model      = "nvidia/nvidia-nemotron-3-nano-30b-a3b"
+input_per_m  = 0.06
+output_per_m = 0.24
+max_tokens   = 4096
+# Placeholder pacing. Confirm the Token Factory rate limit at T2.1b.
+per_minute   = 60
+
+# Judge: Nemotron 3 Super on Token Factory. Grades the areas on each card.
+[judge]
+provider   = "tokenfactory"
+base_url   = "https://api.tokenfactory.nebius.com/v1"
+# UNCONFIRMED: check this model id against GET /v1/models at T2.1b before relying on it.
+model      = "nvidia/nemotron-3-super-120b-a12b"
+input_per_m  = 0.30
+output_per_m = 0.90
+max_tokens   = 4096
+# Placeholder pacing. Confirm the Token Factory rate limit at T2.1b.
+per_minute   = 60
+
+# Development alternative: free OpenRouter stand-ins. Uncomment to replace the
+# [reader] and [judge] tables above while developing. Do not use in the demo.
+# The reader stand-in is NOT Nano. It is a different model.
+# Replace the tables, do not add a second copy. Also point [secrets.reader] and
+# [secrets.judge] below at var = "OPENROUTER_KEY", or the stand-ins get no key.
+#
+# [reader]
+# provider   = "openrouter"
+# base_url   = "https://openrouter.ai/api/v1"
+# model      = "nvidia/nemotron-3.5-lightning:free"
+# input_per_m  = 0
+# output_per_m = 0
+# max_tokens   = 4096
+# per_minute   = 20
+#
+# [judge]
+# provider   = "openrouter"
+# base_url   = "https://openrouter.ai/api/v1"
+# model      = "nvidia/nemotron-3-super-120b-a12b:free"
+# input_per_m  = 0
+# output_per_m = 0
+# max_tokens   = 4096
+# per_minute   = 20
+
+# Spend ceilings. model_usd is the cap on all model spend, kept under the account
+# credit. tavily_credits_monthly is the Tavily free tier allowance.
+[budget]
+model_usd              = 20
+tavily_credits_monthly = 900
+
+# Key references. Each one names the env file, the variable inside it, and when to read it.
+[secrets.reader]
+source = "env_file"
+path   = "/home/nryn/work/before-yes/.env"
+var    = "NEBIUS_KEY"
+read   = "at_use"
+
+[secrets.judge]
+source = "env_file"
+path   = "/home/nryn/work/before-yes/.env"
+var    = "NEBIUS_KEY"
+read   = "at_use"
+
+[secrets.tavily]
+source = "env_file"
+path   = "/home/nryn/work/before-yes/.env"
+var    = "TAVILY_KEY"
+read   = "at_use"
+
+# Optional gate passcode. Uncomment when the gate is wired (T4.3). The variable
+# name below is a placeholder. It is not in .env yet, and the user must add it
+# to the env file before this reference will resolve.
+# [gate.passcode]
+# source = "env_file"
+# path   = "/home/nryn/work/before-yes/.env"
+# var    = "BEFORE_YES_PASSCODE"
+# read   = "at_use"
