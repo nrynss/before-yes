@@ -176,7 +176,7 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 
 | Phase | Tasks complete | Status |
 |---|---|---|
-| P0 | 7 / 8 | In progress. T0.1–T0.7 are done. T0.4a (Common Sense and Reddit fixtures) is open. |
+| P0 | 7 / 9 | In progress. T0.1–T0.7 are done. T0.4a is blocked on T0.4b, the advanced-extract probe for Common Sense and Reddit. |
 | P1 | 0 / 4 | Not started. T1.1 and T1.2 drafted. |
 | P2 | 0 / 8 | Not started. T2.1–T2.4 drafted. |
 | P3 | 0 / 8 | Not started. T3.1–T3.4 drafted. |
@@ -190,6 +190,12 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 
 Newest first. One entry per closed task, finding, or split.
 
+- **T0.4a merged as partial; T0.4b added.** Review: [t0.4a-round1.md](adversarial-review/t0.4a-round1.md).
+  - `tools/capture -only csm,reddit` captures Common Sense and Reddit for each title without repeating earlier captures. 13 credits were spent.
+  - A basic Tavily extract returns no individual Common Sense reviews: only a count and an unattributed summary, which must never be used as a review.
+  - Searching finds the right Common Sense page only for Khan.
+  - Reddit search results carry no thread text, only snippets.
+  - The user chose to probe Tavily's advanced extract (T0.4b) before deciding how T3.1 uses either source. The Reddit snippets in `tavily-search-reddit-*.json` are still verbatim text and quotable.
 - **T0.4 and T0.5 closed.** Review: [t0.4-round1.md](adversarial-review/t0.4-round1.md), APPROVE.
   - `testdata/titles/` holds four titles: Roblox, Khan Academy Kids, Minecraft and the Toca Life World alternative. Each has the App Store search, 10 review pages (500 reviews), five Tavily searches, an extract and a MANIFEST. `testdata/titles/README.md` holds the chosen set and its ages.
   - Tavily credits: 22 in total (Roblox 6, Toca 6, Khan 5, Minecraft 5).
