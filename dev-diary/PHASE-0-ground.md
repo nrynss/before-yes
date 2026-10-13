@@ -166,7 +166,7 @@ requires:   T0.4
 fixture-ok: no
 size:       S · mid
 owns:       testdata/titles/*/tavily-search-csm.json, testdata/titles/*/tavily-extract-csm.json, testdata/titles/*/tavily-search-reddit-*.json, tools/capture/
-status:     done
+status:     blocked: T0.4b
 ```
 Split from T0.4 after the user added two sources to the gather plan (T3.1, items 3 and 4). T0.4 was already capturing under the old plan.
 
@@ -179,6 +179,26 @@ Append each call's URL, status and credits to the title's `MANIFEST.md`. Record 
 **Credits spent:** Roblox 4, Minecraft 3, Khan Academy Kids 3, Toca Life World 3 (13 in total, reported by Tavily; the T0.4a section of each MANIFEST.md has the calls).
 
 **Done when:** All four titles have the new files. MANIFEST.md records the credits per call. The handoff log describes the shape of an extracted Common Sense review page. A grep for the key across `testdata/` and `tools/` finds nothing.
+
+---
+
+### T0.4b: Advanced extract probe for Common Sense and Reddit
+```yaml
+requires:   T0.4a
+fixture-ok: no
+size:       S · mid
+owns:       testdata/titles/*/tavily-extract-csm-advanced.json, testdata/titles/*/tavily-extract-reddit-advanced.json, tools/capture/
+status:     not-started
+```
+Split from T0.4a, which showed that a basic Tavily extract returns no individual Common Sense reviews (only "Based on N parent reviews" and an unattributed summary), and that Reddit search results carry no thread text (`raw_content` is null on all 64 hits). The user chose to probe Tavily's advanced extract before deciding how T3.1 uses these sources. See [the T0.4a review](adversarial-review/t0.4a-round1.md).
+
+For the four titles, run `extract_depth: "advanced"`:
+- **Common Sense:** the parent-reviews and kid-reviews pages (`<page>/user-reviews/adult` and `<page>/user-reviews/child`) of each title's own review page. Known pages: `website-reviews/roblox`, `app-reviews/minecraft`, `app-reviews/khan-academy-kids`, `app-reviews/toca-life-world-build-stories`. Confirm each page exists, and record any that does not.
+- **Reddit:** the thread URLs of the top two hits in each title's `tavily-search-reddit-parents.json`.
+
+Record credits per call. Then answer the T0.4a inspection questions again for the advanced output: do individual reviews come through, are their boundaries clear, do reviewer type, rating, age and date survive, and does a Reddit thread extract hold the post and its comments?
+
+**Done when:** The advanced extracts are committed for all four titles, with credits in each `MANIFEST.md`. The handoff log answers each inspection question with a short anonymised excerpt, and says plainly whether each source is usable for T3.1.
 
 ---
 
