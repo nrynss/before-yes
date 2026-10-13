@@ -124,14 +124,15 @@ fixture-ok: yes
 size:       M · frontier
 owns:       internal/spend/
 status:     drafted
+keel:       v0.7.1
 ```
-Implements `pipeline.Meter` over Keel `cost/sqlitestore`, with two pools:
+Implements `pipeline.Meter` over Keel `cost/sqlitestore`, with two pools in one database file:
 - **model:** USD nanodollars, a lifetime ceiling below the $25 credit;
 - **tavily:** thousandths of a credit, a monthly ceiling under 1,000 credits.
 
 Each call reserves its estimate first and is refused before it runs if the pool cannot cover it. While the call runs the estimate is held. Afterwards the meter settles what the call reported and writes a charge to the ledger, with the check id as its reference. A failed call releases its hold. A booking whose context was cancelled still lands, because the call ran.
 
-Keel's cost store uses fixed table names, so each pool has its own database file. Filed as [nrynss/keel#82](https://github.com/nrynss/keel/issues/82). If it lands, move both pools into the application's one database.
+With Keel v0.7.1 ([nrynss/keel#82](https://github.com/nrynss/keel/issues/82)), each pool is a cost store under its own namespace in the application's one database file. The draft opens one file per pool; remove that.
 
 **Done when:** Tests show an over-budget estimate refused before the call, a failed call releasing its hold, and a charge read back from the ledger through a fresh SQLite connection, not through the store.
 
@@ -162,4 +163,4 @@ Decide and document the ceilings, from the brief's arithmetic and T3.6's measure
 - [ ] Confirmed Token Factory model ids and thinking switches in the example settings.
 - [ ] The meter refuses before a call, releases on failure, and books to a durable ledger.
 - [ ] Budget ceilings documented with measured cost per check.
-- [x] The Keel gap for namespaced cost tables is filed as nrynss/keel#82.
+- [ ] Both pools share the application database through Keel v0.7.1 (nrynss/keel#82).

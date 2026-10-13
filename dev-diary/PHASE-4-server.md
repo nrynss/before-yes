@@ -29,7 +29,7 @@ status:     drafted
 
 The kind has a concurrency limit and is **not** idempotent. A check spends money, so a restart marks it interrupted instead of re-running it. The evidence cache keeps a re-ask cheap.
 
-The job reports progress as Keel `job.Progress`: stage, current and total when counting, and a `detail` message. `GET /api/checks/{id}/events` serves the job's topic through the Keel `stream` broker. `GET /api/checks/{id}` reads the stored result, including the specific error code carried in the result data (T1.4).
+The job reports progress as Keel `job.Progress`: stage, current and total when counting, and a `detail` message. `GET /api/checks/{id}/events` serves the job's topic through the Keel `stream` broker. `GET /api/checks/{id}` reads the stored result. A failure fails the job with its Before Yes code through Keel v0.7.1's job error code ([nrynss/keel#83](https://github.com/nrynss/keel/issues/83)), so the stream's terminal and the stored result carry the same code (T1.4).
 
 **Done when:** A test drives a check to done through the HTTP API with a fake pipeline. Another test reads the events stream and sees progress and the terminal frame. A failure surfaces `budget_exhausted` or `no_sources` from `GET /api/checks/{id}`.
 

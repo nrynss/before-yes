@@ -82,7 +82,7 @@ Commit one example card per verdict (`card-yes.json`, `card-settings.json`, `car
 
 ### T1.4: HTTP API and error codes ★
 ```yaml
-requires:   T1.3
+requires:   T1.3, Keel v0.7.1
 fixture-ok: yes
 size:       S · frontier
 owns:       docs/api.md, testdata/contracts/api/
@@ -102,7 +102,7 @@ Write down the routes and their bodies:
 
 Errors use Keel's `wire` envelope. Before Yes adds its own codes: `budget_exhausted`, `no_sources`, `check_failed`, `live_checks_off`, `busy`. Keel's gate adds `rate_limited` and `passcode_required`.
 
-A failed job's terminal event always carries Keel's `job_failed`. The specific code travels in the job's result data, which Keel keeps on failure, and `GET /api/checks/{id}` surfaces it. This gap is filed as [nrynss/keel#83](https://github.com/nrynss/keel/issues/83). If it lands before this task closes, use its code on the terminal instead of the result data.
+With Keel v0.7.1 ([nrynss/keel#83](https://github.com/nrynss/keel/issues/83)), a failed job carries its own code and detail on the stream's terminal error event, and `GET /api/checks/{id}` reports the same code after a restart. Before Yes's codes travel there. Do not put them in the job's result data. Document the exact v0.7.1 API this relies on.
 
 The progress event's `detail` carries `{"message": "..."}`, for example "reading 312 reviews".
 
@@ -116,4 +116,4 @@ The progress event's `detail` carries `{"message": "..."}`, for example "reading
 - [ ] The quote check rejects a changed word and an invented quote, by test.
 - [ ] Example evidence and card payloads committed, one card per verdict.
 - [ ] API and error codes documented, with examples.
-- [x] The Keel gap for job error codes is filed as nrynss/keel#83.
+- [ ] Error codes ride the job terminal through Keel v0.7.1 (nrynss/keel#83).

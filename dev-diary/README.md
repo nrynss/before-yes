@@ -14,6 +14,18 @@ Each phase document gives an engineer starting cold the complete context for its
 
 ---
 
+## Keel v0.7.1
+
+Keel v0.7.1 fixes the two gaps this project found: [nrynss/keel#82](https://github.com/nrynss/keel/issues/82) (cost stores share one database file) and [nrynss/keel#83](https://github.com/nrynss/keel/issues/83) (a failed job carries its own error code). It will be the last Keel change for this project.
+
+**Every task that imports Keel works on v0.7.1.** The first such task to start checks `go.mod` on `main`. If it still names v0.7.0, the task bumps it to v0.7.1 (`go get github.com/nrynss/keel@v0.7.1`) as its own first commit, lands that commit on `main` before anything else, and records the bump in the handoff log. Every later task finds it done.
+
+If the v0.7.1 tag does not exist yet when a Keel task starts, that task's status is `blocked: keel v0.7.1`. Work on parts that do not import Keel may continue. Do not build on v0.7.0 and do not reintroduce the workarounds.
+
+Tasks that import Keel: T1.4, T2.1, T2.2, T2.4, T2.5, T3.1–T3.5, T3.7, T4.1–T4.5, T6.1.
+
+---
+
 ## Starting from the scratch draft
 
 `scratch/` (in the main checkout, `/home/nryn/work/before-yes/scratch/`) holds the earlier backend draft. It is not on git, and nothing in it has been reviewed.
@@ -164,7 +176,7 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 
 | Phase | Tasks complete | Status |
 |---|---|---|
-| P0 | 3 / 7 | In progress. T0.1–T0.3 are done. T0.4–T0.7 are open. T0.5 and T0.6 are the user's. |
+| P0 | 4 / 7 | In progress. T0.1, T0.2, T0.3 and T0.6 are done. T0.4, T0.5 and T0.7 are open. T0.5 is the user's. |
 | P1 | 0 / 4 | Not started. T1.1 and T1.2 drafted. |
 | P2 | 0 / 8 | Not started. T2.1–T2.4 drafted. |
 | P3 | 0 / 8 | Not started. T3.1–T3.4 drafted. |
@@ -178,6 +190,8 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 
 Newest first. One entry per closed task, finding, or split.
 
+- **T0.6 closed.** The user checked the name. "Before Yes" stays.
+- **Keel v0.7.1 adopted.** The user confirmed v0.7.1 will fix #82 and #83 and be the last Keel change. The "Keel v0.7.1" section above gives the bump rule. T1.4, T2.4 and T4.1 now target the fixes, not the workarounds.
 - **T0.1, T0.2, T0.3 closed.**
   - **T0.1 (repository).** `go.mod` and `go.sum` moved from `scratch/` to the repository root in the main checkout at `/home/nryn/work/before-yes`, for T0.1. Both are committed in `1aa4bf9`. `scratch/go.mod` and `scratch/go.sum` are gone. Nothing under `scratch/` and no `.env` is tracked. `.gitignore` covers `scratch/`, `.env`, `.env.*` with `!.env.example`, `data/`, `*.db`, `*.db-wal`, `*.db-shm`, `web/build/`, `node_modules/` and `before-yes.toml`. No entry was missing.
   - **`.env`.** Mode `0600`, and ignored by git. Variable names only: `NVIDIA_KEY`, `NEBIUS_KEY`, `TAVILY_KEY`, `OPENROUTER_KEY`. Quoted-value lines: 4 (all four names above). `export`-prefixed lines: 0. The user must remove the surrounding quotes from those four lines before any secret reference resolves. Keel's `env_file` expects bare `NAME=value` lines. The user should also remove any `export ` prefix, if one is added later. No value was printed or committed.
@@ -189,5 +203,5 @@ Newest first. One entry per closed task, finding, or split.
   - Token Factory base URL is `https://api.tokenfactory.nebius.com/v1`. Model ids `nvidia/nvidia-nemotron-3-nano-30b-a3b` and `nvidia/nemotron-3-super-120b-a12b` come from public examples, not Nebius docs. T2.1b confirms them against `GET /v1/models`.
   - Token Factory serves Nano with a 32k context and 4k output tokens, so reader chunks stay near 4k input tokens.
   - Apple's review feed was checked live (Roblox, id 431946152): 50 entries a page, review text in `content.label`, rating in `im:rating.label`.
-  - Keel gap, filed as [nrynss/keel#82](https://github.com/nrynss/keel/issues/82): `cost/sqlitestore` uses fixed table names, so two budget pools cannot share one database file. Workaround in the draft: one file per pool.
-  - Keel gap, filed as [nrynss/keel#83](https://github.com/nrynss/keel/issues/83): a failed job's terminal event always carries `job_failed`. The draft returns a typed outcome in the job's data, which Keel keeps on failure, and `GET /api/checks/{id}` surfaces it.
+  - Keel gap, filed as [nrynss/keel#82](https://github.com/nrynss/keel/issues/82): `cost/sqlitestore` uses fixed table names, so two budget pools cannot share one database file. The draft keeps one file per pool. Keel v0.7.1 fixes it, and T2.4 removes that workaround.
+  - Keel gap, filed as [nrynss/keel#83](https://github.com/nrynss/keel/issues/83): a failed job's terminal event always carries `job_failed`. Keel v0.7.1 fixes it, and T1.4 and T4.1 use the fix. The draft's result-data workaround below is obsolete. The draft returns a typed outcome in the job's data, which Keel keeps on failure, and `GET /api/checks/{id}` surfaces it.
