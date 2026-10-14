@@ -597,7 +597,7 @@ requires:   T3.9
 fixture-ok: no
 size:       M · frontier
 owns:       internal/pipeline/judge.go, internal/pipeline/judge_test.go, tools/eval/live.go, testdata/eval/replies/, the reader and judge max_tokens lines in before-yes.toml.example, docs/budget.md (re-measured figures only)
-status:     in-review
+status:     done
 ```
 T3.9 grounds each grade after the judge answers, by finding a verbatim run of a verified quote in the reason. With the prompt unchanged, Super paraphrases and never quotes, so no recorded flag or setting survives. All three demo titles replay as **unclear**, including Roblox's contact area, which a real quote backs ("a child predator might ask where you are"). The grades are now honest, but a demo of three unclear cards does not work.
 

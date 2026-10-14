@@ -181,7 +181,7 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 | P0 | 9 / 9 | Done. Two exit criteria wait on later tasks: a live Nano call (T2.1b) and the config check (T4.4). CI is green. |
 | P1 | 4 / 4 | Done. The `job.Failure` exit criterion waits on T4.1. The main-checkout pins and `.env` leak check, waived at landing, ran at the P1–P2 integration and passed. |
 | P2 | 12 / 12 | Done. All six exit criteria are met. Measured model cost is $0.0309 per check. Tavily is 7–8 credits per check, from fixtures, not a live run. |
-| P3 | 11 / 12 | Everything but T3.9b is done. T3.9 grounds every grade in a verified quote, and on the recorded replies all three demo titles now read **unclear**, because the judge paraphrases. T3.9b makes the judge cite finding ids and re-records live. |
+| P3 | 12 / 12 | All tasks are done. Every standing grade now cites verified, in-area findings by id (T3.9b). All three demo titles read **no**. Roblox matches its expectation. Minecraft and Khan Academy Kids rest on over-strict flags from real but weak quotes, so judge calibration is the open quality question (see the handoff log). |
 | P4 | 0 / 5 | Not started. T4.1, T4.2 and T4.4 drafted. |
 | P5 | 1 / 7 | T5.1 is done: the app shell and themes. T5.2, T5.3 and T5.4 can start from it. |
 | P6 | 0 / 6 | Not started. |
@@ -192,6 +192,32 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 
 Newest first. One entry per closed task, finding, or split.
 
+- **T3.9b closed.** Sonnet implemented it, and the orchestrator validated it with no review loop.
+  - **What landed:**
+    - The judge's prompt asks it to cite the few findings that decide each area.
+    - `checkCitations` (judge.go): a `flag` or `ok_with_setting` stands only if it cites at least one id, and every id is a verified finding in that area with a fitting stance. Otherwise the grade becomes `unknown`, and the area is listed in `thin_areas`.
+    - The setting-naming check from T3.9 stays. T3.9's verbatim-run check on the reason is dropped: on the recordings it rejected 7 of 11 correctly cited grades.
+  - **Re-recorded live on Token Factory,** with the reader at 8192 tokens: $0.106.
+    - Replay has 0 misses.
+    - Replies at the cap went from 4 to 1, and unquoted drops from 23.3% to 21.5%, within run-to-run noise, so the cap barely matters.
+    - Cost per check is now **$0.0353** (Roblox $0.034, Minecraft $0.047, Khan $0.025). `docs/budget.md` is updated: 565 checks under $20, reserve 141. No ceiling changed.
+  - **Results:**
+
+    | Title | T3.6b / T3.9 / T3.9b | Grades agreed | Notes |
+    |---|---|---|---|
+    | Roblox, 9 | no / unclear / **no** | 3/6 | Matches T0.5. Age gating and developer record flags are cited. Contact and money are `ok_with_setting`. |
+    | Minecraft, 9 | no / unclear / **no** | 1/6 | The developer_record flag cites a marketing line, but its reason claims "regulatory fines": invented. |
+    | Khan Academy Kids, 5 | no / unclear / **no** | 2/6 | Four flags rest on real but weak quotes: comments, an email address, two odd reviews, and a subscription price likely from another Khan product. |
+
+  - **Orchestrator assessment:** citations are now structurally sound. The remaining error is in judging.
+    - The judge flags whatever it can cite, with no proportion.
+    - An invented reason can still sit on a real id (L1).
+    - Gathering can pull in pages about a sibling product.
+    - Demo titles are not re-picked on these verdicts.
+  - **Validation:**
+    - The replay was reproduced here, and the per-area reasons were read.
+    - Gate rc 0 in the worktree after the rebase, and on main. No key values found. No dates.
+    - Outside owns: the `ruleJudge` test stub, `feedback.md` entries, and a replies README note.
 - **T5.1 closed (PR #18).** Implemented by a remote orchestrator. Round 1 was APPROVE, with no findings and no residue.
   - **What landed:** `web/` with Svelte 5 (runes), SvelteKit on Vite with `adapter-static`, Chaaya 0.4.1 and Bits UI.
     - Light and dark themes, plus system-following, persisted.
