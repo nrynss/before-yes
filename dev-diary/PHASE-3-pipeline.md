@@ -384,6 +384,15 @@ T3.1 calls this when the review feed returns nothing. The card's small print say
 - **Outside `owns`, kept minimal:** one line in pipeline.go's `Collect`, which builds `Stats`, copies `ReviewSource` across. In `types_test.go`, the contract example generator sets `ReviewSource` to "feed" when an example has reviews. The six contract examples in `testdata/contracts/` (including `api/get-card.json`) each gain `"review_source"`; the change is additive.
 - **Tests:** `TestParseStorePageFixtures` (all four T3.8a pages: Roblox 4 reviews, Minecraft 3, Khan 3, Toca 3, titles in order, bodies verbatim lines of the page); `TestParseStorePageDropsResponses`; `TestParseStorePageEdges`; `TestGatherFallsBackToStorePage` (documents, sources, and a finding passing `finding.Verify`); `TestStorePageOnlyWhenFeedEmpty`; `TestStorePageWithoutReviewsIsMissing`.
 
+**Round 1 remediation (T3.8).**
+
+| ID | Fix | Test |
+|---|---|---|
+| H1 | `ParseStorePage` finds block boundaries from the page's doubling, not from line pairs. At each line it looks for the shortest run of two or more lines that is followed at once by its own repeat, where the repeat may carry one developer-response label that the first copy lacks. That run is one block: its first line is the title, the lines up to the label's place are the body, and the rest is the response, which is dropped. A line that starts no doubled block (a rating summary, "See All", other chrome) is skipped. An Editors' Choice block is dropped whole, however many lines it has. | `TestParseStorePageStructure` (all the reviewer's cases: rating summary, one aggregate line, two-line body, two-line response, two-line blurb, "See All"); `TestParseStorePageFixtures` still passes for all four captures |
+| M1 | A response label is the exact line "Developer Response <date>" (numeric or month-name date). It counts only where it appears in a repeat and not in the first copy; its unlabelled first copy is the matching tail of the first copy. A review titled "Developer Response is slow" survives. | `TestParseStorePageStructure` ("review titled like a label", "response dated by month") |
+
+The parser now relies on the doubling. A page that showed each review only once would yield no reviews, so the review source would be missing rather than misread. No capture shows such a page.
+
 ---
 
 ## Exit Criteria

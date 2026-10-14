@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -215,5 +216,47 @@ func TestStorePageWithoutReviewsIsMissing(t *testing.T) {
 	got, _ = g.Gather(context.Background(), "Roblox", "c")
 	if !contains(got.Failures, "store_page") {
 		t.Errorf("unreadable page failures %v", got.Failures)
+	}
+}
+
+// The round-1 attack cases: page chrome, multi-line bodies, responses and
+// blurbs, and a review titled like a label.
+func TestParseStorePageStructure(t *testing.T) {
+	page := func(lines ...string) string {
+		return "Roblox\nRatings & Reviews\n" + strings.Join(lines, "\n") + "\nWhat’s New\nBug fixes"
+	}
+	type rv struct{ title, body string }
+	for name, c := range map[string]struct {
+		text string
+		want []rv
+	}{
+		"rating summary": {page("4.5 out of 5", "1.2M Ratings", "A", "body a", "A", "body a", "B", "body b", "B", "body b"),
+			[]rv{{"A", "body a"}, {"B", "body b"}}},
+		"one aggregate line": {page("4.5 out of 5", "A", "body a", "A", "body a", "B", "body b", "B", "body b"),
+			[]rv{{"A", "body a"}, {"B", "body b"}}},
+		"two-line body": {page("A", "body a1", "body a2", "A", "body a1", "body a2", "B", "body b", "B", "body b"),
+			[]rv{{"A", "body a1\nbody a2"}, {"B", "body b"}}},
+		"two-line response": {page("A", "body a", "thanks", "more thanks", "A", "body a", "Developer Response 01/30/2023", "thanks", "more thanks", "B", "body b", "B", "body b"),
+			[]rv{{"A", "body a"}, {"B", "body b"}}},
+		"two-line blurb": {page("Editors’ Choice", "blurb1", "blurb2", "Editors’ Choice", "blurb1", "blurb2", "A", "body a", "A", "body a"),
+			[]rv{{"A", "body a"}}},
+		"see all": {page("A", "body a", "A", "body a", "See All", "B", "body b", "B", "body b", "See All"),
+			[]rv{{"A", "body a"}, {"B", "body b"}}},
+		"review titled like a label": {page("Developer Response is slow", "they never answer my kid was contacted", "Developer Response is slow", "they never answer my kid was contacted"),
+			[]rv{{"Developer Response is slow", "they never answer my kid was contacted"}}},
+		"response dated by month": {page("A", "body a", "hi", "A", "body a", "Developer Response Jun 22", "hi"),
+			[]rv{{"A", "body a"}}},
+	} {
+		got := ParseStorePage(c.text)
+		var have []rv
+		for i, r := range got {
+			if r.Position != i+1 {
+				t.Errorf("%s: position %d at %d", name, r.Position, i+1)
+			}
+			have = append(have, rv{r.Title, r.Body})
+		}
+		if fmt.Sprint(have) != fmt.Sprint(c.want) {
+			t.Errorf("%s: got %q, want %q", name, have, c.want)
+		}
 	}
 }
