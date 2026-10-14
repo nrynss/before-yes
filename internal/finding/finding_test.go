@@ -147,10 +147,77 @@ func TestFixtureReview(t *testing.T) {
 		t.Fatal(err)
 	}
 	body := feed.Feed.Entry[0].Content.Label
-	quote := strings.ReplaceAll(body[:80], "’", "'")
+	cut := strings.LastIndex(body[:80], " ")
+	quote := strings.ReplaceAll(body[:cut], "’", "'")
 	s := map[string]Segment{"R1": {Text: body, Source: Source{URL: "u", Kind: "review", Index: 1}}}
 	fs, d := Verify([]Raw{{Ref: "R1", Area: "money", Stance: "risk", Quote: quote}}, s)
 	if len(fs) != 1 {
 		t.Fatalf("fixture quote failed: %+v", d)
+	}
+}
+
+// T1.2 round 1 H1: a quote may not start or end inside a word.
+func TestWordBoundaries(t *testing.T) {
+	s := map[string]Segment{"D1": {Text: "This game is unsafe for young kids, chat is open to anyone.", Source: Source{URL: "u", Kind: "forum"}}}
+	for _, q := range []string{"safe for young kids", "s unsafe for young k", "is unsafe for young k", "his game is unsafe"} {
+		fs, d := Verify([]Raw{{Ref: "D1", Area: "contact", Stance: "mitigation", Quote: q}}, s)
+		if len(fs) != 0 || d.Unquoted != 1 {
+			t.Errorf("%q verified across a word cut", q)
+		}
+	}
+	for _, q := range []string{"is unsafe for young kids", "This game is unsafe", "chat is open to anyone.", "unsafe for young kids, chat"} {
+		if fs, _ := Verify([]Raw{{Ref: "D1", Area: "contact", Stance: "risk", Quote: q}}, s); len(fs) != 1 {
+			t.Errorf("%q did not verify", q)
+		}
+	}
+	// A later whole-word occurrence still verifies after an earlier partial one.
+	s2 := map[string]Segment{"D1": {Text: "it is unsafe for kids. it is safe for kids at home", Source: Source{URL: "u"}}}
+	if fs, _ := Verify([]Raw{{Ref: "D1", Area: "contact", Stance: "risk", Quote: "safe for kids at home"}}, s2); len(fs) != 1 {
+		t.Error("whole-word occurrence after a partial one was missed")
+	}
+}
+
+// T1.2 round 1 M1: risk and reassurance readings of one quote collapse to the risk.
+func TestDuplicateRiskWins(t *testing.T) {
+	q := "the filter didn't catch it when someone asked"
+	mit := Raw{Ref: "R312", Area: "contact", Stance: "mitigation", Claim: "filter exists", Quote: q}
+	risk := Raw{Ref: "R312", Area: "contact", Stance: "risk", Claim: "filter failed", Quote: q}
+	for name, in := range map[string][]Raw{"mitigation first": {mit, risk}, "risk first": {risk, mit}} {
+		fs, d := Verify(in, segs)
+		if len(fs) != 1 || fs[0].Stance != Risk || fs[0].Claim != "filter failed" || d.Duplicates != 1 {
+			t.Errorf("%s: got %+v %+v", name, fs, d)
+		}
+	}
+	other := Raw{Ref: "R312", Area: "contact", Stance: "neutral", Quote: "asked my 7 year old for her number"}
+	fs, _ := Verify([]Raw{mit, other, risk}, segs)
+	if len(fs) != 2 || fs[0].Stance != Risk || fs[1].Stance != Neutral {
+		t.Errorf("order not kept: %+v", fs)
+	}
+}
+
+// T1.2 round 1 L1: composed and decomposed accents match.
+func TestNFC(t *testing.T) {
+	s := map[string]Segment{"D1": {Text: "caf\u00e9 chat is filtered well", Source: Source{URL: "u"}}}
+	if fs, _ := Verify([]Raw{{Ref: "D1", Area: "contact", Stance: "mitigation", Quote: "cafe\u0301 chat is filtered"}}, s); len(fs) != 1 {
+		t.Error("decomposed accent did not match composed source")
+	}
+	if Normalize("cafe\u0301") != Normalize("caf\u00e9") {
+		t.Error("Normalize is not NFC")
+	}
+}
+
+// T1.2 round 1 L2: prose before unfenced JSON.
+func TestParseProse(t *testing.T) {
+	item := `{"ref":"R1","area":"money","claim":"c","stance":"risk","quote":"q"}`
+	for _, in := range []string{
+		"Here are the findings: {\"findings\":[" + item + "]}",
+		"Findings [see below]:\n[" + item + "]\nDone.",
+	} {
+		if rs, err := Parse(in); err != nil || len(rs) != 1 {
+			t.Errorf("%q: %v %v", in, rs, err)
+		}
+	}
+	if _, err := Parse("I found {nothing} today"); !errors.Is(err, ErrParse) {
+		t.Error("prose with braces parsed")
 	}
 }

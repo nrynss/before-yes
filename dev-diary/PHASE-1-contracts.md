@@ -40,10 +40,19 @@ Bump `checklist.Version` whenever an area's wording or a rule changes, because c
 
 
 **Implementation notes (in review).** The scratch draft was not reachable from the implementing session (it lives only in the main checkout), so `internal/checklist/` was written fresh from this spec and the brief.
-- **Verdict question: provisionally `unclear` kept, pending the user's confirmation.** Without it, a title with no evidence on contact or content would compute to "yes". Rules in `Decide`, in order: refuse an incomplete, duplicated or invalid set (`ErrGrades`); any `flag` is `no`; contact or content `unknown` is `unclear`; three or more of six `unknown` is `unclear`; any `ok_with_setting` is `yes_with_settings`; otherwise `yes`. If the user drops `unclear`, rules 3 and 4 need a replacement, `Version` bumps, and T1.3 drops `card-unclear.json`.
+- **Verdict question: decided by the user. `unclear` is kept, and the decision is final.** It stops a title with no evidence on contact or content from computing to "yes". Rules in `Decide`, in order: refuse an incomplete, duplicated or invalid set (`ErrGrades`); any `flag` is `no`; contact or content `unknown` is `unclear`; three or more of six `unknown` is `unclear`; any `ok_with_setting` is `yes_with_settings`; otherwise `yes`. T1.3 keeps `card-unclear.json`.
 - `Decide` takes grades only. The child's age reaches the verdict through the judge's grades, not through a rule here.
 - `Enforce(grades, map[id]Cited)` takes a small `Cited{Area, Risk}` view of each verified finding, so `checklist` does not import `finding` (T1.2 requires T1.1). It returns six grades in card order plus a `Demotion` list. Beyond the four spec rules it also discards a grade with an unknown area or level, and a second grade for an area, and clears `setting` on any grade demoted to `unknown`.
 - `Decide` also refuses `ok_with_setting` with no setting, so `Enforce` output is the only safe input.
+
+**Remediation, round 1** ([review](adversarial-review/t1.1-round1.md)). `checklist.Version` is bumped to `v2`, because an `Enforce` rule changed.
+
+| Finding | Fix | Test |
+|---|---|---|
+| H1 | The user decided to keep `unclear`, and that decision is final. Recorded above. | none (a decision) |
+| M1 | `Enforce`: contact or content graded `ok` with no remaining verified finding becomes `unknown` (`ok_without_finding`), so `Decide` gives `unclear`, never `yes`. Other areas may still be `ok` with no finding. | `TestEvidenceFreeOKIsNotYes`, plus `TestEnforce` cases for contact and content `ok` with and without findings |
+| L1 | A setting is trimmed. A blank setting counts as no setting in both `Enforce` and `Decide`. | `TestSettingTrimmed`, `TestEnforce` "blank setting demoted" |
+| L2 | A finding id cited twice in one grade is kept once. Added a case for a grade whose area is unknown. | `TestEnforce` "repeated id kept once", "unknown area discarded" |
 ---
 
 ### T1.2: Finding format and the quote check ★
@@ -73,6 +82,20 @@ The parser accepts a JSON object with a `findings` array, a bare array, or eithe
 - **Id choice:** every App Store review shares one feed URL, so the id key is the URL plus `#<review index>` when the index is set. Without that, the same sentence in two reviews would collapse into one finding. Ids are `f_` plus 16 hex characters of SHA-256.
 - Normalization maps the ellipsis character to `...`, typographic single and double quotes to ASCII, the dash family to `-`, collapses whitespace and lowercases. Nothing else.
 - `Cited(findings)` gives `checklist.Enforce` its evidence map.
+
+**Remediation, round 1** ([review](adversarial-review/t1.2-round1.md)).
+
+| Finding | Fix | Test |
+|---|---|---|
+| H1 | The match respects word boundaries. Where the quote starts or ends with a letter or digit, the text beside it must not be a letter or digit, so "safe for young kids" no longer verifies inside "unsafe for young kids". Every occurrence is tried, so a whole-word match later in the text still counts. | `TestWordBoundaries` |
+| M1 | Decided: when one quote is read twice (same id), a `risk` reading wins over `mitigation` or `neutral`. It replaces the earlier finding in place, keeping input order. The duplicate is still counted. | `TestDuplicateRiskWins` |
+| M2 | Tests now pin H1 and M1. | as above |
+| L1 | `Normalize` applies Unicode NFC first, so composed and decomposed accents match. | `TestNFC` |
+| L2 | `Parse` also accepts prose before and after unfenced JSON. This goes beyond the spec's three forms, so T3.2 can rely on it. | `TestParseProse` |
+
+**New dependency: `golang.org/x/text` v0.30.0** (for `unicode/norm`, which the standard library lacks). This is outside `owns`: `go.mod` and `go.sum` change by this one module. v0.30.0 is the newest version that bumps nothing else in the graph; later versions pull a newer `golang.org/x/sync`. The orchestrator copies this reason into the handoff log, as AGENTS.md requires.
+
+`TestFixtureReview` now cuts its quote at a word boundary. The old byte cut ended mid-word, which the H1 fix correctly rejects.
 ---
 
 ### T1.3: Evidence and card payloads ★
@@ -80,7 +103,7 @@ The parser accepts a JSON object with a `findings` array, a bare array, or eithe
 requires:   T1.1, T1.2
 fixture-ok: yes
 size:       S · frontier
-owns:       internal/pipeline/types.go, testdata/contracts/evidence.json, testdata/contracts/card-*.json
+owns:       internal/pipeline/types.go, internal/pipeline/types_test.go, testdata/contracts/evidence.json, testdata/contracts/card-*.json
 status:     in-review
 ```
 **Evidence** is everything read about a title before any age applies: title, collected at, App Store info, verified findings, stats. It is cached by title and reused across ages.
@@ -100,6 +123,17 @@ Commit one example card per verdict (`card-yes.json`, `card-settings.json`, `car
 - `card-unclear.json` uses Toca Life World with reviews withheld, as a shape example only. It is not a prediction (the README expects yes with settings).
 - Tests: strict decode with unknown fields refused and re-encode compared as JSON (round trip); every JSON member path of `Card` and `Evidence` must appear in at least one example (adding a field fails); examples obey `Decide`, `Enforce`, `Settings`, `checklist.Version` and the finding id hash.
 - Money in nanodollars (`read_cost_nano`, `judge_cost_nano`). `app` is `null` when no App Store hit matched. Optional values are present-but-empty rather than omitted, except `grades[].setting` and `grades[].reason`.
+
+**Remediation, round 1** ([review](adversarial-review/t1.3-round1.md)). The examples were regenerated on top of the T1.1 and T1.2 fixes, under checklist `v2`.
+
+| Finding | Fix | Test |
+|---|---|---|
+| M1 | The orchestrator added `internal/pipeline/types_test.go` to T1.3's `owns` (above). It holds the contract tests and the example generator, and only T1.3 edits it. T3.4 keeps `pipeline_test.go` and must not touch this file. | `git diff --stat` shows only owned paths plus the merges from T1.1 and T1.2 |
+| M2 | Every example `ok` on contact or content now cites a real, verified finding. `card-yes`: contact cites the App Store listing's "Made For Ages 0–5" (Kids category); content cites review 311. `card-settings`: content cites the official Minecraft parents' guide ("some elements of mild violence"). The examples pass `Enforce` with zero demotions under the new `ok_without_finding` rule. | `TestExamplesObeyRules`, `TestGenerate` |
+| L1 | Handoff note: `card-no.json`'s deciding contact quote is review 355. The captured feed's review 312 is not about contact. BRIEF's "review 312" is an illustration, and T6.3 and T6.4 should cite whichever index the live run holds. | none (a note) |
+| L2 | The Common Sense Media parents' guide is now kind `article`, not `forum`. Source kinds are: `review`, `policy`, `terms`, `reddit`, `forum` (a discussion board), `article` (an editorial guide or explainer), `news`, `rating` (a rating board or official parents' guide), `store` (an app-store listing). T3.1 assigns them. The `finding.Source.Kind` comment lists them (a comment, not behaviour). | `card-no.json` |
+
+**Known gap in `card-yes`:** the Khan contact evidence is thin. The listing says only that the app is in Apple's Kids category, and no fixture says outright "no chat". The Khan fixtures also hold a content risk that the example leaves out: review 17 ("scary devil faces ... popped up"). The examples are contract shapes. Khan's real verdict belongs to T3.6b.
 ---
 
 ### T1.4: HTTP API and error codes ★

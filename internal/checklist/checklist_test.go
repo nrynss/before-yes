@@ -152,6 +152,20 @@ func TestEnforce(t *testing.T) {
 		{"skipped area added unknown", nil, DeveloperRecord, Unknown, []string{}, []string{"developer_record:skipped_area"}},
 		{"duplicate discarded", []Grade{{Area: Money, Level: OK}, {Area: Money, Level: Flag, Findings: []string{"m-risk"}}},
 			Money, OK, []string{}, []string{"money:duplicate_grade"}},
+		{"contact ok without finding demoted", []Grade{{Area: Contact, Level: OK, Findings: []string{"nope"}}},
+			Contact, Unknown, []string{}, []string{"contact:missing_finding", "contact:ok_without_finding"}},
+		{"content ok without finding demoted", []Grade{{Area: Content, Level: OK}},
+			Content, Unknown, []string{}, []string{"content:ok_without_finding"}},
+		{"contact ok with mitigation stands", []Grade{{Area: Contact, Level: OK, Findings: []string{"c-mit"}}},
+			Contact, OK, []string{"c-mit"}, nil},
+		{"other area ok without finding stands", []Grade{{Area: Money, Level: OK}},
+			Money, OK, []string{}, nil},
+		{"blank setting demoted", []Grade{{Area: Money, Level: OKWithSetting, Setting: "   ", Findings: []string{"m-mit"}}},
+			Money, Unknown, []string{"m-mit"}, []string{"money:setting_without_name"}},
+		{"repeated id kept once", []Grade{{Area: Contact, Level: Flag, Findings: []string{"c-risk", "c-risk"}}},
+			Contact, Flag, []string{"c-risk"}, nil},
+		{"unknown area discarded", []Grade{{Area: "vibes", Level: Flag, Findings: []string{"c-risk"}}},
+			"vibes", "", nil, []string{"vibes:invalid_grade"}},
 		{"bad level discarded", []Grade{{Area: Money, Level: "great"}},
 			Money, Unknown, []string{}, []string{"money:invalid_grade", "money:skipped_area"}},
 	}
@@ -167,6 +181,18 @@ func TestEnforce(t *testing.T) {
 		}
 		if _, err := Decide(out); err != nil {
 			t.Errorf("%s: Decide refused Enforce output: %v", c.name, err)
+		}
+		if !c.area.Valid() {
+			var got []string
+			for _, r := range rules(dem) {
+				if strings.HasPrefix(r, string(c.area)+":") {
+					got = append(got, r)
+				}
+			}
+			if !reflect.DeepEqual(got, c.wantRules) {
+				t.Errorf("%s: demotions %v; want %v", c.name, got, c.wantRules)
+			}
+			continue
 		}
 		g := one(t, out, c.area)
 		if g.Level != c.wantLevel || !reflect.DeepEqual(g.Findings, c.wantIDs) {
@@ -184,6 +210,31 @@ func TestEnforce(t *testing.T) {
 		if g.Level == Unknown && g.Setting != "" {
 			t.Errorf("%s: unknown grade kept a setting", c.name)
 		}
+	}
+}
+
+// The hole T1.1 round 1 M1 found: a judge grading every area ok with no
+// evidence must not reach yes.
+func TestEvidenceFreeOKIsNotYes(t *testing.T) {
+	var in []Grade
+	for _, s := range Areas() {
+		in = append(in, Grade{Area: s.ID, Level: OK, Findings: []string{"nope"}})
+	}
+	out, _ := Enforce(in, ev)
+	if v, err := Decide(out); err != nil || v != Unclear {
+		t.Errorf("got %q %v, want unclear", v, err)
+	}
+}
+
+func TestSettingTrimmed(t *testing.T) {
+	out, _ := Enforce([]Grade{{Area: Money, Level: OKWithSetting, Setting: "  Ask to Buy ", Findings: []string{"m-mit"}}}, ev)
+	if g := one(t, out, Money); g.Setting != "Ask to Buy" {
+		t.Errorf("setting %q", g.Setting)
+	}
+	gs := set(map[Area]Level{Money: OKWithSetting})
+	gs[1].Setting = " "
+	if _, err := Decide(gs); !errors.Is(err, ErrGrades) {
+		t.Error("Decide accepted a blank setting")
 	}
 }
 
