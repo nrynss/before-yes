@@ -323,12 +323,21 @@ func TestListPageEntries(t *testing.T) {
 		"4. **This entry reads like a long sentence about many things**\n" +
 		"5. **Animal Crossing: New Horizons** (Switch)\n" +
 		"6. **Sixth Pick**\n"
-	got := listNames(list, func(n string) bool { return sameTitle(n, "Roblox") }, nil)
+	if got := listNames(list, nil, nil); len(got) != 0 {
+		t.Errorf("uncorroborated listNames = %q, want none", got)
+	}
+	got := listNames(list, func(n string) bool { return sameTitle(n, "Roblox") },
+		knownSet("Calm Builder", "Roblox", "Quiet Garden", "Animal Crossing: New Horizons", "Sixth Pick"))
 	if strings.Join(got, "|") != "Calm Builder|Quiet Garden|Animal Crossing: New Horizons" {
 		t.Errorf("listNames = %q", got)
 	}
 	e, s, _, card := altE2E(t)
-	s.hits = []tavily.Result{{URL: "https://www.example.com/list", Title: "10 Best Games Like Roblox for Kids", RawContent: list}}
+	s.hits = []tavily.Result{
+		{URL: "https://www.example.com/list", Title: "10 Best Games Like Roblox for Kids", RawContent: list},
+		{URL: "https://play.google.com/store/apps/details?id=calm", Title: "Calm Builder - Apps on Google Play"},
+		{URL: "https://apps.apple.com/us/app/quiet-garden/id2", Title: "\u200eQuiet Garden on the App Store"},
+		{URL: "https://www.example.org/ac", Title: "Animal Crossing: New Horizons | Common Sense Media"},
+	}
 	pending, err := e.p.FindAlternatives(context.Background(), card, "check-1")
 	if err != nil {
 		t.Fatal(err)
@@ -350,16 +359,33 @@ func TestListPageEntries(t *testing.T) {
 
 // The round-2 reviewer's pages: section headings, advice steps and the title
 // itself take no slot, and markdown is stripped from names.
+// knownSet stands in for the titles of a search response's other hits.
+func knownSet(names ...string) func(string) bool {
+	return func(n string) bool {
+		for _, k := range names {
+			if appName(k) == appName(n) {
+				return true
+			}
+		}
+		return false
+	}
+}
+
 func TestListPageRejectsHeadingsAndSteps(t *testing.T) {
 	notRoblox := func(n string) bool { return sameTitle(n, "Roblox") }
-	knownSet := func(names ...string) func(string) bool {
-		return func(n string) bool {
-			for _, k := range names {
-				if appName(k) == appName(n) {
-					return true
-				}
-			}
-			return false
+	// The round-4 probe pages: markup is no title evidence, so none of these
+	// gives a name without a corroborating hit.
+	for _, page := range []string{
+		"1. **Turn on parental controls**\n2. **Disable chat** in settings\n3. **Set a time limit**\n",
+		"## **Why we like it**\n## **Our verdict**\n## **Pros and cons**\n",
+		"1. **Note:** keep chat off.\n2. **Tip:** set a time limit.\n",
+		"1. [Download the app](x)\n2. [Open settings](y)\n",
+		"1. Download the app\n2. Open settings\n3. Disable chat\n",
+		"1. Turn on parental controls\n2. Set a spending limit\n3. Talk to your kid\n",
+		"1. **Stop Motion Studio**\n2. **Minecraft**\n",
+	} {
+		if got := listNames(page, notRoblox, knownSet()); len(got) != 0 {
+			t.Errorf("listNames(%q) = %q, want none", page, got)
 		}
 	}
 	cases := []struct {
@@ -368,15 +394,15 @@ func TestListPageRejectsHeadingsAndSteps(t *testing.T) {
 		want  string
 	}{
 		{"## Why parents worry about Roblox\n## Our top picks\n1. **Minecraft**\n2. [Toca Life World](https://example.com/toca)\n3. Lego Builder\n## Conclusion\n",
-			knownSet("Lego Builder"), "Minecraft|Toca Life World|Lego Builder"},
+			knownSet("Minecraft", "Toca Life World", "Lego Builder", "Our top picks", "Conclusion"), "Minecraft|Toca Life World|Lego Builder"},
 		{"## How we chose\n## 1. Minecraft\n## 2. Toca\n", knownSet("Minecraft", "Toca"), "Minecraft|Toca"},
-		{"## How we chose\n## 1. Minecraft\n## 2. Toca\n", nil, ""},
-		{"1. Turn on parental controls\n2. Set a spending limit\n3. Talk to your kid\n", nil, ""},
-		{"1. Download the app\n2. Open settings\n3. Disable chat\n", nil, ""},
-		{"## FAQ\n1. **Is Minecraft safe?**\n## Top Picks for 2026\n## Best overall\n", nil, ""},
-		{"1. **Roblox**\n2. *Minecraft*.\n3. **Minecraft**\n4. [`Toca Boca World`](u)\n## **Lego Builder**\n5. **Sky**\n", nil, "Minecraft|Toca Boca World|Lego Builder"},
-		{"1. **Stop Motion Studio**\n2. [Read Along by Google](u)\n3. **Pick a Path** - stories\n4. **Top Eleven**\n", nil, "Stop Motion Studio|Read Along by Google|Pick a Path"},
-		{"## **Top Eleven**\n1. **download the app**\n", nil, "Top Eleven"},
+		{"## FAQ\n1. **Is Minecraft safe?**\n", knownSet("Is Minecraft safe?"), ""},
+		{"1. **Roblox**\n2. *Minecraft*.\n3. **Minecraft**\n4. [`Toca Boca World`](u)\n## **Lego Builder**\n5. **Sky**\n",
+			knownSet("Roblox", "Minecraft", "Toca Boca World", "Lego Builder", "Sky"), "Minecraft|Toca Boca World|Lego Builder"},
+		{"1. **Stop Motion Studio**\n2. [Read Along by Google](u)\n3. **Pick a Path** - stories\n4. **Top Eleven**\n",
+			knownSet("Stop Motion Studio", "Read Along by Google", "Pick a Path", "Top Eleven"), "Stop Motion Studio|Read Along by Google|Pick a Path"},
+		{"## **Top Eleven**\n1. **download the app**\n", knownSet("Top Eleven", "download the app"), "Top Eleven"},
+		{"1. **Stop Motion Studio**\n2. **Disable chat** in settings\n", knownSet("Stop Motion Studio"), "Stop Motion Studio"},
 	}
 	for _, c := range cases {
 		if got := strings.Join(listNames(c.page, notRoblox, c.known), "|"); got != c.want {
@@ -385,8 +411,8 @@ func TestListPageRejectsHeadingsAndSteps(t *testing.T) {
 	}
 }
 
-// A plain ranked entry counts when the same search response has a hit
-// titled with that name.
+// A list entry counts only when the same search response has a hit titled
+// with that name.
 func TestListEntryCorroboratedBySearch(t *testing.T) {
 	e, s, _, card := altE2E(t)
 	s.hits = []tavily.Result{
@@ -401,7 +427,9 @@ func TestListEntryCorroboratedBySearch(t *testing.T) {
 	for _, a := range pending {
 		names = append(names, a.Title)
 	}
-	if strings.Join(names, ",") != "Minecraft,Lego Builder" {
+	// Minecraft is bold but has no hit of its own, so markup alone does not
+	// make it a candidate.
+	if strings.Join(names, ",") != "Lego Builder" {
 		t.Errorf("candidates %v", names)
 	}
 }

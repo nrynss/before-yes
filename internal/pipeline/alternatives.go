@@ -155,13 +155,13 @@ func stripMarkdown(s string) string {
 
 // listNames are the titles a list page names, in page order. An entry is a
 // ranked line ("1. X", "## 1. X") or a heading that is only a link or bold
-// text, and it counts only with a positive title signal: its name is marked
-// as a link or bold span, or the same search response has a hit titled with
-// that name (known). A plain "1. Download the app" has neither, so it is no
-// candidate. Questions and names over six words are dropped too. Repeats on
-// the page and names skip rejects (the title itself, names already taken)
-// are dropped before the bound is applied, so they use no slot; at most
-// maxListEntries are returned.
+// text; a leading bold or link span is taken as its name. It counts only
+// when corroborated: the same search response has a hit titled with that
+// name (known). Markup alone is no evidence, since pages bold advice steps
+// and section headings too. Questions and names over six words are dropped.
+// Repeats on the page and names skip rejects (the title itself, names
+// already taken) are dropped before the bound is applied, so they use no
+// slot; at most maxListEntries are returned.
 func listNames(text string, skip, known func(string) bool) []string {
 	type at struct {
 		pos  int
@@ -178,9 +178,8 @@ func listNames(text string, skip, known func(string) bool) []string {
 	own := map[string]bool{}
 	for _, e := range entries {
 		raw := strings.TrimSpace(e.text)
-		marked := false
 		if m := markedLead.FindStringSubmatch(raw); m != nil {
-			raw, marked = m[1]+m[2]+m[3], true
+			raw = m[1] + m[2] + m[3]
 		}
 		entry := stripMarkdown(raw)
 		entry, _, _ = strings.Cut(entry, " - ")
@@ -190,7 +189,7 @@ func listNames(text string, skip, known func(string) bool) []string {
 		if !plausibleName(name) {
 			continue
 		}
-		if !marked && (known == nil || !known(name)) {
+		if known == nil || !known(name) {
 			continue
 		}
 		if own[appName(name)] || (skip != nil && skip(name)) {

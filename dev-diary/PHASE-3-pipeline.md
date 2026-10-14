@@ -253,6 +253,14 @@ Alternatives multiply cost. They are bounded by count, run after the main card i
 | M1: advice steps not on the stoplist ("1. Download the app") became candidates | The stoplist is gone. A list entry needs a positive title signal: its name is marked as a bold span or link (or the heading is only one), or the same search response has a hit titled with that name. Before any `Collect`, a check with no call (`plausibleName`) drops empty names, questions, names over six words and names not starting with a capital or digit | `TestListPageRejectsHeadingsAndSteps`, `TestListEntryCorroboratedBySearch` |
 | L1: real titles starting with Stop/Read/Pick/Top were dropped | With no stoplist, and list entries skipping the list-title check (`siteName`), marked "Stop Motion Studio", "Read Along by Google", "Pick a Path" and "Top Eleven" are kept | `TestListPageRejectsHeadingsAndSteps` |
 
+**Round-4 remediation (T3.5).**
+
+| Finding | Fix | Test |
+|---|---|---|
+| M1: bold or link markup alone was taken as title evidence, so bolded advice steps ("**Turn on parental controls**"), bold section headings ("**Our verdict**"), "**Note:**"/"**Tip:**" lines and linked steps ("[Download the app](x)") became candidates | A list entry is a candidate only when another hit in the same search response is titled with that name. Markup only locates the name in the entry. The no-call check, the self and duplicate filter before the cap, metering and statuses are unchanged | `TestListPageRejectsHeadingsAndSteps` (all four probe pages and a marked uncorroborated page give none; corroborated Stop Motion Studio, Read Along by Google, Pick a Path and Top Eleven are kept), `TestListEntryCorroboratedBySearch`, `TestListPageEntries` |
+
+Trade-off: a list page's picks are only as many as the search's single-title hits confirm. A page whose picks have no hit of their own adds nothing (noted in feedback.md).
+
 ---
 
 ### T3.6: Quality pass on the three titles ★
