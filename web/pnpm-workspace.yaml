@@ -1,0 +1,2 @@
+minimumReleaseAgeExclude:
+  - '@nrynss/chaaya@0.4.2'
