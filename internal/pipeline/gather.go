@@ -143,7 +143,8 @@ type Gathered struct {
 	Notes []string
 	// Failures names the source calls that errored rather than came back
 	// empty: "appstore_search", "review_feed", or "extract <url>" for a page
-	// Tavily could not read. A kind missing because the source is absent
+	// Tavily could not read whose kind then had no document (an unread
+	// candidate when another of its kind was kept cost nothing). A kind missing because the source is absent
 	// (no listing, an empty feed, a 404 page) is not a failure; a kind
 	// missing because a call failed may be there next time, so the
 	// pipeline does not cache such evidence.
@@ -291,7 +292,7 @@ func (g *Gatherer) Gather(ctx context.Context, title, ref string) (Gathered, err
 // host, go into one more extract call.
 func (g *Gatherer) policyPages(ctx context.Context, ref string, plan []Query, hits map[string][]tavily.Result, host string, at time.Time) ([]Doc, []string, []string, float64, error) {
 	var docs []Doc
-	var notes, failed []string
+	var notes, unread []string
 	credits := 0.0
 	taken := map[string]string{}
 	want := map[string][]string{}
@@ -339,11 +340,31 @@ func (g *Gatherer) policyPages(ctx context.Context, ref string, plan []Query, hi
 			pages[p.URL] = p
 		}
 		for _, f := range ex.Failed {
-			failed = append(failed, "extract "+f.URL)
+			if !contains(unread, f.URL) {
+				unread = append(unread, f.URL)
+			}
 		}
 		return pages, nil
 	}
 	got := map[string]bool{}
+	// failures are the unread pages that may have cost a kind: a page whose
+	// kind still has no document. A failed read of one candidate when
+	// another of its kind was kept cost nothing.
+	failures := func() []string {
+		var out []string
+		for _, u := range unread {
+			lost := taken[u] != "" && !got[taken[u]]
+			for k, hs := range homes {
+				if contains(hs, u) && !got[k] {
+					lost = true
+				}
+			}
+			if lost {
+				out = append(out, "extract "+u)
+			}
+		}
+		return out
+	}
 	accept := func(kind string, us []string, pages map[string]tavily.Page) {
 		for _, u := range us {
 			if got[kind] {
@@ -369,7 +390,7 @@ func (g *Gatherer) policyPages(ctx context.Context, ref string, plan []Query, hi
 
 	pages, err := read(urls)
 	if err != nil {
-		return nil, notes, failed, credits, err
+		return nil, notes, failures(), credits, err
 	}
 	for _, k := range kinds {
 		accept(k, want[k], pages)
@@ -400,13 +421,13 @@ func (g *Gatherer) policyPages(ctx context.Context, ref string, plan []Query, hi
 	if len(more) > 0 {
 		pages, err := read(more)
 		if err != nil {
-			return docs, notes, failed, credits, err
+			return docs, notes, failures(), credits, err
 		}
 		for _, k := range kinds {
 			accept(k, links[k], pages)
 		}
 	}
-	return docs, notes, failed, credits, nil
+	return docs, notes, failures(), credits, nil
 }
 
 var linkRE = regexp.MustCompile(`https?://[^\s<>()\[\]"'|]+`)
