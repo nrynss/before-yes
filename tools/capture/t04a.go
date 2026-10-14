@@ -191,25 +191,20 @@ func (r *titleRun) csm(d demo) error {
 // reddit runs the two Reddit searches: parents' experiences, and the title's
 // own community. Each keeps raw content, and the note counts the threads.
 func (r *titleRun) reddit(d demo) error {
-	searches := []struct {
-		file  string
-		query string
-	}{
-		{"tavily-search-reddit-parents.json", d.Title + " parents kids safety experience"},
-		{"tavily-search-reddit-community.json", d.Title + " chat scams moderation players"},
+	// The two Reddit entries of pipeline.Plan, by name.
+	var searches []query
+	for _, q := range plan(d.Title, "") {
+		if strings.HasPrefix(q.Kind, "reddit-") {
+			searches = append(searches, q)
+		}
 	}
 	for _, s := range searches {
-		search := searchReq{
-			Query:          s.query,
-			MaxResults:     8,
-			IncludeDomains: []string{"reddit.com"},
-			IncludeRaw:     true,
-		}
+		search := s.Search
 		resp, err := r.c.post(r.c.tavily+"/search", tavilySearch{searchReq: search, IncludeUsage: true})
 		if err != nil {
 			return err
 		}
-		if err := r.keepTavily(s.file, resp); err != nil {
+		if err := r.keepTavily("tavily-search-"+s.Kind+".json", resp); err != nil {
 			return err
 		}
 		hits := hitsOf(resp.Body)

@@ -16,9 +16,9 @@
 // The Tavily key is read from TAVILY_KEY and sent only in the Authorization
 // header. It is never written to a file, printed, or put in a URL.
 //
-// plan() and the request shapes mirror scratch/internal/pipeline/gather.go and
-// scratch/internal/tavily/tavily.go. If those change, this program and its
-// test must change with them, so fixtures keep matching what the pipeline asks.
+// The searches come from pipeline.Plan, so a plan change reaches the
+// captures without a second copy. The request shapes mirror
+// internal/tavily; if those change, this program and its test change too.
 package main
 
 import (
@@ -34,6 +34,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/nrynss/before-yes/internal/pipeline"
 )
 
 const (
@@ -554,29 +556,19 @@ type query struct {
 	Extract bool
 }
 
-// plan is the fixed source list for one title. It mirrors gather.go's plan():
-// five searches and one extract call, about six Tavily credits.
+// plan is the gatherer's own source plan, pipeline.Plan, in the request
+// shape this program sends, so the fixtures keep matching what the pipeline
+// asks. Kind is the plan entry's name, which is also the fixture file name.
 func plan(title, officialHost string) []query {
-	policy := searchReq{Query: title + " privacy policy", MaxResults: 5}
-	terms := searchReq{Query: title + " terms of service", MaxResults: 5}
-	if officialHost != "" {
-		policy.IncludeDomains = []string{officialHost}
-		terms.IncludeDomains = []string{officialHost}
+	var out []query
+	for _, q := range pipeline.Plan(title, officialHost) {
+		out = append(out, query{Kind: q.Name, Extract: q.Extract, Search: searchReq{
+			Query:          q.Search.Query,
+			Topic:          q.Search.Topic,
+			MaxResults:     q.Search.MaxResults,
+			IncludeDomains: q.Search.IncludeDomains,
+			IncludeRaw:     q.Search.IncludeRaw,
+		}})
 	}
-	return []query{
-		{Kind: "policy", Search: policy, Extract: true},
-		{Kind: "terms", Search: terms, Extract: true},
-		{Kind: "forum", Search: searchReq{
-			Query:      title + " parents experience kids chat strangers purchases",
-			MaxResults: 8, IncludeRaw: true,
-			IncludeDomains: []string{"reddit.com", "commonsensemedia.org", "mumsnet.com", "netmums.com"},
-		}},
-		{Kind: "news", Search: searchReq{
-			Query: title + " children safety fine lawsuit FTC regulator data breach", Topic: "news",
-			MaxResults: 8, IncludeRaw: true,
-		}},
-		{Kind: "rating", Search: searchReq{
-			Query: title + " age rating ESRB PEGI parental controls", MaxResults: 6, IncludeRaw: true,
-		}},
-	}
+	return out
 }
