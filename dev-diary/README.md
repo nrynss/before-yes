@@ -180,7 +180,7 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 |---|---|---|
 | P0 | 9 / 9 | Done. Two exit criteria wait on later tasks: a live Nano call (T2.1b) and the config check (T4.4). CI is green. |
 | P1 | 4 / 4 | Done. The `job.Failure` exit criterion waits on T4.1. The main-checkout pins and `.env` leak check, waived at landing, ran at the P1–P2 integration and passed. |
-| P2 | 8 / 10 | T2.1, T2.1a, T2.1b, T2.2, T2.2b, T2.3, T2.3b and T2.4 are done. T2.1c, the model timeout, and T2.5 are not started. |
+| P2 | 8 / 11 | T2.1, T2.1a, T2.1b, T2.2, T2.2b, T2.3, T2.3b and T2.4 are done. T2.5 is landed but blocked on T3.6 for the measured cost per check. T2.1c is in progress. T2.4b, the daily cap, is not started. |
 | P3 | 0 / 10 | Not started. T3.1–T3.4 drafted. |
 | P4 | 0 / 5 | Not started. T4.1, T4.2 and T4.4 drafted. |
 | P5 | 0 / 7 | Not started. |
@@ -192,6 +192,17 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 
 Newest first. One entry per closed task, finding, or split.
 
+- **T2.5 landed, blocked on T3.6; T2.4b split out.** Haiku implemented it. By the user's ruling, T2.1c, T2.5 and T3.8a have no review loop: the orchestrator validates each one and sends the same agent back if something is wrong.
+  - **Decided** in [`docs/budget.md`](../docs/budget.md):
+    - The model pool has a lifetime ceiling of $20, with $5 of the $25 credit in reserve.
+    - Tavily has a monthly ceiling of 900 of the 1,000 free credits.
+    - Fresh checks are capped at 5 per UTC day while judging runs: 5 × 12 credits × 15 days = 900.
+  - **Estimated, pending T3.6:** one fresh check costs about $0.0255 of model spend, from the brief's token counts at the brief's prices, plus about 8 Tavily credits, from T3.1's source plan. Tavily is the tighter limit, at about 112 checks a month. The doc gives the formula T3.6b fills in. The brief leaves out Nano output and the conflict pass, so the model figure may be low.
+  - **Orchestrator validation:**
+    - The prices and arithmetic match BRIEF.md.
+    - The claim that `spend.Open` knows only two pools, and leaves each pool's period to the caller, matches the code.
+    - The diff stays inside owns. Gate rc 0 in the worktree and on main. No key values found. No dates.
+  - **Split:** T2.4b, the daily checks pool, which also pins the tavily pool to `MonthlyUTC`.
 - **T2.3b closed.** Reviews: [round 1](adversarial-review/t2.3b-round1.md) (Sonnet, REMEDIATE: H 1, M 3, L 1), [round 2](adversarial-review/t2.3b-round2.md) (a fresh Sonnet reviewer, REMEDIATE: L 2), and [round 3](adversarial-review/t2.3b-round3.md) (a fresh Sonnet reviewer, APPROVE, zero residue). A fresh Sonnet remediator ran after each REMEDIATE.
   - **What the probe shows:** the search half works (us 3 hits, gb 5 for Roblox). The review feed is dark in both storefronts, so the probe FAILs loudly and every audit prints "not run". The transcript is at [`live/t2.3b-transcript.txt`](live/t2.3b-transcript.txt). It needs no key and spends no credits.
   - **Still passes on a populated feed:** reviewers in rounds 2 and 3 each pointed the probe at a local server serving the T0.4 Roblox fixtures. It read 500 reviews in 10 pages per storefront, and the raw-body pin compared. Both reverted the edit.

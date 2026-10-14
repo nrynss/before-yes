@@ -185,6 +185,24 @@ With Keel v0.7.3 ([nrynss/keel#82](https://github.com/nrynss/keel/issues/82)), e
 
 ---
 
+### T2.4b: Daily cap on fresh checks
+```yaml
+requires:   T2.4, T2.5
+fixture-ok: yes
+size:       S · mid
+owns:       internal/spend/
+status:     not-started
+```
+Split from T2.5. [`docs/budget.md`](../docs/budget.md) sets a cap of 5 fresh checks per UTC day while judging runs. The meter cannot enforce it today. `Open` knows only the model and tavily pools, and `Spend` reserves against one pool per call. A daily model-dollar pool would be the wrong unit: five checks spend about $0.13, so it would never trip.
+
+- Add a checks-per-day pool with `cost.DailyUTC`, a one-unit denomination named `check`, and namespace `cost_checks_daily`. Its limit comes from `[budget] daily_fresh_checks`.
+- Reserve one check for each fresh check, before the first paid call. A failed check releases it. A cache hit does not count.
+- Pin the tavily pool to `cost.MonthlyUTC` inside `Open`, so a caller cannot open it as a lifetime ceiling.
+
+**Done when:** Tests show the sixth check in a UTC day refused before any call, the count reset at the next UTC day, a failed check releasing its count, and the ledger read back through a fresh SQLite connection. `daily_fresh_checks` is uncommented in `before-yes.toml.example`.
+
+---
+
 ### T2.5: Budget settings
 ```yaml
 requires:   T2.4
