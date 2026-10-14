@@ -182,8 +182,8 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 | P1 | 4 / 4 | Done. The `job.Failure` exit criterion waits on T4.1. The main-checkout pins and `.env` leak check, waived at landing, ran at the P1–P2 integration and passed. |
 | P2 | 12 / 12 | Done. All six exit criteria are met. Measured model cost is $0.0309 per check. Tavily is 7–8 credits per check, from fixtures, not a live run. |
 | P3 | 12 / 13 | Every standing grade cites verified, in-area findings by id (T3.9b). All three demo titles read **no**. Roblox's flags are earned. Minecraft's and Khan Academy Kids' are not. T3.10 calibrates the judge: flag definitions, off-product pages and invented reasons. |
-| P4 | 0 / 5 | Not started. T4.1, T4.2 and T4.4 drafted. |
-| P5 | 2 / 7 | T5.1 and T5.2 are done: the app shell, themes and the Ask form with free example cards. T5.3 and T5.4 can start. |
+| P4 | 2 / 5 | T4.1 and T4.2 are done: check jobs, the progress stream, card routes, the card store and both caches. Wire ids are `c_` / `j_` + a 32-hex Keel id. T4.3 and T4.5 can start; T4.4 is drafted. |
+| P5 | 2 / 7 | T5.1 and T5.2 are done. T5.3 is blocked on an upstream Chaaya fix (terminal snapshot recovery), in progress. T5.4 is held: its card-id check accepts only the fixtures' 22-character shape, not the server's `c_` + 32 hex. |
 | P6 | 0 / 6 | Not started. |
 
 ---
@@ -192,6 +192,13 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 
 Newest first. One entry per closed task, finding, or split.
 
+- **T4.1 and T4.2 closed (PRs #22 and #20).** A remote orchestrator implemented both; fresh reviewers approved T4.2 in round 3 and T4.1 in round 1. The gate passed on main after each merge.
+  - **T4.2:** `internal/cards` stores cards under 32-hex Keel ids, with `Put`, `PutWithAlternatives`, `Get`, `Latest` and `Recent`, migrations in namespace `beforeyes_cards`. `internal/server/cache.go` has the evidence cache (single flight over `pipeline.EvidenceKey`; thin or failed evidence is never stored) and the card cache.
+    - Round 1 found thin evidence written over an expired row (High), fixed and pinned with a direct sqlite read.
+    - The orchestrator held the first version: it served bare 32-hex ids, against the frozen contract (`docs/api.md`: a card id starts `c_`). Round 3 made public ids `c_` + hex everywhere they leave the package.
+  - **T4.1:** `internal/server/checks.go` serves `POST /api/checks`, `GET /api/checks/{id}`, its events stream, `GET /api/cards` and `GET /api/cards/{id}`. Check ids are `j_` + hex. Bad ids are a 404 before any query. Failures carry `budget_exhausted` (with `detail.pool`), `no_sources` or `check_failed`, never `job_failed`. The `Checks` seam for T4.5 is declared, not wired.
+  - **Contract gap, open:** the T1.4 fixtures use 22-character made-up ids (`c_7Hq2mXv9pK3wLr8sTn4bYe`); the server emits `c_` + 32 hex. Frontend id checks must accept the server's shape.
+  - **Feedback:** two Keel entries: `cache.GetOrMake` hides whether a caller joined a flight, and `wire.WriteError` sets `Retry-After` only for 429.
 - **T5.2 closed (PR #19).** The frontend orchestrator implemented it; a fresh reviewer returned APPROVE with zero findings (`adversarial-review/t5.2-round1.md`).
   - **What landed:** `web/src/lib/ask/`: the Ask form (title, whole age 3–17, one button) and the free example cards from `GET /api/cards`. A `200` opens the card, a `202` the progress view, `passcode_required` opens a Bits UI passcode dialog that keeps the question, and `live_checks_off` points at the examples. Refusal messages live in `messages.ts`.
   - **Pins:** the gate passed in the task checkout and on main after the merge, including 30 Playwright tests and the axe gate in both themes. The reviewer drove each T1.4 fixture in a browser and checked 360px.

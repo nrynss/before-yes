@@ -23,7 +23,7 @@ requires:   T1.4, T3.4
 fixture-ok: yes
 size:       M · mid
 owns:       internal/server/checks.go, internal/server/checks_test.go
-status:     in-review
+status:     done
 ```
 `POST /api/checks` normalizes the request. If a fresh card exists it answers at once. Otherwise it starts a Keel `job` of kind `check` and answers `202` with the check id.
 
@@ -59,7 +59,7 @@ requires:   T1.3
 fixture-ok: yes
 size:       S · mid
 owns:       internal/cards/, internal/server/cache.go, internal/server/cache_test.go
-status:     in-review
+status:     done
 ```
 Cards are stored in the application's SQLite file under Keel `id` values (32 hex characters, unguessable), with title key, age, checklist version, verdict and timestamp for lookup. Migrations go through Keel `sqlite.Migrate` in their own namespace.
 
