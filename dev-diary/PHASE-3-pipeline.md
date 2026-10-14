@@ -296,7 +296,7 @@ requires:   T3.1, T3.8
 fixture-ok: yes
 size:       M · frontier
 owns:       internal/pipeline/kind.go, internal/pipeline/kind_test.go, plus the plan change in internal/pipeline/gather.go and an additive card field in internal/pipeline/types.go
-status:     not-started
+status:     in-review
 ```
 The brief names four kinds: iOS app or game, Android-only app or game, console or PC game, YouTube channel. Detect the kind from the App Store result and the rating search, and adjust the plan:
 - **Android-only:** Tavily only. No Play Store scraping.
@@ -306,6 +306,30 @@ The brief names four kinds: iOS app or game, Android-only app or game, console o
 Whether the YouTube Data API's made-for-kids status adds anything is an open question in the brief. Answer it here, and record the answer even if the answer is no.
 
 **Done when:** One fixture per kind gathers the right plan, the card shows the kind, and the YouTube question is answered in the handoff log.
+
+**Implementation notes (T3.7).**
+- **Detection** (`kind.go`, `DetectKind`):
+  - An App Store match, by the store search or by a policy hit, makes a title `ios`.
+  - Otherwise the rating search runs straight after the policy search, and their hits are scored. A YouTube channel URL (`/@`, `/channel/`, `/c/`, `/user/`) scores for `youtube`, a `play.google.*` URL for `android`, and an `esrb.org` or `pegi.info` page for `console_pc`, along with mentions in hit text (YouTuber, subscribers; Android, Google Play; PlayStation, Xbox, Nintendo Switch, Steam, PC game, console). The most signals wins.
+  - A title with no signal is taken as `console_pc`, since the console plan's rating-board search is the one that can still find something.
+- **Plan** (`PlanFor(kind, title, host)`; `Plan` is the iOS plan, unchanged):
+  - **android:** every unnarrowed search excludes `play.google.com`, and Play hits are dropped, so no Play Store page is read. The policy and rating searches run before the kind is known, so they cannot exclude Play; their Play hits are dropped afterwards.
+  - **console_pc:** adds a `rating-boards` search narrowed to `esrb.org` and `pegi.info`.
+  - **youtube:** drops policy and terms (a channel's are YouTube's), so they are not reported missing. It adds a `channel` coverage search (kind `article`) and keeps news, the forum and Reddit. The rating search stays because it already ran to detect the kind.
+- **Kind on the card:** `Gathered.Kind` feeds `Evidence.Kind`, and `Decide` already copies it to `Card.Kind`. Both fields existed in the contract, so no contract field or example changed.
+- **Outside `owns`:** pipeline.go's `Collect` sets `Kind: g.Kind`, one line replacing the old `ev.Kind = KindIOS`. `PlanVersion` is now `plan-5`.
+- **Fixtures:** the four captured titles are all iOS (Toca by its policy hit). The Android, console and YouTube fixtures are canned search hits in `kind_test.go`, not captures; no live call was made.
+- **Tests:** `TestKindsGatherTheirPlan` (one fixture per kind; the exact searches each sends, Play excluded and never read, the rating-board domains, YouTube policy and terms not missing); `TestDetectKind`; `TestCardShowsKind`; `TestFixtureTitlesAreIOS`.
+
+**The brief's open question: does the YouTube Data API's made-for-kids status add anything?** The answer is yes, but only a narrow signal, and it is not adopted in T3.7. It is answered from documentation only; no API call was made.
+- **What it is.** `channels.list` returns `status.madeForKids` (boolean) on a channel resource, and `videos.list` returns the same field for a video. `selfDeclaredMadeForKids` is returned only to the owner (YouTube Data API docs, Channel resource). Creators set the audience at the channel or video level, and a video's setting overrides the channel's. YouTube may override it in cases of error or abuse (YouTube Help 9527654).
+- **What it adds.** On content set as made for kids, YouTube turns off comments, live chat, the notification bell, personalised advertising, channel memberships, Super Chat and Super Stickers, merchandise, and cards and end screens (YouTube Help 9527654). That bears on the contact, money and data areas.
+- **Why not now.**
+  1. It is a field, not text. The card rule is that every claim links to a verified quote, so the flag cannot become a finding without inventing a quote.
+  2. It is mostly self-declared, and it is set per video. A channel marked "not made for kids" can still carry made-for-kids videos, and the reverse.
+  3. It says nothing about whether content suits a given age. "Not made for kids" covers general-audience content, and "made for kids" is no safety rating (YouTube Help 9528076).
+  4. It needs a Google API key and quota: a new service and a new key, outside the fixture-only scope.
+- **If adopted later (P4 or P6):** show it as small print beside the kind, for example "YouTube marks this channel as made for kids: comments and personalised ads are off on its videos". Do not grade it.
 
 ---
 

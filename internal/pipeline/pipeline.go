@@ -242,9 +242,8 @@ func (p *Pipeline) Collect(ctx context.Context, title, ref string) (ev Evidence,
 		return Evidence{}, false, err
 	}
 
-	ev = Evidence{Title: title, CollectedAt: p.now().UTC(), Findings: rd.Findings}
+	ev = Evidence{Title: title, Kind: g.Kind, CollectedAt: p.now().UTC(), Findings: rd.Findings}
 	if g.App != nil {
-		ev.Kind = KindIOS
 		ev.App = &AppInfo{
 			TrackID:       g.App.ID,
 			Name:          g.App.Name,
