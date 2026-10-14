@@ -14,7 +14,7 @@ parallel: no
 
 ---
 
-### T1.1: Checklist v1 and verdict rules ★
+### T1.1: Checklist and verdict rules ★
 ```yaml
 requires:   T0.1
 fixture-ok: yes
@@ -53,6 +53,14 @@ Bump `checklist.Version` whenever an area's wording or a rule changes, because c
 | M1 | `Enforce`: contact or content graded `ok` with no remaining verified finding becomes `unknown` (`ok_without_finding`), so `Decide` gives `unclear`, never `yes`. Other areas may still be `ok` with no finding. | `TestEvidenceFreeOKIsNotYes`, plus `TestEnforce` cases for contact and content `ok` with and without findings |
 | L1 | A setting is trimmed. A blank setting counts as no setting in both `Enforce` and `Decide`. | `TestSettingTrimmed`, `TestEnforce` "blank setting demoted" |
 | L2 | A finding id cited twice in one grade is kept once. Added a case for a grade whose area is unknown. | `TestEnforce` "repeated id kept once", "unknown area discarded" |
+
+**Remediation, round 2** ([review](adversarial-review/t1.1-round2.md)). `checklist.Version` is bumped to `v3`, because an `Enforce` rule changed again.
+
+| Finding | Fix | Test |
+|---|---|---|
+| M1 | Contact or content `ok` needs at least one cited **mitigation or neutral** finding. If it cites only risk findings, it becomes `unknown` (`ok_without_finding`). A risk finding cited beside a supporting one is kept. | `TestRiskOnlyOKIsNotYes`, `TestEnforce` "contact ok on risk only demoted" and "...risk and mitigation stands" |
+| L1 | A setting made only of whitespace or invisible format characters (Unicode Cf, for example U+200B, U+2060, U+FEFF) counts as blank in `Enforce` and `Decide`. | `TestEnforce` "zero-width setting demoted", `TestSettingTrimmed` |
+| L2 | The heading and exit criterion no longer say "v1". They name `checklist.Version`. | none (documentation) |
 ---
 
 ### T1.2: Finding format and the quote check ★
@@ -127,7 +135,7 @@ The progress event's `detail` carries `{"message": "..."}`, for example "reading
 
 ## Exit Criteria
 
-- [ ] Checklist v1 frozen, with the verdict question decided.
+- [ ] Checklist frozen (`checklist.Version`, now `v3`), with the verdict question decided.
 - [ ] The quote check rejects a changed word and an invented quote, by test.
 - [ ] Example evidence and card payloads committed, one card per verdict.
 - [ ] API and error codes documented, with examples.

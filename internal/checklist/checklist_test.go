@@ -158,6 +158,12 @@ func TestEnforce(t *testing.T) {
 			Content, Unknown, []string{}, []string{"content:ok_without_finding"}},
 		{"contact ok with mitigation stands", []Grade{{Area: Contact, Level: OK, Findings: []string{"c-mit"}}},
 			Contact, OK, []string{"c-mit"}, nil},
+		{"contact ok on risk only demoted", []Grade{{Area: Contact, Level: OK, Findings: []string{"c-risk"}}},
+			Contact, Unknown, []string{"c-risk"}, []string{"contact:ok_without_finding"}},
+		{"contact ok on risk and mitigation stands", []Grade{{Area: Contact, Level: OK, Findings: []string{"c-risk", "c-mit"}}},
+			Contact, OK, []string{"c-risk", "c-mit"}, nil},
+		{"zero-width setting demoted", []Grade{{Area: Money, Level: OKWithSetting, Setting: "\u200b \u2060", Findings: []string{"m-mit"}}},
+			Money, Unknown, []string{"m-mit"}, []string{"money:setting_without_name"}},
 		{"other area ok without finding stands", []Grade{{Area: Money, Level: OK}},
 			Money, OK, []string{}, nil},
 		{"blank setting demoted", []Grade{{Area: Money, Level: OKWithSetting, Setting: "   ", Findings: []string{"m-mit"}}},
@@ -226,15 +232,29 @@ func TestEvidenceFreeOKIsNotYes(t *testing.T) {
 	}
 }
 
+// T1.1 round 2 M1: ok resting only on risks is not a yes.
+func TestRiskOnlyOKIsNotYes(t *testing.T) {
+	in := []Grade{{Area: Contact, Level: OK, Findings: []string{"c-risk"}}}
+	for _, s := range Areas()[1:] {
+		in = append(in, Grade{Area: s.ID, Level: OK})
+	}
+	out, _ := Enforce(in, ev)
+	if v, _ := Decide(out); v != Unclear {
+		t.Errorf("got %q, want unclear", v)
+	}
+}
+
 func TestSettingTrimmed(t *testing.T) {
 	out, _ := Enforce([]Grade{{Area: Money, Level: OKWithSetting, Setting: "  Ask to Buy ", Findings: []string{"m-mit"}}}, ev)
 	if g := one(t, out, Money); g.Setting != "Ask to Buy" {
 		t.Errorf("setting %q", g.Setting)
 	}
 	gs := set(map[Area]Level{Money: OKWithSetting})
-	gs[1].Setting = " "
-	if _, err := Decide(gs); !errors.Is(err, ErrGrades) {
-		t.Error("Decide accepted a blank setting")
+	for _, b := range []string{" ", "\u200b", "\ufeff\u00a0"} {
+		gs[1].Setting = b
+		if _, err := Decide(gs); !errors.Is(err, ErrGrades) {
+			t.Errorf("Decide accepted blank setting %q", b)
+		}
 	}
 }
 
