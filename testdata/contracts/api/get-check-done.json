@@ -1,14 +1,14 @@
 {
   "request": {
     "method": "GET",
-    "path": "/api/checks/j_3Fh8sQ2mVx7Kp1Lz9RtWc"
+    "path": "/api/checks/j_00000000000000000000000000000001"
   },
   "response": {
     "status": 200,
     "body": {
-      "id": "j_3Fh8sQ2mVx7Kp1Lz9RtWc",
+      "id": "j_00000000000000000000000000000001",
       "status": "done",
-      "card_id": "c_7Hq2mXv9pK3wLr8sTn4bYe"
+      "card_id": "c_00000000000000000000000000000001"
     }
   }
 }

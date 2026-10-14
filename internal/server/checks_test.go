@@ -982,14 +982,14 @@ func TestStartResponseJSON(t *testing.T) {
 	enc := json.NewEncoder(&buf)
 	enc.SetEscapeHTML(false)
 
-	_ = enc.Encode(map[string]string{"card_id": "c_7Hq2mXv9pK3wLr8sTn4bYe"})
-	if !strings.Contains(buf.String(), `"card_id":"c_7Hq2mXv9pK3wLr8sTn4bYe"`) {
+	_ = enc.Encode(map[string]string{"card_id": "c_00000000000000000000000000000001"})
+	if !strings.Contains(buf.String(), `"card_id":"c_00000000000000000000000000000001"`) {
 		t.Errorf("card_id json: %s", buf.String())
 	}
 
 	buf.Reset()
-	_ = enc.Encode(map[string]string{"check_id": "j_3Fh8sQ2mVx7Kp1Lz9RtWc"})
-	if !strings.Contains(buf.String(), `"check_id":"j_3Fh8sQ2mVx7Kp1Lz9RtWc"`) {
+	_ = enc.Encode(map[string]string{"check_id": "j_00000000000000000000000000000001"})
+	if !strings.Contains(buf.String(), `"check_id":"j_00000000000000000000000000000001"`) {
 		t.Errorf("check_id json: %s", buf.String())
 	}
 }

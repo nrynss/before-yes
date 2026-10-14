@@ -70,7 +70,7 @@ for (const mutation of ['unsafe source', 'missing finding', 'wrong area', 'bad i
 });
 test('unsafe route id requests nothing and XSS quote is plain exact text', async ({page}) => {
  let calls = 0; await page.route('**/api/cards/*', route => {calls++;return route.fulfill({json:no});});
- for (const id of ['c_1', `c_${'A'.repeat(23)}`, `c_${'A'.repeat(21)}_`, `c_${'A'.repeat(21)}-`, `c_${'A'.repeat(22)}\n`, 'abcdef1234']) {
+ for (const id of ['c_1', 'c_7Hq2mXv9pK3wLr8sTn4bYe', `c_${'a'.repeat(22)}`, `c_${'a'.repeat(31)}`, `c_${'a'.repeat(33)}`, `c_${'a'.repeat(32)}\n`, `c_${'a'.repeat(31)}g`, `c_${'A'.repeat(32)}`, 'abcdef1234']) {
   await page.goto(`/card/${encodeURIComponent(id)}`); await expect(page.locator('h1')).toHaveText('Card not found.');
  }
  expect(calls).toBe(0); await page.unroute('**/api/cards/*');

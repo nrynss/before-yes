@@ -1,5 +1,5 @@
 {
-  "id": "c_7Hq2mXv9pK3wLr8sTn4bYe",
+  "id": "c_00000000000000000000000000000001",
   "title": "Roblox",
   "kind": "ios",
   "kind_label": "iOS app",
@@ -141,7 +141,7 @@
     {
       "title": "Toca Life World",
       "reason": "Same open play-world genre with no chat with strangers.",
-      "card_id": "c_Tc6vRb1nQ8zKp2dWm5sLhA",
+      "card_id": "c_00000000000000000000000000000004",
       "verdict": "yes_with_settings",
       "status": "checked"
     }

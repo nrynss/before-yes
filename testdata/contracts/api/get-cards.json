@@ -7,7 +7,7 @@
     "body": {
       "cards": [
         {
-          "id": "c_7Hq2mXv9pK3wLr8sTn4bYe",
+          "id": "c_00000000000000000000000000000001",
           "title": "Roblox",
           "age": 9,
           "verdict": "no",
@@ -15,7 +15,7 @@
           "checked_at": "2026-10-13T18:58:40Z"
         },
         {
-          "id": "c_Mn8cRf4tZq1xHw6pLs3kVb",
+          "id": "c_00000000000000000000000000000003",
           "title": "Minecraft",
           "age": 9,
           "verdict": "yes_with_settings",
@@ -23,7 +23,7 @@
           "checked_at": "2026-10-13T18:58:40Z"
         },
         {
-          "id": "c_Kh3nAc9dYm2sWq7vLp4tRx",
+          "id": "c_00000000000000000000000000000002",
           "title": "Khan Academy Kids",
           "age": 5,
           "verdict": "yes",
@@ -31,7 +31,7 @@
           "checked_at": "2026-10-13T18:58:40Z"
         },
         {
-          "id": "c_Tc6vRb1nQ8zKp2dWm5sLhA",
+          "id": "c_00000000000000000000000000000004",
           "title": "Toca Life World",
           "age": 6,
           "verdict": "unclear",

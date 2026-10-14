@@ -1,13 +1,13 @@
-GET /api/checks/j_9Qm2Wd5Hn8Bx4Kv7Ts1Ra/events
+GET /api/checks/j_00000000000000000000000000000002/events
 Accept: text/event-stream
 
 200 text/event-stream
 
 event: progress
 id: 1
-data: {"job_id":"j_9Qm2Wd5Hn8Bx4Kv7Ts1Ra","stage":"gather","detail":{"message":"searching for the privacy policy"}}
+data: {"job_id":"j_00000000000000000000000000000002","stage":"gather","detail":{"message":"searching for the privacy policy"}}
 
 event: error
 id: 2
-data: {"job_id":"j_9Qm2Wd5Hn8Bx4Kv7Ts1Ra","status":"error","error":{"error":{"code":"budget_exhausted","message":"the Token Factory budget is spent","detail":{"pool":"token_factory"}}}}
+data: {"job_id":"j_00000000000000000000000000000002","status":"error","error":{"error":{"code":"budget_exhausted","message":"the Token Factory budget is spent","detail":{"pool":"token_factory"}}}}
 

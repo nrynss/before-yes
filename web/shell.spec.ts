@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { readFileSync } from 'node:fs';
-const routes = [ ['/', 'A little research.'], ['/check/arbitrary-check-123','A check,'], ['/card/c_7Hq2mXv9pK3wLr8sTn4bYe','No'], ['/compare/first-arbitrary/second-arbitrary','The same questions.'] ];
+const routes = [ ['/', 'A little research.'], ['/check/arbitrary-check-123','A check,'], ['/card/c_00000000000000000000000000000001','No'], ['/compare/first-arbitrary/second-arbitrary','The same questions.'] ];
 // Use the published Chaaya gate itself inside the rendered browser document.
 const gate = readFileSync('node_modules/@nrynss/chaaya/dist/testing/a11y.js', 'utf8').replace('export async function', 'async function').replace('(await import("axe-core")).default', 'window.axe');
 for (const [route, heading] of routes) {

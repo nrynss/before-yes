@@ -191,7 +191,7 @@ func streams(t *testing.T) map[string]string {
 			}
 		}
 	}
-	j1, j2 := "j_3Fh8sQ2mVx7Kp1Lz9RtWc", "j_9Qm2Wd5Hn8Bx4Kv7Ts1Ra"
+	j1, j2 := "j_00000000000000000000000000000001", "j_00000000000000000000000000000002"
 	errEv, err := wire.NewErrorEvent(j2, "budget_exhausted", "the Token Factory budget is spent", map[string]string{"pool": "token_factory"})
 	if err != nil {
 		t.Fatal(err)
