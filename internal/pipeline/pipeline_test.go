@@ -324,3 +324,65 @@ func TestEvidenceKeyHasReaderVersion(t *testing.T) {
 		t.Errorf("reader version %q not in key", v)
 	}
 }
+
+func (failStore) Storefront() string { return "us" }
+
+// Evidence gathered while a source call errored is used for the card but
+// not cached; the same sources simply absent are cached.
+func TestTransientSourceFailureNotCached(t *testing.T) {
+	khan := []appstore.App{{ID: 1, Name: "Khan Academy Kids", Seller: "Khan Academy", SellerURL: "http://khankids.org"}}
+	pages := map[string]string{
+		"https://www.khankids.org":                "Khan Academy Kids\nPrivacy: https://www.khankids.org/privacy-policy",
+		"https://www.khankids.org/privacy-policy": "Privacy Policy\nWe collect as little as we can.",
+	}
+	for _, c := range []struct {
+		name   string
+		feed   error
+		pages  map[string]string
+		cached bool
+	}{
+		{"absent feed", nil, pages, true},
+		{"feed error", errors.New("503"), pages, false},
+		{"extract failed", nil, map[string]string{"https://www.khankids.org": pages["https://www.khankids.org"]}, false},
+	} {
+		m := openTestMeter(t)
+		p := &Pipeline{
+			Gatherer: &Gatherer{Store: failStore{stubStore: stubStore{khan}, feedErr: c.feed}, Search: &stubSearch{pages: c.pages}, Meter: m},
+			Reader:   &Reader{Model: &recorder{price: 10}, Meter: m},
+			Cache:    &MemCache{},
+		}
+		ev, hit, err := p.Collect(context.Background(), "Khan Academy Kids", "c")
+		if err != nil && !errors.Is(err, ErrNoSources) {
+			t.Fatalf("%s: %v", c.name, err)
+		}
+		if err == nil && (hit || ev.Title == "") {
+			t.Fatalf("%s: hit %v", c.name, hit)
+		}
+		_, ok, _ := p.Cache.Get(context.Background(), EvidenceKey("Khan Academy Kids", "us", "nano-recorded"))
+		if ok != c.cached {
+			t.Errorf("%s: cached %v, want %v (err %v)", c.name, ok, c.cached, err)
+		}
+	}
+}
+
+// The key's versions are hashes of what the reader and gatherer do, so an
+// edit to a template, a chunk size or the plan moves the key without a bump.
+func TestKeyVersionsAreHashes(t *testing.T) {
+	r, g := ReaderVersion(), GatherVersion()
+	if r != ReaderVersion() || g != GatherVersion() {
+		t.Error("versions are not stable")
+	}
+	if !strings.HasPrefix(g, PlanVersion+"-") || len(g) != len(PlanVersion)+13 || len(r) != len("reader-")+12 {
+		t.Errorf("versions %q %q", r, g)
+	}
+	k := EvidenceKey("Roblox", "us", "nano")
+	if !strings.Contains(k, "|"+g+"|"+r+"|") {
+		t.Errorf("key %q lacks %q and %q", k, g, r)
+	}
+	// The sample reaches the user template and splits a long page.
+	docs := versionSample()
+	cs := chunkDocs(docs)
+	if len(cs) < 2 || !strings.Contains(readerUser("Sample Title", cs[0], docs), "[R1]") {
+		t.Errorf("sample does not exercise the chunker: %d chunks", len(cs))
+	}
+}

@@ -192,6 +192,13 @@ The card cites the findings its grades rest on, plus every risk finding, so a pa
 | L2 | `ReaderVersion()` (hash of the reader system prompt plus `readerChunking`) is in `EvidenceKey`. A prompt edit changes the key on its own. | `TestEvidenceKeyHasReaderVersion`, `TestEvidenceKey` |
 | L3 | Cache-hit cost semantics for T4: a hit makes no reader or Tavily call, books nothing under the new ref, and returns `hit=true`. Its `Stats.ReadCostNano` and `Stats.TavilyCredits` are what was paid when it was collected, not now. A card's cost is that collect cost plus this decision's judge cost. T4 should report a hit's incremental cost as judge only and show the collect cost as "already paid". | doc comment on `Collect`. `TestReview355DecidesTheCard` checks that a second age books only the judge |
 
+**Round 2 remediation (T3.4).**
+
+| ID | Fix | Test |
+|---|---|---|
+| M1 | `Collect` does not cache when `Gathered.Failures` is non-empty, that is, when a kind is missing because a call failed: an App Store search error, a review feed error, or a page Tavily could not read whose kind then had nothing. A kind missing because it is absent (no listing, an empty feed, a 404 page) is still cached. Tavily search and extract call errors already fail the collect, so they are never cached. The card is still made from what was gathered. | `TestTransientSourceFailureNotCached` (absent feed → cached; feed error → not; unread policy link → not); `TestGatherFailuresVsAbsent`, `TestGatherFailuresOnFixtures` |
+| L1 | The key's versions are hashes, not hand bumps. `ReaderVersion` hashes the system prompt, the user prompt as rendered by `chunkDocs` over a fixed sample (duplicate review index, a short page, a page long enough to split), `chunkChars`, `overlapChars` and `readerChunking`. `GatherVersion` hashes `PlanVersion`, `Plan` as drawn with and without a host, and the field names and types of `Gathered`, `Doc` and `finding.Source`. Only behaviour changes inside Gather and the chunker that the sample cannot see still need a `PlanVersion` or `readerChunking` bump; the bump rule is beside each. | `TestKeyVersionsAreHashes`, `TestEvidenceKeyHasReaderVersion` |
+
 ---
 
 ### T3.5: Safer alternatives ★
