@@ -360,8 +360,8 @@ func TestGatherFixtures(t *testing.T) {
 
 			// Seven searches and at most one extract, and the meter booked
 			// what Tavily reported.
-			if len(f.searches) != 7 || len(f.extracts) > 1 {
-				t.Errorf("calls = %d searches, %d extracts; want 7 and at most 1", len(f.searches), len(f.extracts))
+			if len(f.searches) != 7 || len(f.extracts) > 2 {
+				t.Errorf("calls = %d searches, %d extracts; want 7 and at most 2", len(f.searches), len(f.extracts))
 			}
 			if got.Credits != f.credits() {
 				t.Errorf("credits = %g, want the captures' %g", got.Credits, f.credits())
@@ -420,35 +420,67 @@ func TestGatherReviewSource(t *testing.T) {
 }
 
 func TestHostFromHitsRefusesLookAlikes(t *testing.T) {
-	apps := []appstore.App{
-		{Name: "Toca Boca World: Game & Play", Seller: "Toca Boca AB"},
-		{Name: "Minecraft: Play with Friends!", Seller: "Mojang AB"},
+	// The App Store hits as captured: Minecraft's own listing has no seller
+	// URL, its sibling Minecraft Education names education.minecraft.net,
+	// and Toca's store name fails the prefix rule.
+	toca := []appstore.App{
+		{Name: "Toca Boca World: Game & Play", Seller: "Toca Boca AB", SellerURL: "https://tocaboca.com"},
+		{Name: "Avatar World ®", Seller: "Pazu Games Ltd", SellerURL: "http://pazugames.com"},
 	}
+	mc := []appstore.App{
+		{Name: "Minecraft: Play with Friends!", Seller: "Mojang AB"},
+		{Name: "Minecraft Education", Seller: "Mojang AB", SellerURL: "https://education.minecraft.net/"},
+		{Name: "MultiCraft — Build and Mine!", Seller: "MultiCraft Studio OU", SellerURL: "https://multicraft.world"},
+	}
+	rbx := []appstore.App{{Name: "Roblox", Seller: "Roblox Corporation"}}
 	hit := func(u string) []tavily.Result { return []tavily.Result{{URL: u}} }
 	cases := []struct {
-		url, title, want string
+		url, title string
+		apps       []appstore.App
+		picked     bool
+		want       string
 	}{
-		{"https://www.tocaboca.com/docs/en/privacy-policy", "Toca Life World", "tocaboca.com"},
-		{"https://tocaboca.helpshift.com/hc/en/privacy", "Toca Life World", ""},
-		{"https://tocabocashop.com/docs/privacy-policy", "Toca Life World", ""},
-		{"https://toca-boca.com/privacy", "Toca Life World", ""},
-		{"https://tocaboca.com.evil.io/privacy", "Toca Life World", ""},
-		{"https://www.minecraft.net/en-us/usage-guidelines", "Minecraft", "minecraft.net"},
-		{"https://minecraftshop.com/pages/privacy-policy", "Minecraft", ""},
-		{"https://www.minecraftexperience.com/privacy-policy", "Minecraft", ""},
-		{"https://mojang.com/privacy", "Minecraft", "mojang.com"},
-		{"https://mojangab.com/privacy", "Minecraft", ""},
-		{"https://minecraft.co.uk/privacy", "Minecraft", "minecraft.co.uk"},
-		{"https://minecraft.evil.co.uk/privacy", "Minecraft", ""},
+		{"https://www.tocaboca.com/docs/en/privacy-policy", "Toca Life World", toca, false, "tocaboca.com"},
+		{"https://tocaboca.co.uk/privacy", "Toca Life World", toca, false, ""},
+		{"https://tocaboca.helpshift.com/hc/en/privacy", "Toca Life World", toca, false, ""},
+		{"https://tocabocashop.com/docs/privacy-policy", "Toca Life World", toca, false, ""},
+		{"https://toca-boca.com/privacy", "Toca Life World", toca, false, ""},
+		{"https://tocaboca.com.evil.io/privacy", "Toca Life World", toca, false, ""},
+		// Another developer's own domain does not stand for this title.
+		{"https://pazugames.com/privacy", "Toca Life World", toca, false, ""},
+		{"https://www.minecraft.net/en-us/usage-guidelines", "Minecraft", mc, true, "minecraft.net"},
+		{"https://minecraft.wiki/w/Minecraft_Wiki:Privacy_policy", "Minecraft", mc, true, ""},
+		{"https://minecraft.co.uk/privacy", "Minecraft", mc, true, ""},
+		{"https://minecraftshop.com/pages/privacy-policy", "Minecraft", mc, true, ""},
+		{"https://mojang.xyz/privacy", "Minecraft", mc, true, ""},
+		{"https://multicraft.world/privacy", "Minecraft", mc, true, ""},
+		{"https://roblox.app/privacy", "Roblox", rbx, true, ""},
+		{"https://www.roblox.com/info/privacy", "Roblox", rbx, true, ""},
 	}
 	for _, c := range cases {
-		if got, _ := hostFromHits(hit(c.url), apps, c.title); got != c.want {
+		var picked *appstore.App
+		if c.picked {
+			picked = &c.apps[0]
+		}
+		if got, _ := hostFromHits(hit(c.url), c.apps, picked, c.title); got != c.want {
 			t.Errorf("hostFromHits(%s, %q) = %q, want %q", c.url, c.title, got, c.want)
 		}
 	}
 	// The developer match also names the app, so Toca's reviews are read.
-	if _, a := hostFromHits(hit("https://www.tocaboca.com/p"), apps, "Toca Life World"); a == nil || a.Seller != "Toca Boca AB" {
+	if _, a := hostFromHits(hit("https://www.tocaboca.com/p"), toca, nil, "Toca Life World"); a == nil || a.Seller != "Toca Boca AB" {
 		t.Errorf("toca app = %+v", a)
+	}
+}
+
+func TestAboutIgnoresQuery(t *testing.T) {
+	if about(KindPolicy, "https://www.roblox.com/download?ref=privacy", "Download", "") {
+		t.Error("a query string named the page a policy")
+	}
+	if !about(KindPolicy, "https://www.roblox.com/info/privacy", "", "") {
+		t.Error("a privacy path was not a policy")
+	}
+	if got := candidates([]tavily.Result{{URL: "https://roblox.com/download?ref=privacy"}, {URL: "https://roblox.com/info/privacy"}}, KindPolicy, "roblox.com", map[string]string{}); got[0] != "https://roblox.com/info/privacy" {
+		t.Errorf("candidates = %v", got)
 	}
 }
 
@@ -456,14 +488,91 @@ func TestErrorPage(t *testing.T) {
 	cases := map[string]bool{
 		"": true,
 		"Oops! Looks like that page doesn't exist. Go home.": true,
-		"404 Not Found": true,
-		"Privacy Policy\nWe collect your name and email to run the service.":               false,
-		"Privacy Policy\n" + strings.Repeat("We keep data safe. ", 400) + "page not found": false,
+		"404 Not Found":                       true,
+		"Page not found\nTry the search box.": true,
+		"Privacy Policy\nWe collect your name and email to run the service.":                                                                                false,
+		"Privacy Policy\nWe keep your data safe. If a page does not exist we show a notice, and nothing about you is logged when that happens on our site.": false,
+		"My kid tried to open the store and the page does not exist anymore, so we stopped buying things in the game.":                                      false,
+		"Privacy Policy\n" + strings.Repeat("We keep data safe. ", 400) + "page not found":                                                                  false,
 	}
 	for in, want := range cases {
 		if got := errorPage(in); got != want {
 			t.Errorf("errorPage(%.40q) = %v, want %v", in, got, want)
 		}
+	}
+}
+
+// stubSearch serves one homepage hit per policy and terms search, and an
+// extract that reads the homepage and the links named on it.
+type stubSearch struct {
+	pages    map[string]string
+	extracts [][]string
+}
+
+func (s *stubSearch) Search(_ context.Context, q tavily.Search) ([]tavily.Result, tavily.Credits, error) {
+	if strings.HasSuffix(q.Query, "privacy policy") || strings.HasSuffix(q.Query, "terms of service") {
+		return []tavily.Result{{URL: "https://www.khankids.org", Title: "Khan Academy Kids"}}, tavily.Credits{Used: 1, Reported: true}, nil
+	}
+	return nil, tavily.Credits{Used: 1, Reported: true}, nil
+}
+
+func (s *stubSearch) ExtractWithFailures(_ context.Context, urls []string) (tavily.Extracted, error) {
+	s.extracts = append(s.extracts, urls)
+	var ex tavily.Extracted
+	for _, u := range urls {
+		if t, ok := s.pages[u]; ok {
+			ex.Pages = append(ex.Pages, tavily.Page{URL: u, RawContent: t})
+		} else {
+			ex.Failed = append(ex.Failed, tavily.Failed{URL: u, Error: "no"})
+		}
+	}
+	ex.Credits = tavily.Credits{Used: 1, Reported: true}
+	return ex, nil
+}
+
+type stubStore struct{ apps []appstore.App }
+
+func (s stubStore) Find(context.Context, string, int) ([]appstore.App, error) { return s.apps, nil }
+func (s stubStore) Reviews(context.Context, int64, int) ([]appstore.Review, error) {
+	return nil, nil
+}
+func (s stubStore) FeedURL(int64, int) string { return "" }
+
+// A homepage-only hit is read, and the privacy and terms links named on it
+// are followed in one more extract call.
+func TestGatherFollowsHomepageLinks(t *testing.T) {
+	s := &stubSearch{pages: map[string]string{
+		"https://www.khankids.org": "Khan Academy Kids\nLearn more. Privacy: https://www.khankids.org/privacy-policy. " +
+			"Terms: https://www.khankids.org/terms-of-service. Elsewhere: https://evil.example/privacy.",
+		"https://www.khankids.org/privacy-policy":   "Privacy Policy\nWe collect as little as we can.",
+		"https://www.khankids.org/terms-of-service": "Terms of Service\nThese terms govern the app.",
+	}}
+	g := &Gatherer{Store: stubStore{[]appstore.App{{ID: 1, Name: "Khan Academy Kids", Seller: "Khan Academy", SellerURL: "http://khankids.org"}}},
+		Search: s, Meter: openTestMeter(t)}
+	got, err := g.Gather(context.Background(), "Khan Academy Kids", "c")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(s.extracts) != 2 || len(s.extracts[0]) != 1 || len(s.extracts[1]) != 2 {
+		t.Fatalf("extracts = %v", s.extracts)
+	}
+	if u := docURLs(got.Docs, KindPolicy); len(u) != 1 || u[0] != "https://www.khankids.org/privacy-policy" {
+		t.Errorf("policy = %v", u)
+	}
+	if u := docURLs(got.Docs, KindTerms); len(u) != 1 || u[0] != "https://www.khankids.org/terms-of-service" {
+		t.Errorf("terms = %v", u)
+	}
+	for _, m := range got.Missing {
+		if m == KindPolicy || m == KindTerms {
+			t.Errorf("missing %v", got.Missing)
+		}
+	}
+	// An unreadable homepage says why no link was followed.
+	delete(s.pages, "https://www.khankids.org")
+	s.extracts = nil
+	got, _ = g.Gather(context.Background(), "Khan Academy Kids", "c2")
+	if len(s.extracts) != 1 || !strings.Contains(strings.Join(got.Notes, "\n"), "homepage could not be read, so no policy link could be followed") {
+		t.Errorf("extracts %v notes %q", s.extracts, got.Notes)
 	}
 }
 

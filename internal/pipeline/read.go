@@ -119,8 +119,9 @@ func (r *Reader) Read(ctx context.Context, title, ref string, docs []Doc) (Read,
 	}
 	chunks := chunkDocs(docs)
 	segs := map[string]finding.Segment{}
-	for i, d := range docs {
-		segs[refFor(d, i)] = finding.Segment{Text: d.Text, Source: d.Source}
+	for i, ref := range assignRefs(docs) {
+		d := docs[i]
+		segs[ref] = finding.Segment{Text: d.Text, Source: d.Source}
 	}
 	type result struct {
 		raws     []finding.Raw

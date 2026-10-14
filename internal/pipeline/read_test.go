@@ -289,3 +289,27 @@ func TestReaderSystemNamesEveryArea(t *testing.T) {
 		}
 	}
 }
+
+// Two reviews with the same index, as feed and store-page reviews will be,
+// get distinct refs, and a quote is checked against its own review only.
+func TestReviewRefsUnique(t *testing.T) {
+	docs := []Doc{
+		{Source: finding.Source{Kind: KindReview, Index: 1, URL: "https://itunes.apple.com/feed"}, Text: "My son was messaged by a stranger in the game chat last week."},
+		{Source: finding.Source{Kind: KindReview, Index: 1, URL: "https://apps.apple.com/page"}, Text: "We love the drawing games and the calm music in this app."},
+	}
+	refs := assignRefs(docs)
+	if refs[0] != "R1" || refs[1] != "D2" {
+		t.Fatalf("refs = %v", refs)
+	}
+	rec := &recorder{price: 1, byRef: map[string][]finding.Raw{
+		"R1": {{Ref: "R1", Area: "contact", Stance: "risk", Claim: "x", Quote: "We love the drawing games and the calm music"}},
+		"D2": {{Ref: "D2", Area: "content", Stance: "neutral", Claim: "y", Quote: "We love the drawing games and the calm music"}},
+	}}
+	got, err := (&Reader{Model: rec, Meter: openTestMeter(t)}).Read(context.Background(), "X", "c", docs)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(got.Findings) != 1 || got.Findings[0].Source.URL != "https://apps.apple.com/page" || got.Drops.Unquoted != 1 {
+		t.Errorf("findings %+v drops %+v", got.Findings, got.Drops)
+	}
+}
