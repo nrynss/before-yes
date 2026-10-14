@@ -78,6 +78,7 @@ status:     in-review
 - `split` cuts always land on rune boundaries, including the overlap start; a test exercises this with multibyte text that has no spaces.
 - The "recorded Nano replies" here are hand-written replies inside read_test.go, served by a fake model keyed by segment ref. Real recordings belong to T3.6b (testdata/eval/replies/), which needs keys. Against the Roblox fixtures, review 355 (the fixtures' review-312 equivalent) survives as a contact risk. Invented quotes, a ref from another chunk and a ref no document has are all dropped as unquoted; bad area, bad stance, short quote and duplicate drops are counted.
 - `Chatter` (the model surface) and `chat()` live in read.go and are reused by the judge.
+- **Stand-in replies, accepted by the user:** the recorded replies in read_test.go are hand-written stand-ins, not real model output. T3.6b must replace them with real recordings from `testdata/eval/replies/`.
 
 ---
 
