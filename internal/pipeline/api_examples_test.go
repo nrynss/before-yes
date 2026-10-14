@@ -77,6 +77,41 @@ func TestAPICardMatchesContract(t *testing.T) {
 	}
 }
 
+// get-cards.json lists the card examples as they are, under the current
+// checklist version (T1.4 round 2 M1).
+func TestAPICardsMatchContracts(t *testing.T) {
+	var body struct {
+		Cards []struct {
+			ID               string            `json:"id"`
+			Title            string            `json:"title"`
+			Age              int               `json:"age"`
+			Verdict          checklist.Verdict `json:"verdict"`
+			ChecklistVersion string            `json:"checklist_version"`
+			CheckedAt        string            `json:"checked_at"`
+		} `json:"cards"`
+	}
+	if err := decodeStrict(readExchange(t, "get-cards.json").Response.Body, &body); err != nil {
+		t.Fatal(err)
+	}
+	want := map[string]Card{}
+	for _, name := range []string{"card-no.json", "card-settings.json", "card-yes.json", "card-unclear.json"} {
+		b, _ := os.ReadFile(filepath.Join(contracts, name))
+		var c Card
+		json.Unmarshal(b, &c)
+		want[c.ID] = c
+	}
+	if len(body.Cards) != len(want) {
+		t.Fatalf("%d cards listed, want %d", len(body.Cards), len(want))
+	}
+	for _, s := range body.Cards {
+		c, ok := want[s.ID]
+		if !ok || s.Title != c.Title || s.Age != c.Age || s.Verdict != c.Verdict ||
+			s.ChecklistVersion != checklist.Version || s.ChecklistVersion != c.ChecklistVersion || s.CheckedAt != c.CheckedAt.Format("2006-01-02T15:04:05Z07:00") {
+			t.Errorf("get-cards.json entry %+v does not match its card", s)
+		}
+	}
+}
+
 // get-checklist.json is what the checklist package says.
 func TestAPIChecklistMatches(t *testing.T) {
 	var body struct {
@@ -195,7 +230,29 @@ func TestAPIGenerate(t *testing.T) {
 			"verdicts": []checklist.Verdict{checklist.Yes, checklist.YesWithSettings, checklist.No, checklist.Unclear},
 		}},
 	}
-	for name, v := range map[string]any{"get-card.json": cardX, "get-checklist.json": cl} {
+	type summary struct {
+		ID               string            `json:"id"`
+		Title            string            `json:"title"`
+		Age              int               `json:"age"`
+		Verdict          checklist.Verdict `json:"verdict"`
+		ChecklistVersion string            `json:"checklist_version"`
+		CheckedAt        string            `json:"checked_at"`
+	}
+	var recent []summary
+	for _, name := range []string{"card-no.json", "card-settings.json", "card-yes.json", "card-unclear.json"} {
+		b, err := os.ReadFile(filepath.Join(contracts, name))
+		if err != nil {
+			t.Fatal(err)
+		}
+		var k Card
+		json.Unmarshal(b, &k)
+		recent = append(recent, summary{k.ID, k.Title, k.Age, k.Verdict, k.ChecklistVersion, k.CheckedAt.Format("2006-01-02T15:04:05Z07:00")})
+	}
+	cards := map[string]any{
+		"request":  map[string]any{"method": "GET", "path": "/api/cards"},
+		"response": map[string]any{"status": 200, "body": map[string]any{"cards": recent}},
+	}
+	for name, v := range map[string]any{"get-card.json": cardX, "get-checklist.json": cl, "get-cards.json": cards} {
 		var buf bytes.Buffer
 		enc := json.NewEncoder(&buf)
 		enc.SetEscapeHTML(false)

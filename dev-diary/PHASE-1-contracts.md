@@ -207,6 +207,15 @@ The progress event's `detail` carries `{"message": "..."}`, for example "reading
 | L3 | The event streams are now written by `wire.WriteEvent` itself (`event:` before `id:`). Doing this showed that an `error` event nests the full envelope: `"error": {"error": {code, ...}}`. The doc said `"error": {code, ...}`, and now matches Keel. | `TestAPIGenerate` |
 
 Also added: every non-2xx example must be a strict wire envelope whose code appears in `docs/api.md` (`TestAPIErrorEnvelopes`).
+
+**Remediation, round 2** ([review](adversarial-review/t1.4-round2.md)).
+
+| Finding | Fix | Test |
+|---|---|---|
+| M1 | `get-cards.json` is now generated from the four card examples (id, title, age, verdict, checklist version, checked at) and carries `v3`. It lists four cards, `card-unclear` included. A test reads it and fails if any entry drifts from its card or from `checklist.Version`. | `TestAPICardsMatchContracts`, `TestAPIGenerate` |
+| inherited | `get-card.json` and `get-checklist.json` were regenerated after the T1.1, T1.2 and T1.3 round-2 fixes. | `TestAPICardMatchesContract`, `TestAPIChecklistMatches` |
+
+Noted from the review, not this task's: `go mod tidy -diff` is non-empty on `main` too, because `modernc.org/sqlite` is not imported yet. Phase 1 did not introduce it.
 ---
 
 ## Exit Criteria

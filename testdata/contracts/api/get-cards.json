@@ -4,7 +4,6 @@
     "path": "/api/cards"
   },
   "response": {
-    "status": 200,
     "body": {
       "cards": [
         {
@@ -12,7 +11,7 @@
           "title": "Roblox",
           "age": 9,
           "verdict": "no",
-          "checklist_version": "v1",
+          "checklist_version": "v3",
           "checked_at": "2026-10-13T18:58:40Z"
         },
         {
@@ -20,7 +19,7 @@
           "title": "Minecraft",
           "age": 9,
           "verdict": "yes_with_settings",
-          "checklist_version": "v1",
+          "checklist_version": "v3",
           "checked_at": "2026-10-13T18:58:40Z"
         },
         {
@@ -28,10 +27,19 @@
           "title": "Khan Academy Kids",
           "age": 5,
           "verdict": "yes",
-          "checklist_version": "v1",
+          "checklist_version": "v3",
+          "checked_at": "2026-10-13T18:58:40Z"
+        },
+        {
+          "id": "c_Tc6vRb1nQ8zKp2dWm5sLhA",
+          "title": "Toca Life World",
+          "age": 6,
+          "verdict": "unclear",
+          "checklist_version": "v3",
           "checked_at": "2026-10-13T18:58:40Z"
         }
       ]
-    }
+    },
+    "status": 200
   }
 }
