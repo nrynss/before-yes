@@ -20,7 +20,7 @@ requires:   T0.1
 fixture-ok: yes
 size:       M · frontier
 owns:       internal/checklist/
-status:     drafted
+status:     in-review
 ```
 The brief says it plainly: the checklist is the product. It is fixed, versioned, and the same for every title.
 
@@ -38,6 +38,12 @@ Bump `checklist.Version` whenever an area's wording or a rule changes, because c
 
 **Done when:** A table test covers every rule and every demotion, `Decide` refuses an incomplete or duplicated grade set, and the verdict question is decided and recorded.
 
+
+**Implementation notes (in review).** The scratch draft was not reachable from the implementing session (it lives only in the main checkout), so `internal/checklist/` was written fresh from this spec and the brief.
+- **Verdict question: provisionally `unclear` kept, pending the user's confirmation.** Without it, a title with no evidence on contact or content would compute to "yes". Rules in `Decide`, in order: refuse an incomplete, duplicated or invalid set (`ErrGrades`); any `flag` is `no`; contact or content `unknown` is `unclear`; three or more of six `unknown` is `unclear`; any `ok_with_setting` is `yes_with_settings`; otherwise `yes`. If the user drops `unclear`, rules 3 and 4 need a replacement, `Version` bumps, and T1.3 drops `card-unclear.json`.
+- `Decide` takes grades only. The child's age reaches the verdict through the judge's grades, not through a rule here.
+- `Enforce(grades, map[id]Cited)` takes a small `Cited{Area, Risk}` view of each verified finding, so `checklist` does not import `finding` (T1.2 requires T1.1). It returns six grades in card order plus a `Demotion` list. Beyond the four spec rules it also discards a grade with an unknown area or level, and a second grade for an area, and clears `setting` on any grade demoted to `unknown`.
+- `Decide` also refuses `ok_with_setting` with no setting, so `Enforce` output is the only safe input.
 ---
 
 ### T1.2: Finding format and the quote check ★
