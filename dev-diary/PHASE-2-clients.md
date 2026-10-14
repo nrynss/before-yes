@@ -73,7 +73,7 @@ requires:   T0.1
 fixture-ok: yes
 size:       S · mid
 owns:       internal/tavily/tavily.go, internal/tavily/tavily_test.go
-status:     claimed:impl-t2.2
+status:     in-review
 ```
 Search (`query`, depth, topic, max results, include and exclude domains, raw content) and extract (basic depth, text format). Ask for `include_usage` and report the credits each call cost. When usage is absent, fall back to the price list: basic search 1, advanced 2, extract 1 per 5 successful URLs.
 
