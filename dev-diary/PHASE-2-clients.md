@@ -220,7 +220,7 @@ requires:   T2.4, T2.5
 fixture-ok: yes
 size:       S · mid
 owns:       internal/spend/
-status:     not-started
+status:     in-review
 ```
 Split from T2.5. [`docs/budget.md`](../docs/budget.md) sets a cap of 5 fresh checks per UTC day while judging runs. The meter cannot enforce it today. `Open` knows only the model and tavily pools, and `Spend` reserves against one pool per call. A daily model-dollar pool would be the wrong unit: five checks spend about $0.13, so it would never trip.
 
@@ -233,6 +233,8 @@ Split from T2.5. [`docs/budget.md`](../docs/budget.md) sets a cap of 5 fresh che
 - Tests show the sixth check in a UTC day refused before any call, the count reset at the next UTC day, a failed check releasing its count, and the ledger read back through a fresh SQLite connection.
 - A test shows a `work` that returns `context.DeadlineExceeded` booked at the estimate in the ledger, and a cancelled one released.
 - `daily_fresh_checks` is uncommented in `before-yes.toml.example`.
+
+**Result.** Checks are reserved with `Meter.BeginCheck(ctx, ref)`, which returns a `*Check`; the caller ends it with `Done()` (books one check) or `Fail()` (releases). A cache hit never calls `BeginCheck`. Chosen over a `Spend`-shaped call because one check runs several paid calls, so it cannot be one `work` closure. `Open` pins `tavily` to `cost.MonthlyUTC` and `checks_daily` to `cost.DailyUTC` whatever the caller passes. `Spend` books a `work` that returns `context.DeadlineExceeded` at the estimate while the caller's context is live, and releases on a caller cancel or caller deadline. Tests: `internal/spend/checks_test.go` and the existing spend tests, `-race`. Keel's `sqlitestore` takes a clock (`Now`), so the day reset is tested by moving the clock, not by sleeping.
 
 ---
 

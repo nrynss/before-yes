@@ -140,12 +140,13 @@ per_minute   = 300
 # tavily_credits_monthly is the Tavily ceiling, 900 of the 1,000 free credits a
 # month. The tavily pool must open with cost.MonthlyUTC, or 900 becomes a
 # lifetime ceiling.
-# daily_fresh_checks = 5 is the judging-week cap on fresh checks per UTC day. No
-# code reads it until the daily-counter task lands (docs/budget.md, proposed T2.4b).
+# daily_fresh_checks is the judging-window cap on fresh checks per UTC day. It is
+# the limit of the checks_daily pool (internal/spend, BeginCheck), which opens with
+# cost.DailyUTC. The pipeline passes it when it opens the meter; no loader reads it yet.
 [budget]
 model_usd              = 20
 tavily_credits_monthly = 900
-# daily_fresh_checks   = 5
+daily_fresh_checks     = 5
 
 # Key references. Each one names the env file, the variable inside it, and when to read it.
 [secrets.reader]
