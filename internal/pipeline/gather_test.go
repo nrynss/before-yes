@@ -3,6 +3,7 @@ package pipeline
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -726,5 +727,51 @@ func TestOfficialDomain(t *testing.T) {
 	apps := []appstore.App{{Name: "Foo", Seller: "Foo", SellerURL: "https://foo.github.io"}}
 	if h, _ := hostFromHits(hits, apps, nil, "Foo"); h != "" {
 		t.Errorf("a github.io page was taken as official: %q", h)
+	}
+}
+
+type failStore struct {
+	stubStore
+	findErr, feedErr error
+}
+
+func (s failStore) Find(ctx context.Context, t string, n int) ([]appstore.App, error) {
+	if s.findErr != nil {
+		return nil, s.findErr
+	}
+	return s.stubStore.Find(ctx, t, n)
+}
+func (s failStore) Reviews(context.Context, int64, int) ([]appstore.Review, error) {
+	return nil, s.feedErr
+}
+
+// A call that errored is a failure; a source that is simply absent is not.
+func TestGatherFailuresVsAbsent(t *testing.T) {
+	khan := []appstore.App{{ID: 1, Name: "Khan Academy Kids", Seller: "Khan Academy", SellerURL: "http://khankids.org"}}
+	pages := map[string]string{
+		"https://www.khankids.org":                "Khan Academy Kids\nPrivacy: https://www.khankids.org/privacy-policy",
+		"https://www.khankids.org/privacy-policy": "Privacy Policy\nWe collect as little as we can.",
+	}
+	for _, c := range []struct {
+		name  string
+		store Store
+		pages map[string]string
+		want  []string
+	}{
+		{"absent", failStore{stubStore: stubStore{khan}}, pages, nil},
+		{"no listing", stubStore{}, pages, nil},
+		{"store search", failStore{findErr: errors.New("503")}, pages, []string{"appstore_search"}},
+		{"feed", failStore{stubStore: stubStore{khan}, feedErr: errors.New("503")}, pages, []string{"review_feed"}},
+		{"extract", stubStore{khan}, map[string]string{}, []string{"extract https://www.khankids.org"}},
+	} {
+		s := &stubSearch{pages: c.pages}
+		g := &Gatherer{Store: c.store, Search: s, Meter: openTestMeter(t)}
+		got, err := g.Gather(context.Background(), "Khan Academy Kids", "c")
+		if err != nil {
+			t.Fatal(err)
+		}
+		if strings.Join(got.Failures, ",") != strings.Join(c.want, ",") {
+			t.Errorf("%s: failures %q, want %q", c.name, got.Failures, c.want)
+		}
 	}
 }

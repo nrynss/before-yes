@@ -47,8 +47,11 @@ type Doc struct {
 }
 
 // PlanVersion names the source plan. It is part of the evidence cache key,
-// so a change to Plan, the extract rules or the clean-up below must bump it.
-const PlanVersion = "plan-2"
+// so a change to the extract rules, the error-page rule, host narrowing or
+// the clean-up below must bump it. (The plan's queries and the Gathered
+// shape are hashed into the key on their own; see pipeline.ReaderVersion.)
+// plan-3: round-2 error-page, host and link rules.
+const PlanVersion = "plan-3"
 
 // Source kinds a plan query or the store step fills. A kind with no usable
 // document is reported in Gathered.Missing, for the card's small print.
@@ -138,6 +141,13 @@ type Gathered struct {
 	// Notes says, in plain words, what was left out and why: a not-found
 	// page, a homepage, a failed extract.
 	Notes []string
+	// Failures names the source calls that errored rather than came back
+	// empty: "appstore_search", "review_feed", or "extract <url>" for a page
+	// Tavily could not read. A kind missing because the source is absent
+	// (no listing, an empty feed, a 404 page) is not a failure; a kind
+	// missing because a call failed may be there next time, so the
+	// pipeline does not cache such evidence.
+	Failures []string
 }
 
 // Gatherer runs the source plan for one title.
@@ -184,6 +194,7 @@ func (g *Gatherer) Gather(ctx context.Context, title, ref string) (Gathered, err
 		apps, err = g.Store.Find(ctx, title, storeHits)
 		if err != nil {
 			out.Notes = append(out.Notes, "App Store search failed: "+err.Error())
+			out.Failures = append(out.Failures, "appstore_search")
 		}
 	}
 	out.App = pickApp(apps, title)
@@ -232,7 +243,8 @@ func (g *Gatherer) Gather(ctx context.Context, title, ref string) (Gathered, err
 
 	// 3. The policy and terms pages: one extract call, and a second only
 	// when a homepage names a privacy or terms link to follow.
-	docs, notes, used, err := g.policyPages(ctx, ref, plan, hits, out.Host, at)
+	docs, notes, failed, used, err := g.policyPages(ctx, ref, plan, hits, out.Host, at)
+	out.Failures = append(out.Failures, failed...)
 	out.Credits += used
 	out.Notes = append(out.Notes, notes...)
 	if err != nil {
@@ -277,9 +289,9 @@ func (g *Gatherer) Gather(ctx context.Context, title, ref string) (Gathered, err
 // A kind whose hits are only homepages extracts the homepage instead, and
 // when it can be read, the links on it named for the kind, on the same
 // host, go into one more extract call.
-func (g *Gatherer) policyPages(ctx context.Context, ref string, plan []Query, hits map[string][]tavily.Result, host string, at time.Time) ([]Doc, []string, float64, error) {
+func (g *Gatherer) policyPages(ctx context.Context, ref string, plan []Query, hits map[string][]tavily.Result, host string, at time.Time) ([]Doc, []string, []string, float64, error) {
 	var docs []Doc
-	var notes []string
+	var notes, failed []string
 	credits := 0.0
 	taken := map[string]string{}
 	want := map[string][]string{}
@@ -326,6 +338,9 @@ func (g *Gatherer) policyPages(ctx context.Context, ref string, plan []Query, hi
 		for _, p := range ex.Pages {
 			pages[p.URL] = p
 		}
+		for _, f := range ex.Failed {
+			failed = append(failed, "extract "+f.URL)
+		}
 		return pages, nil
 	}
 	got := map[string]bool{}
@@ -354,7 +369,7 @@ func (g *Gatherer) policyPages(ctx context.Context, ref string, plan []Query, hi
 
 	pages, err := read(urls)
 	if err != nil {
-		return nil, notes, credits, err
+		return nil, notes, failed, credits, err
 	}
 	for _, k := range kinds {
 		accept(k, want[k], pages)
@@ -385,13 +400,13 @@ func (g *Gatherer) policyPages(ctx context.Context, ref string, plan []Query, hi
 	if len(more) > 0 {
 		pages, err := read(more)
 		if err != nil {
-			return docs, notes, credits, err
+			return docs, notes, failed, credits, err
 		}
 		for _, k := range kinds {
 			accept(k, links[k], pages)
 		}
 	}
-	return docs, notes, credits, nil
+	return docs, notes, failed, credits, nil
 }
 
 var linkRE = regexp.MustCompile(`https?://[^\s<>()\[\]"'|]+`)
@@ -442,6 +457,7 @@ func (g *Gatherer) storeDocs(ctx context.Context, a *appstore.App, at time.Time,
 		// The feed has been dark for every app; the store page (T3.8) is
 		// the fallback once it exists.
 		miss(KindReview, "App Store review feed failed: "+err.Error())
+		out.Failures = append(out.Failures, "review_feed")
 	} else if len(reviews) == 0 {
 		miss(KindReview, "App Store review feed returned no reviews")
 	}
