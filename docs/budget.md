@@ -99,9 +99,9 @@ The entailment check's Nano calls are shown apart from the reader's because they
 | Entail output (Nano) | 73 | 0.24 | 0.000018 |
 | Judge input | 38,423 | 0.30 | 0.011527 |
 | Judge output | 14,212 | 0.90 | 0.012791 |
-| **Total** | | | **0.040581** from the rounded averages |
+| **Total** | | | **0.040580** |
 
-The doc uses **$0.040580**, the mean of the three measured per-title totals (`(0.040243 + 0.042595 + 0.038903) / 3 = 0.121741 / 3`). The 0.000001 difference is the rounding of averaged token counts. Shares of model cost: reader input 19%, reader output 21%, entailment 0.4%, judge input 28%, judge output 32%.
+The doc uses **$0.040580**, the mean of the three measured per-title totals (`(0.040243 + 0.042595 + 0.038903) / 3 = 0.121741 / 3`), which is also the six rows' sum before each row is rounded (0.0405802). Summing the displayed rows instead gives one ulp more, 0.040581: that is each row's rounding, not a seventh term. Shares of model cost: reader input 19%, reader output 21%, entailment 0.4%, judge input 28%, judge output 32%.
 
 Tavily: **7 to 8 credits per check, fixture-measured**. The doc uses 8 for the worst case, and 7 where the best case is shown.
 
