@@ -11,7 +11,7 @@ const strings = (v: unknown): v is string[] => Array.isArray(v) && v.every(text)
 const count = (v: unknown) => Number.isSafeInteger(v) && Number(v) >= 0;
 const date = (v: unknown) => text(v) && Number.isFinite(Date.parse(v));
 const area = (v: unknown) => areas.some(([id]) => id === v);
-export const cardID = (v: unknown): v is string => typeof v === 'string' && /^c_[A-Za-z0-9_-]+$/.test(v);
+export const cardID = (v: unknown): v is string => typeof v === 'string' && v.length === 24 && /^c_[A-Za-z0-9]{22}$/.test(v);
 function require(value: unknown): asserts value { if (!value) throw new Error('Invalid card'); }
 const optionalText = (v: unknown) => v === undefined || typeof v === 'string';
 function safeURL(v: unknown) { if (!text(v)) return false; try { const url = new URL(v); return ['https:', 'http:'].includes(url.protocol) && !url.username && !url.password; } catch { return false; } }

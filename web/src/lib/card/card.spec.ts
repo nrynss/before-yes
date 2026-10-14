@@ -69,7 +69,11 @@ for (const mutation of ['unsafe source', 'missing finding', 'wrong area', 'bad i
  await page.route(`**/api/cards/${no.id}`, route => route.fulfill({json:card})); await page.goto(`/card/${no.id}`); await expect(page.locator('h1')).toHaveText('The card couldn’t be opened.'); await expect(page.locator('figure')).toHaveCount(0);
 });
 test('unsafe route id requests nothing and XSS quote is plain exact text', async ({page}) => {
- let calls = 0; await page.route('**/api/cards/*', route => {calls++;return route.fulfill({json:no});}); await page.goto('/card/abcdef1234'); await expect(page.locator('h1')).toHaveText('Card not found.'); expect(calls).toBe(0); await page.unroute('**/api/cards/*');
+ let calls = 0; await page.route('**/api/cards/*', route => {calls++;return route.fulfill({json:no});});
+ for (const id of ['c_1', `c_${'A'.repeat(23)}`, `c_${'A'.repeat(21)}_`, `c_${'A'.repeat(21)}-`, `c_${'A'.repeat(22)}\n`, 'abcdef1234']) {
+  await page.goto(`/card/${encodeURIComponent(id)}`); await expect(page.locator('h1')).toHaveText('Card not found.');
+ }
+ expect(calls).toBe(0); await page.unroute('**/api/cards/*');
  const card = structuredClone(no); card.findings[0].quote = '<img src=x onerror="window.pwned=true">'; await open(page,card); await expect(page.locator('.lead blockquote')).toHaveText(card.findings[0].quote); await expect(page.locator('.lead img')).toHaveCount(0); expect(await page.evaluate(() => 'pwned' in window)).toBe(false);
 });
 test('client route change aborts stale request and never shows stale evidence', async ({page}) => {
