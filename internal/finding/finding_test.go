@@ -271,6 +271,25 @@ func TestWordBoundaryTable(t *testing.T) {
 		{"the chat is safe - mostly for older kids", "the chat is safe", true},
 		{"a well-known chat filter problem", "well-known chat filter", true},
 		{"a well-known chat filter problem", "known chat filter problem", false},
+		// invisible format characters and hyphen forms (round 4)
+		{"This chat is un\u00adsafe for young kids.", "safe for young kids", false},
+		{"This chat is un\u200bsafe for young kids.", "safe for young kids", false},
+		{"This chat is un\u200csafe for young kids.", "safe for young kids", false},
+		{"This chat is un\u2060safe for young kids.", "safe for young kids", false},
+		{"This chat is un\u00adsafe for young kids.", "unsafe for young kids", true},
+		{"\ufeffThis chat is unsafe", "This chat is unsafe", true},
+		{"This chat is unsafe for young kids.", "un\u200bsafe for young kids", true},
+		{"Only non\uff0dviolent content for little kids", "violent content for little kids", false},
+		{"Only non\ufe63violent content for little kids", "violent content for little kids", false},
+		{"Only non\u2010violent content for little kids", "violent content for little kids", false},
+		{"Only non\u2012violent content for little kids", "violent content for little kids", false},
+		{"Only non\u2212violent content for little kids", "violent content for little kids", false},
+		{"Only non\u2043violent content for little kids", "violent content for little kids", false},
+		{"This chat is un--safe for young kids.", "safe for young kids", false},
+		{"This chat is un---safe for young kids.", "-safe for young kids", false},
+		{"This chat is un--safe for young kids.", "un-safe for young kids", true},
+		{"Only non\uff0dviolent content", "non-violent content", true},
+		{"it is fine -- mostly for older kids", "mostly for older kids", true},
 		// punctuation at the edges (M1)
 		{"(the chat is totally filtered.)", "the chat is totally filtered.", true},
 		{"She said \"the chat is totally filtered.\"", "the chat is totally filtered.", true},
@@ -293,6 +312,23 @@ func TestWordBoundaryTable(t *testing.T) {
 		fs, _ := Verify([]Raw{{Ref: "D1", Area: "contact", Stance: "risk", Quote: c.quote}}, s)
 		if (len(fs) == 1) != c.want {
 			t.Errorf("%q in %q: verified=%v, want %v", c.quote, c.text, len(fs) == 1, c.want)
+		}
+	}
+}
+
+func TestNormalizeRound4(t *testing.T) {
+	for in, want := range map[string]string{
+		"un\u00adsafe":     "unsafe",
+		"un\u200bsafe":     "unsafe",
+		"a\u200db":         "ab",
+		"\ufeffhi":         "hi",
+		"non\uff0dviolent": "non-violent",
+		"un--safe":         "un-safe",
+		"a - - b":          "a - - b",
+		"wait...":          "wait...",
+	} {
+		if got := Normalize(in); got != want {
+			t.Errorf("Normalize(%q) = %q, want %q", in, got, want)
 		}
 	}
 }

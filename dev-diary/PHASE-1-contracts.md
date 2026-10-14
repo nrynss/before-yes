@@ -80,6 +80,13 @@ Bump `checklist.Version` whenever an area's wording or a rule changes, because c
 | `ok` on risks only becomes `flag`, in every area. Money `ok` on a pay-to-win risk gives `no`. | `TestOKNeedsSupportEveryArea`, `TestRiskOnlyOKIsNotYes`, `TestEnforce` "...raised to flag" |
 | `ok` with no finding (including only missing ids) becomes `unknown`. One evidence-free `unknown` outside contact and content still allows `yes`. | `TestOKNeedsSupportEveryArea`, `TestEnforce` "ok on missing id is unknown" |
 | Decide rule "an `unknown` with findings is `unclear`" removed. Rules renumbered 1–6. | `TestDecideRules` |
+
+**Remediation, round 4** ([review](adversarial-review/t1.1-round4.md)). `checklist.Version` is bumped to `v6`. The card's per-area reason is output that cached cards carry, and how it is produced changed. The docs say to bump on any rule change.
+
+| Finding | Fix | Test |
+|---|---|---|
+| M1 | When `Enforce` changes a grade's level (raised to `flag`, or demoted to `unknown`), it replaces the judge's `reason` with a fixed system reason for that rule (`checklist.Reasons`, for example "Raised to flag: the cited evidence is only risks."), and clears `setting`. A skipped area gets "Not graded: no grade was given for this area." A grade whose level is unchanged keeps the judge's reason. | `TestChangedGradeReason` |
+| L1 | **Intended asymmetry, recorded:** `ok_with_setting` citing only risk findings stands, and gives `yes_with_settings`. That grade means "there is a risk, and this setting answers it", so risk evidence is exactly what supports it. `ok` claims there is nothing to answer, so risks alone contradict it and it becomes `flag`. This is stated in the `Enforce` doc comment. | `TestSettingOnRiskStands` |
 ---
 
 ### T1.2: Finding format and the quote check ★
@@ -140,6 +147,13 @@ The parser accepts a JSON object with a `findings` array, a bare array, or eithe
 | H1 | A hyphen with a word rune on each side is part of the word, as the apostrophe already was. "safe for young kids" no longer verifies in "un-safe", nor "violent content" in "non-violent", including U+2011. **Decision:** `Normalize` folds every dash (U+2010–U+2015, minus sign) to `-`, so an en or em dash written between two letters with no spaces also joins them. At worst that is a false negative (a quote cut at "word—word" is refused), never a false match. A spaced dash (" - ") is still a boundary. | `TestWordBoundaryTable` |
 | M1 | A cut with punctuation on both sides is allowed. "the chat is totally filtered." now verifies in `(…filtered.)`, in `"…filtered."` (straight or curly), and before "...!". | `TestWordBoundaryTable` |
 | table | One 25-case table covers hyphens (straight, U+2011, en dash), punctuation edges, and every earlier rule (prefix, apostrophe, underscore, digits, later whole-word occurrence, possessive). The round-1 and round-2 tests still pass. | `TestWordBoundaryTable`, `TestWordBoundaries`, `TestWordBoundariesRound2` |
+
+**Remediation, round 4** ([review](adversarial-review/t1.2-round4.md)).
+
+| Finding | Fix | Test |
+|---|---|---|
+| M1 | `Normalize` drops every invisible format character (Unicode Cf: soft hyphen U+00AD, U+200B–U+200D, U+2060, BOM U+FEFF and the rest of the category) on both sides. "safe for young kids" no longer verifies in "un\u00adsafe" or "un\u200bsafe", and quoting "unsafe" now matches a source that hides a soft hyphen inside the word. | `TestWordBoundaryTable` (round-4 rows), `TestNormalizeRound4` |
+| L1 | More dash forms fold to `-`: U+2043, U+FE58, U+FE63, U+FF0D, U+2E3A and U+2E3B, beside the existing U+2010–U+2015 and U+2212. A run of hyphens collapses to one, so "un--safe" joins like "un-safe". A spaced "--" between words is still a boundary. | same |
 ---
 
 ### T1.3: Evidence and card payloads ★
@@ -197,6 +211,8 @@ Commit one example card per verdict (`card-yes.json`, `card-settings.json`, `car
 | All quotes re-verified under T1.2's round-3 boundary rule. | T1.2 H1 and M1 | `TestGenerate` |
 
 **Round 4 (inherited from T1.1 `v5`).** The examples were regenerated under `v5`. No example grade changed: none of them has an `ok` resting only on risks. The verdicts are still yes, yes_with_settings, no and unclear.
+
+**Round 4 remediation (inherited from T1.1 `v6` and T1.2 round 4).** The examples were regenerated under `v6`. No grade changed level, so every example reason is still the generated one. Every quote still verifies under the new `Normalize`.
 ---
 
 ### T1.4: HTTP API and error codes ★
@@ -262,7 +278,7 @@ Noted from the review, not this task's: `go mod tidy -diff` is non-empty on `mai
 
 ## Exit Criteria
 
-- [ ] Checklist frozen (`checklist.Version`, now `v5`), with the verdict question decided.
+- [ ] Checklist frozen (`checklist.Version`, now `v6`), with the verdict question decided.
 - [ ] The quote check rejects a changed word and an invented quote, by test.
 - [ ] Example evidence and card payloads committed, one card per verdict.
 - [ ] API and error codes documented, with examples.
