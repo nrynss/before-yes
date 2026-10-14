@@ -125,7 +125,7 @@ requires:   T4.1, T2.4
 fixture-ok: yes
 size:       XS · light
 owns:       internal/server/status.go, internal/server/web.go, cmd/before-yes/
-status:     in-review
+status:     done
 ```
 `GET /api/status` reports the live switch, the checklist version, and budget remaining in both pools. `GET /api/checklist` serves the areas and their questions. `GET /healthz` answers for the deploy check.
 
@@ -202,7 +202,7 @@ requires:   T4.5
 fixture-ok: yes
 size:       S · mid
 owns:       internal/server/checks.go (startCheck and its join), internal/server/checks_test.go
-status:     in-review
+status:     done
 ```
 `docs/api.md` step 4: a running check for the same normalized title and age answers `202` with its `check_id`. Nothing implements it. A double click today starts two jobs, reserves two of the day's fresh checks and pays the judge twice; only the evidence collect is shared (T4.2's single flight). Found by the T4.3 reviewer.
 
@@ -232,8 +232,8 @@ Join after the card cache and before the refusals (step 4 comes before `live_che
 
 ## Exit Criteria
 
-- [ ] A check runs through the HTTP API as a job, with progress over SSE and a typed failure code.
-- [ ] Cards live at unguessable ids, and repeat questions hit the caches.
-- [ ] The paid route is gated, passcode-capable, and can be switched off without a redeploy.
-- [ ] Visitor keys work and leave no trace on disk or in logs.
-- [ ] Every Keel gap found is written up as issue text in the handoff log.
+- [x] A check runs through the HTTP API as a job, with progress over SSE and a typed failure code. (T4.1)
+- [x] Cards live at unguessable ids, and repeat questions hit the caches. (T4.2; a double click joins the running check, T4.6)
+- [x] The paid route is gated, passcode-capable, and can be switched off without a redeploy. (T4.3, a Keel flag; wired into `serve` by T4.4)
+- [x] Visitor keys work and leave no trace on disk or in logs. (T4.5, with fake keys; a live visitor-key check waits for the P6 end-to-end run)
+- [x] Every Keel gap found is written up as issue text in the handoff log. (Three, in the T4.4/T4.6 entry; `cost/sqlitestore` is filed as nrynss/keel#100)
