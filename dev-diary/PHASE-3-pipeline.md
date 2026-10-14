@@ -532,7 +532,7 @@ requires:   T3.6b
 fixture-ok: yes
 size:       M · frontier
 owns:       internal/pipeline/judge.go, internal/pipeline/judge_test.go, internal/pipeline/read.go, internal/pipeline/read_test.go, the reader and judge max_tokens lines in before-yes.toml.example
-status:     not-started
+status:     in-review
 ```
 Found by the orchestrator in T3.6b's live replies. All three demo titles came back **no**, but the judge's flags are mostly not backed by a verified quote: `found` is empty in most areas. Its reasons paraphrase loosely or invent details:
 - Khan Academy Kids: "strangers can message via the forum", though the app has no forum.
@@ -553,6 +553,15 @@ The verdict rule (any `flag` makes **no**) is unchanged. Only unsupported flags 
 - A test pins that rule.
 - The re-run eval's verdicts, grades-agree and quotes-found are in the handoff log next to T3.6b's.
 - The demo titles' verdicts are reported to the user. Only then does any title get re-picked.
+
+
+**Implementation notes:**
+- `ground` in `judge.go` runs after `checklist.Enforce`. A `flag` keeps only cited verified risk findings whose quote shares at least two content words with its reason; an `ok_with_setting` the same, with risk or mitigation findings, against its reason and setting. Only the verified quote counts, not the reader's claim, and the title's own words do not count. A grade whose reason names none becomes `unknown` with the reason "Changed to unknown: the evidence was thin. No verified quote backs the reason the judge gave." and a `reason_without_quote` demotion. The judge's request is unchanged, so the recordings replay.
+- Pins: `TestRecordedRepliesGradesRestOnVerifiedQuotes` (replays T3.6b's Token Factory recordings) and `TestGroundDropsReasonsNoQuoteBacks`.
+- Replay, after: Roblox **no** (grades 3/6, quotes 1/6); Minecraft **unclear** (2/6, 1/5; all six areas thin); Khan Academy Kids **no** (2/6, 0/5; contact thin). Total 7/18, 2/16, against T3.6b's 5/18, 2/16. The stand-in baseline is unchanged.
+- No prompt or `max_tokens` change, so no re-record is needed. Khan's remaining flags (age gating on the 2nd-grade ceiling, content) rest on real quotes; correcting the age-gating misjudgement would need a judge prompt change and a live re-record.
+- **User-approved exceptions to owns:** `tools/eval/standin.go` (the stand-in judge's reasons quote the findings they cite) and the `ruleJudge` stub in `internal/pipeline/pipeline_test.go` (same). Without them the rule demotes the stand-ins' generic reasons and the gate fails.
+- **Open item:** the word-overlap test is loose. Roblox `data` (ok_with_setting) stands on a tracking quote sharing "data" and "collect", though no quote backs the deletion setting it names. Roblox `developer_record` (flag) stands on a forum quote about new safety protections, not on a fine or lawsuit.
 
 ---
 
