@@ -45,7 +45,7 @@ Tasks that import Keel: T1.4, T2.1, T2.2, T2.4, T2.5, T3.1–T3.5, T3.7, T4.1–
 | Scratch path | Moved by |
 |---|---|
 | `go.mod`, `go.sum` | T0.1 |
-| `internal/checklist/` | T1.1 |
+| ~~`internal/checklist/`~~ | Deleted. T1.1 wrote the package fresh. |
 | `internal/finding/` | T1.2 |
 | `internal/pipeline/pipeline.go`, `pipeline_test.go` | T1.3 takes the types into `types.go`, then T3.4 takes the rest |
 | `internal/model/` | T2.1 |
@@ -194,6 +194,11 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 
 Newest first. One entry per closed task, finding, or split.
 
+- **Keel issues filed; scratch checklist deleted.**
+  - The two Keel gaps from P2 are filed as [nrynss/keel#98](https://github.com/nrynss/keel/issues/98) (`throttle.Note` reports `Attempts` for an error that spent the `TransientAttempts` budget) and [nrynss/keel#99](https://github.com/nrynss/keel/issues/99) (a durable `sqlitestore` budget cannot back a `cost.Meter`).
+  - Both are already worked around here. The model and Tavily clients annotate transient exhaustion themselves, and `spend` drives the store directly. Nothing waits on either.
+  - `scratch/internal/checklist/` is deleted, at the user's request. `scratch/internal/finding/` was superseded the same way by T1.2 and is still there.
+  - **T2.1b, T2.2b and T2.3b** are in review by three fresh Sonnet reviewers, one per probe. Each rebases OpenCode's branch onto `main` in a review branch of its own, so OpenCode's branches stay untouched.
 - **P1 and P2 integrated.** Phase 1 landed on GitHub from a remote session, through stacked PRs. Phase 2 landed on the local `main` from OpenCode and was never pushed. The two `main`s diverged: local was 25 commits ahead and 97 behind.
   - The orchestrator merged `origin/main` into local `main`, without rewriting OpenCode's history. The only conflict was this README: the status board and the handoff log. Both sides were kept.
   - The gate and the `.env` key-leak grep ran in the main checkout, which settles P1's waived landing checks.
