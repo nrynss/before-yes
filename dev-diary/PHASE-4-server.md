@@ -125,7 +125,7 @@ requires:   T4.1, T2.4
 fixture-ok: yes
 size:       XS · light
 owns:       internal/server/status.go, internal/server/web.go, cmd/before-yes/
-status:     drafted
+status:     in-review
 ```
 `GET /api/status` reports the live switch, the checklist version, and budget remaining in both pools. `GET /api/checklist` serves the areas and their questions. `GET /healthz` answers for the deploy check.
 
@@ -136,6 +136,14 @@ It builds the pipeline the way `tools/eval` does. Set `Judge.Entail` to the read
 The built Chaaya app is served from a directory, and unknown paths fall back to `index.html` so `/card/{id}` loads in a fresh tab.
 
 **Done when:** Tests cover every route, and a deep link to a card path returns the app shell.
+
+**Implementation notes (T4.4).**
+- `internal/server/status.go`: `Status{Meter, Flags, Live}` serves `GET /api/status` (live from the same flag the switch reads, failing closed to `false`; `checklist_version`; remaining nanodollars, whole Tavily credits and fresh checks today), `GET /api/checklist` (the body of `get-checklist.json`) and `GET /healthz` (`ok`).
+- `internal/server/web.go`: `App(api, status, webFS)` is the whole surface: the status routes, `/api/` to the gated API, and every other path to the built app, with a path that is not a file answered by `index.html` (`no-cache`), so `/card/{id}` loads in a fresh tab. Only GET and HEAD reach the app. A missing `web_dir` serves no app. Composing here keeps `checks.go`'s `Handler()` untouched.
+- `cmd/before-yes`: `serve`, `check`, `config`. `Settings` takes every key of `before-yes.toml.example` (the loader is strict); secrets are Keel `config.Secret` references. `buildCore` builds the pipeline as `tools/eval` does on real clients: `Judge.Entail` is the reader's Nano client, and the gatherer, reader and judge all book on one `*spend.Meter` (model, Tavily and daily-check pools) over the one database file `data_dir/before-yes.db`, which also holds cards, jobs, the evidence cache and flags. `NewServeApp` sets `Server.Checks` and `Pipeline.Checks` to that meter, opens the Keel flag store for `LiveFlag(live)`, resolves `[gate.passcode]` (unset means no passcode), and mounts `GatedHandler` inside `App`.
+- `check` reserves one daily check like the server (`Done` or `Fail`), runs `Pipeline.Run` and prints the card JSON. It does not look for alternatives and does not use the evidence cache.
+- **Outside owns (additive):** `testdata/contracts/api/get-status.json` and `docs/api.md` gain `checklist_version` on `GET /api/status`, which this task's text asks for and the contract lacked; `docs/api.md` also lists `GET /healthz`.
+- The scratch draft (`scratch/cmd/before-yes/main.go`, `server.T4.4.go`) was read for reference only, not moved: its APIs predate T4.1 to T4.5, and the code here is written fresh. It stays unclaimed on `draft/scratch`.
 
 ---
 
