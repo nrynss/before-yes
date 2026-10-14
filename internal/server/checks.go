@@ -40,7 +40,9 @@ const (
 	DefaultCheckLimit = 4
 )
 
-// Checks is the daily fresh check cap seam for T4.5.
+// Checks is the daily fresh check cap. startCheck reserves the main check
+// through it on a card-cache miss (byok.go, T4.5); it must be the same
+// meter as Pipeline.Checks, which reserves fresh alternatives.
 type Checks interface {
 	BeginCheck(ctx context.Context, ref string) (*spend.Check, error)
 }
@@ -122,6 +124,9 @@ func (s *Server) Handler() (http.Handler, error) {
 	if s.Log == nil {
 		s.Log = slog.New(slog.DiscardHandler)
 	}
+	if err := s.checkCapWiring(); err != nil {
+		return nil, err
+	}
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("POST /api/checks", s.startCheck)
@@ -152,6 +157,9 @@ func (s *Server) startCheck(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	req = normReq
+	if rejectBadVisitorKeys(w, r) {
+		return
+	}
 
 	ctx := r.Context()
 	if s.CardCache != nil {
@@ -172,7 +180,14 @@ func (s *Server) startCheck(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	jid, err := s.Runner.StartKind(ctx, JobKind, s.work(req, ref))
+	adm, ok := s.admit(w, r, ref)
+	if !ok {
+		return
+	}
+	jid, err := s.Runner.StartKind(ctx, JobKind, adm.wrap(s.work(adm.p, req, ref)))
+	if err != nil {
+		adm.release()
+	}
 	if errors.Is(err, job.ErrLimit) {
 		w.Header().Set("Retry-After", "20")
 		wire.WriteError(w, http.StatusServiceUnavailable, "busy", "too many checks are running; try again shortly", map[string]any{"retry_after_seconds": 20})
@@ -187,7 +202,7 @@ func (s *Server) startCheck(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusAccepted, map[string]string{"check_id": "j_" + jid})
 }
 
-func (s *Server) work(req pipeline.Request, ref string) job.Func {
+func (s *Server) work(p *pipeline.Pipeline, req pipeline.Request, ref string) job.Func {
 	return func(ctx context.Context, report func(job.Progress)) ([]byte, error) {
 		progress := func(stage, msg string, cur, total *int64) {
 			p := job.Progress{Stage: stage, Current: cur, Total: total}
@@ -202,10 +217,10 @@ func (s *Server) work(req pipeline.Request, ref string) job.Func {
 		var ev pipeline.Evidence
 		var hit bool
 		var err error
-		if s.EvidenceCache != nil && s.Pipeline != nil {
-			ev, hit, err = s.EvidenceCache.Collect(ctx, s.Pipeline, req.Title, ref)
-		} else if s.Pipeline != nil {
-			ev, hit, err = s.Pipeline.Collect(ctx, req.Title, ref)
+		if s.EvidenceCache != nil && p != nil {
+			ev, hit, err = s.EvidenceCache.Collect(ctx, p, req.Title, ref)
+		} else if p != nil {
+			ev, hit, err = p.Collect(ctx, req.Title, ref)
 		} else {
 			return nil, mapFailure(errors.New("no pipeline configured"))
 		}
@@ -226,14 +241,14 @@ func (s *Server) work(req pipeline.Request, ref string) job.Func {
 
 		progress("judge", "grading 6 areas", nil, nil)
 
-		card, err := s.Pipeline.Decide(ctx, ev, req.Age, ref)
+		card, err := p.Decide(ctx, ev, req.Age, ref)
 		if err != nil {
 			return nil, mapFailure(err)
 		}
 
-		if (card.Verdict == checklist.No || card.Verdict == checklist.YesWithSettings) && s.Pipeline.Gatherer != nil {
+		if (card.Verdict == checklist.No || card.Verdict == checklist.YesWithSettings) && p.Gatherer != nil {
 			progress("alternatives", "finding safer alternatives", nil, nil)
-			pending, err := s.Pipeline.FindAlternatives(ctx, card, ref)
+			pending, err := p.FindAlternatives(ctx, card, ref)
 			if err != nil {
 				if errors.Is(err, cost.ErrOverBudget) {
 					return nil, mapFailure(err)
@@ -248,7 +263,7 @@ func (s *Server) work(req pipeline.Request, ref string) job.Func {
 				return []byte(cid), nil
 			}
 			if len(pending) > 0 {
-				altRes := s.Pipeline.CheckAlternatives(ctx, card, pending, ref)
+				altRes := p.CheckAlternatives(ctx, card, pending, ref)
 				card = altRes.Apply(card)
 				cid, _, err := s.Cards.PutWithAlternatives(ctx, card, altRes.Cards)
 				if err != nil {
