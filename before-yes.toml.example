@@ -26,8 +26,11 @@ evidence_max_age_hours = 168
 # off, and the conflict pass turns it on. Confirmed against Token Factory at
 # T2.1b on both roles: the same prompt reported 4 output tokens with
 # enable_thinking false and about 180 with it true. reasoning.enabled did
-# nothing on that host. OpenRouter and build.nvidia.com each take a different
-# switch.
+# nothing on that host. build.nvidia.com takes this same switch. OpenRouter
+# ignores it and takes reasoning = { enabled = false } instead, so enabling the
+# OpenRouter tables below also means replacing these two lines with
+#   judge_fast  = { reasoning = { enabled = false } }
+#   judge_think = { reasoning = { enabled = true } }
 judge_fast  = { chat_template_kwargs = { enable_thinking = false } }
 judge_think = { chat_template_kwargs = { enable_thinking = true } }
 
@@ -35,8 +38,8 @@ judge_think = { chat_template_kwargs = { enable_thinking = true } }
 # Prices are dollars per million tokens. Thinking is on by default on this
 # host and is billed as output: at T2.1b the same prompt reported 4 output
 # tokens with chat_template_kwargs enable_thinking false against about 180
-# with no switch at all. Nothing in this table turns it off, so the switch has
-# to reach the reader's calls another way, as a per-call extra or a new key.
+# with no switch at all. [reader.extra] below is merged into every reader
+# request and turns it off. A call that wants thinking on overrides it per call.
 [reader]
 provider   = "tokenfactory"
 base_url   = "https://api.tokenfactory.nebius.com/v1"
@@ -49,6 +52,11 @@ max_tokens   = 4096
 # Confirmed at T2.1b: x-ratelimit-limit-requests reports 100 for this model,
 # counted per model rather than per account. The host scales it with load.
 per_minute   = 100
+
+# The reader's thinking switch, confirmed live at T2.1b: 4 output tokens off,
+# about 183 on, same prompt.
+[reader.extra]
+chat_template_kwargs = { enable_thinking = false }
 
 # Judge: Nemotron 3 Super on Token Factory. Grades the areas on each card.
 [judge]
@@ -63,6 +71,36 @@ max_tokens   = 4096
 # counted per model rather than per account. The host scales it with load.
 per_minute   = 300
 
+# Development alternative: build.nvidia.com (free). Uncomment to replace the
+# [reader] and [judge] tables above, and point [secrets.reader] and
+# [secrets.judge] below at var = "NVIDIA_KEY". Both ids are confirmed at T2.1b.
+# The Nano id the catalogue lists, nvidia/nemotron-nano-3-30b-a3b, is listed but
+# answers HTTP 404 ("Function ... Not found for account"), so the reader here is
+# the Lightning 30B-A3B, not Nano. This host takes the same switch as Token
+# Factory, chat_template_kwargs.enable_thinking (4 output tokens off, 501 on),
+# so judge_fast and judge_think above stay as they are.
+#
+# [reader]
+# provider   = "nvidia"
+# base_url   = "https://integrate.api.nvidia.com/v1"
+# model      = "nvidia/nemotron-3.5-lightning-30b-a3b"
+# input_per_m  = 0
+# output_per_m = 0
+# max_tokens   = 4096
+# per_minute   = 20
+#
+# [reader.extra]
+# chat_template_kwargs = { enable_thinking = false }
+#
+# [judge]
+# provider   = "nvidia"
+# base_url   = "https://integrate.api.nvidia.com/v1"
+# model      = "nvidia/nemotron-3-super-120b-a12b"
+# input_per_m  = 0
+# output_per_m = 0
+# max_tokens   = 4096
+# per_minute   = 20
+
 # Development alternative: free OpenRouter stand-ins. Uncomment to replace the
 # [reader] and [judge] tables above while developing. Do not use in the demo.
 # The reader stand-in is NOT Nano. It is a different model.
@@ -71,8 +109,9 @@ per_minute   = 300
 # Both ids are confirmed at T2.1b. This host ignores chat_template_kwargs and
 # turns thinking on by default; its switch is reasoning.enabled false, and
 # without it the reader's reply is all reasoning and no content (measured: 512
-# output tokens, empty text). Enabling these tables needs
-# extra = { reasoning = { enabled = false } } on each.
+# output tokens, empty text). The [reader.extra] table below carries that
+# switch; replace judge_fast and judge_think as described at the top of the
+# file.
 #
 # [reader]
 # provider   = "openrouter"
@@ -82,6 +121,9 @@ per_minute   = 300
 # output_per_m = 0
 # max_tokens   = 4096
 # per_minute   = 20
+#
+# [reader.extra]
+# reasoning = { enabled = false }
 #
 # [judge]
 # provider   = "openrouter"

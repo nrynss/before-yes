@@ -1,0 +1,130 @@
+# T2.1b live probe transcript (remediation round 1)
+# go test -tags live -v -count=1 -run TestLiveHosts ./internal/model/ ; Token Factory spend $0.00060618; other hosts free.
+# Refusal bodies are withheld by the probe; no key or account identifier appears.
+
+=== RUN   TestLiveHosts
+=== RUN   TestLiveHosts/Token_Factory
+    live_test.go:206: GET /v1/models: 25 models, 4 Nemotron ids:
+        nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B
+        nvidia/Nemotron-3-Ultra-550b-a55b
+        nvidia/Nemotron-3_5-Lightning
+        nvidia/nemotron-3-super-120b-a12b
+    live_test.go:207: id "nvidia/nvidia-nemotron-3-nano-30b-a3b" answered HTTP 404: id not found or not available to this account (body withheld)
+    live_test.go:208: reader completion: 46 in / 4 out tokens in 0.50s, price $0.00000372, measured=true, text "171"
+    live_test.go:209: judge completion: 46 in / 4 out tokens in 0.63s, price $0.0000174, measured=true, text "146"
+    live_test.go:213: reader default (no switch): 46 in / 183 out tokens in 2.07s, price $0.00004668, measured=true, text "172"
+    live_test.go:213: reader: no switch sent: 183 output tokens
+    live_test.go:213: reader chat_template_kwargs.enable_thinking off: 46 in / 4 out tokens in 0.34s, price $0.00000372, measured=true, text "171"
+    live_test.go:213: reader chat_template_kwargs.enable_thinking on: 46 in / 178 out tokens in 1.99s, price $0.00004548, measured=true, text "172"
+    live_test.go:213: reader: chat_template_kwargs.enable_thinking off=4 on=178 output tokens: moves thinking
+    live_test.go:213: reader reasoning.enabled off: 46 in / 183 out tokens in 1.77s, price $0.00004668, measured=true, text "172"
+    live_test.go:213: reader reasoning.enabled on: 46 in / 178 out tokens in 1.61s, price $0.00004548, measured=true, text "172"
+    live_test.go:213: reader: reasoning.enabled off=183 on=178 output tokens: no effect
+    live_test.go:213: reader reasoning_effort off: 46 in / 4 out tokens in 0.29s, price $0.00000372, measured=true, text ""
+    live_test.go:213: reader reasoning_effort on: 46 in / 183 out tokens in 1.92s, price $0.00004668, measured=true, text "172"
+    live_test.go:213: reader: reasoning_effort off=4 on=183 output tokens: breaks the answer (fewer tokens but empty reply text)
+    live_test.go:213: reader thinking.type off: 46 in / 183 out tokens in 1.57s, price $0.00004668, measured=true, text "172"
+    live_test.go:213: reader thinking.type on: 46 in / 183 out tokens in 1.50s, price $0.00004668, measured=true, text "172"
+    live_test.go:213: reader: thinking.type off=183 on=183 output tokens: no effect
+    live_test.go:213: reader declared switch off: 46 in / 4 out tokens in 0.30s, price $0.00000372, measured=true, text "171"
+    live_test.go:213: reader declared switch on: 46 in / 183 out tokens in 1.82s, price $0.00004668, measured=true, text "172"
+    live_test.go:213: reader: declared switch off=4 on=183 output tokens (45.8x)
+    live_test.go:214: judge declared switch off: 46 in / 4 out tokens in 0.38s, price $0.0000174, measured=true, text "146"
+    live_test.go:214: judge declared switch on: 46 in / 179 out tokens in 1.52s, price $0.0001749, measured=true, text "172"
+    live_test.go:214: judge: declared switch off=4 on=179 output tokens (44.8x)
+    live_test.go:215: reader rate-limit call: HTTP 200, 23 in / 2 out tokens, price $0.00000186
+    live_test.go:215: reader rate-limit headers: X-Ratelimit-Dynamic-Period-Remaining=525s X-Ratelimit-Dynamic-Period-Usage-Requests=1% X-Ratelimit-Dynamic-Period-Usage-Tokens=0% X-Ratelimit-Dynamic-Scale-Requests=1.00 X-Ratelimit-Dynamic-Scale-Tokens=1.00 X-Ratelimit-Limit-Requests=100 X-Ratelimit-Limit-Tokens=800000 X-Ratelimit-Remaining-Requests=99 X-Ratelimit-Remaining-Tokens=799985 X-Ratelimit-Reset-Requests=1s X-Ratelimit-Reset-Tokens=1s
+    live_test.go:215: judge rate-limit call: HTTP 200, 23 in / 2 out tokens, price $0.0000087
+    live_test.go:215: judge rate-limit headers: X-Ratelimit-Dynamic-Period-Remaining=525s X-Ratelimit-Dynamic-Period-Usage-Requests=0% X-Ratelimit-Dynamic-Period-Usage-Tokens=0% X-Ratelimit-Dynamic-Scale-Requests=1.00 X-Ratelimit-Dynamic-Scale-Tokens=1.00 X-Ratelimit-Limit-Requests=300 X-Ratelimit-Limit-Tokens=200000 X-Ratelimit-Remaining-Requests=299 X-Ratelimit-Remaining-Tokens=199985 X-Ratelimit-Reset-Requests=1s X-Ratelimit-Reset-Tokens=1s
+    live_test.go:216: Token Factory: total spend this probe $0.00060618
+=== RUN   TestLiveHosts/OpenRouter
+    live_test.go:206: GET /v1/models: 462 models, 10 Nemotron ids:
+        nvidia/nemotron-3-nano-30b-a3b
+        nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free
+        nvidia/nemotron-3-super-120b-a12b
+        nvidia/nemotron-3-super-120b-a12b:free
+        nvidia/nemotron-3-ultra-550b-a55b
+        nvidia/nemotron-3-ultra-550b-a55b:free
+        nvidia/nemotron-3.5-content-safety
+        nvidia/nemotron-3.5-content-safety:free
+        nvidia/nemotron-3.5-lightning
+        nvidia/nemotron-3.5-lightning:free
+    live_test.go:208: reader completion: 46 in / 4 out tokens in 0.66s, price $0.00, measured=true, text "171"
+    live_test.go:209: judge completion: 46 in / 4 out tokens in 0.36s, price $0.00, measured=true, text "171"
+    live_test.go:213: reader default (no switch): 46 in / 512 out tokens in 8.40s, price $0.00, measured=true, text ""
+    live_test.go:213: reader: no switch sent: 512 output tokens
+    live_test.go:213: reader chat_template_kwargs.enable_thinking off: 46 in / 512 out tokens in 6.81s, price $0.00, measured=true, text ""
+    live_test.go:213: reader chat_template_kwargs.enable_thinking on: 46 in / 512 out tokens in 5.66s, price $0.00, measured=true, text ""
+    live_test.go:213: reader: chat_template_kwargs.enable_thinking off=512 on=512 output tokens: no effect
+    live_test.go:213: reader reasoning.enabled off: 46 in / 4 out tokens in 0.39s, price $0.00, measured=true, text "171"
+    live_test.go:213: reader reasoning.enabled on: 46 in / 512 out tokens in 7.28s, price $0.00, measured=true, text ""
+    live_test.go:213: reader: reasoning.enabled off=4 on=512 output tokens: moves thinking
+    live_test.go:213: reader reasoning_effort off: 46 in / 4 out tokens in 0.42s, price $0.00, measured=true, text "171"
+    live_test.go:213: reader reasoning_effort on: 46 in / 512 out tokens in 7.43s, price $0.00, measured=true, text ""
+    live_test.go:213: reader: reasoning_effort off=4 on=512 output tokens: moves thinking
+    live_test.go:213: reader thinking.type off: 46 in / 512 out tokens in 4.53s, price $0.00, measured=true, text ""
+    live_test.go:213: reader thinking.type on: 46 in / 512 out tokens in 5.59s, price $0.00, measured=true, text ""
+    live_test.go:213: reader: thinking.type off=512 on=512 output tokens: no effect
+    live_test.go:213: reader declared switch off: 46 in / 4 out tokens in 0.50s, price $0.00, measured=true, text "171"
+    live_test.go:213: reader declared switch on: 46 in / 512 out tokens in 16.87s, price $0.00, measured=true, text ""
+    live_test.go:213: reader: declared switch off=4 on=512 output tokens (128.0x)
+    live_test.go:214: judge declared switch off: 46 in / 4 out tokens in 0.41s, price $0.00, measured=true, text "171"
+    live_test.go:214: judge declared switch on: 46 in / 175 out tokens in 4.94s, price $0.00, measured=true, text "172"
+    live_test.go:214: judge: declared switch off=4 on=175 output tokens (43.8x)
+    live_test.go:215: reader rate-limit call: HTTP 200, 23 in / 2 out tokens, price $0.00
+    live_test.go:215: reader rate-limit headers: (no x-ratelimit headers)
+    live_test.go:215: judge rate-limit call: HTTP 200, 23 in / 2 out tokens, price $0.00
+    live_test.go:215: judge rate-limit headers: (no x-ratelimit headers)
+    live_test.go:216: OpenRouter: total spend this probe $0.00
+=== RUN   TestLiveHosts/build.nvidia.com
+    live_test.go:206: GET /v1/models: 80 models, 16 Nemotron ids:
+        nvidia/llama-3.1-nemotron-51b-instruct
+        nvidia/llama-3.1-nemotron-70b-instruct
+        nvidia/llama-3.1-nemotron-safety-guard-8b-v3
+        nvidia/llama-3.1-nemotron-ultra-253b-v1
+        nvidia/llama-nemotron-embed-vl-1b-v2
+        nvidia/nemotron-3-embed-1b
+        nvidia/nemotron-3-nano-omni-30b-a3b-reasoning
+        nvidia/nemotron-3-super-120b-a12b
+        nvidia/nemotron-3-ultra-550b-a55b
+        nvidia/nemotron-3.5-content-safety
+        nvidia/nemotron-3.5-lightning-30b-a3b
+        nvidia/nemotron-4-340b-instruct
+        nvidia/nemotron-4-340b-reward
+        nvidia/nemotron-nano-3-30b-a3b
+        nvidia/nemotron-parse
+        nvidia/nemotron-parse-2.0
+    live_test.go:207: id "nvidia/nemotron-nano-3-30b-a3b" answered HTTP 404: id not found or not available to this account (body withheld)
+    live_test.go:208: reader completion: 46 in / 4 out tokens in 0.32s, price $0.00, measured=true, text "171"
+    live_test.go:209: judge completion: 46 in / 4 out tokens in 0.29s, price $0.00, measured=true, text "171"
+    live_test.go:213: reader default (no switch): 46 in / 512 out tokens in 11.96s, price $0.00, measured=true, text ""
+    live_test.go:213: reader: no switch sent: 512 output tokens
+    live_test.go:213: reader chat_template_kwargs.enable_thinking off: 46 in / 4 out tokens in 0.30s, price $0.00, measured=true, text "171"
+    live_test.go:213: reader chat_template_kwargs.enable_thinking on: 46 in / 308 out tokens in 6.22s, price $0.00, measured=true, text "172"
+    live_test.go:213: reader: chat_template_kwargs.enable_thinking off=4 on=308 output tokens: moves thinking
+    live_test.go:213: reader reasoning.enabled off: 46 in / 4 out tokens in 0.31s, price $0.00, measured=true, text "171"
+    live_test.go:213: reader reasoning.enabled on: 46 in / 512 out tokens in 8.20s, price $0.00, measured=true, text ""
+    live_test.go:213: reader: reasoning.enabled off=4 on=512 output tokens: moves thinking
+    live_test.go:213: reader reasoning_effort off: 46 in / 4 out tokens in 0.32s, price $0.00, measured=true, text "171"
+    live_test.go:213: reader reasoning_effort on: 46 in / 512 out tokens in 7.20s, price $0.00, measured=true, text ""
+    live_test.go:213: reader: reasoning_effort off=4 on=512 output tokens: moves thinking
+    live_test.go:213: reader thinking.type off: 46 in / 4 out tokens in 0.32s, price $0.00, measured=true, text "171"
+    live_test.go:213: reader thinking.type on: 46 in / 512 out tokens in 7.71s, price $0.00, measured=true, text ""
+    live_test.go:213: reader: thinking.type off=4 on=512 output tokens: moves thinking
+    live_test.go:213: reader declared switch off: 46 in / 4 out tokens in 0.33s, price $0.00, measured=true, text "171"
+    live_test.go:213: reader declared switch on: 46 in / 512 out tokens in 7.06s, price $0.00, measured=true, text ""
+    live_test.go:213: reader: declared switch off=4 on=512 output tokens (128.0x)
+    live_test.go:214: judge declared switch off: 46 in / 4 out tokens in 0.27s, price $0.00, measured=true, text "171"
+    live_test.go:214: judge declared switch on: 46 in / 175 out tokens in 4.57s, price $0.00, measured=true, text "172"
+    live_test.go:214: judge: declared switch off=4 on=175 output tokens (43.8x)
+    live_test.go:215: reader rate-limit call: HTTP 200, 23 in / 2 out tokens, price $0.00
+    live_test.go:215: reader rate-limit headers: (no x-ratelimit headers)
+    live_test.go:215: judge rate-limit call: HTTP 200, 23 in / 2 out tokens, price $0.00
+    live_test.go:215: judge rate-limit headers: (no x-ratelimit headers)
+    live_test.go:216: build.nvidia.com: total spend this probe $0.00
+--- PASS: TestLiveHosts (149.49s)
+    --- PASS: TestLiveHosts/Token_Factory (19.66s)
+    --- PASS: TestLiveHosts/OpenRouter (73.58s)
+    --- PASS: TestLiveHosts/build.nvidia.com (56.25s)
+PASS
+ok  	github.com/nrynss/before-yes/internal/model	149.492s

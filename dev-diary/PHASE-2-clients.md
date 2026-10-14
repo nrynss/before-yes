@@ -65,6 +65,14 @@ Write the confirmed ids and thinking switches into `before-yes.toml.example`.
 
 **Done when:** The probe is committed, the transcript and the three hosts' settings are in the handoff log, and the example settings file uses confirmed ids.
 
+Transcript of the remediation run: [live/t2.1b-transcript.txt](live/t2.1b-transcript.txt). Token Factory cost $0.00060618; OpenRouter and build.nvidia.com were free.
+
+Forward notes from the T2.1 and T2.1a handoffs, as the round-1 review (M3) found them:
+- **Retry-After over 60 s:** not measured. The probe never provokes a 429, so it never sees a `Retry-After`. Token Factory sends dynamic rate-limit headers on every reply (`X-Ratelimit-Limit-Requests` 100 for the reader and 300 for the judge, `X-Ratelimit-Limit-Tokens` 800000 and 200000, `-Remaining-` and `-Reset-` values of 1 s, `X-Ratelimit-Dynamic-Scale-*` 1.00, `X-Ratelimit-Dynamic-Period-Remaining` 525 s). OpenRouter and build.nvidia.com send no `X-Ratelimit-*` headers. Whether any host sends a `Retry-After` above 60 s on a 429 stays open.
+- **Empty `choices` on a 200:** not observed on any host in the probe's calls. Deferred.
+- **Timeout:** measured, and moved to T2.1c. Output rates are about 65 tokens a second for Token Factory Nano and build.nvidia.com, about 150 for Token Factory Super, about 43 for OpenRouter's free judge. A 16,000-token thinking call takes about 245 s on Nano and about 375 s on OpenRouter, past the client's 3-minute timeout.
+- **Pacer:** the per-model limits seen were 100 a minute for the reader and 300 for the judge, so the cap looks per model. Whether a shared account-wide counter also exists is unknown; the probe does not test it.
+
 ---
 
 ### T2.1c: Model client timeout that fits a thinking call

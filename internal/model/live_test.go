@@ -173,6 +173,21 @@ func movesThinking(on, off int) bool {
 	return on >= off+20 && on >= 2*off
 }
 
+// switchVerdict names what a candidate switch did. A switch that cuts the
+// output tokens but leaves the thinking-off reply empty has not turned thinking
+// off, it has broken the answer, so the token gap alone never confirms one. The
+// thinking-on reply may be empty at the probe's small token cap (a thinking
+// reply can be all reasoning), so only the off reply is held to having text.
+func switchVerdict(on, off Reply) string {
+	if !movesThinking(on.OutputTokens, off.OutputTokens) {
+		return "no effect"
+	}
+	if strings.TrimSpace(off.Text) == "" {
+		return "breaks the answer (fewer tokens but empty reply text)"
+	}
+	return "moves thinking"
+}
+
 func TestLiveHosts(t *testing.T) {
 	for _, h := range liveHosts {
 		h := h
@@ -291,11 +306,26 @@ func (p *liveProbe) refusedIDs(ctx context.Context) {
 		if err != nil {
 			p.t.Fatalf("encode: %v", err)
 		}
-		raw, status, err := p.raw(ctx, http.MethodPost, "/chat/completions", payload)
+		_, status, err := p.raw(ctx, http.MethodPost, "/chat/completions", payload)
 		if err != nil {
 			p.t.Fatalf("refused id %q: %v", id, err)
 		}
-		p.t.Logf("id %q answered HTTP %d: %s", id, status, snippet(raw))
+		// The host's refusal body names the account, so the log carries the
+		// status and a fixed reason, never the body.
+		p.t.Logf("id %q answered HTTP %d: %s", id, status, refusalReason(status))
+	}
+}
+
+// refusalReason is the fixed text logged for a status in place of the host's
+// body, which can carry an account identifier.
+func refusalReason(status int) string {
+	switch {
+	case status == http.StatusNotFound:
+		return "id not found or not available to this account (body withheld)"
+	case status >= 200 && status < 300:
+		return "id accepted (body withheld)"
+	default:
+		return "refused (body withheld)"
 	}
 }
 
@@ -325,10 +355,7 @@ func (p *liveProbe) thinkingSweep(ctx context.Context, r liveRole) {
 	for _, c := range liveCandidates {
 		off := p.chat(ctx, r, c.off, r.name+" "+c.field+" off")
 		on := p.chat(ctx, r, c.on, r.name+" "+c.field+" on")
-		verdict := "no effect"
-		if movesThinking(on.OutputTokens, off.OutputTokens) {
-			verdict = "moves thinking"
-		}
+		verdict := switchVerdict(on, off)
 		p.t.Logf("%s: %s off=%d on=%d output tokens: %s",
 			r.name, c.field, off.OutputTokens, on.OutputTokens, verdict)
 	}
@@ -345,6 +372,10 @@ func (p *liveProbe) declaredSwitch(ctx context.Context, r liveRole) {
 	if on.OutputTokens < off.OutputTokens+20 || on.OutputTokens < 2*off.OutputTokens {
 		p.t.Errorf("%s: the declared switch reports %d output tokens thinking on and %d thinking off, "+
 			"so thinking is not the difference the task claims", r.name, on.OutputTokens, off.OutputTokens)
+	}
+	if strings.TrimSpace(off.Text) == "" {
+		p.t.Errorf("%s: the declared switch cuts output tokens but the thinking-off reply text is empty, "+
+			"so it breaks the answer rather than turning thinking off", r.name)
 	}
 	p.t.Logf("%s: declared switch off=%d on=%d output tokens (%.1fx)",
 		r.name, off.OutputTokens, on.OutputTokens, ratio(on.OutputTokens, off.OutputTokens))
