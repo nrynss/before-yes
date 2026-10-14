@@ -581,7 +581,6 @@ var companyForms = map[string]bool{
 	"company": true, "as": true, "aps": true, "srl": true, "spa": true, "kk": true,
 }
 
-
 // registrable is a URL's host without "www." and without subdomains: the
 // last two labels, or three under a two-letter country's second level such
 // as co.uk. It is what include_domains takes, so help.roblox.com matches
