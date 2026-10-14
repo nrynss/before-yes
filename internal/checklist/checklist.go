@@ -16,7 +16,7 @@ import (
 // Version names the checklist and rules a card was judged under. Bump it when
 // an area's wording or a rule in Decide or Enforce changes, because cached
 // cards record the version they were judged under.
-const Version = "v5"
+const Version = "v6"
 
 // Area is one checklist area id. The ids are stable wire values.
 type Area string
@@ -225,6 +225,16 @@ const (
 	RuleBadGrade       = "invalid_grade" // unknown area or level from the judge
 )
 
+// Reasons are the card reasons Enforce writes when it changes a grade.
+var Reasons = map[string]string{
+	RuleFlagNoRisk:     "Changed to unknown: no verified risk finding supports a flag.",
+	RuleSettingNoName:  "Changed to unknown: no setting was named.",
+	RuleSettingNoProof: "Changed to unknown: no verified finding supports the setting.",
+	RuleOKNoProof:      "Changed to unknown: no verified finding supports ok.",
+	RuleOKOnRisk:       "Raised to flag: the cited evidence is only risks.",
+	RuleSkipped:        "Not graded: no grade was given for this area.",
+}
+
 // Enforce holds the judge's grades to the verified evidence, keyed by finding
 // id. It returns exactly one grade per area, in card order, and the demotions
 // it made:
@@ -242,7 +252,10 @@ const (
 //   - a grade for an unknown area, or with an unknown level, is discarded
 //     (its area then counts as skipped); a second grade for an area is discarded.
 //
-// The input slice is not modified.
+// When a grade's level changes, its reason is replaced with the Reasons text
+// for the rule and its setting is cleared. An ok_with_setting citing only risk
+// findings stands: the named setting is the answer to the risk, which is what
+// the grade means. The input slice is not modified.
 func Enforce(grades []Grade, evidence map[string]Cited) ([]Grade, []Demotion) {
 	var dem []Demotion
 	got := map[Area]Grade{}
@@ -302,7 +315,11 @@ func Enforce(grades []Grade, evidence map[string]Cited) ([]Grade, []Demotion) {
 				g.Level = Unknown
 			}
 		}
-		if g.Level == Unknown {
+		if g.Level != in.Level {
+			// The judge's reason argued for the grade it gave, so it would
+			// contradict the card. Replace it with the rule that changed the
+			// grade, and clear any setting.
+			g.Reason = Reasons[dem[len(dem)-1].Rule]
 			g.Setting = ""
 		}
 		got[g.Area] = g
@@ -312,7 +329,7 @@ func Enforce(grades []Grade, evidence map[string]Cited) ([]Grade, []Demotion) {
 		g, ok := got[s.ID]
 		if !ok {
 			dem = append(dem, Demotion{Area: s.ID, Rule: RuleSkipped})
-			g = Grade{Area: s.ID, Level: Unknown, Findings: []string{}}
+			g = Grade{Area: s.ID, Level: Unknown, Findings: []string{}, Reason: Reasons[RuleSkipped]}
 		}
 		out = append(out, g)
 	}

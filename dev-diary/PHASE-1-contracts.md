@@ -80,6 +80,13 @@ Bump `checklist.Version` whenever an area's wording or a rule changes, because c
 | `ok` on risks only becomes `flag`, in every area. Money `ok` on a pay-to-win risk gives `no`. | `TestOKNeedsSupportEveryArea`, `TestRiskOnlyOKIsNotYes`, `TestEnforce` "...raised to flag" |
 | `ok` with no finding (including only missing ids) becomes `unknown`. One evidence-free `unknown` outside contact and content still allows `yes`. | `TestOKNeedsSupportEveryArea`, `TestEnforce` "ok on missing id is unknown" |
 | Decide rule "an `unknown` with findings is `unclear`" removed. Rules renumbered 1–6. | `TestDecideRules` |
+
+**Remediation, round 4** ([review](adversarial-review/t1.1-round4.md)). `checklist.Version` is bumped to `v6`. The card's per-area reason is output that cached cards carry, and how it is produced changed. The docs say to bump on any rule change.
+
+| Finding | Fix | Test |
+|---|---|---|
+| M1 | When `Enforce` changes a grade's level (raised to `flag`, or demoted to `unknown`), it replaces the judge's `reason` with a fixed system reason for that rule (`checklist.Reasons`, for example "Raised to flag: the cited evidence is only risks."), and clears `setting`. A skipped area gets "Not graded: no grade was given for this area." A grade whose level is unchanged keeps the judge's reason. | `TestChangedGradeReason` |
+| L1 | **Intended asymmetry, recorded:** `ok_with_setting` citing only risk findings stands, and gives `yes_with_settings`. That grade means "there is a risk, and this setting answers it", so risk evidence is exactly what supports it. `ok` claims there is nothing to answer, so risks alone contradict it and it becomes `flag`. This is stated in the `Enforce` doc comment. | `TestSettingOnRiskStands` |
 ---
 
 ### T1.2: Finding format and the quote check ★
@@ -192,7 +199,7 @@ The progress event's `detail` carries `{"message": "..."}`, for example "reading
 
 ## Exit Criteria
 
-- [ ] Checklist frozen (`checklist.Version`, now `v5`), with the verdict question decided.
+- [ ] Checklist frozen (`checklist.Version`, now `v6`), with the verdict question decided.
 - [ ] The quote check rejects a changed word and an invented quote, by test.
 - [ ] Example evidence and card payloads committed, one card per verdict.
 - [ ] API and error codes documented, with examples.
