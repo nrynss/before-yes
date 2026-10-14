@@ -225,7 +225,7 @@ requires:   T3.4, T0.5
 fixture-ok: yes
 size:       M · frontier
 owns:       tools/eval/, testdata/eval/
-status:     in-review
+status:     done
 ```
 For each demo title and age, write down by hand what a careful parent reading the same material would conclude: area by area, with the quotes that matter. Store it in `testdata/eval/`.
 
