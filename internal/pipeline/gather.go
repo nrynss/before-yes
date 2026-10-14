@@ -479,22 +479,27 @@ func (g *Gatherer) storeDocs(ctx context.Context, ref string, a *appstore.App, a
 		pages = appstore.MaxPages
 	}
 	reviews, err := g.Store.Reviews(ctx, a.ID, pages)
-	if err != nil {
-		// A failed call, not an empty feed: no page fallback, and the
+	if err != nil || len(reviews) == 0 {
+		// User decision: a feed error falls back to the web page as an
+		// empty feed does (the feed answers an empty skeleton for every
+		// app, feedback.md). A feed error is still a failed call, so the
 		// evidence is not cached (Failures).
-		miss(KindReview, "App Store review feed failed: "+err.Error())
-		out.Failures = append(out.Failures, "review_feed")
-	} else if len(reviews) == 0 {
-		// The feed answers an empty skeleton for every app (feedback.md),
-		// so the web page stands in. Only an empty feed falls back: a feed
-		// error is a failed call, recorded as one.
-		out.Notes = append(out.Notes, "App Store review feed returned no reviews; reading the App Store page")
+		if err != nil {
+			reviews = nil
+			out.Failures = append(out.Failures, "review_feed")
+			out.Notes = append(out.Notes, "App Store review feed failed ("+err.Error()+"); reading the App Store page")
+		} else {
+			out.Notes = append(out.Notes, "App Store review feed returned no reviews; reading the App Store page")
+		}
 		docs, used, why, failed := g.storePageDocs(ctx, ref, a, at)
 		out.Credits += used
 		if failed {
 			out.Failures = append(out.Failures, "store_page")
 		}
 		if len(docs) == 0 {
+			if err != nil {
+				why = "App Store review feed failed: " + err.Error() + "; " + why
+			}
 			miss(KindReview, why)
 		} else {
 			out.Docs = append(out.Docs, docs...)
