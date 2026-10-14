@@ -237,3 +237,41 @@ func TestJudgeSystemWeighting(t *testing.T) {
 		}
 	}
 }
+
+// A thinking reply that drafts a grade and then revises it is read for its
+// final answer.
+func TestParseGradesTakesTheLastBlock(t *testing.T) {
+	reply := `Draft: {"grades":[{"area":"contact","level":"ok","findings":[]}]} no wait, review 355 is first-hand. ` +
+		"Final:\n```json\n" + `{"grades":[{"area":"contact","level":"flag","findings":["f_1"]},{"area":"money","level":"unknown","findings":[]}]}` + "\n```\nDone {note}."
+	gs, err := parseGrades(reply)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(gs) != 2 || gs[0].Level != checklist.Flag || gs[1].Area != checklist.Money {
+		t.Errorf("grades = %+v", gs)
+	}
+}
+
+// A conflict pass that parses but grades none of the conflicted areas
+// counts as failed: the first grades stand and the record says why.
+func TestConflictPassAnsweringNothingFails(t *testing.T) {
+	decisive, mit, money, fs := robloxFindings(t)
+	first := gradesJSON(t, checklist.Grade{Area: checklist.Contact, Level: checklist.Flag, Findings: []string{decisive.ID, mit.ID}})
+	second := gradesJSON(t, checklist.Grade{Area: checklist.Money, Level: checklist.Flag, Findings: []string{money.ID}})
+	rec := &superRecorder{replies: []any{first, second}}
+	got, err := (&Judge{Model: rec, Meter: openTestMeter(t)}).Judge(context.Background(), "Roblox", 9, "c", fs, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got.ConflictErr == nil || !strings.Contains(got.ConflictErr.Error(), "none of the conflicted areas") {
+		t.Errorf("ConflictErr = %v", got.ConflictErr)
+	}
+	for _, g := range got.Grades {
+		if g.Area == checklist.Money && g.Level == checklist.Flag {
+			t.Error("an area the conflict pass was not asked about changed")
+		}
+		if g.Area == checklist.Contact && g.Level != checklist.Flag {
+			t.Errorf("first contact grade did not stand: %+v", g)
+		}
+	}
+}

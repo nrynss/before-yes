@@ -45,13 +45,23 @@ Record the source kinds that came back empty, for the card's small print.
 **Done when:** Against the T0.4 and T0.4a fixtures, each demo title gathers the expected documents, Reddit snippets included. The policy and terms searches are narrowed to the official host. Credits match the plan.
 
 **Implementation notes (T3.1).**
-- `Gatherer.Gather(ctx, title, ref)` runs `Plan(title, host)`: seven basic searches (policy, terms, two Reddit, forum, news, rating) and one extract call. That is eight credits at list price. Every call goes through `Meter.Spend` on `spend.PoolTavily`, booked under the check ref, and Tavily's reported `usage.credits` settles the charge.
-- Official host: the seller URL's registrable domain. When there is none, or no store name passes the prefix rule, the policy search runs open, and its first hit whose domain label exactly equals an App Store developer name (company form dropped: "Toca Boca AB" is `tocaboca`) or the title's letters becomes the host. The developer match also picks the app, so Toca's reviews are read. Terms are then narrowed. Look-alikes refused in tests: `minecraftshop.com`, `tocabocashop.com`, `tocaboca.helpshift.com`, `tocaboca.com.evil.io`, `toca-boca.com`.
+- `Gatherer.Gather(ctx, title, ref)` runs `Plan(title, host)`: seven basic searches (policy, terms, two Reddit, forum, news, rating) and at most one extract call, plus one more only when a homepage's privacy or terms links are followed. That is at most eight credits at list price for the usual plan. The extract is conditional: with no policy or terms candidate at all, it is skipped, which is why Minecraft and Khan Academy Kids run at seven credits on the fixtures. Every call goes through `Meter.Spend` on `spend.PoolTavily`, booked under the check ref, and Tavily's reported `usage.credits` settles the charge.
+- Official host: the seller URL's registrable domain. When there is none, a policy hit's registrable domain is accepted only when an App Store listing names exactly that domain as its seller URL, and that listing is tied to the title. With an app matched by name, the listing must have the same developer: Minecraft Education by Mojang AB names education.minecraft.net, so minecraft.net passes. With no app matched, the listing's developer name must be the domain's name and its store name must start with the title's first word (Toca Boca AB, tocaboca.com, "Toca Boca World"); that listing becomes the app. Refused in tests: `minecraft.wiki`, `minecraft.co.uk`, `mojang.xyz`, `roblox.app`, `tocaboca.co.uk`, `tocabocashop.com`, `tocaboca.helpshift.com`, `tocaboca.com.evil.io`, `toca-boca.com`, and another developer's own `pazugames.com`.
 - Policy and terms: the first two hits on the host that are not homepages go into one extract call, kind-named hits first (four URLs still fit one credit). The first page read that is not an error page and names its kind in its URL, title, or first 300 characters is kept. Otherwise the kind is missing, with a note.
 - Reddit snippets are documents of kind `reddit`, with the chrome stripped. Common Sense "Parents say" and "Kids say" lines are dropped. Error and not-found pages are counted as missing. Raw content is capped at 60000 characters.
 - Fixture results: Roblox has no policy (its policy hits are the download page and homepages). Minecraft has no policy or terms (the only policy hit on its host is the usage guidelines, and the EULA was never captured). Khan Academy Kids has no policy or terms (homepage only). Toca has both.
 - `Doc` lives in gather.go, not doc.go, because T3.1 produces it first.
 - **Owns widened, approved by the user:** T3.1 now owns `tools/capture/` as well. `tools/capture` builds its searches from `pipeline.Plan` (main capture and the `-only reddit` run), so its own copy of the plan is gone. Its request-body test now expects the seven planned searches and eight credits.
+
+**Round 1 remediation (T3.1).**
+
+| ID | Fix | Test |
+|---|---|---|
+| H1 | `hostFromHits` accepts only a domain that an App Store listing names as its seller URL, tied to the title by the same developer or by developer name plus first word. A label match on any TLD no longer passes. | `TestHostFromHitsRefusesLookAlikes` (minecraft.wiki, roblox.app, tocaboca.co.uk, mojang.xyz, minecraft.co.uk now refused); `TestGatherFixtures` keeps Minecraft and Toca hosts. |
+| M1 | A kind whose hits are only homepages extracts the homepage. On-host links whose path names privacy or terms are followed in one more extract call. An unreadable homepage is noted ("homepage could not be read, so no policy link could be followed"). Offline, Khan's homepage extract fails in the capture, so Khan still has no policy or terms. | `TestGatherFollowsHomepageLinks` |
+| L1 | `errorPage` counts a page as an error page only when its first line is a short heading carrying an error sign, or when a page under 400 characters carries a strong sign ("404", "looks like that page doesn't exist"). | `TestErrorPage` (a short policy and a Reddit snippet that mention a missing page are kept) |
+| L2 | `about` and `candidates` read the URL path only, so a query string such as `?ref=privacy` names nothing. | `TestAboutIgnoresQuery` |
+| L3 | The notes now say the extract is conditional and that Minecraft and Khan run at seven credits. | notes |
 
 ---
 
@@ -79,6 +89,13 @@ status:     in-review
 - The "recorded Nano replies" here are hand-written replies inside read_test.go, served by a fake model keyed by segment ref. Real recordings belong to T3.6b (testdata/eval/replies/), which needs keys. Against the Roblox fixtures, review 355 (the fixtures' review-312 equivalent) survives as a contact risk. Invented quotes, a ref from another chunk and a ref no document has are all dropped as unquoted; bad area, bad stance, short quote and duplicate drops are counted.
 - `Chatter` (the model surface) and `chat()` live in read.go and are reused by the judge.
 - **Stand-in replies, accepted by the user:** the recorded replies in read_test.go are hand-written stand-ins, not real model output. T3.6b must replace them with real recordings from `testdata/eval/replies/`.
+
+**Round 1 remediation (T3.2).**
+
+| ID | Fix | Test |
+|---|---|---|
+| L1 | `assignRefs` labels every doc uniquely. A review is `R<index>` the first time its index appears; a later review with the same index takes `D<i+1>`. Chunking and verification use the same labels, so T3.8's store-page reviews cannot collide with the feed's. | `TestReviewRefsUnique` |
+| L2 | Not enforced, by design. The spec puts the 10 to 40 word range in the prompt; verification (T1.2) only requires `finding.MinQuote` normalized runes. Real decisive quotes are shorter than 10 words (review 242: "they can’t stop the child predators and E-Daters", 8 words), so dropping them would cost recall. Short fragments are kept out of T3.6's score by its stricter coverage rule instead. | documented; T3.6 M1 |
 
 ---
 
@@ -109,6 +126,14 @@ Every grade then goes through `checklist.Enforce`, and the verdict comes from `c
 - The recorded Super replies are hand-written in judge_test.go, against real verified Roblox finding ids. The contact flag rests on review 355. The conflict pass runs only for contact. A money flag citing a made-up id is demoted to unknown.
 - **Stand-in replies, accepted by the user:** the recorded replies in judge_test.go are hand-written stand-ins, not real model output. T3.6b must replace them with real recordings from `testdata/eval/replies/`.
 
+**Round 1 remediation (T3.3).**
+
+| ID | Fix | Test |
+|---|---|---|
+| M1 | `parseGrades` takes the last object with grades, trying opening braces from the end, so a thinking reply that drafts and then revises is read for its final answer. | `TestParseGradesTakesTheLastBlock` (draft ok, final flag → flag) |
+| L1 | A conflict pass that parses but grades none of the conflicted areas sets `ConflictErr` ("graded none of the conflicted areas") and the first grades stand. | `TestConflictPassAnsweringNothingFails` |
+| L2 | Accepted by the user: the judge is tested on hand-written stand-in replies until T3.6b records real ones. | stand-in note above |
+
 ---
 
 ### T3.4: Collect, decide, and the evidence cache ★
@@ -138,6 +163,15 @@ The card cites the findings its grades rest on, plus every risk finding, so a pa
 - `Kind` is `ios` when an App Store hit matched, and empty otherwise; console and YouTube are later tasks.
 - An end-to-end test runs the Roblox fixtures with recorded reader replies and a rule-based judge stand-in. Review 355 (the captures' review-312 equivalent) decides "no"; without it the card is "unclear". A second age makes no Tavily or reader call and one judge call. The card's model cost equals `Spent(PoolModel)`, and its credits equal `Spent(PoolTavily)`.
 - **Stand-in replies, accepted by the user:** the recorded replies in pipeline_test.go are hand-written stand-ins, not real model output. T3.6b must replace them with real recordings from `testdata/eval/replies/`.
+
+**Round 1 remediation (T3.4).**
+
+| ID | Fix | Test |
+|---|---|---|
+| M1 | Thin evidence is not cached. Threshold `MaxFailedChunks = 0`: any failed reader chunk means the card is made from what was read, but the evidence is not kept, so the next ask reads again. A missing source kind (a failed extract, a dark feed) is a fact about the sources, recorded in `MissingKinds`, and does not block caching. | `TestThinEvidenceNotCached` (35 of 36 chunks fail → not cached; full re-read → cached) |
+| L1 | The storefront comes from the store itself (`storefrontOf`: `*appstore.Client.Country`, or a `Storefronter` wrapper; no store is "none"; a store that cannot say is an error). `Pipeline.Storefront` is gone, so the key cannot disagree with the client. | `TestStorefrontFromStore` |
+| L2 | `ReaderVersion()` (hash of the reader system prompt plus `readerChunking`) is in `EvidenceKey`. A prompt edit changes the key on its own. | `TestEvidenceKeyHasReaderVersion`, `TestEvidenceKey` |
+| L3 | Cache-hit cost semantics for T4: a hit makes no reader or Tavily call, books nothing under the new ref, and returns `hit=true`. Its `Stats.ReadCostNano` and `Stats.TavilyCredits` are what was paid when it was collected, not now. A card's cost is that collect cost plus this decision's judge cost. T4 should report a hit's incremental cost as judge only and show the collect cost as "already paid". | doc comment on `Collect`. `TestReview355DecidesTheCard` checks that a second age books only the judge |
 
 ---
 

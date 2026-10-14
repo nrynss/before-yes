@@ -3,8 +3,11 @@ package pipeline
 import (
 	"context"
 	"crypto/rand"
+	"crypto/sha256"
+	"encoding/hex"
 	"errors"
 	"fmt"
+	"github.com/nrynss/before-yes/internal/appstore"
 	"math"
 	"strings"
 	"sync"
@@ -75,14 +78,55 @@ func (c *MemCache) Put(_ context.Context, key string, ev Evidence) error {
 	return nil
 }
 
+// readerChunking names the reader's chunking and ref scheme. Bump it when
+// chunkDocs or assignRefs change what the reader is shown.
+const readerChunking = "chunk-1"
+
+// ReaderVersion names the reader's prompt and chunking: a short hash of
+// the system prompt plus readerChunking. Editing the prompt changes it on
+// its own, so a prompt fix never serves findings read under the old one.
+func ReaderVersion() string {
+	h := sha256.Sum256([]byte(readerChunking + "\n" + readerSystem()))
+	return "reader-" + hex.EncodeToString(h[:])[:12]
+}
+
 // EvidenceKey is the evidence cache key: the title folded to lower case
-// with its whitespace collapsed, the plan version, the storefront and the
-// reader model. Any of them changing changes what Collect would gather or
-// read, so each is part of the key. No key or secret is ever part of it.
+// with its whitespace collapsed, the plan version, the reader version, the
+// storefront and the reader model. Any of them changing changes what
+// Collect would gather or read, so each is part of the key. No key or
+// secret is ever part of it.
 func EvidenceKey(title, storefront, readerModel string) string {
 	t := strings.ToLower(strings.Join(strings.Fields(title), " "))
-	return strings.Join([]string{"evidence", PlanVersion, strings.ToLower(storefront), readerModel, t}, "|")
+	return strings.Join([]string{"evidence", PlanVersion, ReaderVersion(), strings.ToLower(storefront), readerModel, t}, "|")
 }
+
+// Storefronter is a store that can say which App Store country it reads.
+// A wrapper around *appstore.Client implements it to stay usable.
+type Storefronter interface{ Storefront() string }
+
+// storefrontOf reads the storefront from the store itself, the one source
+// of truth, so the cache key cannot disagree with what was gathered. No
+// store means no App Store evidence: "none". A store that cannot say is an
+// error rather than a guess.
+func storefrontOf(s Store) (string, error) {
+	switch s := s.(type) {
+	case nil:
+		return "none", nil
+	case *appstore.Client:
+		if s == nil {
+			return "none", nil
+		}
+		return s.Country, nil
+	case Storefronter:
+		return s.Storefront(), nil
+	}
+	return "", errors.New("pipeline: the store does not say its storefront (implement Storefronter)")
+}
+
+// MaxFailedChunks is the most reader chunks that may fail for evidence to
+// be cached. Any failed chunk means the findings may be thin for a reason
+// that will not last, so the evidence is used for this card but not kept.
+const MaxFailedChunks = 0
 
 // Pipeline makes a card: Collect gathers and reads a title's sources once,
 // and Decide judges that evidence for one age.
@@ -92,10 +136,7 @@ type Pipeline struct {
 	Judge    *Judge
 	// Cache keeps evidence between checks. Nil means no cache.
 	Cache EvidenceCache
-	// Storefront is the App Store country the gatherer's store reads, for
-	// the cache key. Empty means "us".
-	Storefront string
-	Now        func() time.Time
+	Now   func() time.Time
 }
 
 func (p *Pipeline) now() time.Time {
@@ -103,13 +144,6 @@ func (p *Pipeline) now() time.Time {
 		return p.Now()
 	}
 	return time.Now()
-}
-
-func (p *Pipeline) storefront() string {
-	if p.Storefront == "" {
-		return "us"
-	}
-	return p.Storefront
 }
 
 // Run normalizes the request, collects the evidence (from the cache when
@@ -129,14 +163,20 @@ func (p *Pipeline) Run(ctx context.Context, req Request, ref string) (Card, erro
 // Collect returns the evidence for title. A cached copy is returned as it
 // is, with hit true, and costs nothing. Otherwise it gathers the sources and
 // reads them, books every call under ref, and caches the result. A failed
-// collect is never cached.
+// collect is never cached, nor is one where more than MaxFailedChunks
+// reader chunks failed. A cache hit costs nothing now: its Stats keep the
+// read cost paid when it was collected (see the T3.4 notes for T4).
 func (p *Pipeline) Collect(ctx context.Context, title, ref string) (ev Evidence, hit bool, err error) {
 	if p.Gatherer == nil || p.Reader == nil || p.Reader.Model == nil {
 		return Evidence{}, false, errors.New("pipeline: a gatherer and a reader are required")
 	}
 	title = strings.Join(strings.Fields(title), " ")
 	readerModel := p.Reader.Model.Settings().Model
-	key := EvidenceKey(title, p.storefront(), readerModel)
+	storefront, err := storefrontOf(p.Gatherer.Store)
+	if err != nil {
+		return Evidence{}, false, err
+	}
+	key := EvidenceKey(title, storefront, readerModel)
 	if p.Cache != nil {
 		if ev, ok, err := p.Cache.Get(ctx, key); err == nil && ok {
 			return ev, true, nil
@@ -185,7 +225,7 @@ func (p *Pipeline) Collect(ctx context.Context, title, ref string) (ev Evidence,
 		ReadCostNano:  int64(rd.Cost),
 		ReaderModel:   readerModel,
 	}
-	if p.Cache != nil {
+	if p.Cache != nil && rd.Failed <= MaxFailedChunks {
 		// A cache that will not store is not a failed check: the card is
 		// still good, the next ask just pays again.
 		_ = p.Cache.Put(ctx, key, ev)

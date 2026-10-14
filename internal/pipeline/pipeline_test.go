@@ -4,9 +4,11 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"github.com/nrynss/before-yes/internal/appstore"
 	"regexp"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"testing"
 	"time"
 
@@ -261,5 +263,64 @@ func TestCardIDs(t *testing.T) {
 			t.Fatalf("id %q err %v", id, err)
 		}
 		seen[id] = true
+	}
+}
+
+func (s feedStore) Storefront() string { return s.Client.Country }
+
+// Evidence read with a failed chunk is used for the card but not cached:
+// with 35 of 36 chunks failing, the findings are thin for a reason that
+// will not last.
+func TestThinEvidenceNotCached(t *testing.T) {
+	e := newE2E(t, demos[0], review355())
+	var calls atomic.Int32
+	e.reader.fail = func(string) error {
+		if calls.Add(1) == 1 {
+			return nil
+		}
+		return errors.New("down")
+	}
+	ev, hit, err := e.p.Collect(context.Background(), "Roblox", "c")
+	if err != nil || hit {
+		t.Fatalf("hit %v, err %v", hit, err)
+	}
+	if ev.Stats.FailedChunks != ev.Stats.Chunks-1 || ev.Stats.Chunks < 2 {
+		t.Fatalf("chunks %d failed %d, want all but one failed", ev.Stats.Chunks, ev.Stats.FailedChunks)
+	}
+	t.Logf("%d of %d chunks failed", ev.Stats.FailedChunks, ev.Stats.Chunks)
+	if _, ok, _ := e.p.Cache.Get(context.Background(), EvidenceKey("Roblox", "us", "nano-recorded")); ok {
+		t.Error("thin evidence was cached")
+	}
+	e.reader.fail = nil
+	if _, hit, err := e.p.Collect(context.Background(), "Roblox", "c"); err != nil || hit {
+		t.Errorf("after thin read: hit %v, err %v, want a fresh read", hit, err)
+	}
+	if _, hit, _ := e.p.Collect(context.Background(), "Roblox", "c"); !hit {
+		t.Error("a full read was not cached")
+	}
+}
+
+// The storefront in the key comes from the store, so it cannot drift from
+// the country the App Store client reads.
+func TestStorefrontFromStore(t *testing.T) {
+	gb := appstore.New("http://x", "gb")
+	for _, c := range []struct {
+		store Store
+		want  string
+	}{{gb, "gb"}, {nil, "none"}, {feedStore{Client: gb}, "gb"}} {
+		got, err := storefrontOf(c.store)
+		if err != nil || got != c.want {
+			t.Errorf("storefrontOf(%T) = %q, %v; want %q", c.store, got, err, c.want)
+		}
+	}
+	if _, err := storefrontOf(stubStore{}); err == nil {
+		t.Error("a store that cannot say its storefront was given a guess")
+	}
+}
+
+func TestEvidenceKeyHasReaderVersion(t *testing.T) {
+	v := ReaderVersion()
+	if !strings.HasPrefix(v, "reader-") || !strings.Contains(EvidenceKey("Roblox", "us", "nano"), "|"+v+"|") {
+		t.Errorf("reader version %q not in key", v)
 	}
 }
