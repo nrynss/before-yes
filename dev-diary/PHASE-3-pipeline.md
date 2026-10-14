@@ -23,7 +23,7 @@ requires:   T1.3, T2.2, T2.3, T0.4a
 fixture-ok: yes
 size:       M · frontier
 owns:       internal/pipeline/gather.go, internal/pipeline/gather_test.go
-status:     drafted
+status:     in-review
 ```
 A fixed source plan per title, about eight Tavily credits:
 1. App Store search. If a hit's name starts with the title, read its reviews and description, and take its seller URL as the official host. A near miss is worse than no reviews, so a non-matching hit is ignored. **Apple's review feed has been returning no entries for every app** (see the handoff log). When it is empty, fall back to the reviews on the title's App Store web page (T3.8). Try the feed first, in case it returns.
@@ -43,6 +43,15 @@ Record the source kinds that came back empty, for the card's small print.
 - `tools/capture` copies `plan()`. Once `internal/pipeline` exists, make the capture tool use it.
 
 **Done when:** Against the T0.4 and T0.4a fixtures, each demo title gathers the expected documents, Reddit snippets included. The policy and terms searches are narrowed to the official host. Credits match the plan.
+
+**Implementation notes (T3.1).**
+- `Gatherer.Gather(ctx, title, ref)` runs `Plan(title, host)`: seven basic searches (policy, terms, two Reddit, forum, news, rating) and one extract call. That is eight credits at list price. Every call goes through `Meter.Spend` on `spend.PoolTavily`, booked under the check ref, and Tavily's reported `usage.credits` settles the charge.
+- Official host: the seller URL's registrable domain. When there is none, or no store name passes the prefix rule, the policy search runs open, and its first hit whose domain label exactly equals an App Store developer name (company form dropped: "Toca Boca AB" is `tocaboca`) or the title's letters becomes the host. The developer match also picks the app, so Toca's reviews are read. Terms are then narrowed. Look-alikes refused in tests: `minecraftshop.com`, `tocabocashop.com`, `tocaboca.helpshift.com`, `tocaboca.com.evil.io`, `toca-boca.com`.
+- Policy and terms: the first two hits on the host that are not homepages go into one extract call, kind-named hits first (four URLs still fit one credit). The first page read that is not an error page and names its kind in its URL, title, or first 300 characters is kept. Otherwise the kind is missing, with a note.
+- Reddit snippets are documents of kind `reddit`, with the chrome stripped. Common Sense "Parents say" and "Kids say" lines are dropped. Error and not-found pages are counted as missing. Raw content is capped at 60000 characters.
+- Fixture results: Roblox has no policy (its policy hits are the download page and homepages). Minecraft has no policy or terms (the only policy hit on its host is the usage guidelines, and the EULA was never captured). Khan Academy Kids has no policy or terms (homepage only). Toca has both.
+- `Doc` lives in gather.go, not doc.go, because T3.1 produces it first.
+- `tools/capture` is outside this task's `owns`, so it still copies the plan. Pointing it at `pipeline.Plan` is a follow-up.
 
 ---
 
