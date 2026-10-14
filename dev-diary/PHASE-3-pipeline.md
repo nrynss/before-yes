@@ -115,13 +115,26 @@ requires:   T3.2, T3.3
 fixture-ok: yes
 size:       M · mid
 owns:       internal/pipeline/pipeline.go, internal/pipeline/pipeline_test.go
-status:     drafted
+status:     in-review
 ```
 Split the run into `Collect(title) → Evidence` and `Decide(evidence, age) → Card`. Collect is where the Tavily credits and most model tokens go. It is cached by title, plan version, storefront and reader model, so asking about the same title for another age costs one judge call.
 
 The card cites the findings its grades rest on, plus every risk finding, so a parent can see everything the judge weighed. Stats record read and judge cost separately.
 
 **Done when:** An end-to-end test with fakes shows review 312 deciding the card. A second age on the same evidence makes no reader or Tavily call. Cost on the card equals what the meter recorded.
+
+**Implementation notes (T3.4).**
+- `Pipeline{Gatherer, Reader, Judge, Cache, Storefront}`.
+  - `Collect(ctx, title, ref) → (Evidence, hit, error)`.
+  - `Decide(ctx, ev, age, ref) → Card`.
+  - `Run(ctx, Request, ref)`, with `Request.Normalize` checking ages 3 to 17 and titles up to 120 characters.
+- `EvidenceKey(title, storefront, readerModel)` contains the folded title, `PlanVersion`, the storefront and the reader model. `EvidenceCache` is an interface with an in-memory `MemCache`; the durable cache with single flight is T4.2. A failed collect is never cached.
+- The card shows the findings its grades cite plus every risk finding. `Stats` keeps read and judge cost separate.
+  - On a cache hit, the card carries the evidence's read cost as it was collected, and only this decision's judge cost is booked under the new ref.
+  - `TavilyCredits` is an int in types.go, so it is rounded.
+- Card ids are `c_` followed by 22 base-62 characters from crypto/rand.
+- `Kind` is `ios` when an App Store hit matched, and empty otherwise; console and YouTube are later tasks.
+- An end-to-end test runs the Roblox fixtures with recorded reader replies and a rule-based judge stand-in. Review 355 (the captures' review-312 equivalent) decides "no"; without it the card is "unclear". A second age makes no Tavily or reader call and one judge call. The card's model cost equals `Spent(PoolModel)`, and its credits equal `Spent(PoolTavily)`.
 
 ---
 
