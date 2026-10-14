@@ -23,7 +23,7 @@ requires:   T1.4, T3.4
 fixture-ok: yes
 size:       M · mid
 owns:       internal/server/checks.go, internal/server/checks_test.go
-status:     drafted
+status:     in-review
 ```
 `POST /api/checks` normalizes the request. If a fresh card exists it answers at once. Otherwise it starts a Keel `job` of kind `check` and answers `202` with the check id.
 
@@ -32,6 +32,24 @@ The kind has a concurrency limit and is **not** idempotent. A check spends money
 The job reports progress as Keel `job.Progress`: stage, current and total when counting, and a `detail` message. `GET /api/checks/{id}/events` serves the job's topic through the Keel `stream` broker. `GET /api/checks/{id}` reads the stored result. A failure fails the job with its Before Yes code by returning `job.Failure{Code: ...}` (Keel v0.7.3) ([nrynss/keel#83](https://github.com/nrynss/keel/issues/83)), so the stream's terminal and the stored result carry the same code (T1.4).
 
 **Done when:** A test drives a check to done through the HTTP API with a fake pipeline. Another test reads the events stream and sees progress and the terminal frame. A failure surfaces `budget_exhausted` or `no_sources` from `GET /api/checks/{id}`.
+
+**Implementation notes (T4.1).**
+- `Server` struct and `NewRunner` constructor in `internal/server/checks.go`:
+  - `NewRunner` configures kind `check` with `Limit` and `Idempotent: false`, ensuring interrupted checks across process restarts are terminated and not rerun.
+  - Seam for T4.5: `Checks` interface declared on `Server` without wiring into `startCheck`.
+- HTTP Routes in `Handler()`:
+  - `POST /api/checks` -> `startCheck`: decodes up to 4KB body, validates with `req.Normalize()` (400 `invalid_request` with message `"title is required and age must be between 2 and 17"`), returns 200 `{"card_id": cid}` on `CardCache` hit, starts Keel job on miss, maps `job.ErrLimit` to 503 `busy` with `Retry-After: 20` header and body detail, returns 202 `{"check_id": "j_" + jid}` on start.
+  - `GET /api/checks/{id}` -> `getCheck`: requires `"j_"` prefix + valid 32-hex Keel ID (bare or invalid IDs rejected with 404 before queries), fetches `Runner.Result`. Reports `running`, `queued`, `done` with `card_id: "c_" + cid`, `error` with matched code/message/detail, or `interrupted` with restart message.
+  - `GET /api/checks/{id}/events` -> `checkEvents`: validates `"j_"` check ID and streams SSE topic via `Broker.ServeTopic`.
+  - `GET /api/cards/{id}` -> `getCard`: requires `"c_"` prefix + valid 32-hex Keel ID, queries `Cards.Get` and returns 200 with card JSON or 404 `not_found`.
+  - `GET /api/cards` -> `recentCards`: returns `{"cards": [...]}` with up to 12 recent card summaries, each with `"c_"` ID prefix.
+- `work` check job:
+  - Reports `gather`, `read`, `judge`, and `alternatives` progress over Keel `stream`.
+  - Runs `EvidenceCache.Collect`, `Pipeline.Decide`, checks alternatives if verdict is `no` or `yes_with_settings`, stores with `Cards.PutWithAlternatives` or `Cards.Put`.
+  - Translates errors into `job.Failure` (`budget_exhausted` with `detail.pool`, `no_sources`, `check_failed`) so stream error event and stored job record carry the exact same code and detail.
+- Contract notes:
+  - Wire check IDs carry `j_` prefix, wire card IDs carry `c_` prefix.
+  - Bare or malformed IDs return 404 `not_found` before store queries.
 
 ---
 
