@@ -87,6 +87,12 @@ Bump `checklist.Version` whenever an area's wording or a rule changes, because c
 |---|---|---|
 | M1 | When `Enforce` changes a grade's level (raised to `flag`, or demoted to `unknown`), it replaces the judge's `reason` with a fixed system reason for that rule (`checklist.Reasons`, for example "Raised to flag: the cited evidence is only risks."), and clears `setting`. A skipped area gets "Not graded: no grade was given for this area." A grade whose level is unchanged keeps the judge's reason. | `TestChangedGradeReason` |
 | L1 | **Intended asymmetry, recorded:** `ok_with_setting` citing only risk findings stands, and gives `yes_with_settings`. That grade means "there is a risk, and this setting answers it", so risk evidence is exactly what supports it. `ok` claims there is nothing to answer, so risks alone contradict it and it becomes `flag`. This is stated in the `Enforce` doc comment. | `TestSettingOnRiskStands` |
+
+**Remediation, round 5** ([review](adversarial-review/t1.1-round5.md)). `checklist.Version` is bumped to `v7`. The docs say to bump on any rule change, and this changes what `Enforce` writes to a card.
+
+| Finding | Fix | Test |
+|---|---|---|
+| M | A setting is cleared on every grade whose final level is not `ok_with_setting`, whether or not `Enforce` changed the level. For example, a judge's `unknown`, `ok` or `flag` that carries a setting loses it. Only `ok_with_setting` names a setting to turn on. | `TestSettingClearedUnlessSettingGrade` |
 ---
 
 ### T1.2: Finding format and the quote check ★
@@ -213,6 +219,8 @@ Commit one example card per verdict (`card-yes.json`, `card-settings.json`, `car
 **Round 4 (inherited from T1.1 `v5`).** The examples were regenerated under `v5`. No example grade changed: none of them has an `ok` resting only on risks. The verdicts are still yes, yes_with_settings, no and unclear.
 
 **Round 4 remediation (inherited from T1.1 `v6` and T1.2 round 4).** The examples were regenerated under `v6`. No grade changed level, so every example reason is still the generated one. Every quote still verifies under the new `Normalize`.
+
+**Round 5 remediation (inherited, `v7`).** The examples were regenerated under `v7`. Only `checklist_version` changed. No example grade carries a stray setting.
 ---
 
 ### T1.4: HTTP API and error codes ★
@@ -280,7 +288,7 @@ Noted from the review, not this task's: `go mod tidy -diff` is non-empty on `mai
 
 ## Exit Criteria
 
-- [ ] Checklist frozen (`checklist.Version`, now `v6`), with the verdict question decided.
+- [ ] Checklist frozen (`checklist.Version`, now `v7`), with the verdict question decided.
 - [ ] The quote check rejects a changed word and an invented quote, by test.
 - [ ] Example evidence and card payloads committed, one card per verdict.
 - [ ] API and error codes documented, with examples.
