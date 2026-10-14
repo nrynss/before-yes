@@ -81,7 +81,7 @@ requires:   T2.1
 fixture-ok: yes
 size:       S · mid
 owns:       internal/model/model.go, internal/model/model_test.go
-status:     in-review
+status:     done
 ```
 Split from T2.1b's round-1 review (M3). The client's HTTP timeout is a fixed 3 minutes. Measured output rates vary between runs: about 65 to 90 tokens a second for Token Factory Nano, about 150 for Token Factory Super, and about 35 to 43 for OpenRouter's free judge (T2.1b, both review rounds). So a 16,000-token thinking call takes about 180 s to 245 s on Nano, which is at or past the timeout, and about 375 s to 450 s on OpenRouter, which is past it. Re-measure before choosing the floor and ceiling. The judge's conflict pass (T3.3) asks for 16,000 tokens with thinking on.
 
@@ -196,7 +196,7 @@ With Keel v0.7.3 ([nrynss/keel#82](https://github.com/nrynss/keel/issues/82)), e
 
 ---
 
-### T2.4b: Daily cap on fresh checks
+### T2.4b: Daily cap on fresh checks, and timed-out calls booked
 ```yaml
 requires:   T2.4, T2.5
 fixture-ok: yes
@@ -209,8 +209,12 @@ Split from T2.5. [`docs/budget.md`](../docs/budget.md) sets a cap of 5 fresh che
 - Add a checks-per-day pool with `cost.DailyUTC`, a one-unit denomination named `check`, and namespace `cost_checks_daily`. Its limit comes from `[budget] daily_fresh_checks`.
 - Reserve one check for each fresh check, before the first paid call. A failed check releases it. A cache hit does not count.
 - Pin the tavily pool to `cost.MonthlyUTC` inside `Open`, so a caller cannot open it as a lifetime ceiling.
+- **Book a timed-out call (from T2.1c).** `Spend` releases the hold and books nothing whenever `work` returns an error. A model call that hits its deadline returns `context.DeadlineExceeded`, plus an unmeasured reply priced at the estimate, because the host may have billed the tokens it wrote. Today that call books $0, which breaks T2.1's unmeasured-reply rule. On a deadline error, `Spend` must settle at the estimate and still return the error. A caller's own cancel keeps releasing.
 
-**Done when:** Tests show the sixth check in a UTC day refused before any call, the count reset at the next UTC day, a failed check releasing its count, and the ledger read back through a fresh SQLite connection. `daily_fresh_checks` is uncommented in `before-yes.toml.example`.
+**Done when:**
+- Tests show the sixth check in a UTC day refused before any call, the count reset at the next UTC day, a failed check releasing its count, and the ledger read back through a fresh SQLite connection.
+- A test shows a `work` that returns `context.DeadlineExceeded` booked at the estimate in the ledger, and a cancelled one released.
+- `daily_fresh_checks` is uncommented in `before-yes.toml.example`.
 
 ---
 

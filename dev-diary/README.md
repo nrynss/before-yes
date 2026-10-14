@@ -180,7 +180,7 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 |---|---|---|
 | P0 | 9 / 9 | Done. Two exit criteria wait on later tasks: a live Nano call (T2.1b) and the config check (T4.4). CI is green. |
 | P1 | 4 / 4 | Done. The `job.Failure` exit criterion waits on T4.1. The main-checkout pins and `.env` leak check, waived at landing, ran at the P1–P2 integration and passed. |
-| P2 | 8 / 11 | T2.1, T2.1a, T2.1b, T2.2, T2.2b, T2.3, T2.3b and T2.4 are done. T2.5 is landed but blocked on T3.6 for the measured cost per check. T2.1c is in progress. T2.4b, the daily cap, is not started. |
+| P2 | 9 / 11 | T2.1, T2.1a, T2.1b, T2.1c, T2.2, T2.2b, T2.3, T2.3b and T2.4 are done. T2.5 is landed but blocked on T3.6 for the measured cost per check. T2.4b (the daily cap, and booking timed-out calls) is not started. |
 | P3 | 0 / 10 | Not started. T3.1–T3.4 drafted. |
 | P4 | 0 / 5 | Not started. T4.1, T4.2 and T4.4 drafted. |
 | P5 | 0 / 7 | Not started. |
@@ -192,6 +192,17 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 
 Newest first. One entry per closed task, finding, or split.
 
+- **T2.1c closed.** Haiku implemented it, and the orchestrator validated it with no review loop, by the user's ruling.
+  - **What changed:** the fixed 3-minute client timeout is gone. Each attempt now gets `clamp(60 s + max_tokens / 30 tok/s, 90 s, 15 min)`, so a 16,000-token thinking call gets about 593 s and a short call keeps 90 s. The numbers are in `model.DefaultTimeouts`. There is no new setting, because the role's `max_tokens` already sets how long its calls run.
+  - **Timed-out calls:** a timed-out call returns `context.DeadlineExceeded`. It is not retried, since a retry could bill twice. Its reply is unmeasured and priced at the estimate, never $0.
+  - **Re-measured:** 4 live calls at 4,000 tokens, about $0.006 spent. Nano ran at about 68 tok/s, Super at about 156, and OpenRouter's free judge at 91 (35–43 at T2.1b). A floor of 30 sits below the slowest rate seen.
+  - **Orchestrator validation:**
+    - The diff stays inside owns.
+    - The four Done-when tests pass under `-race`, in about 2 s.
+    - `Retryable` refuses `DeadlineExceeded`.
+    - Gate rc 0 in the worktree after the rebase, and on main. No key values found. No dates.
+  - **Found and moved to T2.4b:** `spend.Meter.Spend` releases the hold on any error from the call, so a timed-out model call books $0 today.
+  - **Left open:** `internal/model/live_test.go` builds its own probe client with a 3-minute timeout. A live 16,000-token probe would be cut. Whichever task next touches that file should fix it.
 - **T2.5 landed, blocked on T3.6; T2.4b split out.** Haiku implemented it. By the user's ruling, T2.1c, T2.5 and T3.8a have no review loop: the orchestrator validates each one and sends the same agent back if something is wrong.
   - **Decided** in [`docs/budget.md`](../docs/budget.md):
     - The model pool has a lifetime ceiling of $20, with $5 of the $25 credit in reserve.
