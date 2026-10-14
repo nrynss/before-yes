@@ -176,8 +176,11 @@ func (m *Meter) Close() error {
 // It reserves estimate before work runs, so a pool that cannot cover the
 // estimate refuses the call with an error matching cost.ErrOverBudget and
 // work never runs. The hold stands while work runs, so a concurrent call sees
-// that budget as taken. A context that is already done refuses the call
-// before the reserve, so work never runs either.
+// that budget as taken. The hold expires with the store's reservation TTL,
+// which the meter does not expose and leaves at the store's default of ten
+// minutes; a call that outlives the TTL can let a second call reserve the
+// same headroom. A context that is already done refuses the call before the
+// reserve, so work never runs either.
 //
 // When work returns, Spend settles what the call reported. A reply that marks
 // itself unmeasured settles at the estimate, and the usage Spend returns

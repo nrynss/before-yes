@@ -182,7 +182,7 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 |---|---|---|
 | P0 | 9 / 9 | Done. Two exit criteria wait on later tasks: a live Nano call (T2.1b) and the config check (T4.4). CI is green. |
 | P1 | 0 / 4 | Not started. T1.1 and T1.2 drafted. |
-| P2 | 2 / 9 | T2.1, T2.3 done. T2.2, T2.4 in review. T2.1a opened from the T2.1 review (deep-copy `Extra`, before T3.3). Live `b` tasks and T2.5 not started. |
+| P2 | 3 / 9 | T2.1, T2.3, T2.4 done. T2.2 in remediation (round 1: one M). T2.1a opened from the T2.1 review (deep-copy `Extra`, before T3.3). Live `b` tasks and T2.5 not started. |
 | P3 | 0 / 8 | Not started. T3.1–T3.4 drafted. |
 | P4 | 0 / 5 | Not started. T4.1, T4.2 and T4.4 drafted. |
 | P5 | 0 / 7 | Not started. |
@@ -194,6 +194,11 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 
 Newest first. One entry per closed task, finding, or split.
 
+- **T2.4 closed.** Review: [t2.4-round1.md](adversarial-review/t2.4-round1.md), APPROVE, C 0 · H 0 · M 0 · L 5.
+  - **Move:** `scratch/internal/spend/{spend.go,spend_test.go}` moved from the main checkout into worktree `task-t2.4-spend` for T2.4; `scratch/internal/spend/` is gone. API: `Open(ctx, Config)`, `Spend(ctx, pool, kind, ref, estimate, work)`, `Status`, `Spent`, `Close`; `PoolModel` (USD nanodollars) and `PoolTavily` (thousandths of a credit, `CreditUnit` 1000) live in `internal/spend` until the pipeline package exists.
+  - **Behaviour the wiring must not re-derive:** reserve-then-run-then-settle; an estimate the pool cannot cover refuses before work runs; a failed call frees its hold and books nothing; a measured negative price is refused; a cancelled context still books because the call ran; every charge carries the check id as its `Ref`. Two pools share the application's one database file through cost-store namespaces (`cost_model`, `cost_tavily`); a namespace ending `_owner` is refused.
+  - **Forward notes:** **(a)** nothing binds `PoolTavily` to `cost.MonthlyUTC` — T2.5's settings must carry the period, and the wiring task must pin it, or 1,000 credits a month becomes 1,000 for life. **(b)** Keel's store logs to `slog.Default`; T4.4's wiring can set it. **(c)** a refused second pool leaves the first pool's tables on disk (inert). **(d)** no `Once`/idempotency: two `Spend` calls on one ref book twice; add it when T3.x has a resume path.
+  - **Keel gap, issue text for the user to file:** *"cost/sqlitestore: give Store a cost.Account adapter (or give cost.Meter a context-and-reservation shape), so a durable store can back a Meter without each application reimplementing reserve-hold-settle-release by hand."* The package drives the store directly, the path Keel's own `ExampleOpen` documents.
 - **T2.1 closed; T2.1a split out.** Review: [t2.1-round1.md](adversarial-review/t2.1-round1.md), APPROVE, C 0 · H 0 · M 0 · L 3.
   - **Move:** `scratch/internal/model/{model.go,model_test.go}` moved from the main checkout into worktree `task-t2.1-model` for T2.1; `scratch/internal/model/` is gone. The draft was reworked, not carried over: integer-nanodollar pricing, an unmeasured reply carries the client's estimate, 17 test functions replace the two draft ones.
   - **Behaviour T2.1b and T3.2/T3.3 must not re-derive:** price from the reported `usage`; absent, null, empty or all-zero usage is unmeasured (a paid reply must never book at $0); `extra` is merged per request and `Options.Extra` overrides it without mutating settings; a 4xx other than 429 is never retried; an undecodable 200 is never retried; OpenRouter's `error` member inside a 200 is a retryable 502 on the smaller two-attempt 5xx budget; 429 draws four attempts and honours `Retry-After` (hints clamped to 60s); the key is re-read on every attempt.

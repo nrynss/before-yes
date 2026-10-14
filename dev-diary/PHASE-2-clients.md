@@ -135,7 +135,7 @@ requires:   T0.1
 fixture-ok: yes
 size:       M · frontier
 owns:       internal/spend/
-status:     in-review
+status:     done
 ```
 Implements `pipeline.Meter` over Keel `cost/sqlitestore`, with two pools in one database file:
 - **model:** USD nanodollars, a lifetime ceiling below the $25 credit;
