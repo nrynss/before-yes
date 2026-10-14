@@ -13,6 +13,9 @@ import (
 	"strings"
 	"time"
 	"unicode"
+	"unicode/utf8"
+
+	"golang.org/x/text/unicode/norm"
 
 	"github.com/nrynss/before-yes/internal/checklist"
 )
@@ -97,8 +100,10 @@ const MinQuote = 12
 
 // Normalize folds what the check forgives: case, runs of whitespace,
 // typographic quotes and dashes, and the ellipsis character (as "...").
-// It changes no word.
+// Text is first put in Unicode NFC, so a composed and a decomposed accent
+// match. It changes no word.
 func Normalize(s string) string {
+	s = norm.NFC.String(s)
 	var b strings.Builder
 	space := false
 	for _, r := range s {
@@ -148,12 +153,13 @@ func itoa(n int) string {
 }
 
 // Verify keeps the raw findings whose quote appears in their segment's text,
-// in input order, with duplicates collapsed. It counts every drop by reason.
+// in input order, with duplicates collapsed (a risk reading of a quote wins
+// over any other reading of it). It counts every drop by reason.
 func Verify(raws []Raw, segs map[string]Segment) ([]Finding, Drops) {
 	var d Drops
 	out := []Finding{}
-	seen := map[string]bool{}
-	norm := map[string]string{}
+	seen := map[string]int{} // id -> index in out
+	normed := map[string]string{}
 	for _, r := range raws {
 		area := checklist.Area(strings.TrimSpace(r.Area))
 		if !area.Valid() {
@@ -177,32 +183,96 @@ func Verify(raws []Raw, segs map[string]Segment) ([]Finding, Drops) {
 			d.Unquoted++
 			continue
 		}
-		nt, ok := norm[ref]
+		nt, ok := normed[ref]
 		if !ok {
 			nt = Normalize(seg.Text)
-			norm[ref] = nt
+			normed[ref] = nt
 		}
-		if !strings.Contains(nt, nq) {
+		if !containsWords(nt, nq) {
 			d.Unquoted++
 			continue
 		}
 		id := ID(seg.Source, area, q)
-		if seen[id] {
+		f := Finding{ID: id, Area: area, Claim: strings.TrimSpace(r.Claim), Stance: st, Quote: q, Source: seg.Source}
+		if at, dup := seen[id]; dup {
+			// The same quote read twice keeps one finding. A risk reading is
+			// never lost: it replaces an earlier mitigation or neutral one, in
+			// the earlier one's place.
 			d.Duplicates++
+			if st == Risk && out[at].Stance != Risk {
+				out[at] = f
+			}
 			continue
 		}
-		seen[id] = true
-		out = append(out, Finding{ID: id, Area: area, Claim: strings.TrimSpace(r.Claim), Stance: st, Quote: q, Source: seg.Source})
+		seen[id] = len(out)
+		out = append(out, f)
 	}
 	return out, d
 }
+
+// containsWords reports whether quote occurs in text with no word cut at
+// either end: where the quote starts or ends with a letter or digit, the text
+// beside it must not be a letter or digit. "safe for kids" does not match
+// inside "unsafe for kids". Both arguments are already normalized.
+func containsWords(text, quote string) bool {
+	first, _ := utf8.DecodeRuneInString(quote)
+	last, _ := utf8.DecodeLastRuneInString(quote)
+	for from := 0; from <= len(text); {
+		i := strings.Index(text[from:], quote)
+		if i < 0 {
+			return false
+		}
+		start := from + i
+		end := start + len(quote)
+		before, _ := utf8.DecodeLastRuneInString(text[:start])
+		after, _ := utf8.DecodeRuneInString(text[end:])
+		okStart := start == 0 || !isWord(first) || !isWord(before)
+		okEnd := end == len(text) || !isWord(last) || !isWord(after)
+		if okStart && okEnd {
+			return true
+		}
+		_, w := utf8.DecodeRuneInString(text[start:])
+		from = start + w
+	}
+	return false
+}
+
+func isWord(r rune) bool { return unicode.IsLetter(r) || unicode.IsDigit(r) || unicode.IsMark(r) }
 
 // ErrParse is returned when model output holds no findings JSON.
 var ErrParse = errors.New("finding: no findings JSON in model output")
 
 // Parse reads model output: a JSON object with a findings array, a bare
-// array, or either one inside a code fence.
+// array, or either one inside a code fence. Beyond the spec, it also accepts
+// prose before the JSON (and after it) with no fence, as models often write
+// "Here are the findings: {...}".
 func Parse(out string) ([]Raw, error) {
+	if rs, err := parseJSON(out); err == nil {
+		return rs, nil
+	}
+	s := strings.TrimSpace(out)
+	for i := 0; i < len(s); i++ {
+		if s[i] != '{' && s[i] != '[' {
+			continue
+		}
+		if rs, ok := decodeFirst(s[i:]); ok {
+			return rs, nil
+		}
+	}
+	return nil, ErrParse
+}
+
+// decodeFirst decodes the first JSON value in s, ignoring what follows it.
+func decodeFirst(s string) ([]Raw, bool) {
+	var v json.RawMessage
+	if err := json.NewDecoder(strings.NewReader(s)).Decode(&v); err != nil {
+		return nil, false
+	}
+	rs, err := parseJSON(string(v))
+	return rs, err == nil
+}
+
+func parseJSON(out string) ([]Raw, error) {
 	s := strings.TrimSpace(out)
 	if i := strings.Index(s, "```"); i >= 0 {
 		rest := s[i+3:]

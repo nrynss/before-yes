@@ -82,6 +82,20 @@ The parser accepts a JSON object with a `findings` array, a bare array, or eithe
 - **Id choice:** every App Store review shares one feed URL, so the id key is the URL plus `#<review index>` when the index is set. Without that, the same sentence in two reviews would collapse into one finding. Ids are `f_` plus 16 hex characters of SHA-256.
 - Normalization maps the ellipsis character to `...`, typographic single and double quotes to ASCII, the dash family to `-`, collapses whitespace and lowercases. Nothing else.
 - `Cited(findings)` gives `checklist.Enforce` its evidence map.
+
+**Remediation, round 1** ([review](adversarial-review/t1.2-round1.md)).
+
+| Finding | Fix | Test |
+|---|---|---|
+| H1 | The match respects word boundaries. Where the quote starts or ends with a letter or digit, the text beside it must not be a letter or digit, so "safe for young kids" no longer verifies inside "unsafe for young kids". Every occurrence is tried, so a whole-word match later in the text still counts. | `TestWordBoundaries` |
+| M1 | Decided: when one quote is read twice (same id), a `risk` reading wins over `mitigation` or `neutral`. It replaces the earlier finding in place, keeping input order. The duplicate is still counted. | `TestDuplicateRiskWins` |
+| M2 | Tests now pin H1 and M1. | as above |
+| L1 | `Normalize` applies Unicode NFC first, so composed and decomposed accents match. | `TestNFC` |
+| L2 | `Parse` also accepts prose before and after unfenced JSON. This goes beyond the spec's three forms, so T3.2 can rely on it. | `TestParseProse` |
+
+**New dependency: `golang.org/x/text` v0.30.0** (for `unicode/norm`, which the standard library lacks). This is outside `owns`: `go.mod` and `go.sum` change by this one module. v0.30.0 is the newest version that bumps nothing else in the graph; later versions pull a newer `golang.org/x/sync`. The orchestrator copies this reason into the handoff log, as AGENTS.md requires.
+
+`TestFixtureReview` now cuts its quote at a word boundary. The old byte cut ended mid-word, which the H1 fix correctly rejects.
 ---
 
 ### T1.3: Evidence and card payloads ★
