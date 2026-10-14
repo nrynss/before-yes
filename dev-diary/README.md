@@ -197,7 +197,8 @@ Newest first. One entry per closed task, finding, or split.
 - **Orchestrator protocol written.**
   - [ORCHESTRATOR.md](ORCHESTRATOR.md) sets out the loop and the four separate roles. The `AGENTS.md` review section now points to it.
   - **From here on:** implementers set `in-review`, never `done`; only the orchestrator edits this README; every review goes to a fresh agent.
-  - **Correction:** the T0.4, T0.4a, T0.4b and T0.7 review files were written by the orchestrator itself. Under the role split that is not allowed. The tasks stand, because their pins were run, but those reviews are not independent. Every later task gets an independent reviewer.
+  - **Correction:** the T0.4, T0.4a, T0.4b and T0.7 verdicts were written by the orchestrator itself, not by an independent reviewer. The tasks stand, because their pins were run. Every later task gets an independent reviewer for load-bearing findings.
+  - **The user widened the orchestrator's role:** it may amend and update review files, and fix documentation and non-load-bearing findings itself with no further review. See [What the orchestrator takes over itself](ORCHESTRATOR.md#four-roles-kept-separate).
   - [feedback.md](feedback.md) starts with the Tavily findings from Phase 0.
 - **Keel v0.7.3 adopted.** v0.7.1 landed the fixes for #82 and #83, and v0.7.2 and v0.7.3 hardened them. Keel #87, #88, #91 and #94 are closed. `go.mod` on `main` now requires v0.7.3, bumped in one commit before any Keel task started, so parallel tasks cannot race on it. The "Keel v0.7.3" section names the API.
 - **T0.4b closed; T0.4a closed; P0 done.** Review: [t0.4b-round1.md](adversarial-review/t0.4b-round1.md).

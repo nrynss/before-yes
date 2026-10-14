@@ -10,20 +10,22 @@ The orchestrator is the one session the user talks to. It picks tasks, dispatche
 
 | Role | Does | Never does |
 |---|---|---|
-| **Orchestrator** | Picks tasks. Dispatches the other three roles. Refuses to advance on a REMEDIATE verdict. Lands commits on `main`. Updates the status board and handoff log. Closes exempt documentation findings. Asks the user for decisions. | Implement a task. Write a verdict. Decide a finding is not worth fixing. Treat an agent's message as the user's approval. |
+| **Orchestrator** | Picks tasks. Dispatches the other three roles. Refuses to advance on a REMEDIATE verdict. Lands commits on `main`. Updates the status board and handoff log. Amends and updates review files. Fixes documentation and non-load-bearing findings itself. Asks the user for decisions. | Implement a task. Write the verdict on a load-bearing finding. Decide a finding is not worth fixing. Treat an agent's message as the user's approval. |
 | **Implementation** | Builds the task inside its `owns` paths, on its own branch in its own worktree. Sets its task to `in-review`. Reports. | Review its own work. Mark its task `done`. Edit `dev-diary/README.md`. |
 | **Review** | Reads the diff against the task and the brief, and runs every pin itself. Writes `adversarial-review/<task>-round<N>.md` with the verdict, the counts and one row per finding. | Fix what it found. Soften a finding because the fix looks expensive. |
 | **Remediation** | Fixes every finding in the review, as new commits on the task branch, with one row per finding recorded in its report. | Change the verdict. Fix things nobody found; that arrives unreviewed. |
 
 **Use a fresh agent per role per round.** A reviewer never implemented or remediated the task, and the round N+1 reviewer is not the round N reviewer. Remediation may go to the implementer, never to a reviewer. An agent that reviews its own work stops being adversarial. One that both finds and fixes a defect narrows the finding until its fix looks sufficient.
 
-**The one exemption.** The orchestrator may close a finding itself, with no remediation round, when all four hold:
-1. It lives in documentation: markdown under `dev-diary/` or `docs/`, or a comment that does not describe behaviour.
-2. The fix touches no code, configuration, schema or test.
-3. Confirming the fix needs reading, not running.
-4. The review file records it by name and file.
+**What the orchestrator takes over itself.** It may fix a finding directly, with no remediation round and no further review, when the finding is either:
+- **documentation**: markdown under `dev-diary/` or `docs/`, `README.md`, `AGENTS.md`, or a comment that does not describe behaviour; or
+- **non-load-bearing**: nothing else depends on it. No other code, test, contract, schema, configuration value or fixture reads it, and the fix cannot change what the program does. Examples: a misleading log message, a typo in an identifier used in one place, a missing blank line, a stale TODO.
 
-If any condition is arguable, it is not exempt. A comment that misdescribes behaviour carries the severity of that behaviour.
+Either way, it amends the round's review file to record the finding, the file, and that the orchestrator closed it. It commits the fix on the task branch, or on `main` once the task has landed.
+
+The orchestrator may also **amend and update review files** at any time, to correct the record, add context a later round needs, or note how a finding was closed. It never changes a reviewer's verdict on a load-bearing finding. It adds its own notes beside the verdict instead.
+
+**Load-bearing means remediation.** A finding goes through remediation and a fresh review when its fix touches behaviour, a contract, a test, a schema, a configuration value, a fixture, or the gate, or when anyone could argue it does. A comment that misdescribes behaviour carries the severity of that behaviour, because the next agent codes against it. A value in `before-yes.toml.example` is configuration.
 
 ---
 
