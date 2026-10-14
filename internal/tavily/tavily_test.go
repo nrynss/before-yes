@@ -365,6 +365,68 @@ func TestReportedCreditsBeatThePriceList(t *testing.T) {
 	}
 }
 
+// TestUsageWithoutCreditsFallsBackOnSearch: a usage member with no usable
+// number must not read as a measured zero, or the price list never runs. A
+// number Tavily really sent still wins, zero included.
+func TestUsageWithoutCreditsFallsBackOnSearch(t *testing.T) {
+	for _, tc := range []struct {
+		name     string
+		usage    string // the raw usage member; empty omits it
+		want     float64
+		reported bool
+	}{
+		{"usage absent", "", 2, false},
+		{"usage null", `null`, 2, false},
+		{"usage empty object", `{}`, 2, false},
+		{"credits null", `{"credits":null}`, 2, false},
+		{"credits zero reported", `{"credits":0}`, 0, true},
+		{"credits number reported", `{"credits":3}`, 3, true},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			c := fixtureClient(t, searchBody(tc.usage))
+			_, cr, err := c.Search(context.Background(), Search{Query: "q", SearchDepth: DepthAdvanced})
+			if err != nil {
+				t.Fatal(err)
+			}
+			if cr.Used != tc.want || cr.Reported != tc.reported {
+				t.Fatalf("credits %+v, want %g reported=%v", cr, tc.want, tc.reported)
+			}
+		})
+	}
+}
+
+// TestUsageWithoutCreditsFallsBackOnExtract is the same rule on the extract
+// call, whose fallback counts the pages that were read.
+func TestUsageWithoutCreditsFallsBackOnExtract(t *testing.T) {
+	for _, tc := range []struct {
+		name     string
+		usage    string
+		want     float64
+		reported bool
+	}{
+		{"usage absent", "", 1, false},
+		{"usage null", `null`, 1, false},
+		{"usage empty object", `{}`, 1, false},
+		{"credits null", `{"credits":null}`, 1, false},
+		{"credits zero reported", `{"credits":0}`, 0, true},
+		{"credits number reported", `{"credits":5}`, 5, true},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			c := fixtureClient(t, resultsBody(2, tc.usage))
+			got, err := c.ExtractWithFailures(context.Background(), []string{"https://one.example/a", "https://two.example/b"})
+			if err != nil {
+				t.Fatal(err)
+			}
+			if len(got.Pages) != 2 {
+				t.Fatalf("decoded %d pages, want 2", len(got.Pages))
+			}
+			if got.Credits.Used != tc.want || got.Credits.Reported != tc.reported {
+				t.Fatalf("credits %+v, want %g reported=%v", got.Credits, tc.want, tc.reported)
+			}
+		})
+	}
+}
+
 // TestSearchCreditsFallBackToThePriceList covers the search half: one credit
 // at basic, two at advanced, only when usage is absent.
 func TestSearchCreditsFallBackToThePriceList(t *testing.T) {
@@ -407,7 +469,7 @@ func TestExtractCreditsFallBackToThePriceList(t *testing.T) {
 		{20, 4},
 	} {
 		t.Run(fmt.Sprintf("%d_urls", tc.urls), func(t *testing.T) {
-			c := fixtureClient(t, resultsBody(tc.urls))
+			c := fixtureClient(t, resultsBody(tc.urls, ""))
 			got, err := c.ExtractWithFailures(context.Background(), []string{"https://one.example/a", "https://two.example/b"})
 			if err != nil {
 				t.Fatal(err)
@@ -422,8 +484,9 @@ func TestExtractCreditsFallBackToThePriceList(t *testing.T) {
 	}
 }
 
-// resultsBody is n successful extract results and no usage member.
-func resultsBody(n int) []byte {
+// resultsBody is n successful extract results and the given raw usage
+// member, or none when usage is empty.
+func resultsBody(n int, usage string) []byte {
 	var b strings.Builder
 	b.WriteString(`{"results":[`)
 	for i := 0; i < n; i++ {
@@ -432,8 +495,21 @@ func resultsBody(n int) []byte {
 		}
 		fmt.Fprintf(&b, `{"url":"https://example.com/%d","title":"t","raw_content":"text"}`, i)
 	}
-	b.WriteString(`]}`)
+	b.WriteString(`]`)
+	if usage != "" {
+		b.WriteString(`,"usage":` + usage)
+	}
+	b.WriteString(`}`)
 	return []byte(b.String())
+}
+
+// searchBody is a reply with no hits and the given raw usage member, or none
+// when usage is empty.
+func searchBody(usage string) []byte {
+	if usage == "" {
+		return []byte(`{"results":[]}`)
+	}
+	return []byte(`{"results":[],"usage":` + usage + `}`)
 }
 
 // TestPriceList pins the two fallback functions directly.

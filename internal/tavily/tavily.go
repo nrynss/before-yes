@@ -2,10 +2,10 @@
 // endpoints.
 //
 // Both methods ask for include_usage, so a reply usually says what the call
-// cost. When it does not, the price list is the fallback: SearchCredits and
-// ExtractCredits. Tavily's reported number is authoritative when present,
-// because the recorded captures show it does not follow the price list
-// (feedback.md, "Extract credits do not follow the price list").
+// cost. When it carries no usable number, the price list is the fallback:
+// SearchCredits and ExtractCredits. A number Tavily really reports is
+// authoritative, because the recorded captures show it does not follow the
+// price list (feedback.md, "Extract credits do not follow the price list").
 //
 // A URL Tavily could not read is a fact about the source, not a failure of
 // the call: the call succeeds and the URL is left out of the pages.
@@ -164,7 +164,7 @@ type Credits struct {
 
 // SearchCredits is the price list's charge for one search: one credit at
 // basic depth, two at advanced. It is the fallback for a reply that carries
-// no usage.
+// no usable usage number.
 func SearchCredits(depth string) float64 {
 	if depth == DepthAdvanced {
 		return 2
@@ -174,8 +174,8 @@ func SearchCredits(depth string) float64 {
 
 // ExtractCredits is the price list's charge for one extract that read n URLs:
 // one credit per five, rounded up. It is the fallback for a reply that
-// carries no usage, and it counts the URLs that succeeded, because a failed
-// URL was not read.
+// carries no usable usage number, and it counts the URLs that succeeded,
+// because a failed URL was not read.
 func ExtractCredits(n int) float64 {
 	if n <= 0 {
 		return 0
@@ -184,19 +184,21 @@ func ExtractCredits(n int) float64 {
 }
 
 // usage is Tavily's usage member, present when the call asked for it and the
-// plan reports it.
+// plan reports it. Credits is a pointer because the member can come back
+// without the number; an absent or null number is not a measured zero.
 type usage struct {
-	Credits float64 `json:"credits"`
+	Credits *float64 `json:"credits"`
 }
 
-// usageCredits is what a call cost: Tavily's number when it sent one, the
-// price list's figure otherwise. Reported is true whenever the usage member
-// came back, including a reported zero.
+// usageCredits is what a call cost: Tavily's number when the reply carries
+// one, the price list's figure otherwise. Reported is true only for a number
+// Tavily really sent, including a reported zero. A usage member without a
+// number falls back, so a billed call cannot be booked as costing nothing.
 func usageCredits(u *usage, fallback float64) Credits {
-	if u == nil {
+	if u == nil || u.Credits == nil {
 		return Credits{Used: fallback}
 	}
-	return Credits{Used: u.Credits, Reported: true}
+	return Credits{Used: *u.Credits, Reported: true}
 }
 
 // Search runs one search and returns its hits in Tavily's relevance order.
