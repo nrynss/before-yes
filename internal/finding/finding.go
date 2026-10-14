@@ -210,13 +210,17 @@ func Verify(raws []Raw, segs map[string]Segment) ([]Finding, Drops) {
 	return out, d
 }
 
-// containsWords reports whether quote occurs in text with no word cut at
-// either end: where the quote starts or ends with a letter or digit, the text
-// beside it must not be a letter or digit. "safe for kids" does not match
-// inside "unsafe for kids". Both arguments are already normalized.
+// containsWords reports whether quote occurs in text without cutting a word
+// at either end. Both arguments are already normalized. At each end, the
+// match must touch the text's edge or whitespace, or a punctuation rune in the
+// text next to a word rune in the quote. So "safe for kids" does not match in
+// "unsafe for kids", "-safe" does not match in "un-safe", "safe" does not
+// match in "filter_safe", and "strangers can" does not match in
+// "strangers can't": an apostrophe between two letters is part of the word.
 func containsWords(text, quote string) bool {
-	first, _ := utf8.DecodeRuneInString(quote)
-	last, _ := utf8.DecodeLastRuneInString(quote)
+	if quote == "" {
+		return false
+	}
 	for from := 0; from <= len(text); {
 		i := strings.Index(text[from:], quote)
 		if i < 0 {
@@ -224,11 +228,7 @@ func containsWords(text, quote string) bool {
 		}
 		start := from + i
 		end := start + len(quote)
-		before, _ := utf8.DecodeLastRuneInString(text[:start])
-		after, _ := utf8.DecodeRuneInString(text[end:])
-		okStart := start == 0 || !isWord(first) || !isWord(before)
-		okEnd := end == len(text) || !isWord(last) || !isWord(after)
-		if okStart && okEnd {
+		if edgeOK(text, start, true) && edgeOK(text, end, false) {
 			return true
 		}
 		_, w := utf8.DecodeRuneInString(text[start:])
@@ -237,7 +237,44 @@ func containsWords(text, quote string) bool {
 	return false
 }
 
-func isWord(r rune) bool { return unicode.IsLetter(r) || unicode.IsDigit(r) || unicode.IsMark(r) }
+// edgeOK checks the cut at byte offset at. For a start cut, the outside rune
+// is the one before at and the inside rune the one at at; for an end cut, the
+// reverse.
+func edgeOK(text string, at int, start bool) bool {
+	if at == 0 || at == len(text) {
+		return true
+	}
+	_, prevW := utf8.DecodeLastRuneInString(text[:at])
+	outside, inside := at-prevW, at
+	if !start {
+		outside, inside = at, at-prevW
+	}
+	r, _ := utf8.DecodeRuneInString(text[outside:])
+	if unicode.IsSpace(r) {
+		return true
+	}
+	return !wordAt(text, outside) && wordAt(text, inside)
+}
+
+// wordAt reports whether the rune at byte offset i of text is part of a word:
+// a letter, digit, mark or underscore, or an apostrophe with a word rune on
+// each side (can't, don't).
+func wordAt(text string, i int) bool {
+	r, w := utf8.DecodeRuneInString(text[i:])
+	if isWord(r) {
+		return true
+	}
+	if r != '\'' || i == 0 || i+w >= len(text) {
+		return false
+	}
+	before, _ := utf8.DecodeLastRuneInString(text[:i])
+	after, _ := utf8.DecodeRuneInString(text[i+w:])
+	return isWord(before) && isWord(after)
+}
+
+func isWord(r rune) bool {
+	return unicode.IsLetter(r) || unicode.IsDigit(r) || unicode.IsMark(r) || r == '_'
+}
 
 // ErrParse is returned when model output holds no findings JSON.
 var ErrParse = errors.New("finding: no findings JSON in model output")

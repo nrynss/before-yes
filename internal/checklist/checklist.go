@@ -10,12 +10,13 @@ import (
 	"errors"
 	"fmt"
 	"strings"
+	"unicode"
 )
 
 // Version names the checklist and rules a card was judged under. Bump it when
 // an area's wording or a rule in Decide or Enforce changes, because cached
 // cards record the version they were judged under.
-const Version = "v2"
+const Version = "v3"
 
 // Area is one checklist area id. The ids are stable wire values.
 type Area string
@@ -169,7 +170,7 @@ func validate(grades []Grade) error {
 		if !g.Level.Valid() {
 			return fmt.Errorf("%w: area %q has unknown level %q", ErrGrades, g.Area, g.Level)
 		}
-		if g.Level == OKWithSetting && strings.TrimSpace(g.Setting) == "" {
+		if g.Level == OKWithSetting && blank(g.Setting) {
 			return fmt.Errorf("%w: area %q is ok_with_setting with no setting", ErrGrades, g.Area)
 		}
 	}
@@ -177,6 +178,17 @@ func validate(grades []Grade) error {
 		return fmt.Errorf("%w: %d of %d areas graded", ErrGrades, len(seen), len(areas))
 	}
 	return nil
+}
+
+// blank reports whether s holds nothing visible: only whitespace or
+// invisible format characters such as a zero-width space.
+func blank(s string) bool {
+	for _, r := range s {
+		if !unicode.IsSpace(r) && !unicode.Is(unicode.Cf, r) {
+			return false
+		}
+	}
+	return true
 }
 
 // Cited is what Enforce needs to know about one verified finding.
@@ -200,7 +212,7 @@ const (
 	RuleFlagNoRisk     = "flag_without_risk"
 	RuleSettingNoName  = "setting_without_name"
 	RuleSettingNoProof = "setting_without_finding"
-	RuleOKNoProof      = "ok_without_finding" // contact or content ok with no verified finding
+	RuleOKNoProof      = "ok_without_finding" // contact or content ok with no verified mitigation or neutral finding
 	RuleSkipped        = "skipped_area"
 	RuleDuplicate      = "duplicate_grade"
 	RuleBadGrade       = "invalid_grade" // unknown area or level from the judge
@@ -214,7 +226,8 @@ const (
 //   - a flag left with no verified risk finding becomes unknown;
 //   - an ok_with_setting with no setting named (blank counts as none), or no
 //     remaining finding, becomes unknown;
-//   - contact or content graded ok with no remaining finding becomes unknown,
+//   - contact or content graded ok with no remaining mitigation or neutral
+//     finding becomes unknown (risk findings alone cannot support ok),
 //     so silence on the two areas a parent most needs answered never reads as
 //     ok (and so never yields yes; Decide makes it unclear);
 //   - a finding id cited twice in one grade is kept once;
@@ -238,7 +251,7 @@ func Enforce(grades []Grade, evidence map[string]Cited) ([]Grade, []Demotion) {
 		g := in
 		g.Setting = strings.TrimSpace(in.Setting)
 		g.Findings = []string{}
-		risk := false
+		risk, support := false, false
 		cited := map[string]bool{}
 		for _, id := range in.Findings {
 			if cited[id] {
@@ -256,6 +269,7 @@ func Enforce(grades []Grade, evidence map[string]Cited) ([]Grade, []Demotion) {
 			}
 			g.Findings = append(g.Findings, id)
 			risk = risk || c.Risk
+			support = support || !c.Risk
 		}
 		switch g.Level {
 		case Flag:
@@ -264,12 +278,12 @@ func Enforce(grades []Grade, evidence map[string]Cited) ([]Grade, []Demotion) {
 				g.Level = Unknown
 			}
 		case OK:
-			if (g.Area == Contact || g.Area == Content) && len(g.Findings) == 0 {
+			if (g.Area == Contact || g.Area == Content) && !support {
 				dem = append(dem, Demotion{Area: g.Area, Rule: RuleOKNoProof})
 				g.Level = Unknown
 			}
 		case OKWithSetting:
-			if g.Setting == "" {
+			if blank(g.Setting) {
 				dem = append(dem, Demotion{Area: g.Area, Rule: RuleSettingNoName})
 				g.Level = Unknown
 			} else if len(g.Findings) == 0 {

@@ -14,7 +14,7 @@ parallel: no
 
 ---
 
-### T1.1: Checklist v1 and verdict rules ★
+### T1.1: Checklist and verdict rules ★
 ```yaml
 requires:   T0.1
 fixture-ok: yes
@@ -53,6 +53,14 @@ Bump `checklist.Version` whenever an area's wording or a rule changes, because c
 | M1 | `Enforce`: contact or content graded `ok` with no remaining verified finding becomes `unknown` (`ok_without_finding`), so `Decide` gives `unclear`, never `yes`. Other areas may still be `ok` with no finding. | `TestEvidenceFreeOKIsNotYes`, plus `TestEnforce` cases for contact and content `ok` with and without findings |
 | L1 | A setting is trimmed. A blank setting counts as no setting in both `Enforce` and `Decide`. | `TestSettingTrimmed`, `TestEnforce` "blank setting demoted" |
 | L2 | A finding id cited twice in one grade is kept once. Added a case for a grade whose area is unknown. | `TestEnforce` "repeated id kept once", "unknown area discarded" |
+
+**Remediation, round 2** ([review](adversarial-review/t1.1-round2.md)). `checklist.Version` is bumped to `v3`, because an `Enforce` rule changed again.
+
+| Finding | Fix | Test |
+|---|---|---|
+| M1 | Contact or content `ok` needs at least one cited **mitigation or neutral** finding. If it cites only risk findings, it becomes `unknown` (`ok_without_finding`). A risk finding cited beside a supporting one is kept. | `TestRiskOnlyOKIsNotYes`, `TestEnforce` "contact ok on risk only demoted" and "...risk and mitigation stands" |
+| L1 | A setting made only of whitespace or invisible format characters (Unicode Cf, for example U+200B, U+2060, U+FEFF) counts as blank in `Enforce` and `Decide`. | `TestEnforce` "zero-width setting demoted", `TestSettingTrimmed` |
+| L2 | The heading and exit criterion no longer say "v1". They name `checklist.Version`. | none (documentation) |
 ---
 
 ### T1.2: Finding format and the quote check ★
@@ -93,9 +101,18 @@ The parser accepts a JSON object with a `findings` array, a bare array, or eithe
 | L1 | `Normalize` applies Unicode NFC first, so composed and decomposed accents match. | `TestNFC` |
 | L2 | `Parse` also accepts prose before and after unfenced JSON. This goes beyond the spec's three forms, so T3.2 can rely on it. | `TestParseProse` |
 
-**New dependency: `golang.org/x/text` v0.30.0** (for `unicode/norm`, which the standard library lacks). This is outside `owns`: `go.mod` and `go.sum` change by this one module. v0.30.0 is the newest version that bumps nothing else in the graph; later versions pull a newer `golang.org/x/sync`. The orchestrator copies this reason into the handoff log, as AGENTS.md requires.
+**New dependency: `golang.org/x/text`** (for `unicode/norm`, which the standard library lacks). This is outside `owns`: `go.mod` and `go.sum` change by this one module. The pinned version and the reason are in the round-2 table below. The round-1 text gave a wrong reason. The orchestrator copies this reason into the handoff log, as AGENTS.md requires.
 
 `TestFixtureReview` now cuts its quote at a word boundary. The old byte cut ended mid-word, which the H1 fix correctly rejects.
+
+**Remediation, round 2** ([review](adversarial-review/t1.2-round2.md)).
+
+| Finding | Fix | Test |
+|---|---|---|
+| H1 | An apostrophe, straight or curly (curly is normalized to `'`), with a word rune on each side is part of the word. "Parents say strangers can" no longer verifies inside "strangers can't", and "The chat isn" no longer verifies inside "isn't". | `TestWordBoundariesRound2` (straight and curly) |
+| L1 | Each end of a match must touch the text's edge, whitespace, or a punctuation rune in the text beside a word rune in the quote. A quote that starts or ends with punctuation can no longer begin or end inside a token ("-safe" in "un-safe"). Underscore is a word rune ("safe" in "filter_safe"). | `TestWordBoundariesRound2` |
+| L2 | The round-1 reason for the pin was wrong. **Corrected:** the graph already requires `golang.org/x/sync v0.22.0`, and every `x/text` up to v0.41.0 requires sync v0.22.0 or older (checked against the proxy's `.mod` files), so none of them bumps anything. v0.42.0 needs sync v0.23.0. The pin is now **v0.41.0**, the newest version that changes no other requirement. Only the `golang.org/x/text` line in `go.mod` and its `go.sum` lines change. | `git diff main -- go.mod` |
+| T1.3 round 2 L1 | The `Source.Kind` vocabulary comment (`article`, `store` added) is now made here in T1.2, which owns `internal/finding/`, rather than on T1.3's branch. Comment only. | `git diff task-t1.2-finding task-t1.3-payloads -- internal/finding` is empty after the merge |
 ---
 
 ### T1.3: Evidence and card payloads ★
@@ -134,6 +151,14 @@ Commit one example card per verdict (`card-yes.json`, `card-settings.json`, `car
 | L2 | The Common Sense Media parents' guide is now kind `article`, not `forum`. Source kinds are: `review`, `policy`, `terms`, `reddit`, `forum` (a discussion board), `article` (an editorial guide or explainer), `news`, `rating` (a rating board or official parents' guide), `store` (an app-store listing). T3.1 assigns them. The `finding.Source.Kind` comment lists them (a comment, not behaviour). | `card-no.json` |
 
 **Known gap in `card-yes`:** the Khan contact evidence is thin. The listing says only that the app is in Apple's Kids category, and no fixture says outright "no chat". The Khan fixtures also hold a content risk that the example leaves out: review 17 ("scary devil faces ... popped up"). The examples are contract shapes. Khan's real verdict belongs to T3.6b.
+
+**Remediation, round 2** ([review](adversarial-review/t1.3-round2.md)). The examples were regenerated on top of the T1.1 and T1.2 round-2 fixes, under checklist `v3`.
+
+| Finding | Fix | Test |
+|---|---|---|
+| M1 | **User decision: `card-yes.json` is accepted as it is.** It is a contract example, not evidence about Khan Academy Kids. Its thin contact quote ("Made For Ages 0–5") and the content risk it leaves out (review 17) are known and accepted. Neither T3.3's prompt nor P5 should treat it as a model of good evidence. Khan's real verdict belongs to T3.6b. The card still passes `Enforce` under `v3`: its contact finding is neutral, so it counts as support. | `TestExamplesObeyRules` |
+| L1 | The `Source.Kind` comment edit now lands in T1.2 (`task-t1.2-finding`), which owns `internal/finding/`. After the merge, T1.3's diff against T1.2 touches nothing under `internal/finding/`. | `git diff task-t1.2-finding -- internal/finding` is empty |
+| inherited | The examples were regenerated after T1.1 round 2 M1 (`v3`, supporting finding needed) and T1.2 round 2 H1 and L1 (stricter word boundaries). Every quote still verifies, and every card passes `Enforce` with zero demotions. | `TestGenerate`, `TestExamplesObeyRules` |
 ---
 
 ### T1.4: HTTP API and error codes ★
@@ -186,7 +211,7 @@ Also added: every non-2xx example must be a strict wire envelope whose code appe
 
 ## Exit Criteria
 
-- [ ] Checklist v1 frozen, with the verdict question decided.
+- [ ] Checklist frozen (`checklist.Version`, now `v3`), with the verdict question decided.
 - [ ] The quote check rejects a changed word and an invented quote, by test.
 - [ ] Example evidence and card payloads committed, one card per verdict.
 - [ ] API and error codes documented, with examples.
