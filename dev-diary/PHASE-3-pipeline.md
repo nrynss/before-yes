@@ -164,6 +164,15 @@ The card cites the findings its grades rest on, plus every risk finding, so a pa
 - An end-to-end test runs the Roblox fixtures with recorded reader replies and a rule-based judge stand-in. Review 355 (the captures' review-312 equivalent) decides "no"; without it the card is "unclear". A second age makes no Tavily or reader call and one judge call. The card's model cost equals `Spent(PoolModel)`, and its credits equal `Spent(PoolTavily)`.
 - **Stand-in replies, accepted by the user:** the recorded replies in pipeline_test.go are hand-written stand-ins, not real model output. T3.6b must replace them with real recordings from `testdata/eval/replies/`.
 
+**Round 1 remediation (T3.4).**
+
+| ID | Fix | Test |
+|---|---|---|
+| M1 | Thin evidence is not cached. Threshold `MaxFailedChunks = 0`: any failed reader chunk means the card is made from what was read, but the evidence is not kept, so the next ask reads again. A missing source kind (a failed extract, a dark feed) is a fact about the sources, recorded in `MissingKinds`, and does not block caching. | `TestThinEvidenceNotCached` (35 of 36 chunks fail → not cached; full re-read → cached) |
+| L1 | The storefront comes from the store itself (`storefrontOf`: `*appstore.Client.Country`, or a `Storefronter` wrapper; no store is "none"; a store that cannot say is an error). `Pipeline.Storefront` is gone, so the key cannot disagree with the client. | `TestStorefrontFromStore` |
+| L2 | `ReaderVersion()` (hash of the reader system prompt plus `readerChunking`) is in `EvidenceKey`. A prompt edit changes the key on its own. | `TestEvidenceKeyHasReaderVersion`, `TestEvidenceKey` |
+| L3 | Cache-hit cost semantics for T4: a hit makes no reader or Tavily call, books nothing under the new ref, and returns `hit=true`. Its `Stats.ReadCostNano` and `Stats.TavilyCredits` are what was paid when it was collected, not now. A card's cost is that collect cost plus this decision's judge cost. T4 should report a hit's incremental cost as judge only and show the collect cost as "already paid". | doc comment on `Collect`. `TestReview355DecidesTheCard` checks that a second age books only the judge |
+
 ---
 
 ### T3.5: Safer alternatives ★
