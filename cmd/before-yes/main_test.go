@@ -146,6 +146,10 @@ func TestServeSharesOneMeter(t *testing.T) {
 	if any(a.Pipeline.Gatherer.Meter) != any(a.Meter) || any(a.Pipeline.Reader.Meter) != any(a.Meter) || any(a.Pipeline.Judge.Meter) != any(a.Meter) {
 		t.Error("a paid call goes around the meter")
 	}
+	data := filepath.Dir(a.DBPath)
+	if _, err := os.Stat(filepath.Join(data, spendName)); err != nil {
+		t.Errorf("the meter's own file: %v", err)
+	}
 	if a.Server.Pipeline != a.Pipeline {
 		t.Error("the server runs a different pipeline")
 	}

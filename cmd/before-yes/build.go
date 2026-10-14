@@ -31,9 +31,15 @@ import (
 	"github.com/nrynss/before-yes/internal/tavily"
 )
 
-// dbName is the application's one database file under data_dir: cards,
-// jobs, the evidence cache, flags and the three spend pools.
-const dbName = "before-yes.db"
+// dbName is the application's database file under data_dir: cards, jobs,
+// the evidence cache and flags. spendName is the meter's own file for the
+// three spend pools. The meter opens its own handle, and two handles
+// writing one file lose writes to SQLITE_BUSY under concurrent checks
+// (feedback.md), so the meter keeps a file to itself.
+const (
+	dbName    = "before-yes.db"
+	spendName = "spend.db"
+)
 
 // reveal is a key reader over a secret. A secret the settings do not name
 // reads as no key, so a keyless local stub host works; the clients refuse
@@ -53,6 +59,7 @@ type core struct {
 	Pipeline *pipeline.Pipeline
 	Meter    *spend.Meter
 	DB       *sqlite.DB
+	DBPath   string
 }
 
 func (c *core) Close() {
@@ -74,7 +81,7 @@ func buildCore(ctx context.Context, s Settings) (*core, error) {
 		return nil, fmt.Errorf("data dir: %w", err)
 	}
 	path := filepath.Join(s.DataDir, dbName)
-	c := &core{}
+	c := &core{DBPath: path}
 	reader, err := model.New(s.Reader, reveal(s.Secrets.Reader))
 	if err != nil {
 		return nil, fmt.Errorf("reader: %w", err)
@@ -84,7 +91,7 @@ func buildCore(ctx context.Context, s Settings) (*core, error) {
 		return nil, fmt.Errorf("judge: %w", err)
 	}
 	c.Meter, err = spend.Open(ctx, spend.Config{
-		Path: path,
+		Path: filepath.Join(s.DataDir, spendName),
 		Pools: map[spend.Pool]spend.PoolConfig{
 			spend.PoolModel:       {Limit: cost.USD(s.Budget.ModelUSD)},
 			spend.PoolTavily:      {Limit: cost.Price(s.Budget.TavilyCreditsMonthly * float64(spend.CreditUnit))},
