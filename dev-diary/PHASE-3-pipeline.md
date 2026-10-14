@@ -647,7 +647,7 @@ requires:   T3.9b
 fixture-ok: no
 size:       M · frontier
 owns:       internal/pipeline/judge.go, internal/pipeline/judge_test.go, internal/pipeline/read.go, internal/pipeline/read_test.go, internal/pipeline/gather.go (the product-identity filter only), tools/eval/live.go, testdata/eval/replies/, docs/budget.md (re-measured figures only)
-status:     not-started
+status:     claimed:zcode
 ```
 After T3.9b every standing grade cites verified, in-area findings, but all three demo titles read **no**. Roblox's flags are earned. Minecraft's and Khan Academy Kids' are not: the judge flags whatever it can cite, with no proportion. Three faults remain:
 
