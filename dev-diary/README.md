@@ -100,7 +100,7 @@ P0 and P1 are the serial bottleneck. Once the contracts freeze, four tracks run 
 
 | Track | Phase | Network required? | First task | Notes |
 |---|---|---|---|---|
-| **A: Clients** | P2 | 6 / 9 | T2.1, T2.1a, T2.2, T2.2b, T2.3 and T2.4 are done. T2.1b is in review. T2.3b got REMEDIATE: Apple's review feed is returning no reviews (H1). T2.5 is not started. |
+| **A: Clients** | P2 | 7 / 10 | T2.1, T2.1a, T2.1b, T2.2, T2.2b, T2.3 and T2.4 are done. T2.3b got REMEDIATE: Apple's review feed is returning no reviews (H1, the user's decision). T2.1c, the model timeout, and T2.5 are not started. |
 | **B: Pipeline** | P3 | `b` tasks only | T3.1 | Gather, read, judge, alternatives. The product's depth lives here. |
 | **C: Server** | P4 | No | T4.1 | Jobs, progress stream, card store, gate. |
 | **D: Frontend** | P5 | No | T5.1 | Chaaya app against the example payloads from T1.3. |
@@ -194,6 +194,13 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 
 Newest first. One entry per closed task, finding, or split.
 
+- **T2.1b closed.** Reviews: [round 1](adversarial-review/t2.1b-round1.md) (Sonnet, REMEDIATE: M 3, L 3), remediation by a fresh Sonnet agent, and [round 2](adversarial-review/t2.1b-round2.md) (a fresh Sonnet reviewer, APPROVE: L 2). The orchestrator closed both round-2 Ls on the branch.
+  - **Settings now confirmed live.** Token Factory ids are case-sensitive: `nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B` works and the lowercase id 404s. `[reader.extra]` turns the reader's thinking off. Nano thinks by default, at about 45 times the billed output. The thinking switch is `chat_template_kwargs.enable_thinking` on Token Factory and build.nvidia.com, and `reasoning.enabled` on OpenRouter. The rate limits are 100 a minute for Nano and 300 for Super. A round-2 reviewer decoded `before-yes.toml.example`, and both alternative tables, with go-toml.
+  - Seven Token Factory and Nemotron entries are in [feedback.md](feedback.md), the first for the Devpost feedback. The transcript is at [`live/t2.1b-transcript.txt`](live/t2.1b-transcript.txt), with no account id.
+  - **Spend:** about $0.0018 on Token Factory across three live runs (implementation, the round-1 re-run and remediation). OpenRouter and build.nvidia.com are free.
+  - **Split:** T2.1c, because the client's 3-minute timeout is at or past the limit for 16,000-token thinking calls.
+  - **Orchestrator slip, recorded:** the first round-2 closing commit was made while `gofmt` was failing, because piping `check.sh` through `tail` hid its exit code. The commit was amended before landing. Check the gate's exit status, not the last line of its output.
+  - OpenCode's `task-t2.1b-model-live` branch and worktree are superseded by `main`. They are OpenCode's to remove.
 - **T2.2b closed.** Reviews: [t2.2b-round1.md](adversarial-review/t2.2b-round1.md). The Sonnet reviewer gave REMEDIATE: M 2, L 2. All four findings were documentation or non-load-bearing, so the orchestrator closed them on the branch and recorded each in the review file.
   - **Measured:** `usage.credits` came back on 3 of 3 calls. Raw content on search costs 0 extra credits but adds about 110 KB for 5 hits. Tavily sends no rate-limit headers.
   - **The rate limit is not measured.** The documented 100 a minute is unverified, and the client paces at 90. It stays open until the deployed host shows a 429.
