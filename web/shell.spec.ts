@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { readFileSync } from 'node:fs';
-const routes = [ ['/', 'A little research.'], ['/check/arbitrary-check-123','A check,'], ['/card/arbitrary-card-456','The decision,'], ['/compare/first-arbitrary/second-arbitrary','The same questions.'] ];
+const routes = [ ['/', 'A little research.'], ['/check/arbitrary-check-123','A check,'], ['/card/c_7Hq2mXv9pK3wLr8sTn4bYe','No'], ['/compare/first-arbitrary/second-arbitrary','The same questions.'] ];
 // Use the published Chaaya gate itself inside the rendered browser document.
 const gate = readFileSync('node_modules/@nrynss/chaaya/dist/testing/a11y.js', 'utf8').replace('export async function', 'async function').replace('(await import("axe-core")).default', 'window.axe');
 for (const [route, heading] of routes) {
@@ -9,6 +9,7 @@ for (const [route, heading] of routes) {
    const errors: string[] = [];
    page.on('pageerror', error => errors.push(error.message));
    await page.addInitScript(mode => localStorage.setItem('chaaya-theme', mode), mode);
+   if (route.startsWith('/card/')) await page.route('**/api/cards/*', r => r.fulfill({json: JSON.parse(readFileSync('../testdata/contracts/card-no.json', 'utf8'))}));
    await page.goto(route);
    await expect(page.getByRole('heading',{level:1})).toContainText(heading);
    await expect(page.getByLabel('Theme')).toHaveValue(mode);
