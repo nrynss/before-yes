@@ -7,8 +7,10 @@ import (
 	"fmt"
 	"slices"
 	"strings"
+	"unicode"
 
 	"github.com/nrynss/keel/cost"
+	"golang.org/x/text/unicode/norm"
 
 	"github.com/nrynss/before-yes/internal/checklist"
 	"github.com/nrynss/before-yes/internal/finding"
@@ -147,7 +149,11 @@ type Judgement struct {
 	// ConflictErr says why that pass did not count, when it did not.
 	Conflicted  []checklist.Area
 	ConflictErr error
-	Cost        cost.Price
+	// Thin lists the areas ground dropped to unknown because no verified
+	// quote backed the reason or the setting (T3.9). The card carries it
+	// as ThinAreas.
+	Thin []checklist.Area
+	Cost cost.Price
 }
 
 // Judge grades every area for a child of age, re-judges the areas whose
@@ -206,6 +212,9 @@ func (j *Judge) Judge(ctx context.Context, title string, age int, ref string, fs
 	}
 
 	out.Grades, out.Demotions = checklist.Enforce(grades, finding.Cited(fs))
+	var grounded []checklist.Demotion
+	out.Grades, grounded, out.Thin = ground(out.Grades, fs)
+	out.Demotions = append(out.Demotions, grounded...)
 	out.Verdict, err = checklist.Decide(out.Grades)
 	if err != nil {
 		return out, fmt.Errorf("judge: %w", err)
@@ -247,4 +256,189 @@ func replace(first, second []checklist.Grade, areas []checklist.Area) []checklis
 		}
 	}
 	return out
+}
+
+// Demotions ground makes. Both leave the grade unknown and its area in
+// Judgement.Thin.
+const (
+	// RuleThinEvidence: a flag or ok_with_setting whose reason contains no
+	// verbatim run of any cited verified quote of a fitting stance.
+	RuleThinEvidence = "reason_without_quote"
+	// RuleSettingUnbacked: an ok_with_setting whose setting appears in no
+	// cited verified mitigation quote.
+	RuleSettingUnbacked = "setting_without_quote"
+)
+
+// ThinReason is the card reason for a grade ground dropped to unknown. The
+// card's structured signal is Card.ThinAreas; this text is for the parent.
+const ThinReason = "Changed to unknown: the evidence was thin. No verified quote backs the reason the judge gave."
+
+// SettingThinReason is the card reason when only the setting was unbacked.
+const SettingThinReason = "Changed to unknown: the evidence was thin. No verified quote names the setting."
+
+// reasonRun is how many consecutive words of a verified quote a reason must
+// carry, after normalising case and punctuation, to name that quote. At
+// least two of them must be content words, so a run of glue ("it is a
+// the") names nothing. A quote shorter than reasonRun words must appear
+// whole. A setting is checked by settingIn instead.
+const (
+	reasonRun = 4
+)
+
+// ground holds every flag and ok_with_setting to quotes it actually carries
+// (T3.9). Enforce has already kept only verified citations in the grade's
+// own area. A cited finding is named when it has a fitting stance (a risk
+// for flag; a risk or mitigation for ok_with_setting) and the reason holds
+// a verbatim run of its quote (see reasonRun). Only the verified quote
+// counts, never the reader's claim, so two shared words cannot carry a
+// grade. An ok_with_setting must also have its setting backed on its own: a
+// setting the quote names (see settingIn), in a cited mitigation
+// quote. The grade keeps only the findings that name it. A grade that fails
+// falls to unknown with its setting cleared, a demotion, and its area in
+// thin, so its flag no longer counts toward the verdict. ok, unknown, and
+// the verdict rule are untouched. The input is not modified.
+func ground(grades []checklist.Grade, fs []finding.Finding) (out []checklist.Grade, dem []checklist.Demotion, thin []checklist.Area) {
+	byID := make(map[string]finding.Finding, len(fs))
+	for _, f := range fs {
+		byID[f.ID] = f
+	}
+	out = make([]checklist.Grade, len(grades))
+	for i, g := range grades {
+		g.Findings = slices.Clone(g.Findings)
+		out[i] = g
+		if g.Level != checklist.Flag && g.Level != checklist.OKWithSetting {
+			continue
+		}
+		reason := normWords(g.Reason)
+		setting := normWords(g.Setting)
+		var named []string
+		reasonNamed, settingBacked := false, false
+		for _, id := range g.Findings {
+			f, ok := byID[id]
+			if !ok || f.Area != g.Area || !stanceFits(g.Level, f.Stance) {
+				continue
+			}
+			q := normWords(f.Quote)
+			byReason := carries(reason, q, reasonRun, 2)
+			bySetting := g.Level == checklist.OKWithSetting && f.Stance == finding.Mitigation && settingIn(q, setting)
+			reasonNamed = reasonNamed || byReason
+			settingBacked = settingBacked || bySetting
+			if byReason || bySetting {
+				named = append(named, id)
+			}
+		}
+		rule, why := "", ""
+		switch {
+		case !reasonNamed:
+			rule, why = RuleThinEvidence, ThinReason
+		case g.Level == checklist.OKWithSetting && !settingBacked:
+			rule, why = RuleSettingUnbacked, SettingThinReason
+		}
+		if rule != "" {
+			dem = append(dem, checklist.Demotion{Area: g.Area, Rule: rule, Detail: string(g.Level)})
+			thin = append(thin, g.Area)
+			g.Level, g.Setting, g.Reason = checklist.Unknown, "", why
+			out[i] = g
+			continue
+		}
+		out[i].Findings = named
+	}
+	return out, dem, thin
+}
+
+// settingIn reports whether a quote backs a setting: the whole setting
+// appears in it, or every content word of the setting does (settingWord:
+// three letters or more, not glue such as "turn", "on" or "the"), with at
+// least one such word. A shared phrase such as "made in the app" cannot
+// carry a control the quote never names.
+func settingIn(quote, setting []string) bool {
+	var content []string
+	for _, w := range setting {
+		if settingWord(w) {
+			content = append(content, w)
+		}
+	}
+	if len(content) == 0 {
+		return false // "Turn on" names no control
+	}
+	if carries(quote, setting, len(setting), 0) {
+		return true
+	}
+	have := map[string]bool{}
+	for _, w := range quote {
+		have[w] = true
+	}
+	for _, w := range content {
+		if !have[w] {
+			return false
+		}
+	}
+	return true
+}
+
+func stanceFits(l checklist.Level, s finding.Stance) bool {
+	if l == checklist.Flag {
+		return s == finding.Risk
+	}
+	return s == finding.Risk || s == finding.Mitigation
+}
+
+// carries reports whether text holds a run of n consecutive words of span,
+// at least minContent of them content words. A span shorter than n words
+// must appear whole, with at least one content word.
+func carries(text, span []string, n, minContent int) bool {
+	if len(span) == 0 || len(text) == 0 {
+		return false
+	}
+	if len(span) < n {
+		n = len(span)
+		minContent = min(minContent, 1)
+	}
+	for i := 0; i+n <= len(span); i++ {
+		run := span[i : i+n]
+		c := 0
+		for _, w := range run {
+			if contentWord(w) {
+				c++
+			}
+		}
+		if c < minContent {
+			continue
+		}
+		for j := 0; j+n <= len(text); j++ {
+			if slices.Equal(text[j:j+n], run) {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+// stopWords are words too common to show that a run of words names a quote.
+var stopWords = map[string]bool{}
+
+func init() {
+	for _, w := range strings.Fields(`about above after again against also although among another because been before being below between both cannot could does doing down during each even every from further have having here into itself just like many more most much must only other over same several should since some such than that their them then there these they this those through under until very were what when where which while with within without would your yours dont doesnt isnt cant`) {
+		stopWords[w] = true
+	}
+}
+
+func settingWord(w string) bool {
+	return len([]rune(w)) >= 3 && !stopWords[w] && !settingGlue[w]
+}
+
+// settingGlue are short words a setting shares with any sentence.
+var settingGlue = map[string]bool{"the": true, "and": true, "for": true, "you": true, "can": true, "off": true, "all": true, "any": true, "are": true, "has": true, "not": true, "out": true, "use": true, "turn": true}
+
+func contentWord(w string) bool {
+	return len([]rune(w)) >= 4 && !stopWords[w]
+}
+
+// normWords lowercases s, drops apostrophes, and splits it into words of
+// letters and digits.
+func normWords(s string) []string {
+	s = strings.NewReplacer("'", "", "’", "", "‘", "").Replace(strings.ToLower(norm.NFC.String(s)))
+	return strings.FieldsFunc(s, func(r rune) bool {
+		return !unicode.IsLetter(r) && !unicode.IsDigit(r)
+	})
 }

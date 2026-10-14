@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"regexp"
+	"strconv"
 	"strings"
 
 	"github.com/nrynss/keel/cost"
@@ -158,7 +159,7 @@ func clip(s string, words int) string {
 type stanceJudge struct{}
 
 var (
-	judgeLine = regexp.MustCompile(`(?m)^- id=(\S+) area=(\S+) stance=(\S+) `)
+	judgeLine = regexp.MustCompile(`(?m)^- id=(\S+) area=(\S+) stance=(\S+) .*\n  claim: .*\n  quote: (".*")$`)
 	onlyLine  = regexp.MustCompile(`(?m)^Grade only these areas: (.+)$`)
 )
 
@@ -175,11 +176,21 @@ func (stanceJudge) Chat(_ context.Context, msgs []model.Message, _ model.Options
 		}
 	}
 	by := map[string]map[string][]string{}
+	quotes := map[string]string{}
 	for _, m := range judgeLine.FindAllStringSubmatch(user, -1) {
+		quotes[m[1]], _ = strconv.Unquote(m[4])
 		if by[m[2]] == nil {
 			by[m[2]] = map[string][]string{}
 		}
 		by[m[2]][m[3]] = append(by[m[2]][m[3]], m[1])
+	}
+	// A reason quotes the findings it cites, so it names them (T3.9).
+	quoting := func(ids []string) string {
+		qs := make([]string, len(ids))
+		for i, id := range ids {
+			qs[i] = strconv.Quote(quotes[id])
+		}
+		return strings.Join(qs, " ")
 	}
 	gs := []checklist.Grade{}
 	for _, a := range areas {
@@ -187,9 +198,9 @@ func (stanceJudge) Chat(_ context.Context, msgs []model.Message, _ model.Options
 		g := checklist.Grade{Area: a, Level: checklist.Unknown, Findings: []string{}, Reason: "No finding bears on this area."}
 		switch {
 		case len(s["risk"]) > 0:
-			g = checklist.Grade{Area: a, Level: checklist.Flag, Findings: s["risk"], Reason: "A risk finding stands."}
+			g = checklist.Grade{Area: a, Level: checklist.Flag, Findings: s["risk"], Reason: "A risk finding stands: " + quoting(s["risk"])}
 		case len(s["mitigation"]) > 0:
-			g = checklist.Grade{Area: a, Level: checklist.OKWithSetting, Setting: "The control the cited finding names", Findings: s["mitigation"], Reason: "A control answers it."}
+			g = checklist.Grade{Area: a, Level: checklist.OKWithSetting, Setting: "The control the cited finding names", Findings: s["mitigation"], Reason: "A control answers it: " + quoting(s["mitigation"])}
 		case len(s["neutral"]) > 0:
 			g = checklist.Grade{Area: a, Level: checklist.OK, Findings: s["neutral"], Reason: "Nothing calls for action."}
 		}

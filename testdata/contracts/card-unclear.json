@@ -27,7 +27,8 @@
     {
       "area": "data",
       "level": "unknown",
-      "findings": []
+      "findings": [],
+      "reason": "Changed to unknown: the evidence was thin. No verified quote backs the reason the judge gave."
     },
     {
       "area": "age_gating",
@@ -46,6 +47,9 @@
       "findings": [],
       "reason": "No developer record found."
     }
+  ],
+  "thin_areas": [
+    "data"
   ],
   "settings": [
     "Ask to Buy (Family Sharing)"

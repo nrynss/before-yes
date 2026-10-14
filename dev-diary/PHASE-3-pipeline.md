@@ -532,7 +532,7 @@ requires:   T3.6b
 fixture-ok: yes
 size:       M · frontier
 owns:       internal/pipeline/judge.go, internal/pipeline/judge_test.go, internal/pipeline/read.go, internal/pipeline/read_test.go, the reader and judge max_tokens lines in before-yes.toml.example
-status:     not-started
+status:     in-review
 ```
 Found by the orchestrator in T3.6b's live replies. All three demo titles came back **no**, but the judge's flags are mostly not backed by a verified quote: `found` is empty in most areas. Its reasons paraphrase loosely or invent details:
 - Khan Academy Kids: "strangers can message via the forum", though the app has no forum.
@@ -553,6 +553,41 @@ The verdict rule (any `flag` makes **no**) is unchanged. Only unsupported flags 
 - A test pins that rule.
 - The re-run eval's verdicts, grades-agree and quotes-found are in the handoff log next to T3.6b's.
 - The demo titles' verdicts are reported to the user. Only then does any title get re-picked.
+
+
+**Implementation notes (after round 1):**
+- `ground` in `judge.go` runs after `checklist.Enforce`. A cited finding is named by a reason only when the reason carries a verbatim run of four consecutive words of its verified quote, at least two of them content words, after normalising case and punctuation (the whole quote if it is shorter). The reader's claim never counts. A `flag` needs a named risk finding; an `ok_with_setting` needs a named risk or mitigation finding **and**, separately, its setting named by a cited mitigation quote: every content word of the setting (three letters or more, not glue such as turn, on, off, the) appears in the quote, or the whole setting does (round 2). Words are NFC-normalised as in `finding.Verify`. A grade that fails becomes `unknown`, its setting is cleared, a `reason_without_quote` or `setting_without_quote` demotion is recorded, and its area goes into `Judgement.Thin` and the additive `Card.thin_areas` field (`card-unclear.json` shows one). The judge's request is unchanged, so the recordings replay.
+- Pins: `TestRecordedRepliesGradesRestOnVerifiedQuotes`, `TestGroundRequiresVerbatimRuns` (holds the round-1 attack case and the unbacked "Turn on Delete My Account" setting), `TestThinAreasReachTheCard`.
+- Replay, after round 1: Roblox **unclear** (grades 1/6, quotes 1/6; all six areas thin); Minecraft **unclear** (2/6, 1/5; all six thin); Khan Academy Kids **unclear** (2/6, 0/5; contact, age gating and content thin). Total 5/18, 2/16, against T3.6b's 5/18, 2/16. The Super judge paraphrases and never quotes, so with an unchanged prompt no recorded flag or setting survives. The stand-in baseline is unchanged.
+- The two Roblox open-item cases from the first version now fall to unknown: `data` (no quote names its deletion setting) and `developer_record` (its reason carries no run of the safety-protections quote).
+- **User-approved exceptions to owns:** `tools/eval/standin.go` (the stand-in judge's reasons quote the findings they cite) and the `ruleJudge` stub in `internal/pipeline/pipeline_test.go` (its reasons quote, and its setting names a quoted mitigation). `internal/pipeline/pipeline.go` gains one line copying `Judgement.Thin` onto the card, for M1.
+
+**Reader max_tokens, descoped by the user to a prepared change (step 3 of the brief):**
+- Baseline on replay, unquoted drops over raw findings: Roblox 60/219 (27.4%), Minecraft 70/310 (22.6%), Khan Academy Kids 34/176 (19.3%); total 164/705 (23.3%). Reader replies at the 4,096 cap: Roblox 1 of 36, Minecraft 2 of 45, Khan 1 of 22 (4 in all; the "fifteen" above counted more than reader replies).
+- Done: `before-yes.toml.example` `[reader] max_tokens = 8192` (was 4096). The cap is a client setting, not part of a request's options, so it is not in the replay key and the recordings still replay.
+- Not done, for the local orchestrator: the eval's live reader is pinned at `MaxTokens: 4096` in `tools/eval/live.go` (`liveSets["tokenfactory"].reader`), outside this task. To measure, change that to 8192, delete `testdata/eval/replies/<slug>/` for the three titles, and run `go run ./tools/eval -models live -live-ledger <file outside the repo>` with the keys exported (about $0.10). Then compare the unquoted rate with the baseline above. A judge prompt change for Khan would re-record the same way, `-live-only khan-academy-kids`.
+
+**Round 1 remediation:**
+
+| Finding | Fix | Pin |
+|---|---|---|
+| H1 two-word overlap is gameable | Verbatim run of 4 words (2 content) of a cited quote | `TestGroundRequiresVerbatimRuns` (attack case falls to unknown); `TestRecordedRepliesGradesRestOnVerifiedQuotes` |
+| H2 setting never checked | Setting must sit in a cited mitigation quote on its own | `TestGroundRequiresVerbatimRuns` ("Turn on Delete My Account" falls to unknown) |
+| M1 thin signal only in prose | `Card.thin_areas` (additive), from `Judgement.Thin`; `card-unclear.json` updated | `TestThinAreasReachTheCard`; `TestExamplesCoverEveryField`; `TestExamplesObeyRules` |
+| M2 max_tokens bullet open | toml.example reader cap 8192; live measurement descoped by the user, exact re-record recorded above; baseline unquoted rate measured | replay still 0 misses |
+
+
+**Round 2 remediation:**
+
+| Finding | Fix | Pin |
+|---|---|---|
+| M1 a setting is backed by any generic 3-word run | `settingIn`: every content word of the setting must appear in the cited mitigation quote, or the whole setting must; a setting with no content word names nothing | `TestSettingNeedsEveryContentWord` (the "spending PIN made in the app" case falls to unknown; "Ask to Buy" and "Parental Controls > Chat > Off" still match) |
+| L2 matcher skipped NFC | `normWords` applies `norm.NFC` as `finding.Normalize` does | `TestMatcherAppliesNFC` (fails without NFC) |
+| L1 a reason can paste a real run beside an invented claim | Accepted for this task | Open item below |
+
+Replay after round 2 is unchanged: all three titles unclear, grades 5/18, quotes 2/16, 0 misses.
+
+**Open item (L1, accepted):** a reason that pastes a verbatim run of a real quote next to an invented claim still stands; a string check cannot tell whether a claim follows from its quote. The cited finding is still verified, in its area, with a fitting stance, and its quote is shown beside the reason. The follow-up is a judge prompt that requires quoting, or a separate entailment check, with a live re-record.
 
 ---
 
