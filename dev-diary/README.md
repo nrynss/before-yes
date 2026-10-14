@@ -181,7 +181,7 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 | P0 | 9 / 9 | Done. Two exit criteria wait on later tasks: a live Nano call (T2.1b) and the config check (T4.4). CI is green. |
 | P1 | 4 / 4 | Done. The `job.Failure` exit criterion waits on T4.1. The main-checkout pins and `.env` leak check, waived at landing, ran at the P1–P2 integration and passed. |
 | P2 | 12 / 12 | Done. All six exit criteria are met. Measured model cost is $0.0309 per check. Tavily is 7–8 credits per check, from fixtures, not a live run. |
-| P3 | 12 / 12 | All tasks are done. Every standing grade now cites verified, in-area findings by id (T3.9b). All three demo titles read **no**. Roblox matches its expectation. Minecraft and Khan Academy Kids rest on over-strict flags from real but weak quotes, so judge calibration is the open quality question (see the handoff log). |
+| P3 | 12 / 13 | Every standing grade cites verified, in-area findings by id (T3.9b). All three demo titles read **no**. Roblox's flags are earned. Minecraft's and Khan Academy Kids' are not. T3.10 calibrates the judge: flag definitions, off-product pages and invented reasons. |
 | P4 | 0 / 5 | Not started. T4.1, T4.2 and T4.4 drafted. |
 | P5 | 1 / 7 | T5.1 is done: the app shell and themes. T5.2, T5.3 and T5.4 can start from it. |
 | P6 | 0 / 6 | Not started. |
@@ -192,6 +192,13 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 
 Newest first. One entry per closed task, finding, or split.
 
+- **T3.10 filed: judge calibration**, from the orchestrator's reading of T3.9b's replay. Three faults:
+  - Flags that don't meet their area's definition (Khan: comments, an email address, two odd reviews).
+  - Pages about a sibling product counted as evidence (Khan: another product's subscription and school prices).
+  - An invented reason on a real citation (Minecraft: "regulatory fines" from a marketing line).
+
+  The fix needs a live re-record, about $0.10 to $0.15. Demo titles are not re-picked until it lands.
+- **Process note:** the frontend orchestrator commits its claims ("Claim T5.1 shell", "Claim T5.2 ask") on `main` in the main checkout, which the local orchestrator also uses. Both were pushed with the orchestrator's next push. A claim belongs on the task's own branch, and an agent works in its own worktree (AGENTS.md: two agents never edit one checkout).
 - **T3.9b closed.** Sonnet implemented it, and the orchestrator validated it with no review loop.
   - **What landed:**
     - The judge's prompt asks it to cite the few findings that decide each area.

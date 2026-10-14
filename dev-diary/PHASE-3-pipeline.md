@@ -641,6 +641,38 @@ The prompt and the reply shape change, so the recorded judge replies no longer r
 
 ---
 
+### T3.10: Judge calibration ★
+```yaml
+requires:   T3.9b
+fixture-ok: no
+size:       M · frontier
+owns:       internal/pipeline/judge.go, internal/pipeline/judge_test.go, internal/pipeline/read.go, internal/pipeline/read_test.go, internal/pipeline/gather.go (the product-identity filter only), tools/eval/live.go, testdata/eval/replies/, docs/budget.md (re-measured figures only)
+status:     not-started
+```
+After T3.9b every standing grade cites verified, in-area findings, but all three demo titles read **no**. Roblox's flags are earned. Minecraft's and Khan Academy Kids' are not: the judge flags whatever it can cite, with no proportion. Three faults remain:
+
+1. **No proportion.** Khan's contact flag rests on "users can leave comments and ask questions". Its data flag rests on collecting an email address. Its content flag rests on two odd reviews. None meets its area's flag definition in `internal/checklist`.
+   - Give the judge each area's own flag and ok definitions.
+   - A flag must cite a finding that meets the flag definition itself, not one that merely touches the area.
+   - The brief's weighting rule stays: one credible first-hand report that a filter or age gate failed for a young child can decide an area. That report must be about this title and this age.
+2. **Sibling products.** Khan's money flag cites a $50.99 subscription and a $5-per-student school price, which most likely come from other Khan Academy products, not the free Kids app.
+   - Before reading, drop documents whose subject is a different product from the same developer. Use the App Store name, the seller and the official host from T3.1.
+   - Record the dropped documents as `off_product` drops, so the card's small print can count them.
+3. **Invented reasons (T3.9's L1).** Minecraft's developer_record flag cites a marketing line ("Explore how we work, what we value…") but claims "regulatory fines".
+   - Add a cheap entailment check, for example one Nano call per standing flag or setting: "does this quote support this claim?"
+   - A grade whose reason its quotes do not support falls to `unknown`, and the area is `thin`.
+
+Re-record live on Token Factory, about $0.10 to $0.15 with the entailment calls. This needs `.env`, so it runs on the main machine. Then update `docs/budget.md`.
+
+**Done when:**
+- The handoff log has a per-area table for each demo title giving the grade, its cited quote, and a one-line human check: earned or not. Every standing flag is earned.
+- Khan's money area no longer cites another product's prices, and Minecraft's invented fines claim no longer stands.
+- Roblox keeps its earned flags.
+- Tests pin the definition rule, the off-product drop, and the entailment fall-to-unknown, on the re-recorded replies.
+- The demo titles' verdicts are reported to the user, who decides any re-pick.
+
+---
+
 ## Exit Criteria
 
 - [x] Review 312 decides the card end to end, by test. (Review 355, the captures' equivalent: `TestReview355DecidesTheCard`.)
