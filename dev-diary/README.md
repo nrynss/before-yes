@@ -182,7 +182,7 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 |---|---|---|
 | P0 | 9 / 9 | Done. Two exit criteria wait on later tasks: a live Nano call (T2.1b) and the config check (T4.4). CI is green. |
 | P1 | 0 / 4 | Not started. T1.1 and T1.2 drafted. |
-| P2 | 1 / 8 | T2.3 done. T2.1, T2.2, T2.4 in review. The live `b` tasks and T2.5 not started. |
+| P2 | 2 / 9 | T2.1, T2.3 done. T2.2, T2.4 in review. T2.1a opened from the T2.1 review (deep-copy `Extra`, before T3.3). Live `b` tasks and T2.5 not started. |
 | P3 | 0 / 8 | Not started. T3.1–T3.4 drafted. |
 | P4 | 0 / 5 | Not started. T4.1, T4.2 and T4.4 drafted. |
 | P5 | 0 / 7 | Not started. |
@@ -194,6 +194,12 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 
 Newest first. One entry per closed task, finding, or split.
 
+- **T2.1 closed; T2.1a split out.** Review: [t2.1-round1.md](adversarial-review/t2.1-round1.md), APPROVE, C 0 · H 0 · M 0 · L 3.
+  - **Move:** `scratch/internal/model/{model.go,model_test.go}` moved from the main checkout into worktree `task-t2.1-model` for T2.1; `scratch/internal/model/` is gone. The draft was reworked, not carried over: integer-nanodollar pricing, an unmeasured reply carries the client's estimate, 17 test functions replace the two draft ones.
+  - **Behaviour T2.1b and T3.2/T3.3 must not re-derive:** price from the reported `usage`; absent, null, empty or all-zero usage is unmeasured (a paid reply must never book at $0); `extra` is merged per request and `Options.Extra` overrides it without mutating settings; a 4xx other than 429 is never retried; an undecodable 200 is never retried; OpenRouter's `error` member inside a 200 is a retryable 502 on the smaller two-attempt 5xx budget; 429 draws four attempts and honours `Retry-After` (hints clamped to 60s); the key is re-read on every attempt.
+  - **Split, recorded:** review L1 — nested `Extra` values are shared between caller and client. The reviewer deferred it to "before T3.3's conflict pass", so it is opened as **T2.1a** (XS, light) rather than left implicit; it also carries L3's code-comment note.
+  - **Forward notes for T2.1b:** the reviewer's L2 (a `Retry-After` above 60s is clamped and the attempt retried) and L3 (empty-`choices` 200 costs a second billed call) are to be measured and recorded there; the pacer is named per `provider/model`, which may not match an account-wide host cap; the HTTP timeout is a fixed 3 minutes against 16k-token thinking calls.
+  - **Consumer pin:** `*model.Client` satisfies the scratch `Chatter` interface verbatim, and the client's estimate arithmetic matches the draft pipeline's.
 - **T2.3 closed.** Review: [t2.3-round1.md](adversarial-review/t2.3-round1.md), APPROVE, C 0 · H 0 · M 0 · L 0.
   - **Move:** `scratch/internal/appstore/appstore.go` moved from the main checkout into worktree `task-t2.3-appstore` for T2.3. `scratch/internal/appstore/` is gone. New `internal/appstore/appstore_test.go`.
   - **API:** `New`, `Find`, `Reviews`, `FeedURL`, `Review.Text`; `DefaultBaseURL`, `MaxPages` (10), `PageSize` (50). Reviews carry a running `Index` from 1 across pages, so a card can say "review 312".

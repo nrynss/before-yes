@@ -21,7 +21,7 @@ requires:   T0.1
 fixture-ok: yes
 size:       M · mid
 owns:       internal/model/model.go, internal/model/model_test.go
-status:     in-review
+status:     done
 ```
 One client for the OpenAI-style chat API that Token Factory, OpenRouter and NVIDIA's API all speak. Base URL, model name, prices per million tokens, max tokens, a per-minute pace, and an `extra` map merged into every request body all come from config. Moving a role from a free host to Token Factory is two settings.
 
@@ -33,6 +33,18 @@ One client for the OpenAI-style chat API that Token Factory, OpenRouter and NVID
 - The key is read on every call, so a rotated key takes effect without a restart.
 
 **Done when:** `httptest` tests cover pricing from usage, the merge of `extra`, retry on 429, no retry on 400, and OpenRouter's error-in-200.
+
+---
+
+### T2.1a: Deep-copy `Extra` before T3.3
+```yaml
+requires:   T2.1
+fixture-ok: yes
+size:       XS · light
+owns:       internal/model/model.go, internal/model/model_test.go
+status:     not-started
+```
+From the T2.1 round-1 review, L1: `Settings()` copies `Extra` one level and `New` stores the caller's map as given, so nested values — the thinking switch object the judge will use — are shared between a caller and every later request body. Clone nested maps in `New` and `Settings()` so no caller's mutation can reach a later request, and pin it with a test. Also carry L3's note from the same review: record in the code comment that an empty-`choices` 200 draws the smaller 5xx budget and may be a second billed call. This must land before T3.3's conflict pass.
 
 ---
 
