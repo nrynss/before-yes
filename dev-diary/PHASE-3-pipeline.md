@@ -78,6 +78,7 @@ status:     in-review
 - `split` cuts always land on rune boundaries, including the overlap start; a test exercises this with multibyte text that has no spaces.
 - The "recorded Nano replies" here are hand-written replies inside read_test.go, served by a fake model keyed by segment ref. Real recordings belong to T3.6b (testdata/eval/replies/), which needs keys. Against the Roblox fixtures, review 355 (the fixtures' review-312 equivalent) survives as a contact risk. Invented quotes, a ref from another chunk and a ref no document has are all dropped as unquoted; bad area, bad stance, short quote and duplicate drops are counted.
 - `Chatter` (the model surface) and `chat()` live in read.go and are reused by the judge.
+- **Stand-in replies, accepted by the user:** the recorded replies in read_test.go are hand-written stand-ins, not real model output. T3.6b must replace them with real recordings from `testdata/eval/replies/`.
 
 ---
 
@@ -106,6 +107,7 @@ Every grade then goes through `checklist.Enforce`, and the verdict comes from `c
 - The prompt lists unread source kinds and says their silence is not evidence, so the data area is not graded `ok` on a policy that was never read.
 - `parseGrades` tries every opening brace, so it copes with reasoning text and code fences in front of the answer.
 - The recorded Super replies are hand-written in judge_test.go, against real verified Roblox finding ids. The contact flag rests on review 355. The conflict pass runs only for contact. A money flag citing a made-up id is demoted to unknown.
+- **Stand-in replies, accepted by the user:** the recorded replies in judge_test.go are hand-written stand-ins, not real model output. T3.6b must replace them with real recordings from `testdata/eval/replies/`.
 
 ---
 
@@ -135,6 +137,7 @@ The card cites the findings its grades rest on, plus every risk finding, so a pa
 - Card ids are `c_` followed by 22 base-62 characters from crypto/rand.
 - `Kind` is `ios` when an App Store hit matched, and empty otherwise; console and YouTube are later tasks.
 - An end-to-end test runs the Roblox fixtures with recorded reader replies and a rule-based judge stand-in. Review 355 (the captures' review-312 equivalent) decides "no"; without it the card is "unclear". A second age makes no Tavily or reader call and one judge call. The card's model cost equals `Spent(PoolModel)`, and its credits equal `Spent(PoolTavily)`.
+- **Stand-in replies, accepted by the user:** the recorded replies in pipeline_test.go are hand-written stand-ins, not real model output. T3.6b must replace them with real recordings from `testdata/eval/replies/`.
 
 ---
 
