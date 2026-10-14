@@ -89,7 +89,7 @@ requires:   T2.2, T0.3
 fixture-ok: no
 size:       XS · mid
 owns:       internal/tavily/live_test.go
-status:     not-started
+status:     claimed:impl-t2.2b
 ```
 One search and one extract against the live API. Record whether `usage.credits` comes back, and whether `include_raw_content` on search costs extra.
 
@@ -121,7 +121,7 @@ requires:   T2.3
 fixture-ok: no
 size:       XS · light
 owns:       internal/appstore/live_test.go
-status:     not-started
+status:     claimed:impl-t2.3b
 ```
 Search and read all pages for one title in `us` and one other storefront. Record how many reviews each storefront serves. This answers the brief's open question about which countries to read.
 
