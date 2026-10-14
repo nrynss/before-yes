@@ -100,7 +100,7 @@ P0 and P1 are the serial bottleneck. Once the contracts freeze, four tracks run 
 
 | Track | Phase | Network required? | First task | Notes |
 |---|---|---|---|---|
-| **A: Clients** | P2 | `b` tasks only | T2.1 | Model, Tavily, App Store clients and the spend meter. |
+| **A: Clients** | P2 | 6 / 9 | T2.1, T2.1a, T2.2, T2.2b, T2.3 and T2.4 are done. T2.1b is in review. T2.3b got REMEDIATE: Apple's review feed is returning no reviews (H1). T2.5 is not started. |
 | **B: Pipeline** | P3 | `b` tasks only | T3.1 | Gather, read, judge, alternatives. The product's depth lives here. |
 | **C: Server** | P4 | No | T4.1 | Jobs, progress stream, card store, gate. |
 | **D: Frontend** | P5 | No | T5.1 | Chaaya app against the example payloads from T1.3. |
@@ -194,6 +194,17 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 
 Newest first. One entry per closed task, finding, or split.
 
+- **T2.2b closed.** Reviews: [t2.2b-round1.md](adversarial-review/t2.2b-round1.md). The Sonnet reviewer gave REMEDIATE: M 2, L 2. All four findings were documentation or non-load-bearing, so the orchestrator closed them on the branch and recorded each in the review file.
+  - **Measured:** `usage.credits` came back on 3 of 3 calls. Raw content on search costs 0 extra credits but adds about 110 KB for 5 hits. Tavily sends no rate-limit headers.
+  - **The rate limit is not measured.** The documented 100 a minute is unverified, and the client paces at 90. It stays open until the deployed host shows a 429.
+  - The transcript is at [`live/t2.2b-transcript.txt`](live/t2.2b-transcript.txt). Spend: 4 Tavily credits (2 for the probe, 2 for the reviewer's re-run).
+  - OpenCode's `task-t2.2b-tavily-live` branch and worktree are now superseded by `main`. They are OpenCode's to remove.
+- **Risk: Apple's review feed is returning no reviews.** Found by the T2.3b reviewer and confirmed independently by the orchestrator.
+  - Every request returns HTTP 200 with a feed skeleton and no `entry`: all four demo titles plus Facebook (284882215) as a control, in both `us` and `gb`, and in the JSON, XML and no-sort URL variants.
+  - The same URL returned 50 reviews on 13 Oct, and the T0.4 fixtures hold 500 per title.
+  - Public reports call this feed intermittently empty. It may be an outage, a retirement, or throttling of this host after T0.4's 40-page capture.
+  - **T2.3b is not landed.** Its review stands at REMEDIATE (H1, M3, L1), and its branch `review-t2.3b` is kept.
+  - Offline work is unaffected, because the fixtures hold real reviews. A live check depends on the feed coming back. This is the user's decision.
 - **Keel issues filed; scratch checklist deleted.**
   - The two Keel gaps from P2 are filed as [nrynss/keel#98](https://github.com/nrynss/keel/issues/98) (`throttle.Note` reports `Attempts` for an error that spent the `TransientAttempts` budget) and [nrynss/keel#99](https://github.com/nrynss/keel/issues/99) (a durable `sqlitestore` budget cannot back a `cost.Meter`).
   - Both are already worked around here. The model and Tavily clients annotate transient exhaustion themselves, and `spend` drives the store directly. Nothing waits on either.
