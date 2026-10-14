@@ -42,7 +42,7 @@ requires:   T2.1
 fixture-ok: yes
 size:       XS · light
 owns:       internal/model/model.go, internal/model/model_test.go
-status:     not-started
+status:     claimed:impl-t2.1a
 ```
 From the T2.1 round-1 review, L1: `Settings()` copies `Extra` one level and `New` stores the caller's map as given, so nested values — the thinking switch object the judge will use — are shared between a caller and every later request body. Clone nested maps in `New` and `Settings()` so no caller's mutation can reach a later request, and pin it with a test. Also carry L3's note from the same review: record in the code comment that an empty-`choices` 200 draws the smaller 5xx budget and may be a second billed call. This must land before T3.3's conflict pass.
 
