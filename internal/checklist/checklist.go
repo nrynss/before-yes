@@ -9,12 +9,13 @@ package checklist
 import (
 	"errors"
 	"fmt"
+	"strings"
 )
 
 // Version names the checklist and rules a card was judged under. Bump it when
 // an area's wording or a rule in Decide or Enforce changes, because cached
 // cards record the version they were judged under.
-const Version = "v1"
+const Version = "v2"
 
 // Area is one checklist area id. The ids are stable wire values.
 type Area string
@@ -168,7 +169,7 @@ func validate(grades []Grade) error {
 		if !g.Level.Valid() {
 			return fmt.Errorf("%w: area %q has unknown level %q", ErrGrades, g.Area, g.Level)
 		}
-		if g.Level == OKWithSetting && g.Setting == "" {
+		if g.Level == OKWithSetting && strings.TrimSpace(g.Setting) == "" {
 			return fmt.Errorf("%w: area %q is ok_with_setting with no setting", ErrGrades, g.Area)
 		}
 	}
@@ -199,6 +200,7 @@ const (
 	RuleFlagNoRisk     = "flag_without_risk"
 	RuleSettingNoName  = "setting_without_name"
 	RuleSettingNoProof = "setting_without_finding"
+	RuleOKNoProof      = "ok_without_finding" // contact or content ok with no verified finding
 	RuleSkipped        = "skipped_area"
 	RuleDuplicate      = "duplicate_grade"
 	RuleBadGrade       = "invalid_grade" // unknown area or level from the judge
@@ -210,7 +212,12 @@ const (
 //
 //   - a cited finding id that does not exist, or belongs to another area, is dropped;
 //   - a flag left with no verified risk finding becomes unknown;
-//   - an ok_with_setting with no setting named, or no remaining finding, becomes unknown;
+//   - an ok_with_setting with no setting named (blank counts as none), or no
+//     remaining finding, becomes unknown;
+//   - contact or content graded ok with no remaining finding becomes unknown,
+//     so silence on the two areas a parent most needs answered never reads as
+//     ok (and so never yields yes; Decide makes it unclear);
+//   - a finding id cited twice in one grade is kept once;
 //   - an area the judge skipped is added as unknown;
 //   - a grade for an unknown area, or with an unknown level, is discarded
 //     (its area then counts as skipped); a second grade for an area is discarded.
@@ -229,9 +236,15 @@ func Enforce(grades []Grade, evidence map[string]Cited) ([]Grade, []Demotion) {
 			continue
 		}
 		g := in
+		g.Setting = strings.TrimSpace(in.Setting)
 		g.Findings = []string{}
 		risk := false
+		cited := map[string]bool{}
 		for _, id := range in.Findings {
+			if cited[id] {
+				continue
+			}
+			cited[id] = true
 			c, ok := evidence[id]
 			switch {
 			case !ok:
@@ -248,6 +261,11 @@ func Enforce(grades []Grade, evidence map[string]Cited) ([]Grade, []Demotion) {
 		case Flag:
 			if !risk {
 				dem = append(dem, Demotion{Area: g.Area, Rule: RuleFlagNoRisk})
+				g.Level = Unknown
+			}
+		case OK:
+			if (g.Area == Contact || g.Area == Content) && len(g.Findings) == 0 {
+				dem = append(dem, Demotion{Area: g.Area, Rule: RuleOKNoProof})
 				g.Level = Unknown
 			}
 		case OKWithSetting:
