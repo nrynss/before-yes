@@ -182,7 +182,7 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 |---|---|---|
 | P0 | 9 / 9 | Done. Two exit criteria wait on later tasks: a live Nano call (T2.1b) and the config check (T4.4). CI is green. |
 | P1 | 0 / 4 | Not started. T1.1 and T1.2 drafted. |
-| P2 | 4 / 9 | T2.1, T2.2, T2.3, T2.4 done. T2.1a in review. T2.1b live probe running. T2.2b, T2.3b and T2.5 not started. |
+| P2 | 5 / 9 | T2.1, T2.1a, T2.2, T2.3, T2.4 done. T2.1b live probe running. T2.2b, T2.3b and T2.5 not started. |
 | P3 | 0 / 8 | Not started. T3.1–T3.4 drafted. |
 | P4 | 0 / 5 | Not started. T4.1, T4.2 and T4.4 drafted. |
 | P5 | 0 / 7 | Not started. |
@@ -194,6 +194,11 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 
 Newest first. One entry per closed task, finding, or split.
 
+- **T2.1a closed.** Review: [t2.1a-round1.md](adversarial-review/t2.1a-round1.md), APPROVE, C 0 · H 0 · M 0 · L 2.
+  - **The fix:** `New` and `Settings()` now deep-copy `Extra` through every nested `map[string]any` level, so a caller mutating the thinking-switch object after construction (or after reading `Settings()`) can no longer change a later request body. The T2.1 round-1 L1 hazard is closed on both paths; `Options.Extra` was already safe and stays marshalled per call. Public API unchanged.
+  - **Orchestrator note:** the review's L1 (the copy comment claimed more than the code does) was reworded directly in `New`, `Settings` and `cloneExtra` on the branch, comment-only, and recorded in the review file.
+  - **Recorded, no task:** review L2 — `cloneExtra` has no cycle check, so a cyclic `Extra` map dies at `New` with a stack overflow instead of failing cleanly at `Chat`. Unreachable from TOML and a caller bug; a depth bound if the helper is ever lifted.
+  - **Also carried from T2.1's review:** the empty-`choices` 200 comment now says it draws the smaller two-attempt budget and that its one retry may be a second billed call.
 - **T2.2 closed.** Reviews: [t2.2-round1.md](adversarial-review/t2.2-round1.md) (REMEDIATE, one M and one L) and [t2.2-round2.md](adversarial-review/t2.2-round2.md) (APPROVE, zero residue).
   - **Move:** `scratch/internal/tavily/tavily.go` moved from the main checkout into worktree `task-t2.2-tavily` for T2.2; `scratch/internal/tavily/` is gone. New `internal/tavily/tavily_test.go`.
   - **API:** `New(baseURL, key func() (string, error))`, `Search(ctx, tavily.Search) ([]Result, Credits, error)`, `Extract(ctx, []string) ([]Page, Credits, error)`, plus `ExtractWithFailures` naming which URLs Tavily could not read and why; `Credits{Used, Reported}` tells the meter whether the number is Tavily's or the price list's. Search carries depth, topic, max results, include/exclude domains and raw content; empty fields are omitted.
