@@ -101,7 +101,7 @@ requires:   T1.1
 fixture-ok: yes
 size:       M · frontier
 owns:       internal/finding/
-status:     in-review
+status:     done
 ```
 A finding is one claim: `area`, `claim`, `stance` (`risk`, `mitigation`, `neutral`), a verbatim `quote`, and a `source` (url, kind, title, review index, fetched at). It gets a stable id: a hash of source URL, area and normalized quote, so the same quote keeps its id across runs and duplicates collapse.
 
