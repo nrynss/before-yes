@@ -323,8 +323,8 @@ func TestListPageEntries(t *testing.T) {
 		"4. This entry reads like a long sentence about many different things at once\n" +
 		"5. Animal Crossing: New Horizons (Switch)\n" +
 		"6. Sixth Pick\n"
-	got := listNames(list)
-	if strings.Join(got, "|") != "Calm Builder|Roblox|Quiet Garden" {
+	got := listNames(list, func(n string) bool { return sameTitle(n, "Roblox") })
+	if strings.Join(got, "|") != "Calm Builder|Quiet Garden|Animal Crossing: New Horizons" {
 		t.Errorf("listNames = %q", got)
 	}
 	e, s, _, card := altE2E(t)
@@ -340,10 +340,40 @@ func TestListPageEntries(t *testing.T) {
 			t.Errorf("reason %q", a.Reason)
 		}
 	}
-	if strings.Join(names, ",") != "Calm Builder,Quiet Garden" {
+	if strings.Join(names, ",") != "Calm Builder,Quiet Garden,Animal Crossing: New Horizons" {
 		t.Errorf("candidates %v", names)
 	}
 	if s.altCalls != 1 {
 		t.Errorf("searches %d, want 1 (the list is read from the search's page text)", s.altCalls)
+	}
+}
+
+// The round-2 reviewer's pages: section headings, advice steps and the title
+// itself take no slot, and markdown is stripped from names.
+func TestListPageRejectsHeadingsAndSteps(t *testing.T) {
+	notRoblox := func(n string) bool { return sameTitle(n, "Roblox") }
+	cases := []struct{ page, want string }{
+		{"## Why parents worry about Roblox\n## Our top picks\n1. **Minecraft**\n2. [Toca Life World](https://example.com/toca)\n3. Lego Builder\n## Conclusion\n",
+			"Minecraft|Toca Life World|Lego Builder"},
+		{"## How we chose\n## 1. Minecraft\n## 2. Toca\n", "Minecraft|Toca"},
+		{"1. Turn on parental controls\n2. Set a spending limit\n3. Talk to your kid\n", ""},
+		{"## FAQ\n1. Is Minecraft safe?\n## Top Picks for 2026\n## Best overall\n", ""},
+		{"1. Roblox\n2. *Minecraft*.\n3. Minecraft\n4. `Toca Boca World`\n## **Lego Builder**\n5. Sky\n", "Minecraft|Toca Boca World|Lego Builder"},
+	}
+	for _, c := range cases {
+		if got := strings.Join(listNames(c.page, notRoblox), "|"); got != c.want {
+			t.Errorf("listNames(%q) = %q, want %q", c.page, got, c.want)
+		}
+	}
+}
+
+func TestStripMarkdown(t *testing.T) {
+	for in, want := range map[string]string{
+		"**Minecraft**": "Minecraft", "[Toca Life World](https://x.test/a)": "Toca Life World",
+		"*Lego Builder*.": "Lego Builder", "`PBS Kids`": "PBS Kids", "## Sky:": "Sky", "__Calm__!": "Calm",
+	} {
+		if got := stripMarkdown(in); got != want {
+			t.Errorf("stripMarkdown(%q) = %q, want %q", in, got, want)
+		}
 	}
 }

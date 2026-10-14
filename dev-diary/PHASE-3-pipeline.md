@@ -238,6 +238,14 @@ Alternatives multiply cost. They are bounded by count, run after the main card i
 | L1: names cut at ": "; U+200E kept | `candidateName` keeps ": ", strips only known site suffixes (" - Apps on Google Play", " on the App Store", " on Steam", " \| Common Sense Media", review tails) and every format character | `TestCandidateName` |
 | L2: list pages gave no names | `listNames` reads numbered entries and headings from the one search's page text (`IncludeRaw`), at most three, short names only, the title itself skipped; no extra call is made | `TestListPageEntries` (a stand-in page; no capture covers a live list page) |
 
+**Round-2 remediation (T3.5).**
+
+| Finding | Fix | Test |
+|---|---|---|
+| M1: every heading and short numbered line became a candidate, so section headings and advice steps used the slots | Only ranked entries ("1. X", "## 1. X") and headings that are only a link or bold text are read. Questions, section and advice openers (why/how/our/top/best/conclusion/FAQ, "Turn on…", "Set…") and names over six words are rejected | `TestListPageRejectsHeadingsAndSteps` (the reviewer's pages: Toca Life World and Lego Builder are reached) |
+| L1: markdown kept in names | `stripMarkdown` removes links, bold, italics, code, heading marks and trailing punctuation | `TestStripMarkdown` |
+| L2: the 3-slot bound applied before the self and duplicate skips | `listNames` drops the title, names already taken and repeats on the page before counting | `TestListPageEntries`, `TestListPageRejectsHeadingsAndSteps` |
+
 ---
 
 ### T3.6: Quality pass on the three titles ★

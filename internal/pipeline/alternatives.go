@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"regexp"
+	"sort"
 	"strings"
 	"unicode"
 
@@ -85,9 +86,18 @@ var (
 	// are cut; a ": " is kept, so "Animal Crossing: New Horizons" stays
 	// whole.
 	siteSuffix = regexp.MustCompile(`(?i)(\s+[|–—-]\s+.*|\s+on the app store|\s+on steam|\s+(app|game|tv|website|youtube)?\s*review)$`)
-	// listEntry is a numbered entry or a heading in a list page's text:
-	// "1. Minecraft", "2) Toca Life World", "## 3. PBS Kids Games".
-	listEntry = regexp.MustCompile(`(?m)^\s*(?:#{1,4}\s*)?(?:\d{1,2}[.)]\s+)(.+?)\s*$|^#{2,4}\s+(.+?)\s*$`)
+	// rankedEntry is a list page's numbered entry, bare or as a heading:
+	// "1. Minecraft", "2) **Toca Life World**", "## 3. PBS Kids Games".
+	rankedEntry = regexp.MustCompile(`(?m)^[ \t]*(?:#{1,4}[ \t]*)?\d{1,2}[.)][ \t]+(.+?)[ \t]*$`)
+	// markedHeading is an unnumbered heading that is only a link or bold
+	// text, the way list pages mark an entry: "## [Lego Builder](url)".
+	markedHeading = regexp.MustCompile(`(?m)^[ \t]*#{2,4}[ \t]+(\*\*[^*]+\*\*|\[[^\]]+\]\([^)]*\))[ \t]*$`)
+	// notAName is the start of a section heading or an advice step.
+	notAName = regexp.MustCompile(`(?i)^(why|how|what|when|where|who|which|our|top|best|the best|conclusion|faq|faqs|final|summary|verdict|bottom line|related|more|other|frequently|tips?|step|methodology|turn|set|talk|make|use|check|keep|limit|block|enable|disable|review|read|try|consider|avoid|create|choose|pick|ask|watch|learn|get|go|find|look|start|stop|don't|do|is|are|can|should|will)\b`)
+	// mdLink, mdEmph and mdCode are markdown around an entry's name.
+	mdLink = regexp.MustCompile(`\[([^\]]*)\]\([^)]*\)`)
+	mdEmph = regexp.MustCompile(`\*{1,2}([^*]+)\*{1,2}|__([^_]+)__`)
+	mdCode = regexp.MustCompile("`([^`]*)`")
 )
 
 // maxListEntries bounds how many names one list page can add.
@@ -123,23 +133,49 @@ func candidateName(hitTitle string) string {
 	return name
 }
 
-// listNames are the titles a list page names in its numbered entries or
-// headings, up to maxListEntries, each cleaned like a hit title and kept
-// short: an entry that reads like a sentence is not a name.
-func listNames(text string) []string {
-	var out []string
-	for _, m := range listEntry.FindAllStringSubmatch(text, -1) {
-		entry := m[1]
-		if entry == "" {
-			entry = m[2]
+// stripMarkdown takes the name out of an entry's markdown: links, bold,
+// italics, code, leading heading marks and trailing punctuation.
+func stripMarkdown(s string) string {
+	s = mdLink.ReplaceAllString(s, "$1")
+	s = mdEmph.ReplaceAllString(s, "$1$2")
+	s = mdCode.ReplaceAllString(s, "$1")
+	s = strings.TrimLeft(strings.TrimSpace(s), "# ")
+	return strings.TrimRight(strings.TrimSpace(s), ".,;:!*_ ")
+}
+
+// listNames are the titles a list page names, in page order: its ranked
+// entries ("1. Minecraft") and headings that are only a link or bold text.
+// Section headings, questions, advice steps and anything over six words are
+// not names. Repeats on the page and names skip rejects (the title itself,
+// names already taken) are dropped before the bound is applied, so they
+// use no slot; at most maxListEntries are returned.
+func listNames(text string, skip func(string) bool) []string {
+	type at struct {
+		pos  int
+		text string
+	}
+	var entries []at
+	for _, re := range []*regexp.Regexp{rankedEntry, markedHeading} {
+		for _, m := range re.FindAllStringSubmatchIndex(text, -1) {
+			entries = append(entries, at{m[0], text[m[2]:m[3]]})
 		}
+	}
+	sort.SliceStable(entries, func(i, j int) bool { return entries[i].pos < entries[j].pos })
+	var out []string
+	own := map[string]bool{}
+	for _, e := range entries {
+		entry := stripMarkdown(e.text)
 		entry, _, _ = strings.Cut(entry, " - ")
 		entry, _, _ = strings.Cut(entry, " – ")
 		entry, _, _ = strings.Cut(entry, " (")
-		name := candidateName(entry)
-		if name == "" || len(strings.Fields(name)) > 6 {
+		name := stripMarkdown(candidateName(entry))
+		if name == "" || strings.ContainsAny(name, "?") || notAName.MatchString(name) || len(strings.Fields(name)) > 6 {
 			continue
 		}
+		if own[appName(name)] || (skip != nil && skip(name)) {
+			continue
+		}
+		own[appName(name)] = true
 		out = append(out, name)
 		if len(out) == maxListEntries {
 			break
@@ -178,11 +214,15 @@ func (p *Pipeline) FindAlternatives(ctx context.Context, card Card, ref string) 
 	}
 	seen := map[string]bool{}
 	var out []Alternative
-	add := func(name, reason string) bool {
+	taken := func(name string) bool {
 		key := appName(name)
-		if name == "" || key == "" || seen[key] || sameTitle(name, card.Title) {
+		return name == "" || key == "" || seen[key] || sameTitle(name, card.Title)
+	}
+	add := func(name, reason string) bool {
+		if taken(name) {
 			return false
 		}
+		key := appName(name)
 		seen[key] = true
 		out = append(out, Alternative{Title: name, Reason: reason, Status: AltPending})
 		return len(out) == MaxAlternatives
@@ -203,7 +243,7 @@ func (p *Pipeline) FindAlternatives(ctx context.Context, card Card, ref string) 
 			text = h.Content
 		}
 		full := false
-		for _, name := range listNames(text) {
+		for _, name := range listNames(text, taken) {
 			if full = add(name, "Listed by "+site+": "+cleanName(h.Title)); full {
 				break
 			}
