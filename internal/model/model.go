@@ -11,7 +11,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"maps"
 	"math"
 	"net/http"
 	"strconv"
@@ -47,7 +46,8 @@ type Settings struct {
 	PerMinute int `toml:"per_minute"`
 	// Extra is merged into every request body on top of the fields the
 	// client sets. It carries the provider-specific switch for thinking,
-	// which differs between hosts.
+	// which differs between hosts. New and Settings copy it, nested maps
+	// included.
 	Extra map[string]any `toml:"extra"`
 }
 
@@ -62,6 +62,9 @@ type Client struct {
 
 // New returns a client for s. key is read on every call, so a rotated secret
 // takes effect without a restart. A nil key reads as no key at all.
+//
+// Extra is copied, nested maps included, so a caller that keeps the map it
+// passed in cannot change a later request through it.
 func New(s Settings, key func() (string, error)) (*Client, error) {
 	if s.BaseURL == "" || s.Model == "" {
 		return nil, errors.New("model: base_url and model are required")
@@ -69,6 +72,7 @@ func New(s Settings, key func() (string, error)) (*Client, error) {
 	if s.MaxTokens <= 0 {
 		s.MaxTokens = DefaultMaxTokens
 	}
+	s.Extra = cloneExtra(s.Extra)
 	if key == nil {
 		key = func() (string, error) { return "", nil }
 	}
@@ -91,14 +95,35 @@ func New(s Settings, key func() (string, error)) (*Client, error) {
 	}, nil
 }
 
-// Settings returns the role's settings. The Extra map is copied one level, so
-// adding or replacing a top-level key in the result cannot change the client.
+// Settings returns the role's settings. Extra is copied, nested maps
+// included, so nothing a caller does to the result can change the client.
 func (c *Client) Settings() Settings {
 	s := c.s
-	if s.Extra != nil {
-		s.Extra = maps.Clone(s.Extra)
-	}
+	s.Extra = cloneExtra(s.Extra)
 	return s
+}
+
+// cloneExtra copies m so a caller and the client cannot reach each other
+// through it. Nested map[string]any values — the thinking-switch objects
+// hosts take — are copied all the way down. Values of any other type,
+// slices included, are copied as they are: the client keeps no alias to a
+// map, but a caller should not mutate a slice it left in Extra.
+func cloneExtra(m map[string]any) map[string]any {
+	if m == nil {
+		return nil
+	}
+	out := make(map[string]any, len(m))
+	for k, v := range m {
+		out[k] = cloneExtraValue(v)
+	}
+	return out
+}
+
+func cloneExtraValue(v any) any {
+	if nested, ok := v.(map[string]any); ok {
+		return cloneExtra(nested)
+	}
+	return v
 }
 
 // Message is one chat turn.
@@ -324,6 +349,14 @@ func (c *Client) post(ctx context.Context, payload []byte) (Reply, error) {
 		return Reply{}, &Error{Status: http.StatusBadGateway, Body: snippet([]byte(msg))}
 	}
 	if len(out.Choices) == 0 {
+		// Unlike an undecodable 200, this body parsed, so the task's
+		// rule against retrying a billed 200 does not cover it: it is a
+		// synthetic 502 on the smaller two-attempt host-fault budget.
+		// That budget still retries once, and the retry may be a second
+		// billed call, so the task's own reason for the rule ("That 200
+		// was billed") applies here too. Bounded to one extra call; if a
+		// host is seen answering this way (T2.1b), empty choices should
+		// be permanent.
 		return Reply{}, &Error{Status: http.StatusBadGateway, Body: "no choices in reply"}
 	}
 	r := Reply{Text: out.Choices[0].Message.Content}

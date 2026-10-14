@@ -190,6 +190,104 @@ func TestExtraIsMergedAndPerCallOverrideLeavesSettingsUntouched(t *testing.T) {
 	}
 }
 
+func TestExtraNestedMapsAreNotSharedWithCallers(t *testing.T) {
+	var bodies []map[string]any
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		var b map[string]any
+		if err := json.NewDecoder(r.Body).Decode(&b); err != nil {
+			t.Errorf("decode request: %v", err)
+		}
+		bodies = append(bodies, b)
+		io.WriteString(w, `{"choices":[{"message":{"content":"ok"}}]}`)
+	}))
+	defer srv.Close()
+
+	// The caller keeps the map it hands to New, and the client must not
+	// see later changes to it: a top-level key, the thinking switch, and
+	// a map nested one level below the switch.
+	extra := map[string]any{
+		"chat_template_kwargs": map[string]any{"enable_thinking": false},
+		"nested":               map[string]any{"deeper": map[string]any{"level": 1}},
+	}
+	c, err := New(Settings{Provider: "tokenfactory", BaseURL: srv.URL, Model: "nano", Extra: extra}, keyFunc("k"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	msgs := []Message{{Role: "user", Content: "hello"}}
+	chat := func() {
+		t.Helper()
+		if _, err := c.Chat(context.Background(), msgs, Options{}); err != nil {
+			t.Fatal(err)
+		}
+	}
+	chat()
+
+	extra["top_level_added"] = true
+	extra["chat_template_kwargs"].(map[string]any)["enable_thinking"] = true
+	extra["nested"].(map[string]any)["deeper"].(map[string]any)["level"] = 999
+	chat()
+
+	// The same for the map Settings returns.
+	s := c.Settings()
+	s.Extra["settings_added"] = true
+	s.Extra["chat_template_kwargs"].(map[string]any)["enable_thinking"] = true
+	s.Extra["nested"].(map[string]any)["deeper"].(map[string]any)["level"] = 999
+	chat()
+
+	if len(bodies) != 3 {
+		t.Fatalf("sent %d bodies, want 3", len(bodies))
+	}
+	for i, b := range bodies {
+		if got := thinkingSwitch(t, b); got {
+			t.Errorf("body %d: thinking is on, so a caller's mutation reached the request", i)
+		}
+		nested, ok := b["nested"].(map[string]any)
+		if !ok {
+			t.Fatalf("body %d: no nested map in %v", i, b)
+		}
+		deeper, ok := nested["deeper"].(map[string]any)
+		if !ok {
+			t.Fatalf("body %d: no nested.deeper in %v", i, nested)
+		}
+		if got := deeper["level"]; got != float64(1) {
+			t.Errorf("body %d: nested.deeper.level %v, want 1", i, got)
+		}
+		if _, ok := b["top_level_added"]; ok {
+			t.Errorf("body %d carries a key added to the map given to New", i)
+		}
+		if _, ok := b["settings_added"]; ok {
+			t.Errorf("body %d carries a key added to the settings copy", i)
+		}
+	}
+
+	// A per-call map is not reachable: Chat marshals it into the request
+	// it is making and keeps no reference, so mutating one after the call
+	// cannot reach a later body. A key only the per-call map carries must
+	// appear in its own request and in no later one.
+	perCall := map[string]any{
+		"chat_template_kwargs": map[string]any{"enable_thinking": true},
+		"per_call_marker":      "original",
+	}
+	if _, err := c.Chat(context.Background(), msgs, Options{Extra: perCall}); err != nil {
+		t.Fatal(err)
+	}
+	perCall["per_call_marker"] = "mutated"
+	perCall["chat_template_kwargs"].(map[string]any)["enable_thinking"] = false
+	chat()
+	if len(bodies) != 5 {
+		t.Fatalf("sent %d bodies, want 5", len(bodies))
+	}
+	if got := thinkingSwitch(t, bodies[3]); !got {
+		t.Error("the per-call override did not turn thinking on")
+	}
+	if got := bodies[3]["per_call_marker"]; got != "original" {
+		t.Errorf("the per-call override did not reach its own request: marker %v", got)
+	}
+	if got, ok := bodies[4]["per_call_marker"]; ok {
+		t.Errorf("the per-call map reached a later request: marker %v", got)
+	}
+}
+
 // thinkingSwitch reads the Nemotron thinking switch out of a request body or
 // a settings Extra map.
 func thinkingSwitch(t *testing.T, body map[string]any) bool {
