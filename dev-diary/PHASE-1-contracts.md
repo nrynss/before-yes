@@ -219,6 +219,8 @@ Commit one example card per verdict (`card-yes.json`, `card-settings.json`, `car
 **Round 4 (inherited from T1.1 `v5`).** The examples were regenerated under `v5`. No example grade changed: none of them has an `ok` resting only on risks. The verdicts are still yes, yes_with_settings, no and unclear.
 
 **Round 4 remediation (inherited from T1.1 `v6` and T1.2 round 4).** The examples were regenerated under `v6`. No grade changed level, so every example reason is still the generated one. Every quote still verifies under the new `Normalize`.
+
+**Round 5 remediation (inherited, `v7`).** The examples were regenerated under `v7`. Only `checklist_version` changed. No example grade carries a stray setting.
 ---
 
 ### T1.4: HTTP API and error codes ★
