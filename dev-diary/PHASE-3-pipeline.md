@@ -394,6 +394,14 @@ Whether the YouTube Data API's made-for-kids status adds anything is an open que
 - Contract: `Card.kind_label` is new and additive (the five card examples and `api/get-card.json` gain one line each). The new example `card-unknown-kind.json` shows `"kind": "unknown"`.
 - Outside owns, kept minimal: `types.go` (the `KindUnknown` value, `KindLabel` and the `Card.KindLabel` field), `pipeline.go` (`Decide` sets the label; `GatherVersion` uses `allKinds`), `types_test.go` (a per-spec kind and the new example), `gather_test.go` (the test above) and `testdata/contracts`. The card and contract live there.
 - Tests: `TestUnplaceableTitleIsUnknown` (no hits, an unplaceable YouTube channel, an unplaceable Android app), `TestUnknownPlanIsGeneral`, `TestGatherVersionCoversEveryKind` (now also the general plan), `TestDetectKind`, and the contract round trip.
+- The policy search still runs, and is paid for, on a title that ends up `unknown`. It runs before the kind is known, because its hits (with the rating search's) feed `DetectKind`. For an unknown title its pages are not read: there is no extract step, and no policy or terms are planned.
+
+**Round-3 remediation (T3.7 user decision).**
+
+| Finding | Fix | Test |
+|---|---|---|
+| L1: `card-unknown-kind.json` cited a Toca terms-of-service finding, which the unknown plan cannot produce | The example has no finding, because the captured Toca fixtures hold no news, forum or rating text about the title. Its grades are unknown, its verdict is unclear, and the missing kinds are the general plan's (reddit, forum, news). The change only touches the example, and no field changed | `TestUnknownKindExampleMatchesPlan` (every finding and missing kind in the example comes from the unknown plan) |
+| L2 (accepted): the note did not say the policy search runs and is paid for on an unknown title | The line above | — |
 
 ---
 

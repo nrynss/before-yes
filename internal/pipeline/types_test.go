@@ -458,24 +458,23 @@ func cardSpecs() []cardSpec {
 			missing: []string{"review", "reddit", "news"},
 		},
 		// User decision (T3.7): a title no signal placed is kind unknown,
-		// on the general plan (no policy or terms search, so neither is
-		// missing).
+		// on the general plan: news, forums (Reddit and others) and the
+		// shared rating search, with no policy, terms or review source. The
+		// example has no finding, since the captured Toca fixtures hold no
+		// news, forum or rating text about the title; it shows what such a
+		// card looks like when the general plan finds nothing.
 		{file: "card-unknown-kind.json", slug: "toca-life-world", title: "Toca Life World", cardID: "c_Uk4nWn7pQ2zKd8sVm3tRhB", age: 6,
 			kind: KindUnknown, app: nil,
-			specs: []spec{
-				{ref: "tavily-extract.json|https://www.tocaboca.com/docs/en/terms-of-service", kind: "terms", area: checklist.Money, stance: finding.Risk,
-					claim: "The game sells in-app purchases billed to a card",
-					quote: "bill your credit card or use other payment methods if you make an In-App Purchase"},
-			},
+			specs: []spec{},
 			grades: []checklist.Grade{
-				g(checklist.Contact, checklist.Unknown, "", "No source settled whether players can message each other."),
-				g(checklist.Money, checklist.OKWithSetting, "Ask to Buy (Family Sharing)", "In-app purchases are sold; Ask to Buy stops them.", "0"),
-				g(checklist.Data, checklist.Unknown, "", ""),
+				g(checklist.Contact, checklist.Unknown, "", "No news, forum or rating source settled whether players can message each other."),
+				g(checklist.Money, checklist.Unknown, "", "No source said whether the title sells anything."),
+				g(checklist.Data, checklist.Unknown, "", "The kind is unknown, so no privacy policy was read."),
 				g(checklist.AgeGating, checklist.Unknown, "", ""),
 				g(checklist.Content, checklist.Unknown, "", "No reviews were read."),
 				g(checklist.DeveloperRecord, checklist.Unknown, "", "No developer record found."),
 			},
-			missing: []string{"review", "reddit", "news"},
+			missing: []string{"reddit", "forum", "news"},
 		},
 	}
 }
@@ -509,6 +508,36 @@ func TestGenerate(t *testing.T) {
 			if err != nil || !bytes.Equal(bytes.TrimSpace(got), want) {
 				t.Errorf("%s is stale; run go test ./internal/pipeline -update", name)
 			}
+		}
+	}
+}
+
+// The unknown-kind example shows only what the unknown plan can produce:
+// findings and missing kinds from the general plan's sources alone.
+func TestUnknownKindExampleMatchesPlan(t *testing.T) {
+	b, err := os.ReadFile(filepath.Join(contracts, "card-unknown-kind.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var card Card
+	if err := json.Unmarshal(b, &card); err != nil {
+		t.Fatal(err)
+	}
+	planned := map[string]bool{}
+	for _, q := range PlanFor(KindUnknown, card.Title, "") {
+		planned[q.Kind] = true
+	}
+	if card.Kind != KindUnknown || card.KindLabel != "kind unknown" || card.App != nil {
+		t.Errorf("kind %q label %q app %v", card.Kind, card.KindLabel, card.App)
+	}
+	for _, f := range card.Findings {
+		if !planned[f.Source.Kind] {
+			t.Errorf("finding from %s, which the unknown plan has no search for", f.Source.Kind)
+		}
+	}
+	for _, k := range card.Stats.MissingKinds {
+		if !planned[k] {
+			t.Errorf("missing %s, which the unknown plan does not plan", k)
 		}
 	}
 }
