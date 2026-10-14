@@ -21,7 +21,7 @@ requires:   T0.1
 fixture-ok: yes
 size:       M · mid
 owns:       internal/model/model.go, internal/model/model_test.go
-status:     drafted
+status:     claimed:impl-t2.1
 ```
 One client for the OpenAI-style chat API that Token Factory, OpenRouter and NVIDIA's API all speak. Base URL, model name, prices per million tokens, max tokens, a per-minute pace, and an `extra` map merged into every request body all come from config. Moving a role from a free host to Token Factory is two settings.
 
@@ -61,7 +61,7 @@ requires:   T0.1
 fixture-ok: yes
 size:       S · mid
 owns:       internal/tavily/tavily.go, internal/tavily/tavily_test.go
-status:     drafted
+status:     claimed:impl-t2.2
 ```
 Search (`query`, depth, topic, max results, include and exclude domains, raw content) and extract (basic depth, text format). Ask for `include_usage` and report the credits each call cost. When usage is absent, fall back to the price list: basic search 1, advanced 2, extract 1 per 5 successful URLs.
 
@@ -91,7 +91,7 @@ requires:   T0.1
 fixture-ok: yes
 size:       S · mid
 owns:       internal/appstore/appstore.go, internal/appstore/appstore_test.go
-status:     drafted
+status:     claimed:impl-t2.3
 ```
 Apple's iTunes search API finds the app: id, name, seller, seller URL, store URL, age rating, description. The customer-review feed serves up to 10 pages of 50 recent reviews per storefront country. Each review gets a running index from 1, so a card can say "review 312".
 
@@ -123,7 +123,7 @@ requires:   T0.1
 fixture-ok: yes
 size:       M · frontier
 owns:       internal/spend/
-status:     drafted
+status:     claimed:impl-t2.4
 ```
 Implements `pipeline.Meter` over Keel `cost/sqlitestore`, with two pools in one database file:
 - **model:** USD nanodollars, a lifetime ceiling below the $25 credit;
