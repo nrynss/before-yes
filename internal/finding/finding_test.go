@@ -221,3 +221,33 @@ func TestParseProse(t *testing.T) {
 		t.Error("prose with braces parsed")
 	}
 }
+
+// T1.2 round 2 H1 and L1: contractions, leading or trailing punctuation, underscore.
+func TestWordBoundariesRound2(t *testing.T) {
+	cases := []struct {
+		text, quote string
+		want        bool
+	}{
+		{"Parents say strangers can't message my kid at all.", "Parents say strangers can", false},
+		{"Parents say strangers can’t message my kid at all.", "Parents say strangers can", false},
+		{"Parents say strangers can’t message my kid at all.", "Parents say strangers can't", true},
+		{"Parents say strangers can't message my kid at all.", "say strangers can’t message", true},
+		{"Parents say strangers can message my kid at all.", "Parents say strangers can", true},
+		{"The chat isn't filtered at all", "The chat isn", false},
+		{"The chat isn’t filtered at all", "t filtered at all", false},
+		{"Kids don't see ads here", "Kids don'", false},
+		{"This is un-safe for young kids", "-safe for young kids", false},
+		{"This is filter_safe for young kids", "safe for young kids", false},
+		{"This is filter_safe for young kids", "filter_safe for young kids", true},
+		{"She said: \"chat is open to everyone\" today", "\"chat is open to everyone\"", true},
+		{"(chat is open to everyone) today", "chat is open to everyone", true},
+		{"the kids' chat is open to anyone", "the kids' chat is open", true},
+	}
+	for _, c := range cases {
+		s := map[string]Segment{"D1": {Text: c.text, Source: Source{URL: "u"}}}
+		fs, _ := Verify([]Raw{{Ref: "D1", Area: "contact", Stance: "risk", Quote: c.quote}}, s)
+		if (len(fs) == 1) != c.want {
+			t.Errorf("%q in %q: verified=%v, want %v", c.quote, c.text, len(fs) == 1, c.want)
+		}
+	}
+}

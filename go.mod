@@ -4,7 +4,7 @@ go 1.27.1
 
 require (
 	github.com/nrynss/keel v0.7.3
-	golang.org/x/text v0.30.0
+	golang.org/x/text v0.41.0
 	modernc.org/sqlite v1.58.0
 )
 
