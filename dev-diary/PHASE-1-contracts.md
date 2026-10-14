@@ -147,6 +147,13 @@ The parser accepts a JSON object with a `findings` array, a bare array, or eithe
 | H1 | A hyphen with a word rune on each side is part of the word, as the apostrophe already was. "safe for young kids" no longer verifies in "un-safe", nor "violent content" in "non-violent", including U+2011. **Decision:** `Normalize` folds every dash (U+2010–U+2015, minus sign) to `-`, so an en or em dash written between two letters with no spaces also joins them. At worst that is a false negative (a quote cut at "word—word" is refused), never a false match. A spaced dash (" - ") is still a boundary. | `TestWordBoundaryTable` |
 | M1 | A cut with punctuation on both sides is allowed. "the chat is totally filtered." now verifies in `(…filtered.)`, in `"…filtered."` (straight or curly), and before "...!". | `TestWordBoundaryTable` |
 | table | One 25-case table covers hyphens (straight, U+2011, en dash), punctuation edges, and every earlier rule (prefix, apostrophe, underscore, digits, later whole-word occurrence, possessive). The round-1 and round-2 tests still pass. | `TestWordBoundaryTable`, `TestWordBoundaries`, `TestWordBoundariesRound2` |
+
+**Remediation, round 4** ([review](adversarial-review/t1.2-round4.md)).
+
+| Finding | Fix | Test |
+|---|---|---|
+| M1 | `Normalize` drops every invisible format character (Unicode Cf: soft hyphen U+00AD, U+200B–U+200D, U+2060, BOM U+FEFF and the rest of the category) on both sides. "safe for young kids" no longer verifies in "un\u00adsafe" or "un\u200bsafe", and quoting "unsafe" now matches a source that hides a soft hyphen inside the word. | `TestWordBoundaryTable` (round-4 rows), `TestNormalizeRound4` |
+| L1 | More dash forms fold to `-`: U+2043, U+FE58, U+FE63, U+FF0D, U+2E3A and U+2E3B, beside the existing U+2010–U+2015 and U+2212. A run of hyphens collapses to one, so "un--safe" joins like "un-safe". A spaced "--" between words is still a boundary. | same |
 ---
 
 ### T1.3: Evidence and card payloads ★
