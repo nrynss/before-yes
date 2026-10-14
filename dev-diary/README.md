@@ -181,7 +181,7 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 | P0 | 9 / 9 | Done. Two exit criteria wait on later tasks: a live Nano call (T2.1b) and the config check (T4.4). CI is green. |
 | P1 | 4 / 4 | Done. The `job.Failure` exit criterion waits on T4.1. The main-checkout pins and `.env` leak check, waived at landing, ran at the P1–P2 integration and passed. |
 | P2 | 12 / 12 | Done. All six exit criteria are met. Measured model cost is $0.0309 per check. Tavily is 7–8 credits per check, from fixtures, not a live run. |
-| P3 | 7 / 11 | T3.1, T3.2, T3.3, T3.4, T3.6, T3.6b and T3.8a are done. T3.6b's live run put all three demo titles at **no**, mostly on judge flags with no verified quote, so T3.9 makes every grade cite one. T3.8, then T3.7, then T3.5 are with Grok. |
+| P3 | 10 / 11 | Everything but T3.9 is done. T3.9 makes every grade cite a verified quote, after T3.6b's live run put all three demo titles at **no** on mostly unquoted flags. Four behaviours from T3.5, T3.7 and T3.8 await the user's decision (see the handoff log). |
 | P4 | 0 / 5 | Not started. T4.1, T4.2 and T4.4 drafted. |
 | P5 | 0 / 7 | Not started. |
 | P6 | 0 / 6 | Not started. |
@@ -192,6 +192,21 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 
 Newest first. One entry per closed task, finding, or split.
 
+- **T3.8, T3.7 and T3.5 closed** (PRs #10, #11, #12, stacked, implemented by Grok). Final reviews: T3.8 round 2 APPROVE, T3.7 round 2 APPROVE, T3.5 round 5 APPROVE. The full handoffs are in the PR descriptions.
+  - **What landed:**
+    - **T3.8:** App Store page reviews as documents, deduplicated, with editorial blurbs and developer responses dropped. They are used only when the feed comes back empty. `review_source` (`feed`, `page` or empty) is on Evidence and Card, added to the contract fixtures.
+    - **T3.7:** `DetectKind` and `PlanFor(kind, …)`. The kind is in the evidence and in the evidence-cache version.
+      - YouTube question answered from documentation: made-for-kids status is a narrow signal, not adopted. If used later, it is small print beside the kind and is never graded.
+    - **T3.5:** `WithAlternatives` checks up to 3 candidates after the main card, each a full cached check under its own ref, with statuses `pending`, `checked` or `refused`. A budget refusal leaves the main card byte-identical.
+  - **Orchestrator verification:**
+    - Merged locally in order. Gate rc 0 after each merge, with `scratch/` and `.env` present. No key values found. No dates.
+    - Edits outside owns were accepted as hooks: `pipeline.go` passes `ReviewSource` (T3.8), and carries the kind and a kind-aware `GatherVersion` (T3.7).
+    - One conflict in `feedback.md`, where both sides only added entries, was resolved by keeping both.
+  - **Open for the user.** Each keeps its current behaviour until decided:
+    1. A feed *error* does not fall back to the store page. Only an empty feed does.
+    2. A title the detector cannot place defaults to `console_pc`.
+    3. Whether alternatives count toward `checks_daily` is left to P4. Each uncached candidate is a full check: about $0.03 and 7–8 Tavily credits.
+    4. Candidates refused by the budget are still shown, marked `refused`.
 - **T2.5 closed; P2 done.** Haiku implemented it, and the orchestrator validated it with no review loop.
   - **What changed:** `docs/budget.md` uses T3.6b's measured figures. Model cost per check is $0.030861, the mean of Roblox $0.031991, Minecraft $0.040029 and Khan $0.020564, re-summed from the 109 recorded replies.
     - The $20 ceiling covers 648 checks, and the $5 reserve covers 162.
