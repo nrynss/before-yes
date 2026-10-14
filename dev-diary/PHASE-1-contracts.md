@@ -151,6 +151,14 @@ Commit one example card per verdict (`card-yes.json`, `card-settings.json`, `car
 | L2 | The Common Sense Media parents' guide is now kind `article`, not `forum`. Source kinds are: `review`, `policy`, `terms`, `reddit`, `forum` (a discussion board), `article` (an editorial guide or explainer), `news`, `rating` (a rating board or official parents' guide), `store` (an app-store listing). T3.1 assigns them. The `finding.Source.Kind` comment lists them (a comment, not behaviour). | `card-no.json` |
 
 **Known gap in `card-yes`:** the Khan contact evidence is thin. The listing says only that the app is in Apple's Kids category, and no fixture says outright "no chat". The Khan fixtures also hold a content risk that the example leaves out: review 17 ("scary devil faces ... popped up"). The examples are contract shapes. Khan's real verdict belongs to T3.6b.
+
+**Remediation, round 2** ([review](adversarial-review/t1.3-round2.md)). The examples were regenerated on top of the T1.1 and T1.2 round-2 fixes, under checklist `v3`.
+
+| Finding | Fix | Test |
+|---|---|---|
+| M1 | **User decision: `card-yes.json` is accepted as it is.** It is a contract example, not evidence about Khan Academy Kids. Its thin contact quote ("Made For Ages 0–5") and the content risk it leaves out (review 17) are known and accepted. Neither T3.3's prompt nor P5 should treat it as a model of good evidence. Khan's real verdict belongs to T3.6b. The card still passes `Enforce` under `v3`: its contact finding is neutral, so it counts as support. | `TestExamplesObeyRules` |
+| L1 | The `Source.Kind` comment edit now lands in T1.2 (`task-t1.2-finding`), which owns `internal/finding/`. After the merge, T1.3's diff against T1.2 touches nothing under `internal/finding/`. | `git diff task-t1.2-finding -- internal/finding` is empty |
+| inherited | The examples were regenerated after T1.1 round 2 M1 (`v3`, supporting finding needed) and T1.2 round 2 H1 and L1 (stricter word boundaries). Every quote still verifies, and every card passes `Enforce` with zero demotions. | `TestGenerate`, `TestExamplesObeyRules` |
 ---
 
 ### T1.4: HTTP API and error codes ★
