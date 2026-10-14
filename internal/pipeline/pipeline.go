@@ -114,16 +114,18 @@ func versionSample() []Doc {
 }
 
 // GatherVersion names what the gatherer asks and returns: PlanVersion
-// (hand-bumped for rule changes inside Gather), the plan as drawn for a
-// sample title with and without a host, and the field names and types of
+// (hand-bumped for rule changes inside Gather), the plan for every kind
+// (PlanFor) as drawn for a sample title with and without a host, and the field names and types of
 // Gathered and Doc. A new query, a changed search option or a new output
 // field changes the key on its own.
 func GatherVersion() string {
 	h := sha256.New()
 	fmt.Fprintln(h, PlanVersion)
-	for _, host := range []string{"", "example.com"} {
-		b, _ := json.Marshal(Plan("Sample Title", host))
-		h.Write(b)
+	for _, kind := range []Kind{KindIOS, KindAndroid, KindConsole, KindYouTube} {
+		for _, host := range []string{"", "example.com"} {
+			b, _ := json.Marshal(PlanFor(kind, "Sample Title", host))
+			h.Write(b)
+		}
 	}
 	for _, v := range []any{Gathered{}, Doc{}, finding.Source{}} {
 		t := reflect.TypeOf(v)

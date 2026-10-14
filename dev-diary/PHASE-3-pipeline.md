@@ -333,6 +333,14 @@ Whether the YouTube Data API's made-for-kids status adds anything is an open que
 - **Fixtures:** the four captured titles are all iOS (Toca by its policy hit). The Android, console and YouTube fixtures are canned search hits in `kind_test.go`, not captures; no live call was made.
 - **Tests:** `TestKindsGatherTheirPlan` (one fixture per kind; the exact searches each sends, Play excluded and never read, the rating-board domains, YouTube policy and terms not missing); `TestDetectKind`; `TestCardShowsKind`; `TestFixtureTitlesAreIOS`.
 
+**Round 1 remediation (T3.7).**
+
+| ID | Fix | Test |
+|---|---|---|
+| M1 | `DetectKind` scores structured signals. A direct listing or channel page (`play.google.com/store/apps`, `youtube.com/@`, `/channel/`, `/c/`, `/user/`, `store.steampowered.com/app/`, `store.playstation.com`, xbox.com and nintendo.com store paths) weighs 5. A rating board (esrb.org, pegi.info) weighs 3. A whole-word mention (`\bsteam\b`, not "livestream") weighs 1, once per hit per kind. A store listing therefore outweighs a review page that lists every platform. | `TestDetectKindStructured` (the reviewer's Play-listing-vs-platform-list case; "livestream", "mainstream", "streamers"; Steam, Nintendo and PlayStation listings) |
+| L1 | `youtube.com/watch`, `/shorts/`, `/playlist`, `youtu.be` and a "- YouTube" page title each weigh 3 for YouTube. | `TestDetectKindStructured` ("MrBeast" with one `/watch` hit; a "- YouTube" title) |
+| L2 | `GatherVersion` hashes `PlanFor` for all four kinds, with and without a host, so a change to any kind's plan moves the evidence key. This edits `GatherVersion` in pipeline.go, outside T3.7's `owns`; the plan change needs it. | `TestGatherVersionCoversEveryKind` |
+
 **The brief's open question: does the YouTube Data API's made-for-kids status add anything?** The answer is yes, but only a narrow signal, and it is not adopted in T3.7. It is answered from documentation only; no API call was made.
 - **What it is.** `channels.list` returns `status.madeForKids` (boolean) on a channel resource, and `videos.list` returns the same field for a video. `selfDeclaredMadeForKids` is returned only to the owner (YouTube Data API docs, Channel resource). Creators set the audience at the channel or video level, and a video's setting overrides the channel's. YouTube may override it in cases of error or abuse (YouTube Help 9527654).
 - **What it adds.** On content set as made for kids, YouTube turns off comments, live chat, the notification bell, personalised advertising, channel memberships, Super Chat and Super Stickers, merchandise, and cards and end screens (YouTube Help 9527654). That bears on the contact, money and data areas.
@@ -395,6 +403,15 @@ T3.1 calls this when the review feed returns nothing. The card's small print say
 - `Gathered.ReviewSource` and the new `Stats.ReviewSource` (`review_source`: "feed", "page" or "") give the source; `Stats.Reviews` already gives the count. `PlanVersion` is now `plan-4`.
 - **Outside `owns`, kept minimal:** one line in pipeline.go's `Collect`, which builds `Stats`, copies `ReviewSource` across. In `types_test.go`, the contract example generator sets `ReviewSource` to "feed" when an example has reviews. The six contract examples in `testdata/contracts/` (including `api/get-card.json`) each gain `"review_source"`; the change is additive.
 - **Tests:** `TestParseStorePageFixtures` (all four T3.8a pages: Roblox 4 reviews, Minecraft 3, Khan 3, Toca 3, titles in order, bodies verbatim lines of the page); `TestParseStorePageDropsResponses`; `TestParseStorePageEdges`; `TestGatherFallsBackToStorePage` (documents, sources, and a finding passing `finding.Verify`); `TestStorePageOnlyWhenFeedEmpty`; `TestStorePageWithoutReviewsIsMissing`.
+
+**Round 1 remediation (T3.8).**
+
+| ID | Fix | Test |
+|---|---|---|
+| H1 | `ParseStorePage` finds block boundaries from the page's doubling, not from line pairs. At each line it looks for the shortest run of two or more lines that is followed at once by its own repeat, where the repeat may carry one developer-response label that the first copy lacks. That run is one block: its first line is the title, the lines up to the label's place are the body, and the rest is the response, which is dropped. A line that starts no doubled block (a rating summary, "See All", other chrome) is skipped. An Editors' Choice block is dropped whole, however many lines it has. | `TestParseStorePageStructure` (all the reviewer's cases: rating summary, one aggregate line, two-line body, two-line response, two-line blurb, "See All"); `TestParseStorePageFixtures` still passes for all four captures |
+| M1 | A response label is the exact line "Developer Response <date>" (numeric or month-name date). It counts only where it appears in a repeat and not in the first copy; its unlabelled first copy is the matching tail of the first copy. A review titled "Developer Response is slow" survives. | `TestParseStorePageStructure` ("review titled like a label", "response dated by month") |
+
+The parser now relies on the doubling. A page that showed each review only once would yield no reviews, so the review source would be missing rather than misread. No capture shows such a page.
 
 ---
 

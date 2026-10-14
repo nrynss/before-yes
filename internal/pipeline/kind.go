@@ -1,6 +1,7 @@
 package pipeline
 
 import (
+	"regexp"
 	"strings"
 
 	"github.com/nrynss/before-yes/internal/tavily"
@@ -14,35 +15,100 @@ import (
 // runs for every kind and its hits name the rating boards, stores and
 // platforms that describe a title:
 //
-//   - a YouTube channel page, or hits that call it a channel or YouTuber;
-//   - a Google Play page, or hits that name Android or Google Play;
-//   - an ESRB or PEGI page, or hits that name consoles or PC stores.
+//   - a YouTube channel or video page, or a "- YouTube" page title;
+//   - a Google Play listing, or a "- Apps on Google Play" title;
+//   - a Steam, PlayStation, Xbox or Nintendo store listing, or an ESRB or
+//     PEGI page;
+//   - and, weakly, whole words in a hit's text naming any of these.
 //
-// The kind with the most signals wins. A title with no signal at all is
+// The kind with the most weight wins (see the signal weights). A title with no signal at all is
 // taken as a console or PC game: it is not on the App Store, and no store,
 // channel or board was named, and the console plan's rating-board search is
 // the one that can still find something.
 
+// Signal weights. A direct store listing or channel page names the kind
+// outright; a rating board's page is strong but lists platforms; a word in
+// a hit's text is weak, and counts once per hit per kind, so one review
+// page that lists every platform cannot outvote a store listing.
+const (
+	listingSignal = 5
+	videoSignal   = 3
+	boardSignal   = 3
+	mentionSignal = 1
+)
+
+var (
+	youtubeTitle = regexp.MustCompile(`\byoutuber?\b`)
+	youtubeWords = regexp.MustCompile(`\b(youtube channel|youtuber|subscribers)\b`)
+	androidWords = regexp.MustCompile(`\b(android|google play)\b`)
+	consoleWords = regexp.MustCompile(`\b(playstation|xbox|nintendo switch|steam|pc game)\b`)
+)
+
+// urlKind reads a hit's URL alone: a host and path that is a store
+// listing, a channel or video page, or a rating board.
+func urlKind(raw string) (Kind, int) {
+	host := strings.TrimPrefix(strings.ToLower(hostOf(raw)), "www.")
+	path := strings.ToLower(urlPath(raw))
+	has := func(prefixes ...string) bool {
+		for _, p := range prefixes {
+			if strings.HasPrefix(path, p) {
+				return true
+			}
+		}
+		return false
+	}
+	yt := host == "youtube.com" || host == "m.youtube.com"
+	switch {
+	case host == "play.google.com" && has("/store/apps"):
+		return KindAndroid, listingSignal
+	case yt && has("/@", "/channel/", "/c/", "/user/"):
+		return KindYouTube, listingSignal
+	case yt && has("/watch", "/shorts/", "/playlist"), host == "youtu.be":
+		return KindYouTube, videoSignal
+	case host == "store.steampowered.com" && has("/app/"),
+		host == "store.playstation.com",
+		host == "xbox.com" && strings.Contains(path, "/games/store"),
+		strings.HasSuffix(host, "nintendo.com") && strings.Contains(path, "/store/"):
+		return KindConsole, listingSignal
+	case registrable(raw) == "esrb.org" || registrable(raw) == "pegi.info":
+		return KindConsole, boardSignal
+	}
+	return "", 0
+}
+
+// titleKind reads a hit's page title: the suffix a store or YouTube puts
+// on its own pages.
+func titleKind(title string) (Kind, int) {
+	t := strings.ToLower(strings.TrimSpace(title))
+	switch {
+	case strings.HasSuffix(t, "- apps on google play"):
+		return KindAndroid, listingSignal
+	case strings.HasSuffix(t, "- youtube"):
+		return KindYouTube, videoSignal
+	}
+	return "", 0
+}
+
 // DetectKind picks the kind of a title the App Store did not match.
 func DetectKind(title string, hits []tavily.Result) Kind {
 	score := map[Kind]int{}
-	if t := strings.ToLower(title); strings.Contains(t, "youtube") || strings.Contains(t, "youtuber") {
-		score[KindYouTube] += 3
+	if youtubeTitle.MatchString(strings.ToLower(title)) {
+		score[KindYouTube] += listingSignal
 	}
+	words := map[Kind]*regexp.Regexp{KindYouTube: youtubeWords, KindAndroid: androidWords, KindConsole: consoleWords}
 	for _, h := range hits {
-		dom, path := registrable(h.URL), strings.ToLower(urlPath(h.URL))
-		switch {
-		case dom == "youtube.com" && (strings.HasPrefix(path, "/@") || strings.HasPrefix(path, "/channel/") || strings.HasPrefix(path, "/c/") || strings.HasPrefix(path, "/user/")):
-			score[KindYouTube] += 3
-		case dom == "google.com" && strings.HasPrefix(strings.ToLower(hostOf(h.URL)), "play."):
-			score[KindAndroid] += 3
-		case dom == "esrb.org" || dom == "pegi.info":
-			score[KindConsole] += 2
+		if k, w := urlKind(h.URL); k != "" {
+			score[k] += w
+		}
+		if k, w := titleKind(h.Title); k != "" {
+			score[k] += w
 		}
 		text := strings.ToLower(h.Title + " " + h.Content)
-		score[KindYouTube] += count(text, "youtube channel", "youtuber", "subscribers")
-		score[KindAndroid] += count(text, "android", "google play")
-		score[KindConsole] += count(text, "playstation", "xbox", "nintendo switch", "steam", "pc game", "console")
+		for k, re := range words {
+			if re.MatchString(text) {
+				score[k] += mentionSignal
+			}
+		}
 	}
 	best, top := KindConsole, 0
 	for _, k := range []Kind{KindConsole, KindAndroid, KindYouTube} {
@@ -51,14 +117,6 @@ func DetectKind(title string, hits []tavily.Result) Kind {
 		}
 	}
 	return best
-}
-
-func count(text string, words ...string) int {
-	n := 0
-	for _, w := range words {
-		n += strings.Count(text, w)
-	}
-	return n
 }
 
 func hostOf(raw string) string {

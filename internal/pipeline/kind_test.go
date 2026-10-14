@@ -184,3 +184,40 @@ func TestFixtureTitlesAreIOS(t *testing.T) {
 		}
 	}
 }
+
+// The round-1 attack cases: whole words only, and a direct listing beats
+// mentions on a review page; video pages count for YouTube.
+func TestDetectKindStructured(t *testing.T) {
+	review := hit("https://www.example-reviews.com/some-app", "Some App review",
+		"Not on console, PC game stores, Xbox, PlayStation, Steam or Nintendo Switch.")
+	for name, c := range map[string]struct {
+		title string
+		hits  []tavily.Result
+		want  Kind
+	}{
+		"Play listing beats a platform list": {"Some App", []tavily.Result{
+			hit("https://play.google.com/store/apps/details?id=x", "Some App - Apps on Google Play", "Android"), review}, KindAndroid},
+		"steam inside other words": {"Some App", []tavily.Result{
+			hit("https://news.example.com/a", "Some App livestream", "mainstream streamers love the Android app")}, KindAndroid},
+		"video pages are YouTube": {"MrBeast", []tavily.Result{hit("https://www.youtube.com/watch?v=1", "MrBeast video", "")}, KindYouTube},
+		"- YouTube titles":        {"Sample", []tavily.Result{hit("https://example.com/x", "Sample Kids Songs - YouTube", "")}, KindYouTube},
+		"Steam listing":           {"Some Game", []tavily.Result{hit("https://store.steampowered.com/app/123/Some_Game/", "Some Game on Steam", ""), hit("https://example.com", "Some Game for Android fans", "android")}, KindConsole},
+		"Nintendo store":          {"Some Game", []tavily.Result{hit("https://www.nintendo.com/us/store/products/some-game-switch/", "Some Game", "")}, KindConsole},
+		"PlayStation store":       {"Some Game", []tavily.Result{hit("https://store.playstation.com/en-us/concept/1", "Some Game", "")}, KindConsole},
+	} {
+		if got := DetectKind(c.title, c.hits); got != c.want {
+			t.Errorf("%s: %q, want %q", name, got, c.want)
+		}
+	}
+}
+
+// The evidence key moves with any kind's plan, not just the iOS one.
+func TestGatherVersionCoversEveryKind(t *testing.T) {
+	saved := ratingBoards
+	defer func() { ratingBoards = saved }()
+	before := GatherVersion()
+	ratingBoards = []string{"esrb.org"}
+	if GatherVersion() == before {
+		t.Error("a console plan change did not change GatherVersion")
+	}
+}
