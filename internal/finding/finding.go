@@ -211,12 +211,16 @@ func Verify(raws []Raw, segs map[string]Segment) ([]Finding, Drops) {
 }
 
 // containsWords reports whether quote occurs in text without cutting a word
-// at either end. Both arguments are already normalized. At each end, the
-// match must touch the text's edge or whitespace, or a punctuation rune in the
-// text next to a word rune in the quote. So "safe for kids" does not match in
-// "unsafe for kids", "-safe" does not match in "un-safe", "safe" does not
-// match in "filter_safe", and "strangers can" does not match in
-// "strangers can't": an apostrophe between two letters is part of the word.
+// at either end. Both arguments are already normalized. A cut is refused only
+// when the runes on both sides of it are part of one word; punctuation on
+// both sides is fine, so "filtered." matches in "(filtered.)". Word runes are
+// letters, digits, marks and underscore, plus an apostrophe or hyphen with a
+// word rune on each side. So "safe for kids" does not match in "unsafe for
+// kids" or "un-safe for kids", "violent" does not match in "non-violent",
+// "strangers can" does not match in "strangers can't", and "safe" does not
+// match in "filter_safe". Normalize folds every dash (U+2010 to U+2015, minus)
+// to "-", so an en or em dash between two letters joins them too: a false
+// negative at worst, never a false match.
 func containsWords(text, quote string) bool {
 	if quote == "" {
 		return false
@@ -228,7 +232,7 @@ func containsWords(text, quote string) bool {
 		}
 		start := from + i
 		end := start + len(quote)
-		if edgeOK(text, start, true) && edgeOK(text, end, false) {
+		if edgeOK(text, start) && edgeOK(text, end) {
 			return true
 		}
 		_, w := utf8.DecodeRuneInString(text[start:])
@@ -237,34 +241,25 @@ func containsWords(text, quote string) bool {
 	return false
 }
 
-// edgeOK checks the cut at byte offset at. For a start cut, the outside rune
-// is the one before at and the inside rune the one at at; for an end cut, the
-// reverse.
-func edgeOK(text string, at int, start bool) bool {
+// edgeOK checks the cut at byte offset at: it is refused only when the rune
+// before and the rune after it are both part of a word.
+func edgeOK(text string, at int) bool {
 	if at == 0 || at == len(text) {
 		return true
 	}
-	_, prevW := utf8.DecodeLastRuneInString(text[:at])
-	outside, inside := at-prevW, at
-	if !start {
-		outside, inside = at, at-prevW
-	}
-	r, _ := utf8.DecodeRuneInString(text[outside:])
-	if unicode.IsSpace(r) {
-		return true
-	}
-	return !wordAt(text, outside) && wordAt(text, inside)
+	_, w := utf8.DecodeLastRuneInString(text[:at])
+	return !(wordAt(text, at-w) && wordAt(text, at))
 }
 
 // wordAt reports whether the rune at byte offset i of text is part of a word:
-// a letter, digit, mark or underscore, or an apostrophe with a word rune on
-// each side (can't, don't).
+// a letter, digit, mark or underscore, or an apostrophe or hyphen with a word
+// rune on each side (can't, un-safe).
 func wordAt(text string, i int) bool {
 	r, w := utf8.DecodeRuneInString(text[i:])
 	if isWord(r) {
 		return true
 	}
-	if r != '\'' || i == 0 || i+w >= len(text) {
+	if (r != '\'' && r != '-') || i == 0 || i+w >= len(text) {
 		return false
 	}
 	before, _ := utf8.DecodeLastRuneInString(text[:i])

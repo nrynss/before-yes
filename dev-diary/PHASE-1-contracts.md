@@ -40,7 +40,7 @@ Bump `checklist.Version` whenever an area's wording or a rule changes, because c
 
 
 **Implementation notes (in review).** The scratch draft was not reachable from the implementing session (it lives only in the main checkout), so `internal/checklist/` was written fresh from this spec and the brief.
-- **Verdict question: decided by the user. `unclear` is kept, and the decision is final.** It stops a title with no evidence on contact or content from computing to "yes". Rules in `Decide`, in order: refuse an incomplete, duplicated or invalid set (`ErrGrades`); any `flag` is `no`; contact or content `unknown` is `unclear`; three or more of six `unknown` is `unclear`; any `ok_with_setting` is `yes_with_settings`; otherwise `yes`. T1.3 keeps `card-unclear.json`.
+- **Verdict question: decided by the user. `unclear` is kept, and the decision is final.** It stops a title with no evidence on contact or content from computing to "yes". Rules in `Decide` (as of `v4`), in order: refuse an incomplete, duplicated or invalid set (`ErrGrades`); any `flag` is `no`; contact or content `unknown` is `unclear`; three or more of six `unknown` is `unclear`; any `unknown` that still cites findings is `unclear`; any `ok_with_setting` is `yes_with_settings`; otherwise `yes`. T1.3 keeps `card-unclear.json`.
 - `Decide` takes grades only. The child's age reaches the verdict through the judge's grades, not through a rule here.
 - `Enforce(grades, map[id]Cited)` takes a small `Cited{Area, Risk}` view of each verified finding, so `checklist` does not import `finding` (T1.2 requires T1.1). It returns six grades in card order plus a `Demotion` list. Beyond the four spec rules it also discards a grade with an unknown area or level, and a second grade for an area, and clears `setting` on any grade demoted to `unknown`.
 - `Decide` also refuses `ok_with_setting` with no setting, so `Enforce` output is the only safe input.
@@ -61,6 +61,13 @@ Bump `checklist.Version` whenever an area's wording or a rule changes, because c
 | M1 | Contact or content `ok` needs at least one cited **mitigation or neutral** finding. If it cites only risk findings, it becomes `unknown` (`ok_without_finding`). A risk finding cited beside a supporting one is kept. | `TestRiskOnlyOKIsNotYes`, `TestEnforce` "contact ok on risk only demoted" and "...risk and mitigation stands" |
 | L1 | A setting made only of whitespace or invisible format characters (Unicode Cf, for example U+200B, U+2060, U+FEFF) counts as blank in `Enforce` and `Decide`. | `TestEnforce` "zero-width setting demoted", `TestSettingTrimmed` |
 | L2 | The heading and exit criterion no longer say "v1". They name `checklist.Version`. | none (documentation) |
+
+**Remediation, round 3** ([review](adversarial-review/t1.1-round3.md)). `checklist.Version` is bumped to `v4`.
+
+| Finding | Fix | Test |
+|---|---|---|
+| M1 | Generalized: in **every** area, `ok` needs at least one remaining mitigation or neutral finding. Otherwise it becomes `unknown` (`ok_without_finding`). That covers `ok` with no findings, and `ok` citing only risks, such as money `ok` on a pay-to-win quote. `Decide` gains a rule (5): an `unknown` area that still cites findings makes the verdict `unclear`, because its evidence did not support the grade. So money `ok` on a pay-to-win risk gives `unclear`, not `yes`. Rules 6 and 7 (settings, yes) are renumbered. An evidence-free `unknown` still counts only toward the three-unknowns rule. | `TestOKNeedsSupportEveryArea` (each area in turn, plus the round-3 money probe), `TestEnforce` money cases |
+| L1 | Settings are trimmed of whitespace and invisible format characters (Cf) at both ends, with the same predicate `blank` uses. So `"\u200bRestricted mode\u200b"` becomes `"Restricted mode"`, and `Settings` dedupes it with the clean form. | `TestSettingInvisibleEdges` |
 ---
 
 ### T1.2: Finding format and the quote check ★
@@ -113,6 +120,14 @@ The parser accepts a JSON object with a `findings` array, a bare array, or eithe
 | L1 | Each end of a match must touch the text's edge, whitespace, or a punctuation rune in the text beside a word rune in the quote. A quote that starts or ends with punctuation can no longer begin or end inside a token ("-safe" in "un-safe"). Underscore is a word rune ("safe" in "filter_safe"). | `TestWordBoundariesRound2` |
 | L2 | The round-1 reason for the pin was wrong. **Corrected:** the graph already requires `golang.org/x/sync v0.22.0`, and every `x/text` up to v0.41.0 requires sync v0.22.0 or older (checked against the proxy's `.mod` files), so none of them bumps anything. v0.42.0 needs sync v0.23.0. The pin is now **v0.41.0**, the newest version that changes no other requirement. Only the `golang.org/x/text` line in `go.mod` and its `go.sum` lines change. | `git diff main -- go.mod` |
 | T1.3 round 2 L1 | The `Source.Kind` vocabulary comment (`article`, `store` added) is now made here in T1.2, which owns `internal/finding/`, rather than on T1.3's branch. Comment only. | `git diff task-t1.2-finding task-t1.3-payloads -- internal/finding` is empty after the merge |
+
+**Remediation, round 3** ([review](adversarial-review/t1.2-round3.md)). The boundary rule is now one rule: a cut is refused only when the runes on both sides of it belong to one word.
+
+| Finding | Fix | Test |
+|---|---|---|
+| H1 | A hyphen with a word rune on each side is part of the word, as the apostrophe already was. "safe for young kids" no longer verifies in "un-safe", nor "violent content" in "non-violent", including U+2011. **Decision:** `Normalize` folds every dash (U+2010–U+2015, minus sign) to `-`, so an en or em dash written between two letters with no spaces also joins them. At worst that is a false negative (a quote cut at "word—word" is refused), never a false match. A spaced dash (" - ") is still a boundary. | `TestWordBoundaryTable` |
+| M1 | A cut with punctuation on both sides is allowed. "the chat is totally filtered." now verifies in `(…filtered.)`, in `"…filtered."` (straight or curly), and before "...!". | `TestWordBoundaryTable` |
+| table | One 25-case table covers hyphens (straight, U+2011, en dash), punctuation edges, and every earlier rule (prefix, apostrophe, underscore, digits, later whole-word occurrence, possessive). The round-1 and round-2 tests still pass. | `TestWordBoundaryTable`, `TestWordBoundaries`, `TestWordBoundariesRound2` |
 ---
 
 ### T1.3: Evidence and card payloads ★
@@ -159,6 +174,15 @@ Commit one example card per verdict (`card-yes.json`, `card-settings.json`, `car
 | M1 | **User decision: `card-yes.json` is accepted as it is.** It is a contract example, not evidence about Khan Academy Kids. Its thin contact quote ("Made For Ages 0–5") and the content risk it leaves out (review 17) are known and accepted. Neither T3.3's prompt nor P5 should treat it as a model of good evidence. Khan's real verdict belongs to T3.6b. The card still passes `Enforce` under `v3`: its contact finding is neutral, so it counts as support. | `TestExamplesObeyRules` |
 | L1 | The `Source.Kind` comment edit now lands in T1.2 (`task-t1.2-finding`), which owns `internal/finding/`. After the merge, T1.3's diff against T1.2 touches nothing under `internal/finding/`. | `git diff task-t1.2-finding -- internal/finding` is empty |
 | inherited | The examples were regenerated after T1.1 round 2 M1 (`v3`, supporting finding needed) and T1.2 round 2 H1 and L1 (stricter word boundaries). Every quote still verifies, and every card passes `Enforce` with zero demotions. | `TestGenerate`, `TestExamplesObeyRules` |
+
+**Remediation, round 3** (inherited from T1.1 and T1.2 round 3; T1.3's own round-3 review approved). The examples were regenerated under checklist `v4`.
+
+| Change | Why | Test |
+|---|---|---|
+| `card-yes`: age gating `ok` now cites "A free educational app for children ages 2–8" (khanacademy.org/kids, neutral). | v4: every `ok` needs a supporting finding | `TestExamplesObeyRules` (zero demotions), `TestGenerate` |
+| `card-settings`: age gating `ok` cites "On a child account, multiplayer starts off" (virtual-addiction.com, mitigation). Developer record is now `unknown`, because no fixture quote supports it, which makes two unknowns. The verdict is still `yes_with_settings`. | same | same |
+| `card-unclear`: developer record is now `unknown` (no supporting quote). The verdict is still `unclear`. | same | same |
+| All quotes re-verified under T1.2's round-3 boundary rule. | T1.2 H1 and M1 | `TestGenerate` |
 ---
 
 ### T1.4: HTTP API and error codes ★
@@ -220,7 +244,7 @@ Noted from the review, not this task's: `go mod tidy -diff` is non-empty on `mai
 
 ## Exit Criteria
 
-- [ ] Checklist frozen (`checklist.Version`, now `v3`), with the verdict question decided.
+- [ ] Checklist frozen (`checklist.Version`, now `v4`), with the verdict question decided.
 - [ ] The quote check rejects a changed word and an invented quote, by test.
 - [ ] Example evidence and card payloads committed, one card per verdict.
 - [ ] API and error codes documented, with examples.
