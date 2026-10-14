@@ -1,0 +1,84 @@
+=== RUN   TestLiveAppStore
+    live_test.go:115: recorded fixture roblox/us: 10 page(s): 1:array(50) 2:array(50) 3:array(50) 4:array(50) 5:array(50) 6:array(50) 7:array(50) 8:array(50) 9:array(50) 10:array(50)
+    live_test.go:115: recorded fixture roblox/us: entries 500, reviews 500, content-less entries 0; missing: id 0 title 0 content 0 im:rating 0 im:version 0 updated 0 author.name 0; empty: id 0 title 0 content 0 im:rating 0 im:version 0 updated 0 author.name 0; unparsable rating 0, unparsable updated 0; ratings 1..5: 118 28 34 34 286
+    live_test.go:115: recorded fixture roblox/us: entry members seen: author, author.label, author.name, author.uri, content, id, im:contentType, im:rating, im:version, im:voteCount, im:voteSum, link, title, updated
+    live_test.go:115: recorded fixture roblox/us: 500 review ids read, 500 unique; 0 out-of-order adjacent pair(s) in 499
+=== RUN   TestLiveAppStore/us
+    live_test.go:120: === live probe country=us title="Roblox" appID=431946152 ===
+    live_test.go:120: live search us: GET https://itunes.apple.com/search?country=us&entity=software&limit=5&term=Roblox
+    live_test.go:120: live search us: User-Agent unset, net/http sends Go-http-client/1.1, HTTP 200 in 57ms, 3 hit(s), resultCount 3
+    live_test.go:120: live search us: hit[0] id=431946152 name="Roblox" seller="Roblox Corporation" sellerUrl="http://www.roblox.com/" storeUrl="https://apps.apple.com/us/app/roblox/id431946152?uo=4" ageRating="12+"
+    live_test.go:120: live search us: hit[1] id=1617391485 name="Block\u00a0Blast！" seller="ARETIS LIMITED" sellerUrl="https://www.hungrystudio.com/" storeUrl="https://apps.apple.com/us/app/block-blast/id1617391485?uo=4" ageRating="12+"
+    live_test.go:120: live search us: hit[2] id=1351168404 name="Among Us!" seller="InnerSloth LLC" sellerUrl="http://www.innersloth.com/gameAmongUs.html" storeUrl="https://apps.apple.com/us/app/among-us/id1351168404?uo=4" ageRating="9+"
+    live_test.go:120: live search us: title hit id=431946152 description 3778 chars
+    live_test.go:120: live search us: raw title hit 44 keys; sellerUrl string; trackViewUrl string
+    live_test.go:120: live search us: title hit ratings: userRatingCount 20355739, averageUserRating 4.51077
+    live_test.go:120: live search us: recorded us capture resultCount 3, 3 hit(s)
+    live_test.go:120: live search us: fields equal to the recorded capture: id, name, seller, sellerUrl, storeUrl, ageRating
+    live_test.go:120: live search us: raw title hit keys: live 44, recorded 44; live-only []; recorded-only []
+    live_test.go:120: live search us: recorded capture ratings: userRatingCount 20355739, averageUserRating 4.51077
+    live_test.go:120: live reviews us: first page GET https://itunes.apple.com/us/rss/customerreviews/page=1/id=431946152/sortby=mostrecent/json (User-Agent unset, net/http sends Go-http-client/1.1)
+    live_test.go:120: live reviews us: page 1: entry absent, 0 review(s), HTTP 200, 8ms, 873 B, feed updated 2026-10-14T01:26:20-07:00
+    live_test.go:120: live reviews us: 1 page request(s) in 8ms total: 1:absent
+    live_test.go:120: live reviews us: feed served 0 entries, 0 reviews; client returned 0 reviews
+    live_test.go:120: live reviews us: FEED EMPTY: 0 entries on page 1; the client returned no error and no reviews, its documented empty-page behaviour. The checks below had nothing to compare
+    live_test.go:120: live reviews us: read stopped after 1 page(s); the client's cap is 10
+    live_test.go:120: live reviews us: empty page before page 10: page 1 (absent)
+    live_test.go:120: live reviews us: single-entry page and app-led first page: not assessable, the feed served no entries
+    live_test.go:120: live reviews us: page that failed: none
+    live_test.go:120: live reviews us: last page served: page 1, absent, 0 review(s), empty: the feed ran out here
+    live_test.go:120: live reviews us: field audit not run: 0 entries to audit
+    live_test.go:120: live reviews us: entry members seen: 
+    live_test.go:120: live reviews us: 0 review ids read, 0 unique
+    live_test.go:120: live reviews us: sortby=mostrecent: 0 out-of-order adjacent pair(s) in -1
+    live_test.go:120: client read NOT pinned against the raw feed bodies: the feed served no review entries, so there was nothing to compare
+    live_test.go:120: feed empty: 0 entries on page 1 (1 page request(s)); nothing was measured for us
+=== RUN   TestLiveAppStore/gb
+    live_test.go:120: === live probe country=gb title="Roblox" appID=431946152 ===
+    live_test.go:120: live search gb: GET https://itunes.apple.com/search?country=gb&entity=software&limit=5&term=Roblox
+    live_test.go:120: live search gb: User-Agent unset, net/http sends Go-http-client/1.1, HTTP 200 in 11ms, 5 hit(s), resultCount 5
+    live_test.go:120: live search gb: hit[0] id=431946152 name="Roblox" seller="Roblox Corporation" sellerUrl="http://www.roblox.com/" storeUrl="https://apps.apple.com/gb/app/roblox/id431946152?uo=4" ageRating="12+"
+    live_test.go:120: live search gb: hit[1] id=1617391485 name="Block\u00a0Blast!" seller="ARETIS LIMITED" sellerUrl="https://www.hungrystudio.com/" storeUrl="https://apps.apple.com/gb/app/block-blast/id1617391485?uo=4" ageRating="12+"
+    live_test.go:120: live search gb: hit[2] id=1351168404 name="Among Us!" seller="InnerSloth LLC" sellerUrl="http://www.innersloth.com/gameAmongUs.html" storeUrl="https://apps.apple.com/gb/app/among-us/id1351168404?uo=4" ageRating="9+"
+    live_test.go:120: live search gb: hit[3] id=6483539426 name="Fortnite" seller="Epic Games Sweden AB" sellerUrl="https://www.fortnite.com/" storeUrl="https://apps.apple.com/gb/app/fortnite/id6483539426?uo=4" ageRating="12+"
+    live_test.go:120: live search gb: hit[4] id=1208138685 name="Toca Boca World" seller="Toca Boca AB" sellerUrl="https://tocaboca.com" storeUrl="https://apps.apple.com/gb/app/toca-boca-world/id1208138685?uo=4" ageRating="4+"
+    live_test.go:120: live search gb: title hit id=431946152 description 3159 chars
+    live_test.go:120: live search gb: raw title hit 44 keys; sellerUrl string; trackViewUrl string
+    live_test.go:120: live search gb: title hit ratings: userRatingCount 2834925, averageUserRating 4.49446
+    live_test.go:120: live search gb: recorded us capture resultCount 3, 3 hit(s)
+    live_test.go:120: live search gb: fields equal to the recorded capture: id, name, seller, sellerUrl, ageRating
+    live_test.go:120: live search gb: field differs from the recorded capture: storeUrl: live "https://apps.apple.com/gb/app/roblox/id431946152?uo=4", recorded "https://apps.apple.com/us/app/roblox/id431946152?uo=4"
+    live_test.go:120: live search gb: raw title hit keys: live 44, recorded 44; live-only []; recorded-only []
+    live_test.go:120: live search gb: recorded capture ratings: userRatingCount 20355739, averageUserRating 4.51077
+    live_test.go:120: live reviews gb: first page GET https://itunes.apple.com/gb/rss/customerreviews/page=1/id=431946152/sortby=mostrecent/json (User-Agent unset, net/http sends Go-http-client/1.1)
+    live_test.go:120: live reviews gb: page 1: entry absent, 0 review(s), HTTP 200, 9ms, 878 B, feed updated 2026-10-14T01:26:20-07:00
+    live_test.go:120: live reviews gb: 1 page request(s) in 9ms total: 1:absent
+    live_test.go:120: live reviews gb: feed served 0 entries, 0 reviews; client returned 0 reviews
+    live_test.go:120: live reviews gb: FEED EMPTY: 0 entries on page 1; the client returned no error and no reviews, its documented empty-page behaviour. The checks below had nothing to compare
+    live_test.go:120: live reviews gb: read stopped after 1 page(s); the client's cap is 10
+    live_test.go:120: live reviews gb: empty page before page 10: page 1 (absent)
+    live_test.go:120: live reviews gb: single-entry page and app-led first page: not assessable, the feed served no entries
+    live_test.go:120: live reviews gb: page that failed: none
+    live_test.go:120: live reviews gb: last page served: page 1, absent, 0 review(s), empty: the feed ran out here
+    live_test.go:120: live reviews gb: field audit not run: 0 entries to audit
+    live_test.go:120: live reviews gb: entry members seen: 
+    live_test.go:120: live reviews gb: 0 review ids read, 0 unique
+    live_test.go:120: live reviews gb: sortby=mostrecent: 0 out-of-order adjacent pair(s) in -1
+    live_test.go:120: client read NOT pinned against the raw feed bodies: the feed served no review entries, so there was nothing to compare
+    live_test.go:120: feed empty: 0 entries on page 1 (1 page request(s)); nothing was measured for gb
+=== NAME  TestLiveAppStore
+    live_test.go:123: === storefronts us and gb ===
+    live_test.go:123: reviews served: us 0 in 1 page(s); gb 0 in 1 page(s)
+    live_test.go:123: field audit: us not run: feed empty, 0 review entries to audit
+    live_test.go:123: field audit: gb not run: feed empty, 0 review entries to audit
+    live_test.go:123: storefront reach (search API, same title): us userRatingCount 20355739, averageUserRating 4.51077; gb userRatingCount 2834925, averageUserRating 4.49446
+    live_test.go:123: gb's userRatingCount is 13.9% of us's
+    live_test.go:123: feed empty in both storefronts: this run does not answer the country question; the recorded us fixture holds 500 reviews
+    live_test.go:123: review ids in both us and gb: 0 of 0 gb reviews (0.0%), of 0 us reviews
+    live_test.go:123: review window: us no parsable dates; gb no parsable dates
+--- FAIL: TestLiveAppStore (0.10s)
+    --- FAIL: TestLiveAppStore/us (0.07s)
+    --- FAIL: TestLiveAppStore/gb (0.02s)
+FAIL
+FAIL	github.com/nrynss/before-yes/internal/appstore	0.109s
+FAIL

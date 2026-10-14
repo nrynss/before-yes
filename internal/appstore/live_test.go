@@ -152,11 +152,16 @@ func probeCountry(t *testing.T, ctx context.Context, country string) *countryPro
 	if err != nil {
 		t.Fatalf("live reviews: %v", err)
 	}
-	// An empty first page is not an error: Apple's feed serves empty pages
-	// intermittently for every app, and the probe records what it got rather
-	// than failing on Apple's state.
+	// An empty first page is not a client error (the client returns no
+	// reviews and no error), but it is a failed probe: the probe exists to
+	// measure what the feed serves, and an empty feed measures nothing. On
+	// 14 Oct 2026 the feed returned HTTP 200 with no entry for every app
+	// tried, including a control; see the T2.3b block in PHASE-2-clients.md.
 	pages := rec.exchanges()[len(search):]
 	audit := logReviews(t, country, pages, reviews)
+	if len(reviews) == 0 {
+		t.Errorf("feed empty: 0 entries on page 1 (%d page request(s)); nothing was measured for %s", len(pages), country)
+	}
 	return &countryProbe{reviews: reviews, pages: pages, audit: audit, ratingCount: ratingCount, avgRating: avgRating}
 }
 
@@ -311,13 +316,17 @@ func logReviews(t *testing.T, country string, pages []exchange, reviews []Review
 	t.Logf("live reviews %s: feed served %d entries, %d reviews; client returned %d reviews",
 		country, audit.entries, audit.reviews, len(reviews))
 	if audit.reviews == 0 {
-		t.Logf("live reviews %s: the feed served no entries; the client returned no error and no reviews, its documented empty-page behaviour",
+		t.Logf("live reviews %s: FEED EMPTY: 0 entries on page 1; the client returned no error and no reviews, its documented empty-page behaviour. The checks below had nothing to compare",
 			country)
 	}
 	t.Logf("live reviews %s: read stopped after %d page(s); the client's cap is %d", country, len(pages), MaxPages)
 	t.Logf("live reviews %s: empty page before page 10: %s", country, listOr(empties, "none"))
-	t.Logf("live reviews %s: single-entry page: %s", country, listOr(singles, "none"))
-	t.Logf("live reviews %s: page led by a content-less (app) entry: %s", country, listOr(leadApp, "none"))
+	if audit.entries == 0 {
+		t.Logf("live reviews %s: single-entry page and app-led first page: not assessable, the feed served no entries", country)
+	} else {
+		t.Logf("live reviews %s: single-entry page: %s", country, listOr(singles, "none"))
+		t.Logf("live reviews %s: page led by a content-less (app) entry: %s", country, listOr(leadApp, "none"))
+	}
 	t.Logf("live reviews %s: page that failed: %s", country, listOr(failed, "none"))
 	if lastPage > 0 {
 		note := "full"
@@ -333,7 +342,11 @@ func logReviews(t *testing.T, country string, pages []exchange, reviews []Review
 		}
 		t.Logf("live reviews %s: last page served: page %d, %s, %d review(s), %s", country, lastPage, lastShape, lastReviews, note)
 	}
-	t.Logf("live reviews %s: %s", country, audit.summary())
+	if audit.entries == 0 {
+		t.Logf("live reviews %s: field audit not run: 0 entries to audit", country)
+	} else {
+		t.Logf("live reviews %s: %s", country, audit.summary())
+	}
 	t.Logf("live reviews %s: entry members seen: %s", country, memberList(audit.members))
 	t.Logf("live reviews %s: %d review ids read, %d unique", country, len(ids), unique(ids))
 	t.Logf("live reviews %s: sortby=mostrecent: %d out-of-order adjacent pair(s) in %d",
@@ -386,15 +399,23 @@ func compareStorefronts(t *testing.T, us, gb *countryProbe) {
 	}
 	t.Logf("=== storefronts us and gb ===")
 	t.Logf("reviews served: us %d in %d page(s); gb %d in %d page(s)", len(us.reviews), len(us.pages), len(gb.reviews), len(gb.pages))
-	t.Logf("field audit: us %s", us.audit.summary())
-	t.Logf("field audit: gb %s", gb.audit.summary())
+	for _, p := range []struct {
+		name string
+		pr   *countryProbe
+	}{{"us", us}, {"gb", gb}} {
+		if p.pr.audit.reviews == 0 {
+			t.Logf("field audit: %s not run: feed empty, 0 review entries to audit", p.name)
+		} else {
+			t.Logf("field audit: %s %s", p.name, p.pr.audit.summary())
+		}
+	}
 	t.Logf("storefront reach (search API, same title): us userRatingCount %d, averageUserRating %.5f; gb userRatingCount %d, averageUserRating %.5f",
 		us.ratingCount, us.avgRating, gb.ratingCount, gb.avgRating)
 	if us.ratingCount > 0 {
 		t.Logf("gb's userRatingCount is %.1f%% of us's", float64(gb.ratingCount)*100/float64(us.ratingCount))
 	}
 	if len(us.reviews) == 0 && len(gb.reviews) == 0 {
-		t.Logf("both storefronts served no reviews: Apple's feed is empty right now, so this run does not answer the country question; the recorded us fixture holds 500 reviews")
+		t.Errorf("feed empty in both storefronts: this run does not answer the country question; the recorded us fixture holds 500 reviews")
 	}
 	seen := map[string]bool{}
 	for _, r := range us.reviews {
@@ -419,6 +440,10 @@ func compareStorefronts(t *testing.T, us, gb *countryProbe) {
 // served: same reviews, same order, same fields. It never prints review text.
 func checkAgainstRaw(t *testing.T, reviews []Review, entries []map[string]json.RawMessage) {
 	t.Helper()
+	if len(reviews) == 0 && len(entries) == 0 {
+		t.Logf("client read NOT pinned against the raw feed bodies: the feed served no review entries, so there was nothing to compare")
+		return
+	}
 	if len(reviews) != len(entries) {
 		t.Fatalf("client returned %d reviews, the feed served %d review entries", len(reviews), len(entries))
 	}

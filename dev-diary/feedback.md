@@ -4,6 +4,10 @@ Friction and wins with the services and libraries Before Yes uses, recorded when
 
 Each entry gives what happened, the evidence, what it cost, and what would fix it. Never paste a key.
 
+## Apple App Store
+
+- **The customer-review feed went dark with no error and no status change.** `itunes.apple.com/{cc}/rss/customerreviews/.../json` now returns HTTP 200 and a feed skeleton with no `entry` member, which is the same answer an app with no reviews gets. *Evidence:* T0.4 captured 500 reviews per title on 13 Oct; on 14 Oct the feed was empty for every app tried, including Facebook (284882215) as a control, in `us`, `gb` and `in`, in the json, xml and no-sort variants, from this machine at two probes about 40 minutes apart and from a separate Hetzner host (T2.3b, [transcript](live/t2.3b-transcript.txt)). The search API still works. *Cost:* the review source the brief rests on is gone, and a client cannot tell a retired feed from a title nobody reviewed, so the pipeline falls back to the App Store web page through Tavily (T3.8). *Fix:* return a 4xx or 410, or an explicit retirement notice, when the feed is withdrawn; or keep serving it.
+
 ## Tavily
 
 - **Extract credits do not follow the price list, in both directions.** The price list says one credit per five extracted URLs. A two-URL basic extract reported `usage.credits` 0 for Minecraft and 1 for Roblox (T0.4). Later, two-page extracts reported 0 (Khan, Minecraft) while all-failed extracts reported 1 (Roblox, Toca reddit), and a live extract with 1 page read and 2 failed reported 0 (T2.2b) — so the price list would overcount an all-failed extract and undercount a successful one. *Evidence:* the T0.4 MANIFESTs and the T2.2 fixture rows. *Cost:* a meter that prices from the price list drifts from the bill. *Fix:* document the rounding, or report it consistently; the client trusts a genuinely reported `credits` and falls back to the price list only when the number is absent.
