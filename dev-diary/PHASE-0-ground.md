@@ -214,4 +214,4 @@ Record credits per call. Then answer the T0.4a inspection questions again for th
 - [x] Three demo titles and one alternative chosen.
 - [x] Fixtures for all three titles committed, with Tavily credits per title recorded.
 - [x] `tools/check.sh` green locally.
-- [ ] `tools/check.sh` green in CI (needs a remote).
+- [x] `tools/check.sh` green in CI: [first run](https://github.com/nrynss/before-yes/actions/runs/38508255681).
