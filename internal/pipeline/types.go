@@ -22,7 +22,25 @@ const (
 	KindAndroid Kind = "android"
 	KindConsole Kind = "console_pc"
 	KindYouTube Kind = "youtube"
+	// KindUnknown is a title no signal placed (user decision, T3.7).
+	KindUnknown Kind = "unknown"
 )
+
+// KindLabel is the card's words for a kind: "kind unknown" for a title no
+// signal placed.
+func KindLabel(k Kind) string {
+	switch k {
+	case KindIOS:
+		return "iOS app"
+	case KindAndroid:
+		return "Android app"
+	case KindConsole:
+		return "console or PC game"
+	case KindYouTube:
+		return "YouTube channel"
+	}
+	return "kind unknown"
+}
 
 // AppInfo is the matched App Store listing. It is nil when no hit matched.
 type AppInfo struct {
@@ -85,9 +103,11 @@ type Alternative struct {
 
 // Card is one judgement for one age.
 type Card struct {
-	ID               string            `json:"id"`
-	Title            string            `json:"title"`
-	Kind             Kind              `json:"kind"`
+	ID    string `json:"id"`
+	Title string `json:"title"`
+	Kind  Kind   `json:"kind"`
+	// KindLabel is KindLabel(Kind), the words the card shows.
+	KindLabel        string            `json:"kind_label"`
 	Age              int               `json:"age"`
 	ChecklistVersion string            `json:"checklist_version"`
 	CheckedAt        time.Time         `json:"checked_at"`

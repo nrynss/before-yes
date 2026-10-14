@@ -679,8 +679,10 @@ func TestGatherNoHostFollowsNoLinks(t *testing.T) {
 	if u := docURLs(got.Docs, KindPolicy); len(u) != 0 {
 		t.Errorf("a third party's policy was read as the title's: %v", u)
 	}
-	if !contains(got.Missing, KindPolicy) || !strings.Contains(strings.Join(got.Notes, "\n"), "no official host known") {
-		t.Errorf("missing %v notes %q", got.Missing, got.Notes)
+	// No signal places the title, so it is KindUnknown, whose general plan
+	// has no policy search: nothing is read, and policy is not missing.
+	if got.Kind != KindUnknown || contains(got.Missing, KindPolicy) {
+		t.Errorf("kind %q missing %v notes %q", got.Kind, got.Missing, got.Notes)
 	}
 	if l := pageLinks("https://www.commonsensemedia.org/privacy-policy", "", KindPolicy); l != nil {
 		t.Errorf("pageLinks with no host = %v", l)

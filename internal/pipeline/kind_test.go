@@ -132,8 +132,8 @@ func TestKindsGatherTheirPlan(t *testing.T) {
 }
 
 func TestDetectKind(t *testing.T) {
-	if k := DetectKind("Nothing Known", nil); k != KindConsole {
-		t.Errorf("no signal: %q, want console_pc", k)
+	if k := DetectKind("Nothing Known", nil); k != KindUnknown {
+		t.Errorf("no signal: %q, want unknown", k)
 	}
 	if k := DetectKind("Sample YouTube Kids", nil); k != KindYouTube {
 		t.Errorf("YouTube in the title: %q", k)
@@ -219,5 +219,61 @@ func TestGatherVersionCoversEveryKind(t *testing.T) {
 	ratingBoards = []string{"esrb.org"}
 	if GatherVersion() == before {
 		t.Error("a console plan change did not change GatherVersion")
+	}
+	ratingBoards = saved
+	savedGeneral := generalKinds
+	defer func() { generalKinds = savedGeneral }()
+	generalKinds = []string{KindNews}
+	if GatherVersion() == before {
+		t.Error("a general (unknown-kind) plan change did not change GatherVersion")
+	}
+}
+
+// User decision: a title no signal places is KindUnknown, not console_pc.
+// A YouTube channel or an Android app whose hits name no channel, store or
+// board is unknown too; nothing in them says what it is.
+func TestUnplaceableTitleIsUnknown(t *testing.T) {
+	cases := map[string]struct {
+		title string
+		hits  []tavily.Result
+	}{
+		"no hits":                     {"Nothing Known", nil},
+		"unplaceable YouTube channel": {"Sunny Sing-Along", []tavily.Result{hit("https://www.example-news.com/kids-shows", "Is Sunny Sing-Along OK for toddlers?", "Parents debate the songs and the ads between episodes.")}},
+		"unplaceable Android app":     {"Doodle Pals", []tavily.Result{hit("https://www.example-blog.com/doodle-pals", "Doodle Pals review for parents", "A drawing app for kids with stickers and an in-app store.")}},
+	}
+	for name, c := range cases {
+		if k := DetectKind(c.title, c.hits); k != KindUnknown {
+			t.Errorf("%s: kind %q, want unknown", name, k)
+		}
+	}
+	if KindLabel(KindUnknown) != "kind unknown" || KindLabel("") != "kind unknown" {
+		t.Errorf("label %q", KindLabel(KindUnknown))
+	}
+}
+
+// The unknown plan is general: news, forums and ratings, with no ESRB/PEGI
+// search and no policy or terms search.
+func TestUnknownPlanIsGeneral(t *testing.T) {
+	plan := PlanFor(KindUnknown, "Doodle Pals", "")
+	kinds := map[string]bool{}
+	for _, q := range plan {
+		kinds[q.Kind] = true
+		if len(q.Search.IncludeDomains) != 0 && q.Kind == KindRating {
+			t.Errorf("rating search narrowed to %v", q.Search.IncludeDomains)
+		}
+		// The shared rating search (it runs for every kind, to detect the
+		// kind) names the boards as words; weighting is the console plan's
+		// board-narrowed search, which must not be here.
+		if q.Name == "rating-boards" || contains(q.Search.IncludeDomains, "esrb.org") {
+			t.Errorf("unknown plan weights rating boards: %+v", q)
+		}
+	}
+	for _, k := range []string{KindNews, KindForum, KindReddit, KindRating} {
+		if !kinds[k] {
+			t.Errorf("unknown plan has no %s search", k)
+		}
+	}
+	if kinds[KindPolicy] || kinds[KindTerms] || kinds[KindReview] {
+		t.Errorf("unknown plan kinds %v", kinds)
 	}
 }

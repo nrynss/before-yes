@@ -311,7 +311,7 @@ Whether the YouTube Data API's made-for-kids status adds anything is an open que
 - **Detection** (`kind.go`, `DetectKind`):
   - An App Store match, by the store search or by a policy hit, makes a title `ios`.
   - Otherwise the rating search runs straight after the policy search, and their hits are scored. A YouTube channel URL (`/@`, `/channel/`, `/c/`, `/user/`) scores for `youtube`, a `play.google.*` URL for `android`, and an `esrb.org` or `pegi.info` page for `console_pc`, along with mentions in hit text (YouTuber, subscribers; Android, Google Play; PlayStation, Xbox, Nintendo Switch, Steam, PC game, console). The most signals wins.
-  - A title with no signal is taken as `console_pc`, since the console plan's rating-board search is the one that can still find something.
+  - A title with no signal is `unknown` (user decision below).
 - **Plan** (`PlanFor(kind, title, host)`; `Plan` is the iOS plan, unchanged):
   - **android:** every unnarrowed search excludes `play.google.com`, and Play hits are dropped, so no Play Store page is read. The policy and rating searches run before the kind is known, so they cannot exclude Play; their Play hits are dropped afterwards.
   - **console_pc:** adds a `rating-boards` search narrowed to `esrb.org` and `pegi.info`.
@@ -338,6 +338,12 @@ Whether the YouTube Data API's made-for-kids status adds anything is an open que
   3. It says nothing about whether content suits a given age. "Not made for kids" covers general-audience content, and "made for kids" is no safety rating (YouTube Help 9528076).
   4. It needs a Google API key and quota: a new service and a new key, outside the fixture-only scope.
 - **If adopted later (P4 or P6):** show it as small print beside the kind, for example "YouTube marks this channel as made for kids: comments and personalised ads are off on its videos". Do not grade it.
+
+
+**User decision (T3.7): an explicit unknown kind.** A title that no signal places is now `unknown` (`KindUnknown`), not `console_pc`. Its plan is the general one: Plan's news, forum, Reddit and rating searches (`generalKinds`). It has no ESRB/PEGI board-narrowed search, and no policy or terms search, because no store or official site placed it, so those kinds are not missing. The shared rating search still names the boards as words, because it runs for every kind to detect the kind. The card shows `kind_label` "kind unknown". `GatherVersion` loops over `allKinds`, which now includes `unknown`, so a change to the general plan changes the cache key. `TestGatherNoHostFollowsNoLinks` now gathers an unknown-kind title, so it checks that no third-party policy is read and that policy is not missing. `pageLinks` keeps its host checks.
+- Contract: `Card.kind_label` is new and additive (the five card examples and `api/get-card.json` gain one line each). The new example `card-unknown-kind.json` shows `"kind": "unknown"`.
+- Outside owns, kept minimal: `types.go` (the `KindUnknown` value, `KindLabel` and the `Card.KindLabel` field), `pipeline.go` (`Decide` sets the label; `GatherVersion` uses `allKinds`), `types_test.go` (a per-spec kind and the new example), `gather_test.go` (the test above) and `testdata/contracts`. The card and contract live there.
+- Tests: `TestUnplaceableTitleIsUnknown` (no hits, an unplaceable YouTube channel, an unplaceable Android app), `TestUnknownPlanIsGeneral`, `TestGatherVersionCoversEveryKind` (now also the general plan), `TestDetectKind`, and the contract round trip.
 
 ---
 

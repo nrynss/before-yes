@@ -21,7 +21,7 @@ var update = flag.Bool("update", false, "rewrite testdata/contracts from the fix
 
 const contracts = "../../testdata/contracts"
 
-var examples = []string{"evidence.json", "card-yes.json", "card-settings.json", "card-no.json", "card-unclear.json"}
+var examples = []string{"evidence.json", "card-yes.json", "card-settings.json", "card-no.json", "card-unclear.json", "card-unknown-kind.json"}
 
 // decodeStrict decodes with unknown fields refused.
 func decodeStrict(b []byte, v any) error {
@@ -116,7 +116,7 @@ func valuePaths(v any, prefix string, out map[string]bool) {
 func TestExamplesCoverEveryField(t *testing.T) {
 	for typ, files := range map[reflect.Type][]string{
 		reflect.TypeOf(Evidence{}): {"evidence.json"},
-		reflect.TypeOf(Card{}):     {"card-yes.json", "card-settings.json", "card-no.json", "card-unclear.json"},
+		reflect.TypeOf(Card{}):     {"card-yes.json", "card-settings.json", "card-no.json", "card-unclear.json", "card-unknown-kind.json"},
 	} {
 		want := map[string]bool{}
 		jsonPaths(typ, "", want)
@@ -144,7 +144,7 @@ func TestExamplesCoverEveryField(t *testing.T) {
 // grades enforced, settings from the grades, every cited id present, and
 // every risk finding on the card.
 func TestExamplesObeyRules(t *testing.T) {
-	want := map[string]checklist.Verdict{"card-yes.json": checklist.Yes, "card-settings.json": checklist.YesWithSettings, "card-no.json": checklist.No, "card-unclear.json": checklist.Unclear}
+	want := map[string]checklist.Verdict{"card-yes.json": checklist.Yes, "card-settings.json": checklist.YesWithSettings, "card-no.json": checklist.No, "card-unclear.json": checklist.Unclear, "card-unknown-kind.json": checklist.Unclear}
 	for name, verdict := range want {
 		b, _ := os.ReadFile(filepath.Join(contracts, name))
 		var c Card
@@ -253,6 +253,7 @@ func fixtureSegments(t *testing.T, slug string, specs []spec) map[string]finding
 
 type cardSpec struct {
 	file, slug, title, cardID string
+	kind                      Kind // KindIOS when empty
 	age                       int
 	app                       *AppInfo
 	specs                     []spec
@@ -327,12 +328,16 @@ func build(t *testing.T, cs cardSpec) (Card, Evidence) {
 	if alts == nil {
 		alts = []Alternative{}
 	}
-	card := Card{ID: cs.cardID, Title: cs.title, Kind: KindIOS, Age: cs.age, ChecklistVersion: checklist.Version,
+	kind := cs.kind
+	if kind == "" {
+		kind = KindIOS
+	}
+	card := Card{ID: cs.cardID, Title: cs.title, Kind: kind, KindLabel: KindLabel(kind), Age: cs.age, ChecklistVersion: checklist.Version,
 		CheckedAt: collected.Add(40 * time.Second), CollectedAt: collected, Verdict: verdict, Grades: grades,
 		Settings: checklist.Settings(grades), Findings: onCard, Alternatives: alts, App: cs.app, Stats: stats}
 	evStats := stats
 	evStats.ConflictedAreas, evStats.JudgeCostNano, evStats.JudgeModel = []checklist.Area{}, 0, ""
-	ev := Evidence{Title: cs.title, Kind: KindIOS, CollectedAt: collected, App: cs.app, Findings: fs, Stats: evStats}
+	ev := Evidence{Title: cs.title, Kind: kind, CollectedAt: collected, App: cs.app, Findings: fs, Stats: evStats}
 	return card, ev
 }
 
@@ -433,6 +438,26 @@ func cardSpecs() []cardSpec {
 		},
 		{file: "card-unclear.json", slug: "toca-life-world", title: "Toca Life World", cardID: "c_Tc6vRb1nQ8zKp2dWm5sLhA", age: 6,
 			app: nil,
+			specs: []spec{
+				{ref: "tavily-extract.json|https://www.tocaboca.com/docs/en/terms-of-service", kind: "terms", area: checklist.Money, stance: finding.Risk,
+					claim: "The game sells in-app purchases billed to a card",
+					quote: "bill your credit card or use other payment methods if you make an In-App Purchase"},
+			},
+			grades: []checklist.Grade{
+				g(checklist.Contact, checklist.Unknown, "", "No source settled whether players can message each other."),
+				g(checklist.Money, checklist.OKWithSetting, "Ask to Buy (Family Sharing)", "In-app purchases are sold; Ask to Buy stops them.", "0"),
+				g(checklist.Data, checklist.Unknown, "", ""),
+				g(checklist.AgeGating, checklist.Unknown, "", ""),
+				g(checklist.Content, checklist.Unknown, "", "No reviews were read."),
+				g(checklist.DeveloperRecord, checklist.Unknown, "", "No developer record found."),
+			},
+			missing: []string{"review", "reddit", "news"},
+		},
+		// User decision (T3.7): a title no signal placed is kind unknown,
+		// on the general plan (no policy or terms search, so neither is
+		// missing).
+		{file: "card-unknown-kind.json", slug: "toca-life-world", title: "Toca Life World", cardID: "c_Uk4nWn7pQ2zKd8sVm3tRhB", age: 6,
+			kind: KindUnknown, app: nil,
 			specs: []spec{
 				{ref: "tavily-extract.json|https://www.tocaboca.com/docs/en/terms-of-service", kind: "terms", area: checklist.Money, stance: finding.Risk,
 					claim: "The game sells in-app purchases billed to a card",
