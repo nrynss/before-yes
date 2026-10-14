@@ -316,7 +316,11 @@ func build(t *testing.T, cs cardSpec) (Card, Evidence) {
 		conflicted = []checklist.Area{}
 	}
 	collected := time.Date(2026, 10, 13, 18, 58, 0, 0, time.UTC)
-	stats := Stats{Sources: 9, Reviews: reviews, Chunks: 31, FailedChunks: 1, Drops: finding.Drops{BadArea: 1, BadStance: 0, NoQuote: 2, Unquoted: 4, Duplicates: 3},
+	reviewSource := ""
+	if reviews > 0 {
+		reviewSource = ReviewsFromFeed
+	}
+	stats := Stats{Sources: 9, Reviews: reviews, ReviewSource: reviewSource, Chunks: 31, FailedChunks: 1, Drops: finding.Drops{BadArea: 1, BadStance: 0, NoQuote: 2, Unquoted: 4, Duplicates: 3},
 		ConflictedAreas: conflicted, MissingKinds: missing, TavilyCredits: 8, ReadCostNano: 11_800_000, JudgeCostNano: 13_600_000,
 		ReaderModel: "nvidia/nvidia-nemotron-3-nano-30b-a3b", JudgeModel: "nvidia/nemotron-3-super-120b-a12b"}
 	alts := cs.alts

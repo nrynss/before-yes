@@ -51,7 +51,8 @@ type Doc struct {
 // the clean-up below must bump it. (The plan's queries and the Gathered
 // shape are hashed into the key on their own; see pipeline.ReaderVersion.)
 // plan-3: round-2 error-page, host and link rules.
-const PlanVersion = "plan-3"
+// plan-4: the App Store page stands in for an empty review feed (T3.8).
+const PlanVersion = "plan-4"
 
 // Source kinds a plan query or the store step fills. A kind with no usable
 // document is reported in Gathered.Missing, for the card's small print.
@@ -149,6 +150,10 @@ type Gathered struct {
 	// missing because a call failed may be there next time, so the
 	// pipeline does not cache such evidence.
 	Failures []string
+	// ReviewSource says where the reviews came from: ReviewsFromFeed,
+	// ReviewsFromPage when the feed returned nothing and the App Store web
+	// page stood in (T3.8), or empty when there are none.
+	ReviewSource string
 }
 
 // Gatherer runs the source plan for one title.
@@ -239,7 +244,7 @@ func (g *Gatherer) Gather(ctx context.Context, title, ref string) (Gathered, err
 	if out.App == nil {
 		miss(KindReview, "no App Store hit matches the title")
 	} else {
-		g.storeDocs(ctx, out.App, at, &out, miss)
+		g.storeDocs(ctx, ref, out.App, at, &out, miss)
 	}
 
 	// 3. The policy and terms pages: one extract call, and a second only
@@ -468,19 +473,35 @@ func hasKind(docs []Doc, kind string) bool {
 	return false
 }
 
-func (g *Gatherer) storeDocs(ctx context.Context, a *appstore.App, at time.Time, out *Gathered, miss func(kind, why string)) {
+func (g *Gatherer) storeDocs(ctx context.Context, ref string, a *appstore.App, at time.Time, out *Gathered, miss func(kind, why string)) {
 	pages := g.ReviewPages
 	if pages <= 0 {
 		pages = appstore.MaxPages
 	}
 	reviews, err := g.Store.Reviews(ctx, a.ID, pages)
 	if err != nil {
-		// The feed has been dark for every app; the store page (T3.8) is
-		// the fallback once it exists.
+		// A failed call, not an empty feed: no page fallback, and the
+		// evidence is not cached (Failures).
 		miss(KindReview, "App Store review feed failed: "+err.Error())
 		out.Failures = append(out.Failures, "review_feed")
 	} else if len(reviews) == 0 {
-		miss(KindReview, "App Store review feed returned no reviews")
+		// The feed answers an empty skeleton for every app (feedback.md),
+		// so the web page stands in. Only an empty feed falls back: a feed
+		// error is a failed call, recorded as one.
+		out.Notes = append(out.Notes, "App Store review feed returned no reviews; reading the App Store page")
+		docs, used, why, failed := g.storePageDocs(ctx, ref, a, at)
+		out.Credits += used
+		if failed {
+			out.Failures = append(out.Failures, "store_page")
+		}
+		if len(docs) == 0 {
+			miss(KindReview, why)
+		} else {
+			out.Docs = append(out.Docs, docs...)
+			out.ReviewSource = ReviewsFromPage
+		}
+	} else {
+		out.ReviewSource = ReviewsFromFeed
 	}
 	for _, r := range reviews {
 		out.Docs = append(out.Docs, Doc{
