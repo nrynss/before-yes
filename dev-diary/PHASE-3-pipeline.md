@@ -126,6 +126,14 @@ Every grade then goes through `checklist.Enforce`, and the verdict comes from `c
 - The recorded Super replies are hand-written in judge_test.go, against real verified Roblox finding ids. The contact flag rests on review 355. The conflict pass runs only for contact. A money flag citing a made-up id is demoted to unknown.
 - **Stand-in replies, accepted by the user:** the recorded replies in judge_test.go are hand-written stand-ins, not real model output. T3.6b must replace them with real recordings from `testdata/eval/replies/`.
 
+**Round 1 remediation (T3.3).**
+
+| ID | Fix | Test |
+|---|---|---|
+| M1 | `parseGrades` takes the last object with grades, trying opening braces from the end, so a thinking reply that drafts and then revises is read for its final answer. | `TestParseGradesTakesTheLastBlock` (draft ok, final flag → flag) |
+| L1 | A conflict pass that parses but grades none of the conflicted areas sets `ConflictErr` ("graded none of the conflicted areas") and the first grades stand. | `TestConflictPassAnsweringNothingFails` |
+| L2 | Accepted by the user: the judge is tested on hand-written stand-in replies until T3.6b records real ones. | stand-in note above |
+
 ---
 
 ### T3.4: Collect, decide, and the evidence cache ★

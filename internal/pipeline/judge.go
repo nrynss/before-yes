@@ -70,12 +70,14 @@ func judgeUser(title string, age int, areas []checklist.Area, fs []finding.Findi
 	return b.String()
 }
 
-// parseGrades finds the grades object in a reply. A thinking reply can
-// carry reasoning, braces included, before the answer, and a host may wrap
-// the answer in a code fence, so every opening brace is tried until one
-// decodes to an object with grades.
+// parseGrades finds the answer in a reply: the last object with grades. A
+// thinking reply can carry reasoning before the answer, braces and draft
+// grades included, and a host may wrap the answer in a code fence, so the
+// opening braces are tried from the end and the last one that decodes to an
+// object with grades wins. A grade object inside it has no grades key of
+// its own, so it is skipped on the way back.
 func parseGrades(reply string) ([]checklist.Grade, error) {
-	for i := 0; i < len(reply); i++ {
+	for i := len(reply) - 1; i >= 0; i-- {
 		if reply[i] != '{' {
 			continue
 		}
@@ -182,7 +184,11 @@ func (j *Judge) Judge(ctx context.Context, title string, age int, ref string, fs
 		if err == nil {
 			var second []checklist.Grade
 			if second, err = parseGrades(reply.Text); err == nil {
-				grades = replace(grades, second, out.Conflicted)
+				if answers(second, out.Conflicted) {
+					grades = replace(grades, second, out.Conflicted)
+				} else {
+					err = errors.New("judge: the conflict pass graded none of the conflicted areas")
+				}
 			}
 		}
 		out.ConflictErr = err
@@ -197,6 +203,16 @@ func (j *Judge) Judge(ctx context.Context, title string, age int, ref string, fs
 		return out, fmt.Errorf("judge: %w", err)
 	}
 	return out, nil
+}
+
+// answers reports whether grades holds at least one of areas.
+func answers(grades []checklist.Grade, areas []checklist.Area) bool {
+	for _, g := range grades {
+		if slices.Contains(areas, g.Area) {
+			return true
+		}
+	}
+	return false
 }
 
 // replace swaps in the second pass's grade for each re-judged area it
