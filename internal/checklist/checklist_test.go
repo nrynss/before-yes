@@ -299,6 +299,65 @@ func TestOKNeedsSupportEveryArea(t *testing.T) {
 	}
 }
 
+// T1.1 round 4 M1: a changed grade carries the system's reason, not the judge's.
+func TestChangedGradeReason(t *testing.T) {
+	out, _ := Enforce([]Grade{
+		{Area: Money, Level: OK, Setting: "Ask to Buy", Reason: "looks fine", Findings: []string{"m-risk"}},
+		{Area: Contact, Level: Flag, Reason: "strangers everywhere", Findings: []string{"c-mit"}},
+		{Area: Content, Level: OK, Reason: "kept", Findings: []string{}},
+	}, ev)
+	m := one(t, out, Money)
+	if m.Level != Flag || m.Setting != "" || m.Reason != Reasons[RuleOKOnRisk] {
+		t.Errorf("money: %+v", m)
+	}
+	if c := one(t, out, Contact); c.Level != Unknown || c.Reason != Reasons[RuleFlagNoRisk] {
+		t.Errorf("contact: %+v", c)
+	}
+	if c := one(t, out, Content); c.Reason != Reasons[RuleOKNoProof] {
+		t.Errorf("content: %+v", c)
+	}
+	if d := one(t, out, DeveloperRecord); d.Reason != Reasons[RuleSkipped] {
+		t.Errorf("skipped: %+v", d)
+	}
+	for _, r := range Reasons {
+		if r == "" {
+			t.Error("empty reason")
+		}
+	}
+	// An unchanged grade keeps the judge's reason.
+	out, _ = Enforce([]Grade{{Area: Money, Level: OK, Reason: "free, no ads", Findings: []string{"m-mit"}}}, ev)
+	if g := one(t, out, Money); g.Reason != "free, no ads" {
+		t.Errorf("unchanged reason replaced: %q", g.Reason)
+	}
+}
+
+// T1.1 round 4 L1: ok_with_setting citing only risks stands; the setting
+// answers the risk.
+func TestSettingOnRiskStands(t *testing.T) {
+	in := []Grade{{Area: Money, Level: OKWithSetting, Setting: "Ask to Buy", Findings: []string{"m-risk"}}}
+	for _, s := range Areas() {
+		if s.ID != Money {
+			in = append(in, Grade{Area: s.ID, Level: OK, Findings: []string{"ok"}})
+		}
+	}
+	evx := map[string]Cited{"m-risk": {Area: Money, Risk: true}}
+	// Give each other area its own supporting finding.
+	for i := range in {
+		if in[i].Area != Money {
+			id := "ok-" + string(in[i].Area)
+			in[i].Findings = []string{id}
+			evx[id] = Cited{Area: in[i].Area}
+		}
+	}
+	out, dem := Enforce(in, evx)
+	if g := one(t, out, Money); g.Level != OKWithSetting || g.Setting != "Ask to Buy" || len(dem) != 0 {
+		t.Errorf("got %+v %v", g, dem)
+	}
+	if v, _ := Decide(out); v != YesWithSettings {
+		t.Errorf("verdict %s", v)
+	}
+}
+
 // T1.1 round 3 L1: invisible characters at a setting's edges are trimmed and
 // the setting dedupes with its clean form.
 func TestSettingInvisibleEdges(t *testing.T) {
