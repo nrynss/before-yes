@@ -331,6 +331,27 @@ func TestChangedGradeReason(t *testing.T) {
 	}
 }
 
+// T1.1 round 5: only a final ok_with_setting keeps a setting.
+func TestSettingClearedUnlessSettingGrade(t *testing.T) {
+	out, _ := Enforce([]Grade{
+		{Area: Contact, Level: Unknown, Setting: "Chat off"},
+		{Area: Money, Level: OK, Setting: "Ask to Buy", Findings: []string{"m-mit"}},
+		{Area: Data, Level: Flag, Setting: "Limit tracking", Findings: []string{"d-risk"}},
+		{Area: Content, Level: OKWithSetting, Setting: "Restricted mode", Findings: []string{"t-mit"}},
+	}, map[string]Cited{"m-mit": {Area: Money}, "d-risk": {Area: Data, Risk: true}, "t-mit": {Area: Content}})
+	for _, a := range []Area{Contact, Money, Data} {
+		if g := one(t, out, a); g.Setting != "" {
+			t.Errorf("%s kept setting %q at level %s", a, g.Setting, g.Level)
+		}
+	}
+	if g := one(t, out, Content); g.Setting != "Restricted mode" {
+		t.Errorf("content lost its setting: %+v", g)
+	}
+	if g := one(t, out, Money); g.Level != OK {
+		t.Errorf("money level changed: %s", g.Level)
+	}
+}
+
 // T1.1 round 4 L1: ok_with_setting citing only risks stands; the setting
 // answers the risk.
 func TestSettingOnRiskStands(t *testing.T) {

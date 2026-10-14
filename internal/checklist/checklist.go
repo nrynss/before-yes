@@ -16,7 +16,7 @@ import (
 // Version names the checklist and rules a card was judged under. Bump it when
 // an area's wording or a rule in Decide or Enforce changes, because cached
 // cards record the version they were judged under.
-const Version = "v6"
+const Version = "v7"
 
 // Area is one checklist area id. The ids are stable wire values.
 type Area string
@@ -253,7 +253,8 @@ var Reasons = map[string]string{
 //     (its area then counts as skipped); a second grade for an area is discarded.
 //
 // When a grade's level changes, its reason is replaced with the Reasons text
-// for the rule and its setting is cleared. An ok_with_setting citing only risk
+// for the rule. Any grade whose final level is not ok_with_setting has its
+// setting cleared. An ok_with_setting citing only risk
 // findings stands: the named setting is the answer to the risk, which is what
 // the grade means. The input slice is not modified.
 func Enforce(grades []Grade, evidence map[string]Cited) ([]Grade, []Demotion) {
@@ -320,6 +321,9 @@ func Enforce(grades []Grade, evidence map[string]Cited) ([]Grade, []Demotion) {
 			// contradict the card. Replace it with the rule that changed the
 			// grade, and clear any setting.
 			g.Reason = Reasons[dem[len(dem)-1].Rule]
+		}
+		if g.Level != OKWithSetting {
+			// Only ok_with_setting names a setting to turn on.
 			g.Setting = ""
 		}
 		got[g.Area] = g
