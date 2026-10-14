@@ -182,7 +182,7 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 |---|---|---|
 | P0 | 9 / 9 | Done. Two exit criteria wait on later tasks: a live Nano call (T2.1b) and the config check (T4.4). CI is green. |
 | P1 | 0 / 4 | Not started. T1.1 and T1.2 drafted. |
-| P2 | 3 / 9 | T2.1, T2.3, T2.4 done. T2.2 in remediation (round 1: one M). T2.1a opened from the T2.1 review (deep-copy `Extra`, before T3.3). Live `b` tasks and T2.5 not started. |
+| P2 | 4 / 9 | T2.1, T2.2, T2.3, T2.4 done. T2.1a in review. T2.1b live probe running. T2.2b, T2.3b and T2.5 not started. |
 | P3 | 0 / 8 | Not started. T3.1–T3.4 drafted. |
 | P4 | 0 / 5 | Not started. T4.1, T4.2 and T4.4 drafted. |
 | P5 | 0 / 7 | Not started. |
@@ -194,6 +194,15 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 
 Newest first. One entry per closed task, finding, or split.
 
+- **T2.2 closed.** Reviews: [t2.2-round1.md](adversarial-review/t2.2-round1.md) (REMEDIATE, one M and one L) and [t2.2-round2.md](adversarial-review/t2.2-round2.md) (APPROVE, zero residue).
+  - **Move:** `scratch/internal/tavily/tavily.go` moved from the main checkout into worktree `task-t2.2-tavily` for T2.2; `scratch/internal/tavily/` is gone. New `internal/tavily/tavily_test.go`.
+  - **API:** `New(baseURL, key func() (string, error))`, `Search(ctx, tavily.Search) ([]Result, Credits, error)`, `Extract(ctx, []string) ([]Page, Credits, error)`, plus `ExtractWithFailures` naming which URLs Tavily could not read and why; `Credits{Used, Reported}` tells the meter whether the number is Tavily's or the price list's. Search carries depth, topic, max results, include/exclude domains and raw content; empty fields are omitted.
+  - **M1, the review's one M:** a `usage` object without a usable numeric `credits` is no longer a measured zero. Absent, null, `{}` or `credits:null` falls back to the price list (basic 1, advanced 2, extract 1 per 5 successful URLs, rounded up); a genuinely reported number, including `0`, wins.
+  - **Retry behaviour:** 429 draws four attempts and honours `Retry-After`; a host fault draws two; a non-429 4xx and an undecodable 200 are never retried. An exhausted host fault now states the budget it spent ("still failing after 2 attempts") instead of Keel's rate-limit count.
+  - **New L2 note:** in a mixed storm the annotation names the host-fault budget, not total submissions (`429,500,500` reads "after 2 attempts" after three). Log text only; nothing branches on it.
+  - **For T2.2b:** measure the live rate limit, whether `usage.credits` always comes back, and whether `include_raw_content` costs extra.
+  - **Keel gap, issue text for the user to file:** *"throttle.Note misreports the attempt count when Transient/TransientAttempts are set: with Attempts 4 and TransientAttempts 2, an exhausted 5xx reads 'still throttled after 4 attempts' after two submissions. Have Retry/Note count the class the surviving error belongs to, or document that callers annotate transient exhaustion themselves."*
+  - **Spend:** Tavily credits in P2 so far: 0 (all offline). Token Factory: none yet; T2.1b makes the first live calls.
 - **T2.4 closed.** Review: [t2.4-round1.md](adversarial-review/t2.4-round1.md), APPROVE, C 0 · H 0 · M 0 · L 5.
   - **Move:** `scratch/internal/spend/{spend.go,spend_test.go}` moved from the main checkout into worktree `task-t2.4-spend` for T2.4; `scratch/internal/spend/` is gone. API: `Open(ctx, Config)`, `Spend(ctx, pool, kind, ref, estimate, work)`, `Status`, `Spent`, `Close`; `PoolModel` (USD nanodollars) and `PoolTavily` (thousandths of a credit, `CreditUnit` 1000) live in `internal/spend` until the pipeline package exists.
   - **Behaviour the wiring must not re-derive:** reserve-then-run-then-settle; an estimate the pool cannot cover refuses before work runs; a failed call frees its hold and books nothing; a measured negative price is refused; a cancelled context still books because the call ran; every charge carries the check id as its `Ref`. Two pools share the application's one database file through cost-store namespaces (`cost_model`, `cost_tavily`); a namespace ending `_owner` is refused.
