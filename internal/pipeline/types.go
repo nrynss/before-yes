@@ -126,7 +126,7 @@ type Card struct {
 	Settings []string `json:"settings"`
 	// Findings holds the findings the grades cite plus every risk finding.
 	Findings     []finding.Finding `json:"findings"`
-	Alternatives []Alternative     `json:"alternatives"`
+	Alternatives Alternatives      `json:"alternatives"`
 	// AlternativesNote is MoreAlternativesNote when at least one
 	// alternative was refused (its name is not shown), else empty.
 	AlternativesNote string   `json:"alternatives_note,omitempty"`
@@ -134,17 +134,16 @@ type Card struct {
 	Stats            Stats    `json:"stats"`
 }
 
-// MarshalJSON encodes a card with only its checked alternatives, so no
-// card or API response carries a refused or pending name, however the card
-// was assembled (T3.5 user decision). A refused entry sets
-// alternatives_note. Every other field encodes as declared.
-func (c Card) MarshalJSON() ([]byte, error) {
-	type plain Card
-	alts, note := shown(c.Alternatives)
-	if c.AlternativesNote != "" {
-		note = c.AlternativesNote
-	}
-	p := plain(c)
-	p.Alternatives, p.AlternativesNote = alts, note
-	return json.Marshal(p)
+// Alternatives is a card's alternatives. Its JSON encoding keeps only the
+// checked ones, so no card or API response carries a pending or refused
+// name however the card was assembled (T3.5 user decision). The filter is
+// on the slice, not on Card, so a struct that embeds Card encodes its own
+// fields too. A card made by AltResult.Apply also carries alternatives_note
+// when one was refused.
+type Alternatives []Alternative
+
+// MarshalJSON encodes only the checked alternatives, as a list (never null).
+func (a Alternatives) MarshalJSON() ([]byte, error) {
+	alts, _ := shown(a)
+	return json.Marshal([]Alternative(alts))
 }

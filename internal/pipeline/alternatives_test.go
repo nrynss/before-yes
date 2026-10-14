@@ -588,15 +588,16 @@ func TestServerHookPathHidesRefused(t *testing.T) {
 		!strings.Contains(string(b), MoreAlternativesNote) {
 		t.Errorf("final card JSON %s", b)
 	}
-	// A card assembled from the internal outcomes still hides the refused.
+	// A card assembled from the internal outcomes still hides the refused
+	// name (the note comes with Apply).
 	raw := card
 	raw.Alternatives = res.outcomes
 	b, _ = json.Marshal(raw)
-	if strings.Contains(string(b), "Blank Slate") || !strings.Contains(string(b), MoreAlternativesNote) {
+	if strings.Contains(string(b), "Blank Slate") || strings.Contains(string(b), `"refused"`) {
 		t.Errorf("hand-assembled card JSON %s", b)
 	}
 	var back Card
-	if err := json.Unmarshal(b, &back); err != nil || len(back.Alternatives) != 1 || back.AlternativesNote != MoreAlternativesNote {
+	if err := json.Unmarshal(b, &back); err != nil || len(back.Alternatives) != 1 {
 		t.Errorf("decoded %+v err %v", back.Alternatives, err)
 	}
 }
@@ -629,5 +630,33 @@ func TestMidCheckBudgetRefusalReleasesCheck(t *testing.T) {
 		if a.Status != AltRefused {
 			t.Errorf("outcome %+v, want refused", a)
 		}
+	}
+}
+
+// A struct that embeds Card encodes its own fields, and the card's
+// alternatives still show no pending or refused name: the filter is on the
+// Alternatives type, not on Card.
+func TestEmbeddedCardKeepsFieldsAndHidesNames(t *testing.T) {
+	card := Card{Title: "Roblox", Alternatives: Alternatives{
+		{Title: "Calm Builder", Status: AltChecked},
+		{Title: "Pending Pick", Status: AltPending},
+		{Title: "Refused Pick", Status: AltRefused},
+	}, AlternativesNote: MoreAlternativesNote}
+	b, err := json.Marshal(struct {
+		Card
+		Extra int `json:"extra"`
+	}{card, 7})
+	if err != nil {
+		t.Fatal(err)
+	}
+	got := string(b)
+	if !strings.Contains(got, `"extra":7`) || !strings.Contains(got, `"title":"Roblox"`) || !strings.Contains(got, "Calm Builder") {
+		t.Errorf("embedded JSON %s", got)
+	}
+	if strings.Contains(got, "Pending Pick") || strings.Contains(got, "Refused Pick") || !strings.Contains(got, MoreAlternativesNote) {
+		t.Errorf("embedded JSON leaks or drops the note: %s", got)
+	}
+	if b, _ := json.Marshal(Card{}); !strings.Contains(string(b), `"alternatives":[]`) {
+		t.Errorf("empty card alternatives %s", b)
 	}
 }
