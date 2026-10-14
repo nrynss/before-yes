@@ -207,7 +207,7 @@ requires:   T3.4
 fixture-ok: yes
 size:       L · frontier
 owns:       internal/pipeline/alternatives.go, internal/pipeline/alternatives_test.go, plus its hook in internal/pipeline/pipeline.go and an additive card field in internal/pipeline/types.go
-status:     not-started
+status:     in-review
 ```
 The brief: safer alternatives, found with Tavily and checked the same way. Tavily is load-bearing twice, gathering evidence and finding alternatives, which is the case for the Best Use of Tavily award.
 
@@ -216,6 +216,50 @@ When a card is **no** or **yes with settings**, search for two or three alternat
 Alternatives multiply cost. They are bounded by count, run after the main card is shown, and refused by the meter like anything else. A card is complete without them, and alternatives that are still pending say so.
 
 **Done when:** Against fixtures, the "no" title yields at least one alternative with a better verdict and its own card id. A budget refusal leaves the main card intact.
+
+**Implementation notes (T3.5).**
+- `alternatives.go` covers two steps.
+  - **Finding:** `FindAlternatives(ctx, card, ref)` runs only for a `no` or `yes_with_settings` card. It makes one Tavily search ("safer <genre> like <title> for a <age> year old"; the genre is the App Store genre, or "video game" or "YouTube channel" from the kind), metered under the check's ref. It returns up to `MaxAlternatives` (3) candidates with `status: pending`.
+  - **Candidate names** come from hit titles: cut at " | ", " - " or ": ", and drop a trailing "App/Game Review". A list ("10 Best Games Like Roblox", "Top…", "…alternatives…", "… vs …") and the title itself are skipped.
+  - **Checking:** `CheckAlternatives` checks each candidate for the card's age through `Collect` (cached like any title) and `Decide`, under the ref `<ref>/alt<n>`. It keeps only a candidate whose verdict beats the original's (yes > yes_with_settings > no; `unclear` never beats). A kept candidate has `status: checked`, its verdict and its own `card_id`, and its card is returned to be stored.
+  - **Refusals:** a `cost.ErrOverBudget` from any call stops the run, and the candidates not yet checked are marked `refused`. A candidate that fails another way is dropped.
+  - `WithAlternatives` runs both steps after the main card is made and returns a copy of the card with the alternatives. On any error, a refused search included, the card comes back unchanged.
+- **The P4 hook** is `Pipeline.WithAlternatives`, or `FindAlternatives` followed by `CheckAlternatives` when the pending list should be shown first. pipeline.go is unchanged: `Run` still returns the main card alone.
+- **Contract:** `Alternative.Status` (`status`: pending, checked, refused) is new and additive. `card-no.json` and `api/get-card.json` show `"status": "checked"`; the `types_test.go` generator line was updated to match.
+- **Fixtures:** the main card is the captured Roblox fixture (review 355 gives "no"). The alternatives search and the candidates' sources are fakes in `alternatives_test.go`: Calm Builder, which answers every area with a setting; Chatty World, which has a contact risk; and Blank Slate, which says nothing. No live call was made.
+- **Tests:** `TestNoTitleGetsABetterAlternative` (the Done-when: Calm Builder, yes_with_settings, its own card id; the list and self skipped; the count bounded; each candidate under its own ref; a second run reads nothing again, so the evidence is cached); `TestBudgetRefusalLeavesMainCard` (the Done-when: refused candidate checks are marked refused and the card is otherwise byte-identical; a refused search returns the card unchanged); `TestAlternativesOnlyForNoAndSettings`; `TestCandidateName`.
+
+
+**Round-1 remediation (T3.5).**
+
+| Finding | Fix | Test |
+|---|---|---|
+| M1: the title's own pages ("X on the App Store", "X Parents Guide", "Is X Safe for Kids?") became candidates | `sameTitle` skips any single-title hit whose words contain the title's words as a run | `TestSelfInAnyFormSkipped` |
+| L1: names cut at ": "; U+200E kept | `candidateName` keeps ": ", strips only known site suffixes (" - Apps on Google Play", " on the App Store", " on Steam", " \| Common Sense Media", review tails) and every format character | `TestCandidateName` |
+| L2: list pages gave no names | `listNames` reads numbered entries and headings from the one search's page text (`IncludeRaw`), at most three, short names only, the title itself skipped; no extra call is made | `TestListPageEntries` (a stand-in page; no capture covers a live list page) |
+
+**Round-2 remediation (T3.5).**
+
+| Finding | Fix | Test |
+|---|---|---|
+| M1: every heading and short numbered line became a candidate, so section headings and advice steps used the slots | Only ranked entries ("1. X", "## 1. X") and headings that are only a link or bold text are read. Questions, section and advice openers (why/how/our/top/best/conclusion/FAQ, "Turn on…", "Set…") and names over six words are rejected | `TestListPageRejectsHeadingsAndSteps` (the reviewer's pages: Toca Life World and Lego Builder are reached) |
+| L1: markdown kept in names | `stripMarkdown` removes links, bold, italics, code, heading marks and trailing punctuation | `TestStripMarkdown` |
+| L2: the 3-slot bound applied before the self and duplicate skips | `listNames` drops the title, names already taken and repeats on the page before counting | `TestListPageEntries`, `TestListPageRejectsHeadingsAndSteps` |
+
+**Round-3 remediation (T3.5).**
+
+| Finding | Fix | Test |
+|---|---|---|
+| M1: advice steps not on the stoplist ("1. Download the app") became candidates | The stoplist is gone. A list entry needs a positive title signal: its name is marked as a bold span or link (or the heading is only one), or the same search response has a hit titled with that name. Before any `Collect`, a check with no call (`plausibleName`) drops empty names, questions, names over six words and names not starting with a capital or digit | `TestListPageRejectsHeadingsAndSteps`, `TestListEntryCorroboratedBySearch` |
+| L1: real titles starting with Stop/Read/Pick/Top were dropped | With no stoplist, and list entries skipping the list-title check (`siteName`), marked "Stop Motion Studio", "Read Along by Google", "Pick a Path" and "Top Eleven" are kept | `TestListPageRejectsHeadingsAndSteps` |
+
+**Round-4 remediation (T3.5).**
+
+| Finding | Fix | Test |
+|---|---|---|
+| M1: bold or link markup alone was taken as title evidence, so bolded advice steps ("**Turn on parental controls**"), bold section headings ("**Our verdict**"), "**Note:**"/"**Tip:**" lines and linked steps ("[Download the app](x)") became candidates | A list entry is a candidate only when another hit in the same search response is titled with that name. Markup only locates the name in the entry. The no-call check, the self and duplicate filter before the cap, metering and statuses are unchanged | `TestListPageRejectsHeadingsAndSteps` (all four probe pages and a marked uncorroborated page give none; corroborated Stop Motion Studio, Read Along by Google, Pick a Path and Top Eleven are kept), `TestListEntryCorroboratedBySearch`, `TestListPageEntries` |
+
+Trade-off: a list page's picks are only as many as the search's single-title hits confirm. A page whose picks have no hit of their own adds nothing (noted in feedback.md).
 
 ---
 

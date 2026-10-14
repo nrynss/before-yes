@@ -81,6 +81,9 @@ type Alternative struct {
 	Reason  string            `json:"reason"`
 	CardID  string            `json:"card_id"`
 	Verdict checklist.Verdict `json:"verdict"`
+	// Status is "pending" (found, not checked yet), "checked" (its verdict
+	// beats the card's), or "refused" (the meter refused its check).
+	Status string `json:"status"`
 }
 
 // Card is one judgement for one age.
