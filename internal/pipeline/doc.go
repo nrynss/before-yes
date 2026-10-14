@@ -48,8 +48,9 @@ func chunkDocs(docs []Doc) []chunk {
 			cur = chunk{}
 		}
 	}
+	refs := assignRefs(docs)
 	for i, d := range docs {
-		ref := refFor(d, i)
+		ref := refs[i]
 		text := strings.TrimSpace(d.Text)
 		if text == "" {
 			continue
@@ -68,6 +69,25 @@ func chunkDocs(docs []Doc) []chunk {
 	}
 	flush()
 	return out
+}
+
+// assignRefs labels every doc uniquely. A review is R<index> the first time
+// that index appears; a second review with the same index, such as a store
+// page review numbered from 1 beside the feed's, takes its document label
+// D<i+1> instead, so no two segments ever share a ref and a quote is never
+// checked against another review's text.
+func assignRefs(docs []Doc) []string {
+	refs := make([]string, len(docs))
+	used := map[string]bool{}
+	for i, d := range docs {
+		r := refFor(d, i)
+		if used[r] {
+			r = fmt.Sprintf("D%d", i+1)
+		}
+		used[r] = true
+		refs[i] = r
+	}
+	return refs
 }
 
 func refFor(d Doc, i int) string {
