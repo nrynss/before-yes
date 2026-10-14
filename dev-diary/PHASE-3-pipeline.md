@@ -179,7 +179,7 @@ requires:   T0.4
 fixture-ok: no
 size:       S · mid
 owns:       tools/capture/, testdata/titles/*/tavily-extract-storepage.json
-status:     in-review
+status:     done
 ```
 Apple's public review feed went dark: HTTP 200 with no entries for every app, from two hosts. The user chose the App Store web page as the fallback review source.
 
@@ -204,6 +204,15 @@ status:     not-started
 Turn the extracted App Store page into review documents the reader can quote, one per review. Each document keeps its position on the page, so a card can cite "App Store review 3". Each carries kind `review` and the page URL as its source. Never invent a field the page does not carry. The page's own aggregate text, such as the rating summary or "Ratings and Reviews", is not a review and is never a document.
 
 T3.1 calls this when the review feed returns nothing. The card's small print says which source the reviews came from, the feed or the page, and how many.
+
+**The page's shape, from the T3.8a fixtures:**
+- Reviews sit between the "Ratings & Reviews" heading and "What's New".
+- A review is a title line followed by a body line, with nothing else marking it.
+- Each block appears twice in a row.
+- A developer response appears first as a bare body line, with no label, before the repeat. Only the repeat carries "Developer Response" and a date. So a parser that splits only on that label leaves the first copy of the response attached to the review.
+- "Editors' Choice" blurbs are not reviews.
+- No rating, date or reviewer name survives. Leave those fields empty; never infer them, including a rating from the reviewer's own words.
+- Count positions after dropping duplicates.
 
 **Done when:** Against the T3.8a fixtures, each title yields its page's reviews as separate documents with verbatim text. A finding quoted from one passes `finding.Verify`. A page with no reviews yields no documents and is recorded as a missing source.
 

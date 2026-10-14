@@ -181,7 +181,7 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 | P0 | 9 / 9 | Done. Two exit criteria wait on later tasks: a live Nano call (T2.1b) and the config check (T4.4). CI is green. |
 | P1 | 4 / 4 | Done. The `job.Failure` exit criterion waits on T4.1. The main-checkout pins and `.env` leak check, waived at landing, ran at the P1–P2 integration and passed. |
 | P2 | 9 / 11 | T2.1, T2.1a, T2.1b, T2.1c, T2.2, T2.2b, T2.3, T2.3b and T2.4 are done. T2.5 is landed but blocked on T3.6 for the measured cost per check. T2.4b (the daily cap, and booking timed-out calls) is not started. |
-| P3 | 0 / 10 | Not started. T3.1–T3.4 drafted. |
+| P3 | 1 / 10 | T3.8a is done: App Store page fixtures for all four titles. T3.1–T3.4 are drafted on `draft/scratch`. |
 | P4 | 0 / 5 | Not started. T4.1, T4.2 and T4.4 drafted. |
 | P5 | 0 / 7 | Not started. |
 | P6 | 0 / 6 | Not started. |
@@ -192,6 +192,14 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 
 Newest first. One entry per closed task, finding, or split.
 
+- **T3.8a closed.** Haiku implemented it, and the orchestrator validated it with no review loop, by the user's ruling.
+  - **What landed:** `tools/capture -only storepage` makes one basic Tavily extract of each title's `trackViewUrl`, taken from the saved search fixture. It moves to advanced only when basic shows no review text, and stops at 3 credits per title. There is also a `-depth` flag.
+  - **Spend:** 1 credit in total (Khan 1, the other three 0, as Tavily reported). Advanced was never needed.
+  - **What the page holds:** 3 or 4 user reviews per title (Roblox 4, Minecraft 3, Khan 3, Toca 3). Title and body come through verbatim. Rating, date and reviewer name do not. Each block appears twice. Toca Life World is listed as "Toca Boca World: Game & Play", so the lookup goes by trackId, not by name. The page is usable for T3.8, but thin.
+  - **Orchestrator validation:**
+    - Opened all four saved extracts myself: one result each, no failures, credits as reported. Read the review blocks for Roblox and Khan Academy Kids.
+    - The capture tests pass under `-race`. Gate rc 0 in the worktree after the rebase, and on main. No key values found. No dates.
+  - **Found by the orchestrator and added to T3.8:** a developer response first appears with no label, and only its repeat carries "Developer Response". T3.8's block now lists the page's shape.
 - **T2.1c closed.** Haiku implemented it, and the orchestrator validated it with no review loop, by the user's ruling.
   - **What changed:** the fixed 3-minute client timeout is gone. Each attempt now gets `clamp(60 s + max_tokens / 30 tok/s, 90 s, 15 min)`, so a 16,000-token thinking call gets about 593 s and a short call keeps 90 s. The numbers are in `model.DefaultTimeouts`. There is no new setting, because the role's `max_tokens` already sets how long its calls run.
   - **Timed-out calls:** a timed-out call returns `context.DeadlineExceeded`. It is not retried, since a retry could bill twice. Its reply is unmeasured and priced at the estimate, never $0.
