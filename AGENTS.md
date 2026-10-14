@@ -1,6 +1,6 @@
 # Agent protocol
 
-Rules for any agent working in this repository. The product is in [`BRIEF.md`](BRIEF.md). The task rules are in [`dev-diary/README.md`](dev-diary/README.md). This file links to those rules and adds what they do not cover.
+Rules for any agent working in this repository. The product is in [`BRIEF.md`](BRIEF.md). The task rules are in [`dev-diary/README.md`](dev-diary/README.md). The orchestrator's loop is in [`dev-diary/ORCHESTRATOR.md`](dev-diary/ORCHESTRATOR.md). This file links to those rules and adds what they do not cover.
 
 ## Task rules
 
@@ -61,13 +61,19 @@ Read these in the dev-diary README. Do not copy them.
 
 - No dates or timelines anywhere in it.
 - Work is ordered by task dependencies only.
+- An implementer sets its task to `in-review`, never `done`. The orchestrator sets `done` after an APPROVE.
+- Only the orchestrator edits `dev-diary/README.md`, which holds the status board and the handoff log. Put your handoff text in your report.
+- Anything a service or library does that surprises you goes in [`dev-diary/feedback.md`](dev-diary/feedback.md), when you hit it.
 
 ## Review
 
-Before a task closes, an agent that did not write it:
+Four roles are kept separate: orchestrator, implementation, review, remediation. There is a fresh agent per role per round, and a reviewer never implemented or remediated the task. See [ORCHESTRATOR.md](dev-diary/ORCHESTRATOR.md#four-roles-kept-separate).
 
-1. Reads the diff.
-2. Runs `tools/check.sh` in a clean checkout.
-3. Records findings in `dev-diary/adversarial-review/<task-id>-round<N>.md`, with verdict `APPROVE` or `REMEDIATE`.
+A reviewer:
 
-Remediation rounds repeat until the verdict is `APPROVE`.
+1. Reads the diff against the task and the brief.
+2. Runs every pin itself, in a checkout of the branch **and** against the main checkout's tree, where gitignored `scratch/` and `.env` exist.
+3. Records findings in `dev-diary/adversarial-review/<task-id>-round<N>.md`: the verdict `APPROVE` or `REMEDIATE`, the counts per severity, and one row per finding with its pin.
+4. Fixes nothing.
+
+A pin is a measurement taken outside the code under review: query the file, send the request, grep the output. Program output reporting its own success is not a pin. Remediation rounds repeat until a fresh reviewer returns `APPROVE` with zero residue against every earlier round.

@@ -4,6 +4,8 @@ This document breaks down the work for **Before Yes**, the Nebius × NVIDIA Glob
 
 Reference specification:
 - [`../BRIEF.md`](../BRIEF.md): product, checklist, architecture, models, budget, guardrails, demo.
+- [`ORCHESTRATOR.md`](ORCHESTRATOR.md): how the orchestrator runs the loop of pick, dispatch, review, land and close, with the brief template.
+- [`feedback.md`](feedback.md): friction with Token Factory, Nemotron, Tavily, Keel and Chaaya. It feeds the Devpost feedback.
 - `~/work/hackathons/nebius-nvidia.md`: event rules, prizes, and why this concept was chosen.
 
 Where a phase document and the brief conflict, the brief wins. Record the discrepancy in the handoff log of the phase that found it.
@@ -192,6 +194,11 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 
 Newest first. One entry per closed task, finding, or split.
 
+- **Orchestrator protocol written.**
+  - [ORCHESTRATOR.md](ORCHESTRATOR.md) sets out the loop and the four separate roles. The `AGENTS.md` review section now points to it.
+  - **From here on:** implementers set `in-review`, never `done`; only the orchestrator edits this README; every review goes to a fresh agent.
+  - **Correction:** the T0.4, T0.4a, T0.4b and T0.7 review files were written by the orchestrator itself. Under the role split that is not allowed. The tasks stand, because their pins were run, but those reviews are not independent. Every later task gets an independent reviewer.
+  - [feedback.md](feedback.md) starts with the Tavily findings from Phase 0.
 - **Keel v0.7.3 adopted.** v0.7.1 landed the fixes for #82 and #83, and v0.7.2 and v0.7.3 hardened them. Keel #87, #88, #91 and #94 are closed. `go.mod` on `main` now requires v0.7.3, bumped in one commit before any Keel task started, so parallel tasks cannot race on it. The "Keel v0.7.3" section names the API.
 - **T0.4b closed; T0.4a closed; P0 done.** Review: [t0.4b-round1.md](adversarial-review/t0.4b-round1.md).
   - The advanced extract (7 credits) still returned no individual Common Sense reviews.
