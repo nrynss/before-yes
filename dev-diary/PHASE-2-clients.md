@@ -191,8 +191,9 @@ requires:   T2.4
 fixture-ok: yes
 size:       S · frontier
 owns:       docs/budget.md
-status:     not-started
+status:     blocked: T3.6
 ```
+Note: every ceiling is decided in `docs/budget.md`; only the measured cost per check is pending T3.6b, and the doc gives the formula to plug it into.
 Decide and document the ceilings, from the brief's arithmetic and T3.6's measured cost per title:
 - the model pool's lifetime ceiling, and how much of the $25 stays in reserve;
 - a daily cap on fresh checks while judging runs (needs a daily-period model pool or a separate counter);
