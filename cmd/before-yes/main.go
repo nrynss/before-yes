@@ -34,14 +34,12 @@ func run(ctx context.Context, args []string, stdout, stderr io.Writer) int {
 		usage(stderr)
 		return 2
 	}
-	cmd, rest := args[0], args[1:]
-	fl := goflag.NewFlagSet(cmd, goflag.ContinueOnError)
-	fl.SetOutput(stderr)
-	cfgPath := fl.String("config", "", "settings file (default: $BEFORE_YES_CONFIG, then ./before-yes.toml)")
-	age := fl.Int("age", 9, "the child's age (check)")
-	if err := fl.Parse(rest); err != nil {
+	cmd := args[0]
+	o, ok := parseArgs(cmd, args[1:], stderr)
+	if !ok {
 		return 2
 	}
+	cfgPath, age := &o.config, &o.age
 	s, plan, err := Load(ctx, *cfgPath, nil)
 	if err != nil {
 		log.Error("before-yes: settings", "err", err)
@@ -51,7 +49,7 @@ func run(ctx context.Context, args []string, stdout, stderr io.Writer) int {
 	case "serve":
 		err = serve(ctx, log, s)
 	case "check":
-		err = check(ctx, log, s, strings.Join(fl.Args(), " "), *age, stdout, stderr)
+		err = check(ctx, log, s, o.title, *age, stdout, stderr)
 	case "config":
 		_, err = fmt.Fprint(stdout, plan.String())
 	default:
@@ -88,4 +86,35 @@ func serve(ctx context.Context, log *slog.Logger, s Settings) error {
 		return err
 	}
 	return nil
+}
+
+// options are a command's flags and its title.
+type options struct {
+	config string
+	age    int
+	title  string
+}
+
+// parseArgs reads the flags anywhere among the arguments: before, after
+// or between the words of the title, so `check Roblox -age 12` and
+// `check -age 12 Roblox` are the same check.
+func parseArgs(cmd string, rest []string, stderr io.Writer) (options, bool) {
+	var o options
+	fl := goflag.NewFlagSet(cmd, goflag.ContinueOnError)
+	fl.SetOutput(stderr)
+	fl.StringVar(&o.config, "config", "", "settings file (default: $BEFORE_YES_CONFIG, then ./before-yes.toml)")
+	fl.IntVar(&o.age, "age", 9, "the child's age (check)")
+	var words []string
+	for {
+		if err := fl.Parse(rest); err != nil {
+			return o, false
+		}
+		if fl.NArg() == 0 {
+			break
+		}
+		words = append(words, fl.Arg(0))
+		rest = fl.Args()[1:]
+	}
+	o.title = strings.Join(words, " ")
+	return o, true
 }

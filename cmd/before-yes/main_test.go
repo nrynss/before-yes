@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
+	"fmt"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -11,6 +13,7 @@ import (
 	"path/filepath"
 	"reflect"
 	"strings"
+	"sync"
 	"testing"
 
 	"github.com/nrynss/before-yes/internal/checklist"
@@ -357,5 +360,103 @@ func TestConfigCommandAndExample(t *testing.T) {
 	}
 	if rc := run(context.Background(), []string{"nope"}, &out, &errb); rc != 2 {
 		t.Errorf("unknown command exit %d, want 2", rc)
+	}
+}
+
+// One process owns spend.db: with serve's app open, a check (or a second
+// serve) on the same data_dir refuses with ErrMeterBusy and opens no
+// meter; once serve closes, it opens. This is the two-process case of
+// nrynss/keel#100, closed by refusing the second meter.
+func TestMeterLockRefusesSecondProcess(t *testing.T) {
+	e := writeSettings(t, "")
+	s, _, err := Load(context.Background(), e.path, noEnv)
+	if err != nil {
+		t.Fatal(err)
+	}
+	a, err := NewServeApp(context.Background(), s, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := NewCheckApp(context.Background(), s); !errors.Is(err, ErrMeterBusy) {
+		t.Fatalf("check while serve runs: %v, want ErrMeterBusy", err)
+	}
+	if _, err := NewServeApp(context.Background(), s, nil); !errors.Is(err, ErrMeterBusy) {
+		t.Fatalf("second serve: %v, want ErrMeterBusy", err)
+	}
+	var out, errb bytes.Buffer
+	if rc := run(context.Background(), []string{"check", "-config", e.path, "Roblox"}, &out, &errb); rc != 1 || !strings.Contains(errb.String(), "spend.db") {
+		t.Errorf("check command: exit %d stderr %s, want 1 naming spend.db", rc, errb.String())
+	}
+	a.Close()
+	c, err := NewCheckApp(context.Background(), s)
+	if err != nil {
+		t.Fatalf("check after serve closed: %v", err)
+	}
+	c.Close()
+}
+
+// The reviewer's pin: 400 concurrent BeginCheck+Done. With the lock there
+// is only ever one meter on spend.db, and it loses no booking; a second
+// meter on the same file cannot be opened through the app.
+func TestMeterLosesNoBookings(t *testing.T) {
+	for round := range 3 {
+		e := writeSettings(t, "[budget]\ndaily_fresh_checks = 400\n")
+		s, _, err := Load(context.Background(), e.path, noEnv)
+		if err != nil {
+			t.Fatal(err)
+		}
+		a, err := NewServeApp(context.Background(), s, nil)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if _, err := NewCheckApp(context.Background(), s); !errors.Is(err, ErrMeterBusy) {
+			t.Fatalf("second meter opened: %v", err)
+		}
+		var wg sync.WaitGroup
+		var mu sync.Mutex
+		var failed int
+		for i := range 400 {
+			wg.Add(1)
+			go func() {
+				defer wg.Done()
+				h, err := a.Meter.BeginCheck(context.Background(), fmt.Sprintf("r%d-%d", round, i))
+				if err == nil {
+					err = h.Done()
+				}
+				if err != nil {
+					mu.Lock()
+					failed++
+					mu.Unlock()
+				}
+			}()
+		}
+		wg.Wait()
+		st, err := a.Meter.Status(context.Background(), spend.PoolChecksDaily)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if failed != 0 || st.Spent != 400 {
+			t.Errorf("round %d: failed %d spent %d, want 0 and 400", round, failed, st.Spent)
+		}
+		a.Close()
+	}
+}
+
+// check takes its flags before, after or between the title's words.
+func TestCheckFlagsAnywhere(t *testing.T) {
+	cases := map[string][]string{
+		"after":   {"Roblox", "-age", "12"},
+		"before":  {"-age", "12", "Roblox"},
+		"between": {"Toca", "-age=12", "Boca", "World"},
+	}
+	want := map[string]string{"after": "Roblox", "before": "Roblox", "between": "Toca Boca World"}
+	for name, args := range cases {
+		o, ok := parseArgs("check", append(args, "-config", "x.toml"), io.Discard)
+		if !ok || o.age != 12 || o.title != want[name] || o.config != "x.toml" {
+			t.Errorf("%s: %+v ok %v", name, o, ok)
+		}
+	}
+	if _, ok := parseArgs("check", []string{"Roblox", "-agee", "12"}, io.Discard); ok {
+		t.Error("an unknown trailing flag must be refused")
 	}
 }
