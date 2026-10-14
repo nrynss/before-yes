@@ -180,7 +180,7 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 |---|---|---|
 | P0 | 9 / 9 | Done. Two exit criteria wait on later tasks: a live Nano call (T2.1b) and the config check (T4.4). CI is green. |
 | P1 | 4 / 4 | Done. The `job.Failure` exit criterion waits on T4.1. The main-checkout pins and `.env` leak check, waived at landing, ran at the P1–P2 integration and passed. |
-| P2 | 10 / 12 | T2.1, T2.1a, T2.1b, T2.1c, T2.1d, T2.2, T2.2b, T2.3, T2.3b and T2.4 are done. T2.5 is landed but blocked on T3.6 for the measured cost per check. T2.4b (the daily cap, and booking timed-out calls) is in progress. |
+| P2 | 11 / 12 | T2.1, T2.1a, T2.1b, T2.1c, T2.1d, T2.2, T2.2b, T2.3, T2.3b, T2.4 and T2.4b are done. T2.5 is landed but blocked on T3.6 for the measured cost per check. |
 | P3 | 1 / 10 | T3.8a is done: App Store page fixtures for all four titles. T3.1–T3.4 are drafted on `draft/scratch`. |
 | P4 | 0 / 5 | Not started. T4.1, T4.2 and T4.4 drafted. |
 | P5 | 0 / 7 | Not started. |
@@ -192,6 +192,21 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 
 Newest first. One entry per closed task, finding, or split.
 
+- **T2.4b closed.** Haiku implemented it, and the orchestrator validated it with no review loop. It went back once.
+  - **What landed in `internal/spend`:**
+    - A `checks_daily` pool (unit `check`, `cost.DailyUTC`), with `BeginCheck(ctx, ref)` and then `Done` or `Fail`. A cache hit never calls it.
+    - `Open` pins tavily to `MonthlyUTC` and the checks pool to `DailyUTC`, whatever the caller passes.
+    - `Spend` books a work that hit its own `context.DeadlineExceeded` at the estimate, unmeasured, while the caller's context is live. A caller's cancel or expired context still releases.
+    - `Config.Now` injects the clock for tests.
+    - `daily_fresh_checks = 5` is live in the example settings.
+  - **Sent back once:** holds used Keel's default 10-minute reservation TTL. A model call can run up to 15 minutes (T2.1c), and a check can run longer, so a hold could lapse mid-call. A sixth check could then start, or concurrent calls could pass the dollar ceiling. Keel's `settleBooks` books a lapsed hold correctly (read from source), so only the in-flight protection was lost. The fix is `Config.ReservationTTL`, default 30 minutes, on every pool. Two clock-injected tests prove holds still block at 20 minutes and lapse after 30.
+  - **Orchestrator validation:**
+    - Read the diff.
+    - Confirmed Keel's expiry and settle behaviour in its source.
+    - All 18 spend tests pass under `-race`, with no sleeps.
+    - The diff stays inside owns, plus one line in the settings example.
+    - Gate rc 0 in the worktree after the rebase, and on main. No key values found. No dates.
+  - **Left open, for the pipeline task that wires the meter (T3.4):** call `BeginCheck` only on a cache miss, and end every check with `Done` or `Fail`.
 - **T2.1d closed.** Haiku implemented it, and the orchestrator validated it with no review loop.
   - **What changed:** the live probe has no fixed client timeout now. `liveProbe.raw`, the only place the probe sends a request itself, gives each request `DefaultTimeouts.For(max_tokens)`: 0 for the model list, which gets the floor; 8 for the refused-id checks; the role's cap for the rate-limit call. Chat calls get the same rule through `Client.Chat`. The 8-minute overall context stays.
   - **Orchestrator validation:**

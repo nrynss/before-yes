@@ -220,7 +220,7 @@ requires:   T2.4, T2.5
 fixture-ok: yes
 size:       S · mid
 owns:       internal/spend/
-status:     in-review
+status:     done
 ```
 Split from T2.5. [`docs/budget.md`](../docs/budget.md) sets a cap of 5 fresh checks per UTC day while judging runs. The meter cannot enforce it today. `Open` knows only the model and tavily pools, and `Spend` reserves against one pool per call. A daily model-dollar pool would be the wrong unit: five checks spend about $0.13, so it would never trip.
 
