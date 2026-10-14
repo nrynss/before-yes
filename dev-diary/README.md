@@ -180,7 +180,7 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 |---|---|---|
 | P0 | 9 / 9 | Done. Two exit criteria wait on later tasks: a live Nano call (T2.1b) and the config check (T4.4). CI is green. |
 | P1 | 4 / 4 | Done. The `job.Failure` exit criterion waits on T4.1. The main-checkout pins and `.env` leak check, waived at landing, ran at the P1–P2 integration and passed. |
-| P2 | 9 / 12 | T2.1, T2.1a, T2.1b, T2.1c, T2.2, T2.2b, T2.3, T2.3b and T2.4 are done. T2.5 is landed but blocked on T3.6 for the measured cost per check. T2.4b (the daily cap, and booking timed-out calls) and T2.1d (the live probe's deadline) are in progress. |
+| P2 | 10 / 12 | T2.1, T2.1a, T2.1b, T2.1c, T2.1d, T2.2, T2.2b, T2.3, T2.3b and T2.4 are done. T2.5 is landed but blocked on T3.6 for the measured cost per check. T2.4b (the daily cap, and booking timed-out calls) is in progress. |
 | P3 | 1 / 10 | T3.8a is done: App Store page fixtures for all four titles. T3.1–T3.4 are drafted on `draft/scratch`. |
 | P4 | 0 / 5 | Not started. T4.1, T4.2 and T4.4 drafted. |
 | P5 | 0 / 7 | Not started. |
@@ -192,6 +192,12 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 
 Newest first. One entry per closed task, finding, or split.
 
+- **T2.1d closed.** Haiku implemented it, and the orchestrator validated it with no review loop.
+  - **What changed:** the live probe has no fixed client timeout now. `liveProbe.raw`, the only place the probe sends a request itself, gives each request `DefaultTimeouts.For(max_tokens)`: 0 for the model list, which gets the floor; 8 for the refused-id checks; the role's cap for the rate-limit call. Chat calls get the same rule through `Client.Chat`. The 8-minute overall context stays.
+  - **Orchestrator validation:**
+    - The diff stays inside owns.
+    - The only `http.Do` in the file is in `raw`, and chat builds its client with `New`.
+    - `go vet -tags live`, `go build -tags live ./...` and the gate pass in the worktree and on main. No key values found. No live run.
 - **T3.8a closed.** Haiku implemented it, and the orchestrator validated it with no review loop, by the user's ruling.
   - **What landed:** `tools/capture -only storepage` makes one basic Tavily extract of each title's `trackViewUrl`, taken from the saved search fixture. It moves to advanced only when basic shows no review text, and stops at 3 credits per title. There is also a `-depth` flag.
   - **Spend:** 1 credit in total (Khan 1, the other three 0, as Tavily reported). Advanced was never needed.

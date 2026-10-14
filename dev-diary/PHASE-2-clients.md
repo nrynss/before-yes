@@ -108,7 +108,7 @@ requires:   T2.1c
 fixture-ok: yes
 size:       XS · light
 owns:       internal/model/live_test.go
-status:     in-review
+status:     done
 ```
 Split from T2.1c. The live probe builds its own client with `http.Client{Timeout: 3 * time.Minute}`. Today's probe asks for at most 512 tokens, so the fixed timeout is harmless. A probe of a 16,000-token thinking call would be cut, though, while the production client would let it finish.
 
