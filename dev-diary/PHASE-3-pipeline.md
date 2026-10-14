@@ -23,7 +23,7 @@ requires:   T1.3, T2.2, T2.3, T0.4a
 fixture-ok: yes
 size:       M · frontier
 owns:       internal/pipeline/gather.go, internal/pipeline/gather_test.go, tools/capture/
-status:     in-review
+status:     done
 ```
 A fixed source plan per title, about eight Tavily credits:
 1. App Store search. If a hit's name starts with the title, read its reviews and description, and take its seller URL as the official host. A near miss is worse than no reviews, so a non-matching hit is ignored. **Apple's review feed has been returning no entries for every app** (see the handoff log). When it is empty, fall back to the reviews on the title's App Store web page (T3.8). Try the feed first, in case it returns.
