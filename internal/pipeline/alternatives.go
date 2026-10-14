@@ -12,6 +12,7 @@ import (
 	"github.com/nrynss/keel/cost"
 
 	"github.com/nrynss/before-yes/internal/checklist"
+	"github.com/nrynss/before-yes/internal/spend"
 	"github.com/nrynss/before-yes/internal/tavily"
 )
 
@@ -36,9 +37,22 @@ const (
 	AltPending = "pending"
 	// AltChecked: checked, with a verdict that beats the original's.
 	AltChecked = "checked"
-	// AltRefused: not checked, because the meter refused a call.
+	// AltRefused: not checked, because the meter refused a call or the
+	// checks_daily cap refused a fresh check. Kept internally; a card does
+	// not show refused names (user decision), only MoreAlternativesNote.
 	AltRefused = "refused"
 )
+
+// MoreAlternativesNote is the one line a card shows, in place of the
+// refused alternatives' names, when at least one was refused.
+const MoreAlternativesNote = "More alternatives when today's checks reset"
+
+// Checks is the checks_daily cap: BeginCheck reserves one fresh check and
+// refuses with cost.ErrOverBudget when the day has none left; the caller
+// ends it with Done or Fail. *spend.Meter has it.
+type Checks interface {
+	BeginCheck(ctx context.Context, ref string) (*spend.Check, error)
+}
 
 // wantsAlternatives reports whether a verdict gets alternatives.
 func wantsAlternatives(v checklist.Verdict) bool {
@@ -303,29 +317,61 @@ type AltResult struct {
 	// Cards are the kept alternatives' own cards, to store beside the
 	// main card so each alternative links to its card.
 	Cards []Card
-	// Refused reports that the meter refused a call and the run stopped.
+	// Refused reports that the meter refused a call (the run stopped) or
+	// the checks_daily cap refused a fresh check.
 	Refused bool
 }
 
 // CheckAlternatives checks each pending candidate for the card's age, in
 // order, under ref + "/alt<n>". A candidate that fails for any other
 // reason is dropped and the run goes on; a budget refusal stops it.
+//
+// User decision: each fresh (uncached) candidate check counts as one check
+// against the checks_daily cap, through p.Checks (BeginCheck, then Done
+// when it ends with a card or Fail when it does not). A candidate whose
+// evidence is cached runs free and reserves nothing. When the cap refuses,
+// that candidate is refused and so is every later fresh one; later cached
+// ones still run.
 func (p *Pipeline) CheckAlternatives(ctx context.Context, card Card, pending []Alternative, ref string) AltResult {
 	var res AltResult
+	capped := false
 	for i, alt := range pending {
-		if res.Refused {
+		if res.Refused && !capped {
 			alt.Status = AltRefused
 			res.Alternatives = append(res.Alternatives, alt)
 			continue
 		}
 		altRef := fmt.Sprintf("%s/alt%d", ref, i+1)
+		var hold *spend.Check
+		if p.Checks != nil && !p.cached(ctx, alt.Title) {
+			var err error
+			if !capped {
+				hold, err = p.Checks.BeginCheck(ctx, altRef)
+			}
+			if capped || err != nil {
+				if capped || errors.Is(err, cost.ErrOverBudget) {
+					capped, res.Refused = true, true
+					alt.Status = AltRefused
+					res.Alternatives = append(res.Alternatives, alt)
+				}
+				continue
+			}
+		}
 		ev, _, err := p.Collect(ctx, alt.Title, altRef)
 		var c Card
 		if err == nil {
 			c, err = p.Decide(ctx, ev, card.Age, altRef)
 		}
+		if hold != nil {
+			if err == nil {
+				err = hold.Done()
+			} else {
+				_ = hold.Fail()
+			}
+		}
 		if errors.Is(err, cost.ErrOverBudget) {
 			res.Refused = true
+			capped = false
 			alt.Status = AltRefused
 			res.Alternatives = append(res.Alternatives, alt)
 			continue
@@ -340,6 +386,36 @@ func (p *Pipeline) CheckAlternatives(ctx context.Context, card Card, pending []A
 	return res
 }
 
+// cached reports whether the evidence cache holds a title's evidence, so
+// its check is not fresh.
+func (p *Pipeline) cached(ctx context.Context, title string) bool {
+	if p.Cache == nil || p.Gatherer == nil || p.Reader == nil || p.Reader.Model == nil {
+		return false
+	}
+	storefront, err := storefrontOf(p.Gatherer.Store)
+	if err != nil {
+		return false
+	}
+	_, ok, err := p.Cache.Get(ctx, EvidenceKey(strings.Join(strings.Fields(title), " "), storefront, p.Reader.Model.Settings().Model))
+	return err == nil && ok
+}
+
+// shown is what a card exposes of its alternatives: the checked ones and
+// any still pending, never a refused name, and MoreAlternativesNote when
+// at least one was refused.
+func shown(alts []Alternative) ([]Alternative, string) {
+	out := []Alternative{}
+	note := ""
+	for _, a := range alts {
+		if a.Status == AltRefused {
+			note = MoreAlternativesNote
+			continue
+		}
+		out = append(out, a)
+	}
+	return out, note
+}
+
 // WithAlternatives finds and checks a card's alternatives and returns a
 // copy of the card carrying them, with the alternatives' own cards. The
 // main card is made before this runs and is complete without it: on any
@@ -352,6 +428,6 @@ func (p *Pipeline) WithAlternatives(ctx context.Context, card Card, ref string) 
 	}
 	res := p.CheckAlternatives(ctx, card, pending, ref)
 	out := card
-	out.Alternatives = append([]Alternative{}, res.Alternatives...)
+	out.Alternatives, out.AlternativesNote = shown(res.Alternatives)
 	return out, res.Cards, nil
 }

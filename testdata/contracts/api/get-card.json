@@ -152,6 +152,7 @@
           "status": "checked"
         }
       ],
+      "alternatives_note": "More alternatives when today's checks reset",
       "app": {
         "track_id": 431946152,
         "name": "Roblox",

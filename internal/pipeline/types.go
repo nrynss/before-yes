@@ -123,6 +123,9 @@ type Card struct {
 	// Findings holds the findings the grades cite plus every risk finding.
 	Findings     []finding.Finding `json:"findings"`
 	Alternatives []Alternative     `json:"alternatives"`
-	App          *AppInfo          `json:"app"`
-	Stats        Stats             `json:"stats"`
+	// AlternativesNote is MoreAlternativesNote when at least one
+	// alternative was refused (its name is not shown), else empty.
+	AlternativesNote string   `json:"alternatives_note,omitempty"`
+	App              *AppInfo `json:"app"`
+	Stats            Stats    `json:"stats"`
 }
