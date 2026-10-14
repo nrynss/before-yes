@@ -7,6 +7,7 @@ import (
 	"strings"
 	"testing"
 	"time"
+	"unicode"
 
 	"github.com/nrynss/before-yes/internal/checklist"
 )
@@ -285,6 +286,14 @@ func TestWordBoundaryTable(t *testing.T) {
 		{"Only non\u2012violent content for little kids", "violent content for little kids", false},
 		{"Only non\u2212violent content for little kids", "violent content for little kids", false},
 		{"Only non\u2043violent content for little kids", "violent content for little kids", false},
+		{"Only non\u058aviolent content for little kids", "violent content for little kids", false},
+		{"Only non\u2e17violent content for little kids", "violent content for little kids", false},
+		{"Only non\u1806violent content for little kids", "violent content for little kids", false},
+		{"Only non\u30a0violent content for little kids", "violent content for little kids", false},
+		{"Only non\ufe31violent content for little kids", "violent content for little kids", false},
+		{"Only non\ufe32violent content for little kids", "violent content for little kids", false},
+		{"Only non\u2027violent content for little kids", "violent content for little kids", false},
+		{"Only non\u2e40violent content for little kids", "non-violent content for little kids", true},
 		{"This chat is un--safe for young kids.", "safe for young kids", false},
 		{"This chat is un---safe for young kids.", "-safe for young kids", false},
 		{"This chat is un--safe for young kids.", "un-safe for young kids", true},
@@ -330,5 +339,22 @@ func TestNormalizeRound4(t *testing.T) {
 		if got := Normalize(in); got != want {
 			t.Errorf("Normalize(%q) = %q, want %q", in, got, want)
 		}
+	}
+}
+
+// Every Unicode Pd character folds to "-".
+func TestNormalizeAllDashes(t *testing.T) {
+	n := 0
+	for r := rune(0); r <= unicode.MaxRune; r++ {
+		if !unicode.Is(unicode.Pd, r) {
+			continue
+		}
+		n++
+		if got := Normalize("a" + string(r) + "b"); got != "a-b" {
+			t.Errorf("U+%04X: %q", r, got)
+		}
+	}
+	if n < 20 {
+		t.Errorf("only %d Pd runes", n)
 	}
 }
