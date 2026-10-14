@@ -1,7 +1,7 @@
 {
   "request": {
     "method": "GET",
-    "path": "/api/cards/c_unknown"
+    "path": "/api/cards/c_ffffffffffffffffffffffffffffffff"
   },
   "response": {
     "status": 404,
