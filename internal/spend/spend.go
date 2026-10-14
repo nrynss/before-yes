@@ -61,6 +61,14 @@ const oneCheck cost.Price = 1
 // checkKind is the Kind a settled check books under in the checks pool.
 const checkKind = "check"
 
+// DefaultReservationTTL is how long a hold stands when Config.ReservationTTL
+// is zero. It must outlast the longest call and the longest fresh check, or a
+// hold lapses while its work still runs and a concurrent reserve can take the
+// headroom. internal/model lets one call run up to 15 minutes
+// (model.DefaultTimeouts.Ceiling), and a fresh check runs several calls, so 30
+// minutes leaves margin above a single call and holds a whole check.
+const DefaultReservationTTL = 30 * time.Minute
+
 var (
 	// ErrNoPool reports a call against a pool the meter was not opened
 	// with.
@@ -112,6 +120,12 @@ type Config struct {
 	// expiry and window boundaries, on every pool. Nil means time.Now. Tests
 	// set it to cross a UTC midnight or month start without sleeping.
 	Now func() time.Time
+
+	// ReservationTTL is how long every pool's hold stands before the store
+	// purges it. Zero means DefaultReservationTTL. A hold must outlast the
+	// call or check it covers, so set this above the longest call the
+	// meter will see.
+	ReservationTTL time.Duration
 }
 
 // Meter is the durable meter every paid call goes through. Build one with
@@ -187,6 +201,10 @@ func Open(ctx context.Context, cfg Config) (*Meter, error) {
 	if err != nil {
 		return nil, fmt.Errorf("spend: open database: %w", err)
 	}
+	ttl := cfg.ReservationTTL
+	if ttl == 0 {
+		ttl = DefaultReservationTTL
+	}
 	m := &Meter{db: db, pools: make(map[Pool]*coststore.Store, len(cfg.Pools))}
 	for _, name := range poolNames {
 		pc, ok := cfg.Pools[name]
@@ -194,12 +212,13 @@ func Open(ctx context.Context, cfg Config) (*Meter, error) {
 			continue
 		}
 		st, err := coststore.Open(ctx, coststore.Config{
-			DB:           db,
-			Namespace:    namespaceOf(name, pc.Namespace),
-			Limit:        pc.Limit,
-			Period:       periodOf(name, pc.Period),
-			Denomination: unitOf(name),
-			Now:          cfg.Now,
+			DB:             db,
+			Namespace:      namespaceOf(name, pc.Namespace),
+			Limit:          pc.Limit,
+			Period:         periodOf(name, pc.Period),
+			Denomination:   unitOf(name),
+			Now:            cfg.Now,
+			ReservationTTL: ttl,
 		})
 		if err != nil {
 			_ = db.Close()
@@ -224,11 +243,10 @@ func (m *Meter) Close() error {
 // It reserves estimate before work runs, so a pool that cannot cover the
 // estimate refuses the call with an error matching cost.ErrOverBudget and
 // work never runs. The hold stands while work runs, so a concurrent call sees
-// that budget as taken. The hold expires with the store's reservation TTL,
-// which the meter does not expose and leaves at the store's default of ten
-// minutes; a call that outlives the TTL can let a second call reserve the
-// same headroom. A context that is already done refuses the call before the
-// reserve, so work never runs either.
+// that budget as taken. The hold lasts Config.ReservationTTL, which defaults
+// to DefaultReservationTTL, above the longest call; a call that outlived the
+// TTL would let a second call reserve the same headroom. A context that is
+// already done refuses the call before the reserve, so work never runs either.
 //
 // When work returns, Spend settles what the call reported. A reply that marks
 // itself unmeasured settles at the estimate, and the usage Spend returns
@@ -333,14 +351,15 @@ type Check struct {
 // counts against the day's headroom while the check runs, so checks in
 // flight count toward the cap too.
 //
+// The hold lasts Config.ReservationTTL (DefaultReservationTTL when zero), so a
+// check that finishes inside that window holds its slot the whole time. A
+// check that runs past the TTL loses its hold and can be overtaken by a
+// second check; that is the one remaining risk. Done books the check when it
+// ends whether or not the hold lapsed, so the day's count stays right.
+//
 // The caller calls BeginCheck only for a fresh check, one with no cache hit.
 // A check answered from the cache never reaches BeginCheck, so it neither
 // reserves nor books against the cap.
-//
-// A check that runs longer than the reservation TTL (ten minutes, the store's
-// default) loses its hold and can be overtaken by a second check. Done books
-// the check once it ends, so the day's count is right; only the in-flight
-// slot can lapse.
 func (m *Meter) BeginCheck(ctx context.Context, ref string) (*Check, error) {
 	p, ok := m.pools[PoolChecksDaily]
 	if !ok {

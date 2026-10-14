@@ -347,3 +347,68 @@ func TestTavilyOpenedWithZeroPeriodIsMonthly(t *testing.T) {
 	}
 	spendOnce(t, m, spend.PoolTavily, "tavily:search", "check-3", 2*spend.CreditUnit, 2*spend.CreditUnit)
 }
+
+// TestCheckHoldLastsTheReservationTTL pins the hold a check takes. Five checks
+// begin and none ends. Twenty minutes later the sixth is still refused, because
+// the five holds still stand. Past the default 30-minute TTL the holds are
+// purged and the sixth is admitted, which shows the TTL is the one applied.
+func TestCheckHoldLastsTheReservationTTL(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "before-yes.db")
+	clock := &dayClock{at: time.Date(2026, 10, 14, 10, 0, 0, 0, time.UTC)}
+	m := openClockedMeter(t, path, clock, map[spend.Pool]spend.PoolConfig{
+		spend.PoolChecksDaily: {Limit: 5},
+	})
+	ctx := context.Background()
+
+	for i := 1; i <= 5; i++ {
+		if _, err := m.BeginCheck(ctx, fmt.Sprintf("held-%d", i)); err != nil {
+			t.Fatalf("check %d must begin: %v", i, err)
+		}
+	}
+
+	clock.at = clock.at.Add(20 * time.Minute)
+	if _, err := m.BeginCheck(ctx, "held-6"); !errors.Is(err, cost.ErrOverBudget) {
+		t.Fatalf("a hold must stand at twenty minutes, so the sixth check is refused: %v", err)
+	}
+
+	clock.at = clock.at.Add(11 * time.Minute)
+	c, err := m.BeginCheck(ctx, "after-ttl")
+	if err != nil {
+		t.Fatalf("past the 30-minute TTL the purged holds must free the slot: %v", err)
+	}
+	if err := c.Done(); err != nil {
+		t.Fatalf("done: %v", err)
+	}
+}
+
+// TestModelHoldStillBlocksAfterTwentyMinutes pins that a model-pool hold lasts
+// past the longest single call. The outer call holds 800 millicents of a
+// 1000-millicent ceiling. Inside the outer work, which runs for twenty minutes,
+// a second reserve of 300 must still be refused, since 800 is still held.
+func TestModelHoldStillBlocksAfterTwentyMinutes(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "before-yes.db")
+	clock := &dayClock{at: time.Date(2026, 10, 14, 10, 0, 0, 0, time.UTC)}
+	m := openClockedMeter(t, path, clock, map[spend.Pool]spend.PoolConfig{
+		spend.PoolModel: {Limit: cost.Cent},
+	})
+	ctx := context.Background()
+
+	var innerErr error
+	innerRan := false
+	_, err := m.Spend(ctx, spend.PoolModel, "tokenfactory:read", "outer", 800*cost.Millicent,
+		func(context.Context) (cost.Usage, error) {
+			clock.at = clock.at.Add(20 * time.Minute)
+			_, innerErr = m.Spend(ctx, spend.PoolModel, "tokenfactory:read", "inner", 300*cost.Millicent,
+				func(context.Context) (cost.Usage, error) {
+					innerRan = true
+					return cost.Usage{Price: 300 * cost.Millicent, Measured: true}, nil
+				})
+			return cost.Usage{Price: 800 * cost.Millicent, Measured: true}, nil
+		})
+	if err != nil {
+		t.Fatalf("outer call: %v", err)
+	}
+	if !errors.Is(innerErr, cost.ErrOverBudget) || innerRan {
+		t.Fatalf("a reserve past the ceiling must be refused while the 800 hold stands at twenty minutes: err %v, ran %v", innerErr, innerRan)
+	}
+}
