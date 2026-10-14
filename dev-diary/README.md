@@ -12,7 +12,7 @@ Where a phase document and the brief conflict, the brief wins. Record the discre
 
 Each phase document gives an engineer starting cold the complete context for its tasks.
 
-**Current status:** P0 is done. P1 and P2 can start. An earlier backend draft sits in `scratch/` at the repository root, uncommitted and unreviewed. Tasks it covers show `status: drafted`, which means there is code to start from, not that the task is done. See [Starting from the scratch draft](#starting-from-the-scratch-draft).
+**Current status:** P0 and P1 are done. P2, P3, P4 and P5 can start (each by its own `requires`). An earlier backend draft sits in `scratch/` at the repository root, uncommitted and unreviewed. Tasks it covers show `status: drafted`, which means there is code to start from, not that the task is done. See [Starting from the scratch draft](#starting-from-the-scratch-draft).
 
 ---
 
@@ -79,7 +79,7 @@ Do not wait for a whole phase to finish. If a task requires only `T1.2`, start i
 |---|---|---|---|---|
 | **P0** Ground | [PHASE-0-ground.md](PHASE-0-ground.md) | none | none | everything |
 | **P1** Contracts | [PHASE-1-contracts.md](PHASE-1-contracts.md) | T0.1 | none | P2–P5 |
-| **P2** Clients and meter | [PHASE-2-clients.md](PHASE-2-clients.md) | P1 | 3 / 4 | In progress. T1.1–T1.3 done; the rest approved, landing in order. |
+| **P2** Clients and meter | [PHASE-2-clients.md](PHASE-2-clients.md) | P1 | 4 / 4 | Done. The `job.Failure` exit criterion waits on T4.1. |
 | **P3** Pipeline | [PHASE-3-pipeline.md](PHASE-3-pipeline.md) | P1, T0.4 | P2, P4, P5 | P4 jobs, P6 |
 | **P4** Server | [PHASE-4-server.md](PHASE-4-server.md) | T1.3, T1.4, T2.4 | P2, P3, P5 | P5 live wiring, P6 |
 | **P5** Frontend | [PHASE-5-frontend.md](PHASE-5-frontend.md) | T1.3, T1.4 | P2, P3, P4 | P6 |
@@ -194,6 +194,13 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 
 Newest first. One entry per closed task, finding, or split.
 
+- **T1.4 closed; P1 done.** Reviews: rounds 1–6, APPROVE in round 6. PR #4.
+  - `docs/api.md` covers seven routes, every code and every stream event, plus the order of answers for `POST /api/checks`: gate, validation, card cache (a fresh card wins over `live_checks_off`, `budget_exhausted` and `busy`), join a running check, refusals, new check. `testdata/contracts/api/` holds the examples.
+  - **`owns` widened** to include `internal/pipeline/api_examples_test.go`. That file generates the event streams with `wire.WriteEvent`, and generates `get-card`, `get-cards` and `get-checklist` from the contracts. Regenerate with `go test ./internal/pipeline -run TestAPIGenerate -update`.
+  - Surprise, also in feedback.md: Keel's `error` event nests the whole envelope, `"error":{"error":{code,...}}`.
+  - `GET /api/checks/{id}` exposes `detail`, from `Result.Detail`. `message` is the server's fixed sentence per code, never `Result.Err`.
+  - **Open, owned by T4.1:** proving the answer order and the `job.Failure` exit criterion.
+  - Noted: `go mod tidy -diff` is non-empty on `main`, because `modernc.org/sqlite` is not imported yet. Phase 1 did not introduce it.
 - **T1.3 closed.** Reviews: rounds 1–6, APPROVE in round 6. PR #3.
   - `internal/pipeline/types.go` holds Evidence, Card, AppInfo, Stats and Alternative. `testdata/contracts/` holds `evidence.json`, `card-yes`, `card-settings`, `card-no` and `card-unclear`.
   - **`owns` widened** to include `internal/pipeline/types_test.go`. T3.4 must not edit it.

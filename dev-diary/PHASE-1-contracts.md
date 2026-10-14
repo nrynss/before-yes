@@ -235,7 +235,7 @@ requires:   T1.3
 fixture-ok: yes
 size:       S · frontier
 owns:       docs/api.md, testdata/contracts/api/, internal/pipeline/api_examples_test.go
-status:     in-review
+status:     done
 ```
 Write down the routes and their bodies:
 
@@ -296,8 +296,8 @@ Noted from the review, not this task's: `go mod tidy -diff` is non-empty on `mai
 
 ## Exit Criteria
 
-- [ ] Checklist frozen (`checklist.Version`, now `v7`), with the verdict question decided.
-- [ ] The quote check rejects a changed word and an invented quote, by test.
-- [ ] Example evidence and card payloads committed, one card per verdict.
-- [ ] API and error codes documented, with examples.
-- [ ] Error codes ride the job terminal through `job.Failure` (Keel v0.7.3, nrynss/keel#83).
+- [x] Checklist frozen (`checklist.Version`, now `v7`), with the verdict question decided.
+- [x] The quote check rejects a changed word and an invented quote, by test.
+- [x] Example evidence and card payloads committed, one card per verdict.
+- [x] API and error codes documented, with examples.
+- [ ] Error codes ride the job terminal through `job.Failure` (Keel v0.7.3, nrynss/keel#83). Documented in `docs/api.md`; proven only when T4.1 builds the job.
