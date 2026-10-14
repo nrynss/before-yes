@@ -369,12 +369,22 @@ func TestRecordedRepliesGradesRestOnVerifiedQuotes(t *testing.T) {
 		d       demo
 		age     int
 		verdict checklist.Verdict
-		levels  []checklist.Level // in card order
+		levels  []checklist.Level // in card order, after every demotion
 		thin    []checklist.Area
 	}{
-		{demos[0], 9, checklist.No, L(set, set, unk, flag, unk, flag), []checklist.Area{"data", "content"}},
-		{demos[1], 9, checklist.No, L(flag, unk, unk, unk, flag, flag), []checklist.Area{"money", "age_gating"}},
-		{demos[2], 5, checklist.No, L(flag, flag, flag, ok, flag, unk), nil},
+		// Roblox: the money, age_gating and content flags stand the
+		// entailment check; contact, data and developer_record are dropped by
+		// it (flag_not_earned) and land thin.
+		{demos[0], 9, checklist.No, L(unk, flag, unk, flag, flag, unk), []checklist.Area{"contact", "data", "developer_record"}},
+		// Minecraft: four ok_with_settings, each naming a setting a cited
+		// mitigation quote backs; data and developer_record are the judge's
+		// own unknowns, so nothing is thin.
+		{demos[1], 9, checklist.YesWithSettings, L(set, set, unk, set, set, unk), nil},
+		// Khan: the judge graded four areas ok citing nothing (Enforce's
+		// ok_without_finding), age_gating named a setting no cited quote
+		// names, and the content flag's quotes do not meet the definition
+		// (flag_not_earned). All six unknown make the verdict unclear.
+		{demos[2], 5, checklist.Unclear, L(unk, unk, unk, unk, unk, unk), []checklist.Area{"age_gating", "content"}},
 	}
 	tokenFactory := func(on bool) map[string]any {
 		return map[string]any{"chat_template_kwargs": map[string]any{"enable_thinking": on}}
