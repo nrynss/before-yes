@@ -21,7 +21,7 @@ var update = flag.Bool("update", false, "rewrite testdata/contracts from the fix
 
 const contracts = "../../testdata/contracts"
 
-var examples = []string{"evidence.json", "card-yes.json", "card-settings.json", "card-no.json", "card-unclear.json"}
+var examples = []string{"evidence.json", "card-yes.json", "card-settings.json", "card-no.json", "card-unclear.json", "card-unknown-kind.json"}
 
 // decodeStrict decodes with unknown fields refused.
 func decodeStrict(b []byte, v any) error {
@@ -116,7 +116,7 @@ func valuePaths(v any, prefix string, out map[string]bool) {
 func TestExamplesCoverEveryField(t *testing.T) {
 	for typ, files := range map[reflect.Type][]string{
 		reflect.TypeOf(Evidence{}): {"evidence.json"},
-		reflect.TypeOf(Card{}):     {"card-yes.json", "card-settings.json", "card-no.json", "card-unclear.json"},
+		reflect.TypeOf(Card{}):     {"card-yes.json", "card-settings.json", "card-no.json", "card-unclear.json", "card-unknown-kind.json"},
 	} {
 		want := map[string]bool{}
 		jsonPaths(typ, "", want)
@@ -144,7 +144,7 @@ func TestExamplesCoverEveryField(t *testing.T) {
 // grades enforced, settings from the grades, every cited id present, and
 // every risk finding on the card.
 func TestExamplesObeyRules(t *testing.T) {
-	want := map[string]checklist.Verdict{"card-yes.json": checklist.Yes, "card-settings.json": checklist.YesWithSettings, "card-no.json": checklist.No, "card-unclear.json": checklist.Unclear}
+	want := map[string]checklist.Verdict{"card-yes.json": checklist.Yes, "card-settings.json": checklist.YesWithSettings, "card-no.json": checklist.No, "card-unclear.json": checklist.Unclear, "card-unknown-kind.json": checklist.Unclear}
 	for name, verdict := range want {
 		b, _ := os.ReadFile(filepath.Join(contracts, name))
 		var c Card
@@ -253,11 +253,13 @@ func fixtureSegments(t *testing.T, slug string, specs []spec) map[string]finding
 
 type cardSpec struct {
 	file, slug, title, cardID string
+	kind                      Kind // KindIOS when empty
 	age                       int
 	app                       *AppInfo
 	specs                     []spec
 	grades                    []checklist.Grade // Findings hold spec indexes as strings
 	alts                      []Alternative
+	altNote                   string
 	missing                   []string
 	conflicted                []checklist.Area
 }
@@ -327,12 +329,16 @@ func build(t *testing.T, cs cardSpec) (Card, Evidence) {
 	if alts == nil {
 		alts = []Alternative{}
 	}
-	card := Card{ID: cs.cardID, Title: cs.title, Kind: KindIOS, Age: cs.age, ChecklistVersion: checklist.Version,
+	kind := cs.kind
+	if kind == "" {
+		kind = KindIOS
+	}
+	card := Card{ID: cs.cardID, Title: cs.title, Kind: kind, KindLabel: KindLabel(kind), Age: cs.age, ChecklistVersion: checklist.Version,
 		CheckedAt: collected.Add(40 * time.Second), CollectedAt: collected, Verdict: verdict, Grades: grades,
-		Settings: checklist.Settings(grades), Findings: onCard, Alternatives: alts, App: cs.app, Stats: stats}
+		Settings: checklist.Settings(grades), Findings: onCard, Alternatives: alts, AlternativesNote: cs.altNote, App: cs.app, Stats: stats}
 	evStats := stats
 	evStats.ConflictedAreas, evStats.JudgeCostNano, evStats.JudgeModel = []checklist.Area{}, 0, ""
-	ev := Evidence{Title: cs.title, Kind: KindIOS, CollectedAt: collected, App: cs.app, Findings: fs, Stats: evStats}
+	ev := Evidence{Title: cs.title, Kind: kind, CollectedAt: collected, App: cs.app, Findings: fs, Stats: evStats}
 	return card, ev
 }
 
@@ -374,7 +380,10 @@ func cardSpecs() []cardSpec {
 				g(checklist.Data, checklist.Unknown, "", "No policy finding was verified."),
 				g(checklist.DeveloperRecord, checklist.Unknown, "", "No news finding was verified."),
 			},
-			alts:       []Alternative{{Title: "Toca Life World", Reason: "Same open play-world genre with no chat with strangers.", CardID: "c_Tc6vRb1nQ8zKp2dWm5sLhA", Verdict: checklist.YesWithSettings, Status: AltChecked}},
+			alts: []Alternative{{Title: "Toca Life World", Reason: "Same open play-world genre with no chat with strangers.", CardID: "c_Tc6vRb1nQ8zKp2dWm5sLhA", Verdict: checklist.YesWithSettings, Status: AltChecked}},
+			// User decision: a refused alternative's name is not shown; the
+			// card carries the one line instead.
+			altNote:    MoreAlternativesNote,
 			missing:    []string{"news"},
 			conflicted: []checklist.Area{checklist.Contact},
 		},
@@ -448,6 +457,25 @@ func cardSpecs() []cardSpec {
 			},
 			missing: []string{"review", "reddit", "news"},
 		},
+		// User decision (T3.7): a title no signal placed is kind unknown,
+		// on the general plan: news, forums (Reddit and others) and the
+		// shared rating search, with no policy, terms or review source. The
+		// example has no finding, since the captured Toca fixtures hold no
+		// news, forum or rating text about the title; it shows what such a
+		// card looks like when the general plan finds nothing.
+		{file: "card-unknown-kind.json", slug: "toca-life-world", title: "Toca Life World", cardID: "c_Uk4nWn7pQ2zKd8sVm3tRhB", age: 6,
+			kind: KindUnknown, app: nil,
+			specs: []spec{},
+			grades: []checklist.Grade{
+				g(checklist.Contact, checklist.Unknown, "", "No news, forum or rating source settled whether players can message each other."),
+				g(checklist.Money, checklist.Unknown, "", "No source said whether the title sells anything."),
+				g(checklist.Data, checklist.Unknown, "", "The kind is unknown, so no privacy policy was read."),
+				g(checklist.AgeGating, checklist.Unknown, "", ""),
+				g(checklist.Content, checklist.Unknown, "", "No reviews were read."),
+				g(checklist.DeveloperRecord, checklist.Unknown, "", "No developer record found."),
+			},
+			missing: []string{"reddit", "forum", "news"},
+		},
 	}
 }
 
@@ -480,6 +508,36 @@ func TestGenerate(t *testing.T) {
 			if err != nil || !bytes.Equal(bytes.TrimSpace(got), want) {
 				t.Errorf("%s is stale; run go test ./internal/pipeline -update", name)
 			}
+		}
+	}
+}
+
+// The unknown-kind example shows only what the unknown plan can produce:
+// findings and missing kinds from the general plan's sources alone.
+func TestUnknownKindExampleMatchesPlan(t *testing.T) {
+	b, err := os.ReadFile(filepath.Join(contracts, "card-unknown-kind.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var card Card
+	if err := json.Unmarshal(b, &card); err != nil {
+		t.Fatal(err)
+	}
+	planned := map[string]bool{}
+	for _, q := range PlanFor(KindUnknown, card.Title, "") {
+		planned[q.Kind] = true
+	}
+	if card.Kind != KindUnknown || card.KindLabel != "kind unknown" || card.App != nil {
+		t.Errorf("kind %q label %q app %v", card.Kind, card.KindLabel, card.App)
+	}
+	for _, f := range card.Findings {
+		if !planned[f.Source.Kind] {
+			t.Errorf("finding from %s, which the unknown plan has no search for", f.Source.Kind)
+		}
+	}
+	for _, k := range card.Stats.MissingKinds {
+		if !planned[k] {
+			t.Errorf("missing %s, which the unknown plan does not plan", k)
 		}
 	}
 }

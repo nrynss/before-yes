@@ -21,10 +21,12 @@ import (
 //     PEGI page;
 //   - and, weakly, whole words in a hit's text naming any of these.
 //
-// The kind with the most weight wins (see the signal weights). A title with no signal at all is
-// taken as a console or PC game: it is not on the App Store, and no store,
-// channel or board was named, and the console plan's rating-board search is
-// the one that can still find something.
+// The kind with the most weight wins (see the signal weights). A title with
+// no signal at all is KindUnknown (user decision): nothing placed it, so it
+// gets the general plan and the card says "kind unknown".
+
+// allKinds is every kind a plan exists for; GatherVersion hashes each.
+var allKinds = []Kind{KindIOS, KindAndroid, KindConsole, KindYouTube, KindUnknown}
 
 // Signal weights. A direct store listing or channel page names the kind
 // outright; a rating board's page is strong but lists platforms; a word in
@@ -110,7 +112,7 @@ func DetectKind(title string, hits []tavily.Result) Kind {
 			}
 		}
 	}
-	best, top := KindConsole, 0
+	best, top := KindUnknown, 0
 	for _, k := range []Kind{KindConsole, KindAndroid, KindYouTube} {
 		if score[k] > top {
 			best, top = k, score[k]
@@ -136,6 +138,10 @@ const KindArticle = "article"
 // Rating boards a console or PC plan weights.
 var ratingBoards = []string{"esrb.org", "pegi.info"}
 
+// generalKinds are the source kinds the general plan, for a title of
+// unknown kind, keeps from Plan.
+var generalKinds = []string{KindNews, KindForum, KindReddit, KindRating}
+
 // noPlayStore keeps Google Play out of every search: the brief rules out
 // Play Store scraping, so an Android-only title is read through Tavily
 // alone.
@@ -154,6 +160,10 @@ var noPlayStore = []string{"play.google.com"}
 //     A channel has no privacy policy or terms of its own (they are
 //     YouTube's), so those are not planned, and are not missing. The rating
 //     search stays because it ran to detect the kind.
+//   - KindUnknown: the general plan, news, forums (Reddit and others) and
+//     the general rating search, with no ESRB/PEGI search and no policy or
+//     terms search (no store or official site placed it). Those kinds are
+//     not planned, so they are not missing.
 func PlanFor(kind Kind, title, officialHost string) []Query {
 	base := Plan(title, officialHost)
 	switch kind {
@@ -180,6 +190,14 @@ func PlanFor(kind Kind, title, officialHost string) []Query {
 		return append(out, Query{Name: "channel", Kind: KindArticle, Search: tavily.Search{
 			Query: title + " YouTube channel kids content parents review controversy", MaxResults: 8, IncludeRaw: true,
 		}})
+	case KindUnknown:
+		var out []Query
+		for _, q := range base {
+			if contains(generalKinds, q.Kind) {
+				out = append(out, q)
+			}
+		}
+		return out
 	}
 	return base
 }

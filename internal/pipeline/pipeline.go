@@ -121,7 +121,7 @@ func versionSample() []Doc {
 func GatherVersion() string {
 	h := sha256.New()
 	fmt.Fprintln(h, PlanVersion)
-	for _, kind := range []Kind{KindIOS, KindAndroid, KindConsole, KindYouTube} {
+	for _, kind := range allKinds {
 		for _, host := range []string{"", "example.com"} {
 			b, _ := json.Marshal(PlanFor(kind, "Sample Title", host))
 			h.Write(b)
@@ -182,7 +182,10 @@ type Pipeline struct {
 	Judge    *Judge
 	// Cache keeps evidence between checks. Nil means no cache.
 	Cache EvidenceCache
-	Now   func() time.Time
+	// Checks gates fresh alternative checks on the checks_daily cap
+	// (T3.5, user decision). Nil means no cap. *spend.Meter has it.
+	Checks Checks
+	Now    func() time.Time
 }
 
 func (p *Pipeline) now() time.Time {
@@ -304,6 +307,7 @@ func (p *Pipeline) Decide(ctx context.Context, ev Evidence, age int, ref string)
 		ID:               id,
 		Title:            ev.Title,
 		Kind:             ev.Kind,
+		KindLabel:        KindLabel(ev.Kind),
 		Age:              age,
 		ChecklistVersion: checklist.Version,
 		CheckedAt:        p.now().UTC(),

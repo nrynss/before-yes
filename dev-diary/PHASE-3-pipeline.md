@@ -213,7 +213,7 @@ The brief: safer alternatives, found with Tavily and checked the same way. Tavil
 
 When a card is **no** or **yes with settings**, search for two or three alternatives in the same genre for the same age. Run each candidate through `Collect` and `Decide`, cached like any title. Keep only candidates whose verdict beats the original's. Show each with its verdict and a link to its own card.
 
-Alternatives multiply cost. They are bounded by count, run after the main card is shown, and refused by the meter like anything else. A card is complete without them, and alternatives that are still pending say so.
+Alternatives multiply cost. They are bounded by count, run after the main card is shown, and refused by the meter like anything else. A card is complete without them. It carries only checked alternatives, plus a one-line note when at least one was refused. Pending and refused entries stay internal.
 
 **Done when:** Against fixtures, the "no" title yields at least one alternative with a better verdict and its own card id. A budget refusal leaves the main card intact.
 
@@ -222,10 +222,10 @@ Alternatives multiply cost. They are bounded by count, run after the main card i
   - **Finding:** `FindAlternatives(ctx, card, ref)` runs only for a `no` or `yes_with_settings` card. It makes one Tavily search ("safer <genre> like <title> for a <age> year old"; the genre is the App Store genre, or "video game" or "YouTube channel" from the kind), metered under the check's ref. It returns up to `MaxAlternatives` (3) candidates with `status: pending`.
   - **Candidate names** come from hit titles: cut at " | ", " - " or ": ", and drop a trailing "App/Game Review". A list ("10 Best Games Like Roblox", "Top…", "…alternatives…", "… vs …") and the title itself are skipped.
   - **Checking:** `CheckAlternatives` checks each candidate for the card's age through `Collect` (cached like any title) and `Decide`, under the ref `<ref>/alt<n>`. It keeps only a candidate whose verdict beats the original's (yes > yes_with_settings > no; `unclear` never beats). A kept candidate has `status: checked`, its verdict and its own `card_id`, and its card is returned to be stored.
-  - **Refusals:** a `cost.ErrOverBudget` from any call stops the run, and the candidates not yet checked are marked `refused`. A candidate that fails another way is dropped.
+  - **Refusals:** a `cost.ErrOverBudget` from any call stops the run, and the candidates not yet checked are marked `refused`. The daily cap refuses only fresh checks (user decision below). A candidate that fails another way is dropped.
   - `WithAlternatives` runs both steps after the main card is made and returns a copy of the card with the alternatives. On any error, a refused search included, the card comes back unchanged.
-- **The P4 hook** is `Pipeline.WithAlternatives`, or `FindAlternatives` followed by `CheckAlternatives` when the pending list should be shown first. pipeline.go is unchanged: `Run` still returns the main card alone.
-- **Contract:** `Alternative.Status` (`status`: pending, checked, refused) is new and additive. `card-no.json` and `api/get-card.json` show `"status": "checked"`; the `types_test.go` generator line was updated to match.
+- **The P4 hook** is `Pipeline.WithAlternatives`, or `FindAlternatives`, `CheckAlternatives` and `AltResult.Apply` as two steps. The pending list is never shown: a pending name may then be refused by the cap, so a card shown before the checks finish carries no alternatives (round-6 remediation below). pipeline.go is unchanged: `Run` still returns the main card alone.
+- **Contract:** `Alternative.Status` (`status`) is new and additive. Internally it is pending, checked or refused. On a card, and so in every API response, it is always `checked`. `card-no.json` and `api/get-card.json` show `"status": "checked"`; the `types_test.go` generator line was updated to match.
 - **Fixtures:** the main card is the captured Roblox fixture (review 355 gives "no"). The alternatives search and the candidates' sources are fakes in `alternatives_test.go`: Calm Builder, which answers every area with a setting; Chatty World, which has a contact risk; and Blank Slate, which says nothing. No live call was made.
 - **Tests:** `TestNoTitleGetsABetterAlternative` (the Done-when: Calm Builder, yes_with_settings, its own card id; the list and self skipped; the count bounded; each candidate under its own ref; a second run reads nothing again, so the evidence is cached); `TestBudgetRefusalLeavesMainCard` (the Done-when: refused candidate checks are marked refused and the card is otherwise byte-identical; a refused search returns the card unchanged); `TestAlternativesOnlyForNoAndSettings`; `TestCandidateName`.
 
@@ -260,6 +260,31 @@ Alternatives multiply cost. They are bounded by count, run after the main card i
 | M1: bold or link markup alone was taken as title evidence, so bolded advice steps ("**Turn on parental controls**"), bold section headings ("**Our verdict**"), "**Note:**"/"**Tip:**" lines and linked steps ("[Download the app](x)") became candidates | A list entry is a candidate only when another hit in the same search response is titled with that name. Markup only locates the name in the entry. The no-call check, the self and duplicate filter before the cap, metering and statuses are unchanged | `TestListPageRejectsHeadingsAndSteps` (all four probe pages and a marked uncorroborated page give none; corroborated Stop Motion Studio, Read Along by Google, Pick a Path and Top Eleven are kept), `TestListEntryCorroboratedBySearch`, `TestListPageEntries` |
 
 Trade-off: a list page's picks are only as many as the search's single-title hits confirm. A page whose picks have no hit of their own adds nothing (noted in feedback.md).
+
+**User decision (T3.5): alternatives count against the daily cap.** Each fresh alternative check (its evidence is not cached) counts as one check against the 5-a-day `checks_daily` cap. It goes through the existing path: `Pipeline.Checks` is satisfied by `*spend.Meter`, `BeginCheck` runs before the candidate's first paid call, `Done` runs when it ends with a card, and `Fail` runs otherwise. A cached alternative runs free and reserves nothing; the check is `Pipeline.cached`, a cache lookup with no paid call. When the cap refuses, that candidate gets the existing `refused` status, and so does every later fresh one. Later cached candidates still run. A refusal from the Tavily or model meter still stops the run as before. A nil `Checks` means no cap. Tests: `TestFreshAlternativeChecksCountAgainstCap`, `TestCachedAlternativeRunsFree`.
+
+**User decision (T3.5): refused names are hidden.** `Alternative.Status` stays internal in `AltResult`. A card carries only checked alternatives (pending and refused entries stay internal), and when at least one was refused it gets `alternatives_note`: "More alternatives when today's checks reset". `Card.alternatives_note` is new, additive and omitted when empty. `card-no.json` and `api/get-card.json` show it, one line each. Tests: `TestBudgetRefusalLeavesMainCard` (no names, the note), `TestFreshAlternativeChecksCountAgainstCap` (no refused name in the card JSON), `TestNoNoteWithoutRefusal`.
+- Outside owns, kept minimal: `pipeline.go` (the `Checks` field on `Pipeline`), `types.go` (`Card.AlternativesNote`), `types_test.go` (the example's note) and `testdata/contracts`.
+
+**Round-6 remediation (T3.5 user decisions).**
+
+| Finding | Fix | Test |
+|---|---|---|
+| M1: refused names leaked on the two-step hook, where the pending list was shown first and `AltResult.Alternatives` carried refused entries | The filter `shown` now keeps only `checked` entries. `CheckAlternatives` returns those as `AltResult.Alternatives` with `AltResult.Note`; the full outcomes, refused ones included, stay unexported. `AltResult.Apply` puts them on a card, and both hooks use it. `Card.MarshalJSON` runs the same filter, so no card or API response carries a pending or refused name however the card was assembled. The pending-first hook is gone. The contract is unchanged in shape: `Alternative.status` documents that a card's alternative is always `checked`, and every example already shows only `checked` | `TestServerHookPathHidesRefused` (the two-step path, a pending list put on a card, and a card assembled from the internal outcomes), `TestFreshAlternativeChecksCountAgainstCap`, `TestNoNoteWithoutRefusal` |
+| L1: no test of a Tavily or model refusal in the middle of a fresh alternative's check with the cap on | The test below: the reserved check is released (`Fail`), nothing is booked, no hold stands, and the rest are refused | `TestMidCheckBudgetRefusalReleasesCheck` |
+| L2, L3 (accepted) | `cached` and `Collect` look up the cache separately, and a `Done` error drops a made card. Both are left as they are | — |
+
+- Outside owns, kept minimal: `types.go` (`Card.MarshalJSON` and the `Alternative.Status` comment).
+
+**Round-7 remediation (T3.5 user decisions).**
+
+| Finding | Fix | Test |
+|---|---|---|
+| L4: the notes still said pending names are shown | The overview, the contract line and the decision note now say a card carries only checked alternatives, plus the note when at least one was refused, and that pending and refused entries stay internal | — |
+| L5: `Card.MarshalJSON` had a value receiver, so a struct embedding `Card` took it on and dropped its own fields | `Card.MarshalJSON` is gone. `Card.Alternatives` is now of type `Alternatives` (`[]Alternative`), and that type's `MarshalJSON` keeps only checked entries. An embedding struct encodes all of its fields. The note comes from `AltResult.Apply`, so a card put together by hand hides refused names but adds no note. The card fixtures are byte-identical (`TestGenerate`) | `TestEmbeddedCardKeepsFieldsAndHidesNames`, `TestServerHookPathHidesRefused` |
+
+- Outside owns, kept minimal: `types.go` (the `Alternatives` type and the field's type, replacing round 6's `Card.MarshalJSON`).
+
 
 ---
 
@@ -392,7 +417,7 @@ Whether the YouTube Data API's made-for-kids status adds anything is an open que
 - **Detection** (`kind.go`, `DetectKind`):
   - An App Store match, by the store search or by a policy hit, makes a title `ios`.
   - Otherwise the rating search runs straight after the policy search, and their hits are scored. A YouTube channel URL (`/@`, `/channel/`, `/c/`, `/user/`) scores for `youtube`, a `play.google.*` URL for `android`, and an `esrb.org` or `pegi.info` page for `console_pc`, along with mentions in hit text (YouTuber, subscribers; Android, Google Play; PlayStation, Xbox, Nintendo Switch, Steam, PC game, console). The most signals wins.
-  - A title with no signal is taken as `console_pc`, since the console plan's rating-board search is the one that can still find something.
+  - A title with no signal is `unknown` (user decision below).
 - **Plan** (`PlanFor(kind, title, host)`; `Plan` is the iOS plan, unchanged):
   - **android:** every unnarrowed search excludes `play.google.com`, and Play hits are dropped, so no Play Store page is read. The policy and rating searches run before the kind is known, so they cannot exclude Play; their Play hits are dropped afterwards.
   - **console_pc:** adds a `rating-boards` search narrowed to `esrb.org` and `pegi.info`.
@@ -419,6 +444,20 @@ Whether the YouTube Data API's made-for-kids status adds anything is an open que
   3. It says nothing about whether content suits a given age. "Not made for kids" covers general-audience content, and "made for kids" is no safety rating (YouTube Help 9528076).
   4. It needs a Google API key and quota: a new service and a new key, outside the fixture-only scope.
 - **If adopted later (P4 or P6):** show it as small print beside the kind, for example "YouTube marks this channel as made for kids: comments and personalised ads are off on its videos". Do not grade it.
+
+
+**User decision (T3.7): an explicit unknown kind.** A title that no signal places is now `unknown` (`KindUnknown`), not `console_pc`. Its plan is the general one: Plan's news, forum, Reddit and rating searches (`generalKinds`). It has no ESRB/PEGI board-narrowed search, and no policy or terms search, because no store or official site placed it, so those kinds are not missing. The shared rating search still names the boards as words, because it runs for every kind to detect the kind. The card shows `kind_label` "kind unknown". `GatherVersion` loops over `allKinds`, which now includes `unknown`, so a change to the general plan changes the cache key. `TestGatherNoHostFollowsNoLinks` now gathers an unknown-kind title, so it checks that no third-party policy is read and that policy is not missing. `pageLinks` keeps its host checks.
+- Contract: `Card.kind_label` is new and additive (the five card examples and `api/get-card.json` gain one line each). The new example `card-unknown-kind.json` shows `"kind": "unknown"`.
+- Outside owns, kept minimal: `types.go` (the `KindUnknown` value, `KindLabel` and the `Card.KindLabel` field), `pipeline.go` (`Decide` sets the label; `GatherVersion` uses `allKinds`), `types_test.go` (a per-spec kind and the new example), `gather_test.go` (the test above) and `testdata/contracts`. The card and contract live there.
+- Tests: `TestUnplaceableTitleIsUnknown` (no hits, an unplaceable YouTube channel, an unplaceable Android app), `TestUnknownPlanIsGeneral`, `TestGatherVersionCoversEveryKind` (now also the general plan), `TestDetectKind`, and the contract round trip.
+- The policy search still runs, and is paid for, on a title that ends up `unknown`. It runs before the kind is known, because its hits (with the rating search's) feed `DetectKind`. For an unknown title its pages are not read: there is no extract step, and no policy or terms are planned.
+
+**Round-3 remediation (T3.7 user decision).**
+
+| Finding | Fix | Test |
+|---|---|---|
+| L1: `card-unknown-kind.json` cited a Toca terms-of-service finding, which the unknown plan cannot produce | The example has no finding, because the captured Toca fixtures hold no news, forum or rating text about the title. Its grades are unknown, its verdict is unclear, and the missing kinds are the general plan's (reddit, forum, news). The change only touches the example, and no field changed | `TestUnknownKindExampleMatchesPlan` (every finding and missing kind in the example comes from the unknown plan) |
+| L2 (accepted): the note did not say the policy search runs and is paid for on an unknown title | The line above | — |
 
 ---
 

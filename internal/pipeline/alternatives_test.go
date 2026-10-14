@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"path/filepath"
 	"reflect"
 	"regexp"
 	"strings"
@@ -221,15 +222,12 @@ func TestBudgetRefusalLeavesMainCard(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(cards) != 0 || len(got.Alternatives) != 3 {
-		t.Fatalf("alternatives %+v cards %d", got.Alternatives, len(cards))
+	// User decision: refused names are not shown; the card carries the one
+	// line instead.
+	if len(cards) != 0 || len(got.Alternatives) != 0 || got.AlternativesNote != MoreAlternativesNote {
+		t.Fatalf("alternatives %+v note %q cards %d", got.Alternatives, got.AlternativesNote, len(cards))
 	}
-	for _, a := range got.Alternatives {
-		if a.Status != AltRefused || a.CardID != "" {
-			t.Errorf("refused alternative %+v", a)
-		}
-	}
-	got.Alternatives = card.Alternatives
+	got.Alternatives, got.AlternativesNote = card.Alternatives, card.AlternativesNote
 	if b, _ := json.Marshal(got); string(b) != string(keep) {
 		t.Error("a refusal changed the main card")
 	}
@@ -442,5 +440,223 @@ func TestStripMarkdown(t *testing.T) {
 		if got := stripMarkdown(in); got != want {
 			t.Errorf("stripMarkdown(%q) = %q, want %q", in, got, want)
 		}
+	}
+}
+
+// openChecksMeter is a spend meter whose checks_daily cap is limit, with
+// used checks already booked for the day.
+func openChecksMeter(t *testing.T, limit, used int) *spend.Meter {
+	t.Helper()
+	m, err := spend.Open(context.Background(), spend.Config{
+		Path:  filepath.Join(t.TempDir(), "checks.db"),
+		Pools: map[spend.Pool]spend.PoolConfig{spend.PoolChecksDaily: {Limit: cost.Price(limit)}},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { _ = m.Close() })
+	for i := 0; i < used; i++ {
+		c, err := m.BeginCheck(context.Background(), fmt.Sprintf("earlier-%d", i))
+		if err != nil {
+			t.Fatal(err)
+		}
+		if err := c.Done(); err != nil {
+			t.Fatal(err)
+		}
+	}
+	return m
+}
+
+func checksSpent(t *testing.T, m *spend.Meter) cost.Price {
+	t.Helper()
+	st, err := m.Status(context.Background(), spend.PoolChecksDaily)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return st.Spent
+}
+
+// User decision: each fresh alternative check is one check against the
+// 5-a-day cap; when the cap refuses, the candidate is refused, and the
+// card hides refused names behind the one line.
+func TestFreshAlternativeChecksCountAgainstCap(t *testing.T) {
+	e, _, _, card := altE2E(t)
+	checks := openChecksMeter(t, 5, 3) // two checks left today
+	e.p.Checks = checks
+	pending, err := e.p.FindAlternatives(context.Background(), card, "check-1")
+	if err != nil || len(pending) != 3 {
+		t.Fatalf("pending %v err %v", pending, err)
+	}
+	res := e.p.CheckAlternatives(context.Background(), card, pending, "check-1")
+	if got := checksSpent(t, checks); got != 5 {
+		t.Errorf("checks spent %d, want 5 (two fresh alternative checks booked)", got)
+	}
+	var statuses []string
+	for _, a := range res.outcomes {
+		statuses = append(statuses, a.Title+"="+a.Status)
+	}
+	// Chatty World and Calm Builder use the two checks; Chatty World does
+	// not beat the card so it is not kept; Blank Slate is refused by the cap.
+	if strings.Join(statuses, ",") != "Calm Builder=checked,Blank Slate=refused" || !res.Refused {
+		t.Errorf("internal statuses %v refused %v", statuses, res.Refused)
+	}
+	shownAlts, note := res.Alternatives, res.Note
+	if len(shownAlts) != 1 || shownAlts[0].Title != "Calm Builder" || note != MoreAlternativesNote {
+		t.Errorf("shown %+v note %q", shownAlts, note)
+	}
+	b, _ := json.Marshal(Card{Alternatives: shownAlts, AlternativesNote: note})
+	if strings.Contains(string(b), "Blank Slate") || !strings.Contains(string(b), `"alternatives_note":"More alternatives when today's checks reset"`) {
+		t.Errorf("card JSON %s", b)
+	}
+}
+
+// A cached alternative runs free: no check is reserved or booked, even
+// with the cap spent, while a fresh one is refused.
+func TestCachedAlternativeRunsFree(t *testing.T) {
+	e, _, _, card := altE2E(t)
+	if _, _, err := e.p.Collect(context.Background(), "Calm Builder", "warm"); err != nil {
+		t.Fatal(err)
+	}
+	checks := openChecksMeter(t, 5, 5) // none left today
+	e.p.Checks = checks
+	pending, err := e.p.FindAlternatives(context.Background(), card, "check-1")
+	if err != nil {
+		t.Fatal(err)
+	}
+	res := e.p.CheckAlternatives(context.Background(), card, pending, "check-1")
+	if got := checksSpent(t, checks); got != 5 {
+		t.Errorf("checks spent %d, want 5 (the cached check books nothing)", got)
+	}
+	var statuses []string
+	for _, a := range res.outcomes {
+		statuses = append(statuses, a.Title+"="+a.Status)
+	}
+	if strings.Join(statuses, ",") != "Chatty World=refused,Calm Builder=checked,Blank Slate=refused" {
+		t.Errorf("statuses %v", statuses)
+	}
+	if len(res.Cards) != 1 || res.Cards[0].Title != "Calm Builder" {
+		t.Errorf("cards %+v", res.Cards)
+	}
+}
+
+// With nothing refused, the card shows no note.
+func TestNoNoteWithoutRefusal(t *testing.T) {
+	alts, note := shown([]Alternative{{Title: "A", Status: AltChecked}, {Title: "B", Status: AltPending}})
+	if len(alts) != 1 || alts[0].Title != "A" || note != "" {
+		t.Errorf("shown %v note %q", alts, note)
+	}
+	b, _ := json.Marshal(Card{Alternatives: alts})
+	if strings.Contains(string(b), "alternatives_note") {
+		t.Errorf("card JSON %s", b)
+	}
+	if alts, _ := shown(nil); alts == nil {
+		t.Error("shown(nil) must be an empty list, not null")
+	}
+}
+
+// The two-step server hook (FindAlternatives, then CheckAlternatives, then
+// Apply) never puts a refused name on a card or in its JSON, and neither
+// does a card assembled by hand: the pending list is not shown, and Card's
+// encoding drops anything not checked.
+func TestServerHookPathHidesRefused(t *testing.T) {
+	e, _, _, card := altE2E(t)
+	e.p.Checks = openChecksMeter(t, 5, 3) // two checks left: Blank Slate is refused
+	pending, err := e.p.FindAlternatives(context.Background(), card, "check-1")
+	if err != nil || len(pending) != 3 {
+		t.Fatalf("pending %v err %v", pending, err)
+	}
+	early := card
+	early.Alternatives = pending // a server that shows the pending list anyway
+	b, _ := json.Marshal(early)
+	for _, a := range pending {
+		if strings.Contains(string(b), a.Title) {
+			t.Errorf("pending name %q in card JSON before the checks", a.Title)
+		}
+	}
+	res := e.p.CheckAlternatives(context.Background(), card, pending, "check-1")
+	for _, a := range res.Alternatives {
+		if a.Status != AltChecked {
+			t.Errorf("result shows %+v", a)
+		}
+	}
+	if res.Note != MoreAlternativesNote {
+		t.Errorf("note %q", res.Note)
+	}
+	final := res.Apply(card)
+	b, _ = json.Marshal(final)
+	if strings.Contains(string(b), "Blank Slate") || strings.Contains(string(b), `"refused"`) || !strings.Contains(string(b), "Calm Builder") ||
+		!strings.Contains(string(b), MoreAlternativesNote) {
+		t.Errorf("final card JSON %s", b)
+	}
+	// A card assembled from the internal outcomes still hides the refused
+	// name (the note comes with Apply).
+	raw := card
+	raw.Alternatives = res.outcomes
+	b, _ = json.Marshal(raw)
+	if strings.Contains(string(b), "Blank Slate") || strings.Contains(string(b), `"refused"`) {
+		t.Errorf("hand-assembled card JSON %s", b)
+	}
+	var back Card
+	if err := json.Unmarshal(b, &back); err != nil || len(back.Alternatives) != 1 {
+		t.Errorf("decoded %+v err %v", back.Alternatives, err)
+	}
+}
+
+// A Tavily or model refusal partway through a fresh alternative's check,
+// with the cap on, releases that check's reservation (Fail): nothing is
+// booked, no hold stands, and the rest are refused.
+func TestMidCheckBudgetRefusalReleasesCheck(t *testing.T) {
+	e, _, _, card := altE2E(t)
+	checks := openChecksMeter(t, 5, 0)
+	e.p.Checks = checks
+	m := refuseMeter{inner: e.meter, mark: "/alt1"}
+	e.p.Gatherer.Meter, e.p.Reader.Meter, e.p.Judge.Meter = m, m, m
+	pending, err := e.p.FindAlternatives(context.Background(), card, "check-1")
+	if err != nil || len(pending) != 3 {
+		t.Fatalf("pending %v err %v", pending, err)
+	}
+	res := e.p.CheckAlternatives(context.Background(), card, pending, "check-1")
+	st, err := checks.Status(context.Background(), spend.PoolChecksDaily)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if st.Spent != 0 || st.Remaining != 5 {
+		t.Errorf("checks spent %d remaining %d, want 0 and 5 (the hold released)", st.Spent, st.Remaining)
+	}
+	if !res.Refused || len(res.Alternatives) != 0 || res.Note != MoreAlternativesNote {
+		t.Errorf("result %+v", res)
+	}
+	for _, a := range res.outcomes {
+		if a.Status != AltRefused {
+			t.Errorf("outcome %+v, want refused", a)
+		}
+	}
+}
+
+// A struct that embeds Card encodes its own fields, and the card's
+// alternatives still show no pending or refused name: the filter is on the
+// Alternatives type, not on Card.
+func TestEmbeddedCardKeepsFieldsAndHidesNames(t *testing.T) {
+	card := Card{Title: "Roblox", Alternatives: Alternatives{
+		{Title: "Calm Builder", Status: AltChecked},
+		{Title: "Pending Pick", Status: AltPending},
+		{Title: "Refused Pick", Status: AltRefused},
+	}, AlternativesNote: MoreAlternativesNote}
+	b, err := json.Marshal(struct {
+		Card
+		Extra int `json:"extra"`
+	}{card, 7})
+	if err != nil {
+		t.Fatal(err)
+	}
+	got := string(b)
+	if !strings.Contains(got, `"extra":7`) || !strings.Contains(got, `"title":"Roblox"`) || !strings.Contains(got, "Calm Builder") {
+		t.Errorf("embedded JSON %s", got)
+	}
+	if strings.Contains(got, "Pending Pick") || strings.Contains(got, "Refused Pick") || !strings.Contains(got, MoreAlternativesNote) {
+		t.Errorf("embedded JSON leaks or drops the note: %s", got)
+	}
+	if b, _ := json.Marshal(Card{}); !strings.Contains(string(b), `"alternatives":[]`) {
+		t.Errorf("empty card alternatives %s", b)
 	}
 }

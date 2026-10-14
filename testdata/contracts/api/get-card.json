@@ -8,6 +8,7 @@
       "id": "c_7Hq2mXv9pK3wLr8sTn4bYe",
       "title": "Roblox",
       "kind": "ios",
+      "kind_label": "iOS app",
       "age": 9,
       "checklist_version": "v7",
       "checked_at": "2026-10-13T18:58:40Z",
@@ -151,6 +152,7 @@
           "status": "checked"
         }
       ],
+      "alternatives_note": "More alternatives when today's checks reset",
       "app": {
         "track_id": 431946152,
         "name": "Roblox",

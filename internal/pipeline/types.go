@@ -7,6 +7,7 @@
 package pipeline
 
 import (
+	"encoding/json"
 	"time"
 
 	"github.com/nrynss/before-yes/internal/checklist"
@@ -22,7 +23,25 @@ const (
 	KindAndroid Kind = "android"
 	KindConsole Kind = "console_pc"
 	KindYouTube Kind = "youtube"
+	// KindUnknown is a title no signal placed (user decision, T3.7).
+	KindUnknown Kind = "unknown"
 )
+
+// KindLabel is the card's words for a kind: "kind unknown" for a title no
+// signal placed.
+func KindLabel(k Kind) string {
+	switch k {
+	case KindIOS:
+		return "iOS app"
+	case KindAndroid:
+		return "Android app"
+	case KindConsole:
+		return "console or PC game"
+	case KindYouTube:
+		return "YouTube channel"
+	}
+	return "kind unknown"
+}
 
 // AppInfo is the matched App Store listing. It is nil when no hit matched.
 type AppInfo struct {
@@ -82,15 +101,20 @@ type Alternative struct {
 	CardID  string            `json:"card_id"`
 	Verdict checklist.Verdict `json:"verdict"`
 	// Status is "pending" (found, not checked yet), "checked" (its verdict
-	// beats the card's), or "refused" (the meter refused its check).
+	// beats the card's), or "refused" (the meter or the daily cap refused
+	// its check). On a card, and so in every API response, it is always
+	// "checked": pending and refused entries are internal, and Card's JSON
+	// encoding drops them (a refused one sets alternatives_note).
 	Status string `json:"status"`
 }
 
 // Card is one judgement for one age.
 type Card struct {
-	ID               string            `json:"id"`
-	Title            string            `json:"title"`
-	Kind             Kind              `json:"kind"`
+	ID    string `json:"id"`
+	Title string `json:"title"`
+	Kind  Kind   `json:"kind"`
+	// KindLabel is KindLabel(Kind), the words the card shows.
+	KindLabel        string            `json:"kind_label"`
 	Age              int               `json:"age"`
 	ChecklistVersion string            `json:"checklist_version"`
 	CheckedAt        time.Time         `json:"checked_at"`
@@ -102,7 +126,24 @@ type Card struct {
 	Settings []string `json:"settings"`
 	// Findings holds the findings the grades cite plus every risk finding.
 	Findings     []finding.Finding `json:"findings"`
-	Alternatives []Alternative     `json:"alternatives"`
-	App          *AppInfo          `json:"app"`
-	Stats        Stats             `json:"stats"`
+	Alternatives Alternatives      `json:"alternatives"`
+	// AlternativesNote is MoreAlternativesNote when at least one
+	// alternative was refused (its name is not shown), else empty.
+	AlternativesNote string   `json:"alternatives_note,omitempty"`
+	App              *AppInfo `json:"app"`
+	Stats            Stats    `json:"stats"`
+}
+
+// Alternatives is a card's alternatives. Its JSON encoding keeps only the
+// checked ones, so no card or API response carries a pending or refused
+// name however the card was assembled (T3.5 user decision). The filter is
+// on the slice, not on Card, so a struct that embeds Card encodes its own
+// fields too. A card made by AltResult.Apply also carries alternatives_note
+// when one was refused.
+type Alternatives []Alternative
+
+// MarshalJSON encodes only the checked alternatives, as a list (never null).
+func (a Alternatives) MarshalJSON() ([]byte, error) {
+	alts, _ := shown(a)
+	return json.Marshal([]Alternative(alts))
 }
