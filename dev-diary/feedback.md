@@ -29,6 +29,7 @@ Each entry gives what happened, the evidence, what it cost, and what would fix i
 - **Fixed in v0.7.1–v0.7.3:** cost-store namespaces could not share one file (nrynss/keel#82), and a failed job always carried `job_failed` (nrynss/keel#83). Both were found by this project and fixed upstream.
 
 - **An error event nests the envelope one level deeper than its doc comment suggests.** `wire.ErrorEvent.Error` holds the whole `{"error": {code, message, detail}}` body, so the frame reads `"error":{"error":{...}}`. It is consistent (one parser for responses and events), but easy to document wrongly; T1.4 did. *Evidence:* `testdata/contracts/api/events-error.txt`, written by `wire.WriteEvent` with `wire.NewErrorEvent`. *Fix:* show a full example frame in the `ErrorEvent` doc.
+- **`cache.GetOrMake` does not expose whether the call joined a flight or ran the maker.** `singleflight.Group.Do` returns `shared bool`, but `cache.Cache.GetOrMake` discards it, so callers that need to distinguish between the flight leader (who paid for the make) and joiners (who paid nothing and should be reported as hits) must track flight tokens out-of-band. *Evidence:* T4.2 implementation in `internal/server/cache.go`. *Cost:* extra atomic token bookkeeping in callers. *Fix:* return `(Result, bool, error)` or expose `Result.Shared`.
 
 ## Token Factory and Nemotron
 

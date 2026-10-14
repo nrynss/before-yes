@@ -40,8 +40,8 @@ The job reports progress as Keel `job.Progress`: stage, current and total when c
 requires:   T1.3
 fixture-ok: yes
 size:       S · mid
-owns:       internal/cards/, internal/server/cache.go
-status:     drafted
+owns:       internal/cards/, internal/server/cache.go, internal/server/cache_test.go
+status:     in-review
 ```
 Cards are stored in the application's SQLite file under Keel `id` values (32 hex characters, unguessable), with title key, age, checklist version, verdict and timestamp for lookup. Migrations go through Keel `sqlite.Migrate` in their own namespace.
 
@@ -52,6 +52,23 @@ Two cache levels, with distinct keys:
 A failed make is never cached.
 
 **Done when:** Tests show an invalid id refused before any query, two concurrent identical checks causing one collect, and a card found again by title and age.
+
+**Implementation notes (T4.2).**
+- `internal/cards`:
+  - `Store` opened with `Open(ctx, db)` running migrations under namespace `beforeyes_cards`.
+  - Cards stored under 32-hex Keel `id.New()` values. `Get(ctx, id)` validates `id.Valid` before executing any query.
+  - `PutWithAlternatives(ctx, main, alts)` stores the main card and its checked alternative cards in one transaction, remapping alternative IDs to fresh Keel IDs and dropping dangling links.
+  - `Latest(ctx, title, age, checklist, since)` finds the newest card within the since boundary.
+  - `Recent(ctx, limit)` orders by `created_at DESC, seq DESC` partitioned by `title_key, age` to yield the latest card per title and age, field-for-field matching `testdata/contracts/api/get-cards.json`.
+- `internal/server/cache.go`:
+  - `EvidenceCache` implements `pipeline.EvidenceCache` over `cache.Store` and wraps Keel `cache.Cache` for single-flight deduplication via `Collect(ctx, p, title, ref)`.
+  - Reuses `pipeline.EvidenceKey` verbatim.
+  - Thin / uncacheable evidence produces a private error in the maker so Keel's `GetOrMake` never stores it, while callers sharing the flight unwrap and receive the evidence.
+  - `CardCache` checks `cards.Latest` within `MaxAge`. Failed makes never write to the card store.
+- Contract notes:
+  - Keel IDs are bare 32-hex characters; the `c_` prefixes in `docs/api.md` are illustrative.
+  - `docs/api.md` mentions ages 2 to 17, while `pipeline.Request.Normalize` enforces 3 to 17.
+  - `storefrontOf` is duplicated in `internal/server/cache.go` because `pipeline.storefrontOf` is unexported.
 
 ---
 
