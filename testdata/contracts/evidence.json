@@ -96,6 +96,7 @@
   "stats": {
     "sources": 9,
     "reviews": 500,
+    "review_source": "feed",
     "chunks": 31,
     "failed_chunks": 1,
     "drops": {

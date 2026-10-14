@@ -372,7 +372,7 @@ requires:   T3.8a, T3.1, T1.2
 fixture-ok: yes
 size:       M · frontier
 owns:       internal/pipeline/storepage.go, internal/pipeline/storepage_test.go, plus the empty-feed fallback in internal/pipeline/gather.go and an additive source field in internal/pipeline/types.go
-status:     not-started
+status:     in-review
 ```
 Turn the extracted App Store page into review documents the reader can quote, one per review. Each document keeps its position on the page, so a card can cite "App Store review 3". Each carries kind `review` and the page URL as its source. Never invent a field the page does not carry. The page's own aggregate text, such as the rating summary or "Ratings and Reviews", is not a review and is never a document.
 
@@ -388,6 +388,23 @@ T3.1 calls this when the review feed returns nothing. The card's small print say
 - Count positions after dropping duplicates.
 
 **Done when:** Against the T3.8a fixtures, each title yields its page's reviews as separate documents with verbatim text. A finding quoted from one passes `finding.Verify`. A page with no reviews yields no documents and is recorded as a missing source.
+
+**Implementation notes (T3.8).**
+- `ParseStorePage` (storepage.go) reads the section between "Ratings & Reviews" and "What's New". It works in three passes. First, a "Developer Response <date>" or "Editors' Choice" label is dropped with the line after it, and each labelled response body is remembered. Second, every remaining line equal to a remembered response body is dropped; that is the unlabelled first copy. Third, title and body pairs are kept once each, by content, and numbered from 1 after the dedupe. Rating, date and reviewer name are never set.
+- Each review becomes one `Doc`: kind `review`, `Source.URL` the store page URL, `Source.Index` its page position, `Source.Title` its title, and text "title\nbody", the same shape as a feed review.
+- The fallback is in `storeDocs`. It runs only when the feed answers with no error and no reviews. It makes one basic extract of `App.StoreURL`, metered under the check's ref. A feed error stays a failed call (`review_feed`) and does not fall back. An unreadable page adds the failure `store_page`. A page with no review section makes `review` missing and is not a failure.
+- `Gathered.ReviewSource` and the new `Stats.ReviewSource` (`review_source`: "feed", "page" or "") give the source; `Stats.Reviews` already gives the count. `PlanVersion` is now `plan-4`.
+- **Outside `owns`, kept minimal:** one line in pipeline.go's `Collect`, which builds `Stats`, copies `ReviewSource` across. In `types_test.go`, the contract example generator sets `ReviewSource` to "feed" when an example has reviews. The six contract examples in `testdata/contracts/` (including `api/get-card.json`) each gain `"review_source"`; the change is additive.
+- **Tests:** `TestParseStorePageFixtures` (all four T3.8a pages: Roblox 4 reviews, Minecraft 3, Khan 3, Toca 3, titles in order, bodies verbatim lines of the page); `TestParseStorePageDropsResponses`; `TestParseStorePageEdges`; `TestGatherFallsBackToStorePage` (documents, sources, and a finding passing `finding.Verify`); `TestStorePageOnlyWhenFeedEmpty`; `TestStorePageWithoutReviewsIsMissing`.
+
+**Round 1 remediation (T3.8).**
+
+| ID | Fix | Test |
+|---|---|---|
+| H1 | `ParseStorePage` finds block boundaries from the page's doubling, not from line pairs. At each line it looks for the shortest run of two or more lines that is followed at once by its own repeat, where the repeat may carry one developer-response label that the first copy lacks. That run is one block: its first line is the title, the lines up to the label's place are the body, and the rest is the response, which is dropped. A line that starts no doubled block (a rating summary, "See All", other chrome) is skipped. An Editors' Choice block is dropped whole, however many lines it has. | `TestParseStorePageStructure` (all the reviewer's cases: rating summary, one aggregate line, two-line body, two-line response, two-line blurb, "See All"); `TestParseStorePageFixtures` still passes for all four captures |
+| M1 | A response label is the exact line "Developer Response <date>" (numeric or month-name date). It counts only where it appears in a repeat and not in the first copy; its unlabelled first copy is the matching tail of the first copy. A review titled "Developer Response is slow" survives. | `TestParseStorePageStructure` ("review titled like a label", "response dated by month") |
+
+The parser now relies on the doubling. A page that showed each review only once would yield no reviews, so the review source would be missing rather than misread. No capture shows such a page.
 
 ---
 

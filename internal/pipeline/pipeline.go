@@ -264,6 +264,7 @@ func (p *Pipeline) Collect(ctx context.Context, title, ref string) (ev Evidence,
 	ev.Stats = Stats{
 		Sources:       len(g.Docs) - reviews,
 		Reviews:       reviews,
+		ReviewSource:  g.ReviewSource,
 		Chunks:        rd.Chunks,
 		FailedChunks:  rd.Failed,
 		Drops:         rd.Drops,

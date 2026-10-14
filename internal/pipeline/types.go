@@ -42,7 +42,11 @@ type Stats struct {
 	// Sources is how many documents were read, reviews excluded.
 	Sources int `json:"sources"`
 	Reviews int `json:"reviews"`
-	Chunks  int `json:"chunks"`
+	// ReviewSource says where the reviews came from: "feed" (the App Store
+	// review feed), "page" (the App Store web page, when the feed returned
+	// nothing), or "" when there are none.
+	ReviewSource string `json:"review_source"`
+	Chunks       int    `json:"chunks"`
 	// FailedChunks is how many reader calls returned nothing usable.
 	FailedChunks int           `json:"failed_chunks"`
 	Drops        finding.Drops `json:"drops"`
