@@ -172,7 +172,9 @@ func TestGatherFallsBackToStorePage(t *testing.T) {
 	}
 }
 
-func TestStorePageOnlyWhenFeedEmpty(t *testing.T) {
+// User decision: the page stands in when the feed is empty or errors, and
+// only then.
+func TestStorePageFallbackOnEmptyOrError(t *testing.T) {
 	a := robloxApp()
 	// A feed with reviews: no page read, source feed.
 	s := &pageSearch{url: a.StoreURL, slug: "roblox", t: t}
@@ -181,12 +183,40 @@ func TestStorePageOnlyWhenFeedEmpty(t *testing.T) {
 	if s.pageReads != 0 || got.ReviewSource != ReviewsFromFeed {
 		t.Errorf("feed with reviews: page reads %d, source %q", s.pageReads, got.ReviewSource)
 	}
-	// A feed error: a failed call, no page read.
+	// A feed error: the page is read and gives the reviews, source page;
+	// the failed call is still recorded, so the evidence is not cached.
 	s = &pageSearch{url: a.StoreURL, slug: "roblox", t: t}
 	g = &Gatherer{Store: feedStub{apps: []appstore.App{a}, err: errors.New("503")}, Search: s, Meter: openTestMeter(t)}
 	got, _ = g.Gather(context.Background(), "Roblox", "c")
-	if s.pageReads != 0 || got.ReviewSource != "" || !contains(got.Failures, "review_feed") {
-		t.Errorf("feed error: page reads %d, source %q, failures %v", s.pageReads, got.ReviewSource, got.Failures)
+	if s.pageReads != 1 || got.ReviewSource != ReviewsFromPage || !contains(got.Failures, "review_feed") || contains(got.Missing, KindReview) {
+		t.Errorf("feed error: page reads %d, source %q, failures %v, missing %v", s.pageReads, got.ReviewSource, got.Failures, got.Missing)
+	}
+	n := 0
+	for _, d := range got.Docs {
+		if d.Source.Kind == KindReview && d.Source.URL == a.StoreURL {
+			n++
+		}
+	}
+	if n != 4 || !strings.Contains(strings.Join(got.Notes, "\n"), "review feed failed (503); reading the App Store page") {
+		t.Errorf("feed error: %d page reviews, notes %q", n, got.Notes)
+	}
+}
+
+// A feed error and a page with no reviews: reviews are missing, the reason
+// names both, and no source is claimed.
+func TestFeedErrorAndEmptyPageIsMissing(t *testing.T) {
+	a := robloxApp()
+	s := &stubSearch{pages: map[string]string{a.StoreURL: "Roblox\nGet\nWhat’s New\nBug fixes"}}
+	g := &Gatherer{Store: feedStub{apps: []appstore.App{a}, err: errors.New("503")}, Search: s, Meter: openTestMeter(t)}
+	got, err := g.Gather(context.Background(), "Roblox", "c")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got.ReviewSource != "" || !contains(got.Missing, KindReview) || !contains(got.Failures, "review_feed") {
+		t.Errorf("source %q missing %v failures %v", got.ReviewSource, got.Missing, got.Failures)
+	}
+	if !strings.Contains(strings.Join(got.Notes, "\n"), "App Store review feed failed: 503; ") {
+		t.Errorf("notes %q", got.Notes)
 	}
 }
 
