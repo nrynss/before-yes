@@ -1,0 +1,8 @@
+{
+  "text": "{\"findings\": [{\"ref\": \"[D522]\", \"area\": \"contact\", \"claim\": \"A parent reports that Snapchat's age verification is minimal and kids can easily fake their age to join under 13\", \"stance\": \"risk\", \"quote\": \"Snapchat requires users to be at least 13 years old, but it's actually required to under U.S. privacy laws (COPPA). In reality, Snapchat's age verification is minimal. It only asks for a birth date at signup, with no real checks behind it. Kids who want to join early can easily fake their age—and many do.\", \"age_gating_note\": \"age verification is minimal, no real checks behind it, kids can easily fake their age\"}], \"summary\": \"Extracted 1 finding from 1 segment.\"}",
+  "input_tokens": 3881,
+  "output_tokens": 175,
+  "price_nano": 0,
+  "measured": true,
+  "model": "nvidia/nemotron-3.5-lightning:free"
+}

@@ -1,0 +1,8 @@
+{
+  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D529]\",\n      \"area\": \"contact\",\n      \"claim\": \"A scam uses the recipient's real name as the seller on a fake Facebook Marketplace listing to prompt a response.\",\n      \"stance\": \"risk\",\n      \"quote\": \"You get a text message from a number you don't recognize asking a pretty normal question: \\\"Is this still available for purchase?\\\" Attached to the text is an image that appears to show a Facebook Marketplace listing. Maybe you're confused because you don't remember selling anything. Then you look at the seller's name. It's yours.\"\n    }\n  ]\n}",
+  "input_tokens": 6486,
+  "output_tokens": 144,
+  "price_nano": 0,
+  "measured": true,
+  "model": "nvidia/nemotron-3.5-lightning:free"
+}

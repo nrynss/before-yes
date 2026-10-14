@@ -180,8 +180,8 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 |---|---|---|
 | P0 | 9 / 9 | Done. Two exit criteria wait on later tasks: a live Nano call (T2.1b) and the config check (T4.4). CI is green. |
 | P1 | 4 / 4 | Done. The `job.Failure` exit criterion waits on T4.1. The main-checkout pins and `.env` leak check, waived at landing, ran at the P1–P2 integration and passed. |
-| P2 | 11 / 12 | T2.1, T2.1a, T2.1b, T2.1c, T2.1d, T2.2, T2.2b, T2.3, T2.3b, T2.4 and T2.4b are done. T2.5 is landed but blocked on T3.6b, the live quality pass, for the measured cost per check. |
-| P3 | 6 / 10 | T3.1, T3.2, T3.3, T3.4, T3.6 and T3.8a are done. The offline pipeline runs end to end on fixtures: review 355 decides the Roblox card, and a second age on cached evidence calls only the judge. Next: T3.6b (record real replies to replace the stand-ins), T3.5, T3.7 and T3.8. |
+| P2 | 12 / 12 | Done. All six exit criteria are met. Measured model cost is $0.0309 per check. Tavily is 7–8 credits per check, from fixtures, not a live run. |
+| P3 | 10 / 11 | Everything but T3.9 is done. T3.9 makes every grade cite a verified quote, after T3.6b's live run put all three demo titles at **no** on mostly unquoted flags. Four behaviours from T3.5, T3.7 and T3.8 await the user's decision (see the handoff log). |
 | P4 | 0 / 5 | Not started. T4.1, T4.2 and T4.4 drafted. |
 | P5 | 0 / 7 | Not started. |
 | P6 | 0 / 6 | Not started. |
@@ -192,6 +192,59 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 
 Newest first. One entry per closed task, finding, or split.
 
+- **T3.8, T3.7 and T3.5 closed** (PRs #10, #11, #12, stacked, implemented by Grok). Final reviews: T3.8 round 2 APPROVE, T3.7 round 2 APPROVE, T3.5 round 5 APPROVE. The full handoffs are in the PR descriptions.
+  - **What landed:**
+    - **T3.8:** App Store page reviews as documents, deduplicated, with editorial blurbs and developer responses dropped. They are used only when the feed comes back empty. `review_source` (`feed`, `page` or empty) is on Evidence and Card, added to the contract fixtures.
+    - **T3.7:** `DetectKind` and `PlanFor(kind, …)`. The kind is in the evidence and in the evidence-cache version.
+      - YouTube question answered from documentation: made-for-kids status is a narrow signal, not adopted. If used later, it is small print beside the kind and is never graded.
+    - **T3.5:** `WithAlternatives` checks up to 3 candidates after the main card, each a full cached check under its own ref, with statuses `pending`, `checked` or `refused`. A budget refusal leaves the main card byte-identical.
+  - **Orchestrator verification:**
+    - Merged locally in order. Gate rc 0 after each merge, with `scratch/` and `.env` present. No key values found. No dates.
+    - Edits outside owns were accepted as hooks: `pipeline.go` passes `ReviewSource` (T3.8), and carries the kind and a kind-aware `GatherVersion` (T3.7).
+    - One conflict in `feedback.md`, where both sides only added entries, was resolved by keeping both.
+  - **Open for the user.** Each keeps its current behaviour until decided:
+    1. A feed *error* does not fall back to the store page. Only an empty feed does.
+    2. A title the detector cannot place defaults to `console_pc`.
+    3. Whether alternatives count toward `checks_daily` is left to P4. Each uncached candidate is a full check: about $0.03 and 7–8 Tavily credits.
+    4. Candidates refused by the budget are still shown, marked `refused`.
+- **T2.5 closed; P2 done.** Haiku implemented it, and the orchestrator validated it with no review loop.
+  - **What changed:** `docs/budget.md` uses T3.6b's measured figures. Model cost per check is $0.030861, the mean of Roblox $0.031991, Minecraft $0.040029 and Khan $0.020564, re-summed from the 109 recorded replies.
+    - The $20 ceiling covers 648 checks, and the $5 reserve covers 162.
+    - Tavily's 900 credits cover 112–128 checks a month, at 7–8 credits each. That figure is the pipeline's plan replayed on fixtures, not a live run.
+  - **No ceiling changed:** $20, 900 Tavily credits a month, and 5 fresh checks per UTC day. 5 × 15 × 8 = 600, within 900. At Minecraft's cost ($0.040) the model covers 499 checks.
+  - **Corrected:** the judge's totals already include the conflict pass, so the formula no longer adds it twice. T3.9's re-measure formula is in the doc.
+  - **Validation:**
+    - The arithmetic was re-checked.
+    - The diff stays inside owns. Gate rc 0 in the worktree and on main. No key values found. No dates.
+- **T3.6b closed; finding T3.9 filed.** Haiku implemented it, and the orchestrator validated it with no review loop.
+  - **What landed:**
+    - `go run ./tools/eval -models live` runs every reader and judge call on a real host. It has a spend cap, a ledger outside the repository, and a dry run. It never runs in the gate.
+    - Token Factory replies are recorded in `testdata/eval/replies/<slug>/`, and the OpenRouter stand-in replies in `testdata/eval/replies/openrouter-free/<slug>/`. Replay reproduces the live numbers exactly.
+    - `go run ./tools/eval` now replays the Token Factory recordings by default.
+    - A small hook in `tools/eval/main.go`, outside owns, was accepted at landing: the judge's thinking switches are passed in, so replay keys match production.
+  - **Results:**
+
+    | Title | Token Factory | OpenRouter free | T0.5 expected |
+    |---|---|---|---|
+    | Roblox, 9 | no; grades 3/6, quotes 1/6 | no; 1/6, 3/6 | no |
+    | Minecraft, 9 | no; 0/6, 1/5 | no; 3/6, 1/5 | yes with settings |
+    | Khan Academy Kids, 5 | no; 2/6, 0/5 | no; 0/6, 0/5 | yes |
+    | Total | 5/18, 2/16 | 4/18, 4/16 | |
+
+    The stand-in baseline was 7/18 and 6/16.
+  - **Measured cost:** $0.0926 in all on Token Factory, of a $1.50 cap. No live Tavily credits were spent; the runs read fixtures.
+    - Per check: reader about 129.7k tokens in and 27.8k out; judge about 27.7k in and 9.0k out, with one conflict pass.
+    - That is **$0.0309 of model spend per check**, against `docs/budget.md`'s estimate of $0.0255.
+    - Fixture captures put Tavily at 7–8 credits per title.
+  - **Orchestrator finding:** replaying the recordings shows the **no** verdicts are not evidence-backed.
+    - Most areas' grades cite no verified quote.
+    - The reasons invent details, such as a forum Khan Academy Kids does not have, and Minecraft data "cannot be deleted" with no quote.
+    - Many findings were dropped as unquoted (Khan 34, Minecraft 70, Roblox 60), and 15 replies hit the 4,096-token cap.
+    - So the demo titles are **not** re-picked yet. T3.9 makes every grade rest on a verified finding, then re-runs the replay.
+  - **Validation:**
+    - The diff stays inside owns plus the accepted `main.go` hook.
+    - Live code runs only under `-models live`.
+    - Gate rc 0 in the worktree after the rebase, and on main. No key values found. No dates.
 - **P3 landing verified on this machine.** After the remote close-out, the orchestrator ran the checks the remote box could not.
   - **Pins:**
     - The gate passes in the main checkout with `scratch/` and `.env` present (rc 0).

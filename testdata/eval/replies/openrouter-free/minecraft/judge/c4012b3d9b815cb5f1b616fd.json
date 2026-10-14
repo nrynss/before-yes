@@ -1,0 +1,8 @@
+{
+  "text": "",
+  "input_tokens": 15689,
+  "output_tokens": 16000,
+  "price_nano": 0,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b:free"
+}

@@ -207,7 +207,7 @@ requires:   T3.4
 fixture-ok: yes
 size:       L · frontier
 owns:       internal/pipeline/alternatives.go, internal/pipeline/alternatives_test.go, plus its hook in internal/pipeline/pipeline.go and an additive card field in internal/pipeline/types.go
-status:     in-review
+status:     done
 ```
 The brief: safer alternatives, found with Tavily and checked the same way. Tavily is load-bearing twice, gathering evidence and finding alternatives, which is the case for the Best Use of Tavily award.
 
@@ -346,8 +346,8 @@ The totals did not move. Every quote the stand-in reader matched already holds t
 requires:   T3.6, T2.1b
 fixture-ok: no
 size:       M · frontier
-owns:       tools/eval/live.go, testdata/eval/replies/
-status:     not-started
+owns:       tools/eval/live.go, testdata/eval/replies/, plus its hook in tools/eval/main.go (accepted at landing)
+status:     done
 ```
 Run the eval with real Nano and Super on Token Factory, then with the free stand-ins, and record both. This answers the brief's open question about real Nano quality against the stand-in.
 
@@ -357,6 +357,43 @@ If a demo title lands on a different verdict from T0.5's expectation, the eviden
 
 **Done when:** Live results for both model sets are in the handoff log, recorded replies are committed, and cost per title is measured.
 
+**Result (T3.6b).** `-models live` (tools/eval/live.go) sent every reader and judge call to the host and saved each measured reply. Token Factory replies are in `testdata/eval/replies/<slug>/`; the OpenRouter stand-in replies are in `testdata/eval/replies/openrouter-free/<slug>/`. A replay of the Token Factory recordings reproduces the live numbers exactly, with no missed call. No Tavily call was made: every run read the saved fixtures.
+
+Grades and quotes, per title (grades agree per area; decisive quotes found):
+
+| Title (age, expected) | Set | Verdict, want to got | Grades agree | Decisive found | Chunks failed |
+|---|---|---|---|---|---|
+| Roblox (9, no) | Token Factory | no to no, agrees | 3/6 | 1/6 | 1 of 36 |
+| Roblox (9, no) | OpenRouter | no to no, agrees | 1/6 | 3/6 | 2 of 36 |
+| Minecraft (9, yes with settings) | Token Factory | yes with settings to **no**, differs | 0/6 | 1/5 | 2 of 45 |
+| Minecraft (9, yes with settings) | OpenRouter | yes with settings to **no**, differs | 3/6 | 1/5 | 4 of 45 |
+| Khan Academy Kids (5, yes) | Token Factory | yes to **no**, differs | 2/6 | 0/5 | 1 of 22 |
+| Khan Academy Kids (5, yes) | OpenRouter | yes to **no**, differs | 0/6 | 0/5 | 5 of 22 |
+| **Total** | Token Factory | | **5/18** | **2/16** | |
+| **Total** | OpenRouter | | **4/18** | **4/16** | |
+
+The stand-in baseline was 7/18 grades and 6/16 quotes. Real Nano found fewer decisive quotes than the keyword stand-in (2/16 against 6/16), so the stand-in is not a floor for the real reader. "Chunks failed" counts replies the reader could not parse (15 replies across both sets hit the 4,096-token cap); call failures were zero in every live run.
+
+**Verdicts against T0.5.** Roblox agrees on both sets. Minecraft and Khan Academy Kids come back **no** on both sets, where T0.5 expected yes with settings and yes. The evidence decides, so both go to the user to pick again from the shortlist; I did not tune the checklist.
+
+Cost per title, Token Factory (booked by the live client from reply usage at the configured prices, Nano 0.06 and 0.24, Super 0.30 and 0.90 per million tokens):
+
+| Title | Reader calls | Reader tokens in / out | Reader $ | Judge calls (conflict) | Judge tokens in / out | Judge $ | Title total $ |
+|---|---|---|---|---|---|---|---|
+| Roblox | 36 | 134,885 / 24,955 | 0.014082 | 2 (1) | 26,444 / 11,084 | 0.017909 | 0.031991 |
+| Minecraft | 45 | 167,562 / 37,467 | 0.019046 | 2 (1) | 40,050 / 9,965 | 0.020983 | 0.040029 |
+| Khan Academy Kids | 22 | 86,514 / 20,899 | 0.010207 | 2 (1) | 16,456 / 6,022 | 0.010357 | 0.020564 |
+
+Averages over the three titles, for the budget formula: R_in 129,654; R_out 27,774; J_in 27,650; J_out 9,024; K 1. Model cost per check is **$0.030861** (budget.md estimate: $0.0255). Tavily credits per check, measured live: **0**. The fixture captures report 7 to 8 credits per title (the eval's Tavily column); if a live check ran Tavily, that is the figure to use, and it gives a daily cap maximum of 7 at 8 credits (`floor(900 / (15 x 8))`), so the cap of 5 still holds.
+
+OpenRouter costs $0 booked; its tokens are in the live summary lines and `testdata/eval/replies/openrouter-free/`.
+
+**Total spend.** Token Factory: **$0.092584** of the $1.50 cap (`ledger` in the run's scratch directory, not the repo), across Roblox, Minecraft and Khan, with no refused call. Tavily: 0 live credits. Development spend before this run (T2.1b, about $0.0018) is not in the cap.
+
+**Pins.** `TestStandinBaselinePinned` runs the stand-ins explicitly and is unchanged. The two replay tests skip when recordings exist. The pipeline tests use their own hand-written replies and are unchanged. Behaviour change: `go run ./tools/eval` (auto) now replays the Token Factory recordings for the three titles and no longer uses the stand-ins for them.
+
+**Edit outside owns.** `tools/eval/main.go`: a `-models live` branch in `chatters`, the judge's Fast and Think switches passed in `runOne`, a live-only filter in `evaluate`, and the per-title summary and refusal check in `runOne`'s defer. Without the switches, the eval's judge sent no thinking switch, so the replay keys and the live calls would not match production's settings.
+
 ---
 
 ### T3.7: Kinds of title
@@ -365,7 +402,7 @@ requires:   T3.1, T3.8
 fixture-ok: yes
 size:       M · frontier
 owns:       internal/pipeline/kind.go, internal/pipeline/kind_test.go, plus the plan change in internal/pipeline/gather.go and an additive card field in internal/pipeline/types.go
-status:     in-review
+status:     done
 ```
 The brief names four kinds: iOS app or game, Android-only app or game, console or PC game, YouTube channel. Detect the kind from the App Store result and the rating search, and adjust the plan:
 - **Android-only:** Tavily only. No Play Store scraping.
@@ -450,7 +487,7 @@ requires:   T3.8a, T3.1, T1.2
 fixture-ok: yes
 size:       M · frontier
 owns:       internal/pipeline/storepage.go, internal/pipeline/storepage_test.go, plus the empty-feed fallback in internal/pipeline/gather.go and an additive source field in internal/pipeline/types.go
-status:     in-review
+status:     done
 ```
 Turn the extracted App Store page into review documents the reader can quote, one per review. Each document keeps its position on the page, so a card can cite "App Store review 3". Each carries kind `review` and the page URL as its source. Never invent a field the page does not carry. The page's own aggregate text, such as the rating summary or "Ratings and Reviews", is not a review and is never a document.
 
@@ -486,6 +523,36 @@ The parser now relies on the doubling. A page that showed each review only once 
 
 
 **User decision (T3.8): fall back on a feed error.** A review feed that errors now falls back to the store page, as an empty feed does. `stats.review_source` still says where the reviews came from (`page` here). The feed error stays in `Failures` (`review_feed`), so that evidence is not cached and the next check tries the feed again. When the page also has no reviews, `review` is missing and the reason names both. No version bump is needed, because evidence with a failure is never cached. Tests: `TestStorePageFallbackOnEmptyOrError`, `TestFeedErrorAndEmptyPageIsMissing`.
+
+---
+
+### T3.9: Grades rest on verified quotes ★
+```yaml
+requires:   T3.6b
+fixture-ok: yes
+size:       M · frontier
+owns:       internal/pipeline/judge.go, internal/pipeline/judge_test.go, internal/pipeline/read.go, internal/pipeline/read_test.go, the reader and judge max_tokens lines in before-yes.toml.example
+status:     not-started
+```
+Found by the orchestrator in T3.6b's live replies. All three demo titles came back **no**, but the judge's flags are mostly not backed by a verified quote: `found` is empty in most areas. Its reasons paraphrase loosely or invent details:
+- Khan Academy Kids: "strangers can message via the forum", though the app has no forum.
+- Khan Academy Kids: age gating flagged because the app "only goes up to 2nd grade".
+- Minecraft: data flagged as "collects data for ads, cannot be deleted", with no quote.
+
+The reader also dropped many findings as unquoted: 34 for Khan, 70 for Minecraft, 60 for Roblox. Fifteen replies hit the 4,096-token cap.
+
+The product's promise is that every verdict rests on a quote someone can check. Make that rule hold in code:
+- A grade of `flag` or `ok_with_setting` must cite at least one finding that passed `finding.Verify`. A grade that cites none falls to `unknown`, and the card says the evidence was thin.
+- The judge's reason must name the cited finding. No reason may stand without one.
+- Raise the reader's `max_tokens`, or split chunks further, so a reply is not cut. Measure the unquoted-drop rate before and after on the recorded replies.
+
+The verdict rule (any `flag` makes **no**) is unchanged. Only unsupported flags stop counting.
+
+**Done when:**
+- Replaying T3.6b's recorded Token Factory replies, no area's grade stands without a verified citation.
+- A test pins that rule.
+- The re-run eval's verdicts, grades-agree and quotes-found are in the handoff log next to T3.6b's.
+- The demo titles' verdicts are reported to the user. Only then does any title get re-picked.
 
 ---
 

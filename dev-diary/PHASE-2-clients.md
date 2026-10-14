@@ -244,9 +244,9 @@ requires:   T2.4
 fixture-ok: yes
 size:       S · frontier
 owns:       docs/budget.md
-status:     blocked: T3.6b
+status:     done
 ```
-Note: every ceiling is decided in `docs/budget.md`; only the measured cost per check is pending T3.6b, and the doc gives the formula to plug it into.
+Note: every ceiling is decided in `docs/budget.md`. The model cost per check is measured from T3.6b's live run; the Tavily figure (7 to 8 credits) is fixture-measured, not live.
 Decide and document the ceilings, from the brief's arithmetic and T3.6b's measured cost per title:
 - the model pool's lifetime ceiling, and how much of the $25 stays in reserve;
 - a daily cap on fresh checks while judging runs (needs a daily-period model pool or a separate counter);
@@ -263,5 +263,5 @@ Decide and document the ceilings, from the brief's arithmetic and T3.6b's measur
 - [x] Live probes committed for every client, with transcripts in the handoff log (T2.1b, T2.2b, T2.3b).
 - [x] Confirmed Token Factory model ids and thinking switches in the example settings (T2.1b).
 - [x] The meter refuses before a call, releases on failure, and books to a durable ledger (T2.4). It also caps fresh checks per day and books a timed-out call at its estimate (T2.4b).
-- [ ] Budget ceilings documented with measured cost per check. The ceilings are in `docs/budget.md` (T2.5). The cost per check is still an estimate until T3.6b, the live quality pass, measures it.
+- [x] Budget ceilings documented with measured cost per check. The ceilings are in `docs/budget.md` (T2.5). The model cost per check is measured from T3.6b's live run: $0.030861. The Tavily figure, 7 to 8 credits, comes from fixtures, not a live run.
 - [x] The pools share the application database through cost-store namespaces (Keel v0.7.3, nrynss/keel#82): `cost_model`, `cost_tavily` and `cost_checks_daily`.

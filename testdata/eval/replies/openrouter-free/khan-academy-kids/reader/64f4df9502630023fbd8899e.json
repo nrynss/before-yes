@@ -1,0 +1,8 @@
+{
+  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D520]\",\n      \"area\": \"age_gating\",\n      \"claim\": \"A parent reports that the app store age rating of 4 years is considered too young by Common Sense Media, which recommends the app for kids 7 and older.\",\n      \"stance\": \"risk\",\n      \"quote\": \"The app store says YouTube Kids is for 4 and older, but Common Sense Media recommends it for kids 7 and older.\"\n    }\n  ]\n}",
+  "input_tokens": 1579,
+  "output_tokens": 112,
+  "price_nano": 0,
+  "measured": true,
+  "model": "nvidia/nemotron-3.5-lightning:free"
+}

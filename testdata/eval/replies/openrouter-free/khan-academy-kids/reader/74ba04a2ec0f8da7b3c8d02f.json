@@ -1,0 +1,8 @@
+{
+  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D522]\",\n      \"area\": \"age_gating\",\n      \"claim\": \"The article does not mention an age gate for Khan Academy Kids.\",\n      \"stance\": \"neutral\",\n      \"quote\": \"As more schools shut down to stave off the spread of the coronavirus, you might be wondering what the heck you're supposed to do with your kids home all day.\"\n    }\n  ]\n}",
+  "input_tokens": 4725,
+  "output_tokens": 99,
+  "price_nano": 0,
+  "measured": true,
+  "model": "nvidia/nemotron-3.5-lightning:free"
+}

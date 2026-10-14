@@ -1,0 +1,8 @@
+{
+  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D522]\",\n      \"area\": \"age_gating\",\n      \"claim\": \"A parent reports that Snapchat requires users to be at least 13 years old.\",\n      \"stance\": \"neutral\",\n      \"quote\": \"Is there an age requirement?\"\n    }\n  ]\n}",
+  "input_tokens": 4464,
+  "output_tokens": 76,
+  "price_nano": 286080,
+  "measured": true,
+  "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B"
+}

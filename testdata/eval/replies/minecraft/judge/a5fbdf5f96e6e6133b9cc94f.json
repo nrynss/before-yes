@@ -1,0 +1,8 @@
+{
+  "text": "\n\n{\n  \"grades\": [\n    {\n      \"area\": \"contact\",\n      \"level\": \"flag\",\n      \"reason\": \"Strangers can message or voice chat with your child and the feature is on by default and cannot be turned off.\",\n      \"setting\": \"\",\n      \"findings\": [\"f_c04ca17aa8e0fecc\"]\n    },\n    {\n      \"area\": \"money\",\n      \"level\": \"flag\",\n      \"reason\": \"Parents report being scammed or charged for purchases they did not receive.\",\n      \"setting\": \"\",\n      \"findings\": [\"f_6721f2cc2e961a3d\"]\n    },\n    {\n      \"area\": \"data\",\n      \"level\": \"flag\",\n      \"reason\": \"The app collects data for ads or shares it with third parties and the data cannot be deleted.\",\n      \"setting\": \"\",\n      \"findings\": [\"f_e2f4d4a4e9cd0be5\"]\n    },\n    {\n      \"area\": \"age_gating\",\n      \"level\": \"flag\",\n      \"reason\": \"Parents report that the age gate does not work in practice, exposing children to inappropriate content.\",\n      \"setting\": \"\",\n      \"findings\": [\"f_bf8525bbaa00ce6f\"]\n    },\n    {\n      \"area\": \"content\",\n      \"level\": \"flag\",\n      \"reason\": \"Reviewers report seeing satanic themes, ads, paid content and user‑generated inappropriate content in the game.\",\n      \"setting\": \"\",\n      \"findings\": [\"f_fd053a071f7b28c0\"]\n    }\n  ]\n}",
+  "input_tokens": 19414,
+  "output_tokens": 7532,
+  "price_nano": 12603000,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

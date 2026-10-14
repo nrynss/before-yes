@@ -1,0 +1,8 @@
+{
+  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D532]\",\n      \"area\": \"contact\",\n      \"claim\": \"A parent reports that strangers can message or voice chat with your child, and it is on by default.\",\n      \"stance\": \"risk\",\n      \"quote\": \"Play with your friends on your own personal server.\"\n    }\n  ]\n}",
+  "input_tokens": 4813,
+  "output_tokens": 81,
+  "price_nano": 308220,
+  "measured": true,
+  "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B"
+}

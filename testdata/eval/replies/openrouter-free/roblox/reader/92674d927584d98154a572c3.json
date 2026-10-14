@@ -1,0 +1,8 @@
+{
+  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D524]\",\n      \"area\": \"age_gating\",\n      \"claim\": \"The FTC will not bring enforcement actions under COPPA against general audience sites that collect personal information of children solely for age verification via age-verification technologies, even without first obtaining verifiable parental consent.\",\n      \"stance\": \"neutral\",\n      \"quote\": \"The Federal Trade Commission (“FTC”) issued a policy statement announcing that it will not bring enforcement actions under the Children’s Online Privacy Protection Rule (“COPPA Rule”) against operators of general audience and mixed-audience websites or online services that collect, use, or disclose personal information of children for the sole purpose of determining a user’s age via age-verification technologies, even without first obtaining verifiable parental consent.\"\n    }\n  ]\n}",
+  "input_tokens": 3892,
+  "output_tokens": 176,
+  "price_nano": 0,
+  "measured": true,
+  "model": "nvidia/nemotron-3.5-lightning:free"
+}

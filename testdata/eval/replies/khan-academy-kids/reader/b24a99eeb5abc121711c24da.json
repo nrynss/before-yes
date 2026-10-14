@@ -1,0 +1,8 @@
+{
+  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D519]\",\n      \"area\": \"content\",\n      \"claim\": \"A parent reports that the site may contain minor inconsistencies that could confuse some learners.\",\n      \"stance\": \"risk\",\n      \"quote\": \"the videos tend to be more procedural than conceptual and may, at times, contain minor inconsistencies that could confuse some learners.\"\n    },\n    {\n      \"ref\": \"[D519]\",\n      \"area\": \"content\",\n      \"claim\": \"A parent reports that high school-age kids are most likely to find the site useful and appealing.\",\n      \"stance\": \"neutral\",\n      \"quote\": \"High school-age kids are most likely to find the site useful and appealing.\"\n    },\n    {\n      \"ref\": \"[D519]\",\n      \"area\": \"age_gating\",\n      \"claim\": \"A parent reports that the site is likely to keep growing.\",\n      \"stance\": \"neutral\",\n      \"quote\": \"As Sal has said, \\\"What you see today at Khan Academy is a very crude approximation of where we'll be in five or 10 years.\\\"\"\n    }\n  ]\n}",
+  "input_tokens": 1380,
+  "output_tokens": 251,
+  "price_nano": 143040,
+  "measured": true,
+  "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B"
+}

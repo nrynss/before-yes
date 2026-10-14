@@ -1,0 +1,8 @@
+{
+  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"D501\",\n      \"area\": \"contact\",\n      \"claim\": \"Contact is off by default and can be turned off.\",\n      \"stance\": \"mitigation\",\n      \"quote\": \"Khan Academy Kids is 100% free—no ads, no subscriptions.\"\n    },\n    {\n      \"ref\": \"D501\",\n      \"area\": \"data\",\n      \"claim\": \"The app collects no data for ads or third parties and can be deleted.\",\n      \"stance\": \"neutral\",\n      \"quote\": \"Khan Academy Kids is 100% free—no ads, no subscriptions.\"\n    },\n    {\n      \"ref\": \"D501\",\n      \"area\": \"age_gating\",\n      \"claim\": \"Age gating is not applicable; the app is designed for ages 2–8.\",\n      \"stance\": \"neutral\",\n      \"quote\": \"Khan Academy Kids—educational app for kids ages 2–8.\"\n    },\n    {\n      \"ref\": \"D501\",\n      \"area\": \"content\",\n      \"claim\": \"The app contains no inappropriate or harmful content.\",\n      \"stance\": \"neutral\",\n      \"quote\": \"Packed with fun, standards-aligned reading games, math games, phonics lessons, and interactive storybooks.\"\n    },\n    {\n      \"ref\": \"D501\",\n      \"area\": \"developer_record\",\n      \"claim\": \"The developer has no known fines, breaches, lawsuits, or regulatory actions.\",\n      \"stance\": \"neutral\",\n      \"quote\": \"Khan Academy is a 501(c)(3) nonprofit organization with the mission to provide a free, world-class education for anyone, anywhere.\"\n    }\n  ]\n}",
+  "input_tokens": 2235,
+  "output_tokens": 381,
+  "price_nano": 225540,
+  "measured": true,
+  "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B"
+}

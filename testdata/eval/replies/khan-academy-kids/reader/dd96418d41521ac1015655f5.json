@@ -1,0 +1,8 @@
+{
+  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D518]\",\n      \"area\": \"contact\",\n      \"claim\": \"Strangers cannot message or voice chat with your child.\",\n      \"stance\": \"mitigation\",\n      \"quote\": \"Provide fun, stimulating learning opportunities off the screen as well. It doesn't have to cost anything to get kids learning.\"\n    },\n    {\n      \"ref\": \"[D518]\",\n      \"area\": \"money\",\n      \"claim\": \"The app is free and does not push in-app purchases or subscriptions.\",\n      \"stance\": \"neutral\",\n      \"quote\": \"Pricing structure : Free\"\n    },\n    {\n      \"ref\": \"[D518]\",\n      \"area\": \"data\",\n      \"claim\": \"The app collects user data but does not share it with third parties for ads.\",\n      \"stance\": \"risk\",\n      \"quote\": \"Your privacy is important to us. We won't share this comment without your permission.\"\n    },\n    {\n      \"ref\": \"[D518]\",\n      \"area\": \"age_gating\",\n      \"claim\": \"The app is intended for preschool-aged children, but age gating is not explicitly described.\",\n      \"stance\": \"neutral\",\n      \"quote\": \"Khan Academy Kids\"\n    }\n  ]\n}",
+  "input_tokens": 1303,
+  "output_tokens": 282,
+  "price_nano": 145860,
+  "measured": true,
+  "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B"
+}
