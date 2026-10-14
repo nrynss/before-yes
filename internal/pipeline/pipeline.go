@@ -182,7 +182,10 @@ type Pipeline struct {
 	Judge    *Judge
 	// Cache keeps evidence between checks. Nil means no cache.
 	Cache EvidenceCache
-	Now   func() time.Time
+	// Checks gates fresh alternative checks on the checks_daily cap
+	// (T3.5, user decision). Nil means no cap. *spend.Meter has it.
+	Checks Checks
+	Now    func() time.Time
 }
 
 func (p *Pipeline) now() time.Time {

@@ -259,6 +259,7 @@ type cardSpec struct {
 	specs                     []spec
 	grades                    []checklist.Grade // Findings hold spec indexes as strings
 	alts                      []Alternative
+	altNote                   string
 	missing                   []string
 	conflicted                []checklist.Area
 }
@@ -334,7 +335,7 @@ func build(t *testing.T, cs cardSpec) (Card, Evidence) {
 	}
 	card := Card{ID: cs.cardID, Title: cs.title, Kind: kind, KindLabel: KindLabel(kind), Age: cs.age, ChecklistVersion: checklist.Version,
 		CheckedAt: collected.Add(40 * time.Second), CollectedAt: collected, Verdict: verdict, Grades: grades,
-		Settings: checklist.Settings(grades), Findings: onCard, Alternatives: alts, App: cs.app, Stats: stats}
+		Settings: checklist.Settings(grades), Findings: onCard, Alternatives: alts, AlternativesNote: cs.altNote, App: cs.app, Stats: stats}
 	evStats := stats
 	evStats.ConflictedAreas, evStats.JudgeCostNano, evStats.JudgeModel = []checklist.Area{}, 0, ""
 	ev := Evidence{Title: cs.title, Kind: kind, CollectedAt: collected, App: cs.app, Findings: fs, Stats: evStats}
@@ -379,7 +380,10 @@ func cardSpecs() []cardSpec {
 				g(checklist.Data, checklist.Unknown, "", "No policy finding was verified."),
 				g(checklist.DeveloperRecord, checklist.Unknown, "", "No news finding was verified."),
 			},
-			alts:       []Alternative{{Title: "Toca Life World", Reason: "Same open play-world genre with no chat with strangers.", CardID: "c_Tc6vRb1nQ8zKp2dWm5sLhA", Verdict: checklist.YesWithSettings}},
+			alts: []Alternative{{Title: "Toca Life World", Reason: "Same open play-world genre with no chat with strangers.", CardID: "c_Tc6vRb1nQ8zKp2dWm5sLhA", Verdict: checklist.YesWithSettings, Status: AltChecked}},
+			// User decision: a refused alternative's name is not shown; the
+			// card carries the one line instead.
+			altNote:    MoreAlternativesNote,
 			missing:    []string{"news"},
 			conflicted: []checklist.Area{checklist.Contact},
 		},

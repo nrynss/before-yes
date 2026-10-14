@@ -142,9 +142,11 @@
       "title": "Toca Life World",
       "reason": "Same open play-world genre with no chat with strangers.",
       "card_id": "c_Tc6vRb1nQ8zKp2dWm5sLhA",
-      "verdict": "yes_with_settings"
+      "verdict": "yes_with_settings",
+      "status": "checked"
     }
   ],
+  "alternatives_note": "More alternatives when today's checks reset",
   "app": {
     "track_id": 431946152,
     "name": "Roblox",
