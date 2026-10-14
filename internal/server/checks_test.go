@@ -1219,3 +1219,104 @@ func TestJoinBeforeLiveSwitch(t *testing.T) {
 		t.Errorf("new title with live off: %d %s, want 503 live_checks_off", resp.StatusCode, b)
 	}
 }
+
+// Round-1 M1, the reviewer's reproduction: with live off, the gate lets a
+// request through to join a running check; the check then fails and
+// leaves the table before the handler takes its lock. The handler must
+// refuse live_checks_off and start nothing.
+func TestJoinOnlyRequestNeverStartsCheckWhenLiveOff(t *testing.T) {
+	e := newGatedEnv(t, GateConfig{Rule: gate.Rule{
+		Name:      "checks",
+		PerClient: gate.Limit{Burst: 100, Every: time.Second},
+		Global:    gate.Limit{Burst: 100, Every: time.Second},
+	}})
+	block := make(chan struct{})
+	e.searcher.mu.Lock()
+	e.searcher.blockChan = block
+	e.searcher.failErr = errors.New("search failed")
+	e.searcher.mu.Unlock()
+
+	resp, b := postCheck(t, e.url, `{"title":"Roblox","age":9}`, nil)
+	first := checkIDOf(t, b)
+	if resp.StatusCode != http.StatusAccepted || first == "" {
+		t.Fatalf("start: %d %s", resp.StatusCode, b)
+	}
+	if _, err := e.flags.SetBool(context.Background(), e.live, false); err != nil {
+		t.Fatal(err)
+	}
+	body := []byte(`{"title":"Roblox","age":9}`)
+	probe := httptest.NewRequest(http.MethodPost, "/api/checks", bytes.NewReader(body))
+	if !e.server.joinsRunning(probe, body) {
+		t.Fatal("the gate would not pass the request as a joiner")
+	}
+	// The running check fails and leaves the table.
+	close(block)
+	if st, _ := waitCheck(t, e.url, first); st != "error" {
+		t.Fatalf("first check ended %s, want error", st)
+	}
+	inner, err := e.server.Handler()
+	if err != nil {
+		t.Fatal(err)
+	}
+	req := httptest.NewRequest(http.MethodPost, "/api/checks", bytes.NewReader(body))
+	req = req.WithContext(withJoinOnly(req.Context()))
+	rec := httptest.NewRecorder()
+	inner.ServeHTTP(rec, req)
+	if c, _ := errCode(t, rec.Body.Bytes()); rec.Code != http.StatusServiceUnavailable || c != CodeLiveChecksOff {
+		t.Fatalf("join-only after the target vanished: %d %s, want 503 live_checks_off", rec.Code, rec.Body)
+	}
+	// Through the whole gated path too.
+	resp, b = postCheck(t, e.url, `{"title":"Roblox","age":9}`, nil)
+	if c, _ := errCode(t, b); resp.StatusCode != http.StatusServiceUnavailable || c != CodeLiveChecksOff {
+		t.Errorf("gated: %d %s, want 503 live_checks_off", resp.StatusCode, b)
+	}
+	e.searcher.mu.Lock()
+	calls := e.searcher.searchCalls
+	e.searcher.mu.Unlock()
+	if calls != 1 {
+		t.Errorf("search calls %d, want 1 (only the first check ran)", calls)
+	}
+}
+
+// Round-1 L1: a check that finishes (card stored, entry gone) between the
+// handler's cache read and its lock is not started again: the handler
+// reads the card cache again under the lock.
+func TestCacheRecheckedUnderJoinLock(t *testing.T) {
+	e := newBYOKEnv(t, 5)
+	ownMeter(t, e)
+	e.srv.joins.mu.Lock()
+	type result struct {
+		code int
+		body []byte
+	}
+	done := make(chan result, 1)
+	go func() {
+		resp, b := byokPost(t, e.url, `{"title":"Roblox","age":9}`, nil)
+		done <- result{resp.StatusCode, b}
+	}()
+	// Let the request read the cache (miss) and wait on the lock.
+	time.Sleep(200 * time.Millisecond)
+	cid, err := e.srv.Cards.Put(context.Background(), pipeline.Card{
+		Title: "Roblox", Age: 9, ChecklistVersion: checklist.Version,
+		CheckedAt: time.Now().UTC(), Verdict: checklist.Unclear,
+	})
+	if err != nil {
+		e.srv.joins.mu.Unlock()
+		t.Fatal(err)
+	}
+	e.srv.joins.mu.Unlock()
+	r := <-done
+	var hit struct {
+		CardID string `json:"card_id"`
+	}
+	_ = json.Unmarshal(r.body, &hit)
+	if r.code != http.StatusOK || strings.TrimPrefix(hit.CardID, "c_") != strings.TrimPrefix(cid, "c_") {
+		t.Fatalf("status %d body %s, want 200 with the new card", r.code, r.body)
+	}
+	if got := remainingToday(t, e); got != 5 {
+		t.Errorf("remaining %d, want 5 (nothing reserved)", got)
+	}
+	if e.tv.saw(ourTavilyKey) != 0 {
+		t.Error("a check started")
+	}
+}

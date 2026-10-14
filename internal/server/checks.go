@@ -104,6 +104,19 @@ func (t *joinTable) done(key joinKey, ref string) {
 	}
 }
 
+// joinOnlyKey marks a request the live switch passed only so it can join
+// a running check.
+type joinOnlyKey struct{}
+
+func withJoinOnly(ctx context.Context) context.Context {
+	return context.WithValue(ctx, joinOnlyKey{}, true)
+}
+
+func joinOnly(ctx context.Context) bool {
+	v, _ := ctx.Value(joinOnlyKey{}).(bool)
+	return v
+}
+
 func checkKey(title string, age int) joinKey {
 	return joinKey{title: cards.TitleKey(title), age: age}
 }
@@ -248,6 +261,25 @@ func (s *Server) startCheck(w http.ResponseWriter, r *http.Request) {
 			writeJSON(w, http.StatusAccepted, map[string]string{"check_id": "j_" + e.jid})
 			return
 		}
+		// The check this request came to join may have finished between
+		// the cache read above and the lock: it stores its card before it
+		// leaves the table. Read the cache again so a check finishing now
+		// is not started twice.
+		if s.CardCache != nil {
+			if cid, ok, err := s.CardCache.Fresh(ctx, req.Title, req.Age); err == nil && ok {
+				if !strings.HasPrefix(cid, "c_") {
+					cid = "c_" + cid
+				}
+				writeJSON(w, http.StatusOK, map[string]string{"card_id": cid})
+				return
+			}
+		}
+	}
+	// A request the live switch let through only to join (live is off)
+	// starts nothing when its check is gone.
+	if joinOnly(ctx) {
+		wire.WriteError(w, http.StatusServiceUnavailable, CodeLiveChecksOff, liveOffMessage, nil)
+		return
 	}
 
 	ref, err := id.New()
