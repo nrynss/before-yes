@@ -53,8 +53,8 @@ From the T2.1 round-1 review, L1: `Settings()` copies `Extra` one level and `New
 requires:   T2.1, T0.2, T0.3
 fixture-ok: no
 size:       S · mid
-owns:       internal/model/live_test.go
-status:     not-started
+owns:       internal/model/live_test.go, before-yes.toml.example
+status:     claimed:impl-t2.1b
 ```
 Behind `//go:build live`. For each host (Token Factory, OpenRouter, build.nvidia.com):
 - list `GET /v1/models` and record the exact Nemotron 3 Nano and Super ids;
