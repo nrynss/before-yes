@@ -273,6 +273,8 @@ Also added: every non-2xx example must be a strict wire envelope whose code appe
 
 **Round 4 (inherited from T1.1 `v5`).** The API examples were regenerated under `v5`. The same tests pass.
 
+**Round 4 remediation (inherited, `v6`).** `get-card.json`, `get-cards.json` and `get-checklist.json` were regenerated under `v6`. The sync tests pass.
+
 Noted from the review, not this task's: `go mod tidy -diff` is non-empty on `main` too, because `modernc.org/sqlite` is not imported yet. Phase 1 did not introduce it.
 ---
 
