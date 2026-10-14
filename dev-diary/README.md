@@ -211,7 +211,7 @@ Newest first. One entry per closed task, finding, or split.
   - OpenCode's `task-t2.2b-tavily-live` branch and worktree are now superseded by `main`. They are OpenCode's to remove.
 - **Risk: Apple's review feed is returning no reviews.** Found by the T2.3b reviewer and confirmed independently by the orchestrator.
   - Every request returns HTTP 200 with a feed skeleton and no `entry`: all four demo titles plus Facebook (284882215) as a control, in both `us` and `gb`, and in the JSON, XML and no-sort URL variants.
-  - The same URL returned 50 reviews on 13 Oct, and the T0.4 fixtures hold 500 per title.
+  - The same URL returned 50 reviews in an earlier probe, and the T0.4 fixtures hold 500 per title.
   - Public reports call this feed intermittently empty. It may be an outage, a retirement, or throttling of this host after T0.4's 40-page capture.
   - **T2.3b is not landed.** Its review stands at REMEDIATE (H1, M3, L1), and its branch `review-t2.3b` is kept.
   - Offline work is unaffected, because the fixtures hold real reviews. A live check depends on the feed coming back. This is the user's decision.

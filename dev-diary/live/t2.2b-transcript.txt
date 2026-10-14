@@ -11,7 +11,7 @@
     live_test.go:100:   wire 1 header Content-Length: 7592
     live_test.go:100:   wire 1 header Content-Security-Policy: default-src 'none'; script-src 'self'; connect-src 'self'; img-src 'self'; style-src 'self';base-uri 'self';form-action 'self'; require-trusted-types-for 'script'; upgrade-insecure-requests;
     live_test.go:100:   wire 1 header Content-Type: application/json
-    live_test.go:100:   wire 1 header Date: Wed, 14 Oct 2026 04:43:01 GMT
+    live_test.go:100:   wire 1 header Date: <date withheld>
     live_test.go:101:   running total: 1 of 5 credits
     live_test.go:107: before search 2 (raw content): spent 1, price-list estimate 1, cap 5
     live_test.go:114: call 2: search query="Minecraft privacy policy" depth=basic (Tavily's default) max_results=5 include_raw_content=true
@@ -23,7 +23,7 @@
     live_test.go:115:   wire 1 header Content-Length: 120811
     live_test.go:115:   wire 1 header Content-Security-Policy: default-src 'none'; script-src 'self'; connect-src 'self'; img-src 'self'; style-src 'self';base-uri 'self';form-action 'self'; require-trusted-types-for 'script'; upgrade-insecure-requests;
     live_test.go:115:   wire 1 header Content-Type: application/json
-    live_test.go:115:   wire 1 header Date: Wed, 14 Oct 2026 04:43:02 GMT
+    live_test.go:115:   wire 1 header Date: <date withheld>
     live_test.go:116:   running total: 2 of 5 credits
     live_test.go:117: include_raw_content: off reported 1 (usage.credits reported by Tavily), on reported 1 (usage.credits reported by Tavily); difference 0
     live_test.go:123: before extract: spent 2, price-list estimate 1, cap 5
@@ -40,7 +40,7 @@
     live_test.go:143:   wire 1 header Content-Length: 27391
     live_test.go:143:   wire 1 header Content-Security-Policy: default-src 'none'; script-src 'self'; connect-src 'self'; img-src 'self'; style-src 'self';base-uri 'self';form-action 'self'; require-trusted-types-for 'script'; upgrade-insecure-requests;
     live_test.go:143:   wire 1 header Content-Type: application/json
-    live_test.go:143:   wire 1 header Date: Wed, 14 Oct 2026 04:43:03 GMT
+    live_test.go:143:   wire 1 header Date: <date withheld>
     live_test.go:144:   running total: 2 of 5 credits
     live_test.go:160: promise held: 2 failed URL(s) left out of 1 page(s), and the call returned no error
     live_test.go:75: summary: 3 HTTP exchange(s) [200, 200, 200] for 3 calls, 4.702s wall time, 2 of 5 credits spent
