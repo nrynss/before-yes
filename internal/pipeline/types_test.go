@@ -374,7 +374,7 @@ func cardSpecs() []cardSpec {
 				g(checklist.Data, checklist.Unknown, "", "No policy finding was verified."),
 				g(checklist.DeveloperRecord, checklist.Unknown, "", "No news finding was verified."),
 			},
-			alts:       []Alternative{{Title: "Toca Life World", Reason: "Same open play-world genre with no chat with strangers.", CardID: "c_Tc6vRb1nQ8zKp2dWm5sLhA", Verdict: checklist.YesWithSettings}},
+			alts:       []Alternative{{Title: "Toca Life World", Reason: "Same open play-world genre with no chat with strangers.", CardID: "c_Tc6vRb1nQ8zKp2dWm5sLhA", Verdict: checklist.YesWithSettings, Status: AltChecked}},
 			missing:    []string{"news"},
 			conflicted: []checklist.Area{checklist.Contact},
 		},
