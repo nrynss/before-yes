@@ -66,7 +66,7 @@ var liveSets = map[string]liveSetting{
 		reader: model.Settings{
 			Provider: "tokenfactory", BaseURL: "https://api.tokenfactory.nebius.com/v1",
 			Model: "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B", InputPerM: 0.06, OutputPerM: 0.24,
-			MaxTokens: 4096, PerMinute: 100,
+			MaxTokens: 8192, PerMinute: 100,
 			Extra: map[string]any{"chat_template_kwargs": map[string]any{"enable_thinking": false}},
 		},
 		judge: model.Settings{

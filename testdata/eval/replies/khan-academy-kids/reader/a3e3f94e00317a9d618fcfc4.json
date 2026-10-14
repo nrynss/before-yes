@@ -1,8 +1,8 @@
 {
-  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D522]\",\n      \"area\": \"contact\",\n      \"claim\": \"Strangers can message or voice chat with your child, and it is on by default.\",\n      \"stance\": \"risk\",\n      \"quote\": \"Games that use your tablet as a gameboard: [Forbidden Desert](/app-reviews/forbidden-desert), [Uno](/app-reviews/uno), and [Tsuro](/app-reviews/tsuro-the-game-of-the-path)\"\n    }\n  ]\n}",
+  "text": "{\n  \"findings\": []\n}",
   "input_tokens": 953,
-  "output_tokens": 118,
-  "price_nano": 85500,
+  "output_tokens": 9,
+  "price_nano": 59340,
   "measured": true,
   "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B"
 }

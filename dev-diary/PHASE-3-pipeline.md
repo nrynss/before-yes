@@ -597,7 +597,7 @@ requires:   T3.9
 fixture-ok: no
 size:       M · frontier
 owns:       internal/pipeline/judge.go, internal/pipeline/judge_test.go, tools/eval/live.go, testdata/eval/replies/, the reader and judge max_tokens lines in before-yes.toml.example, docs/budget.md (re-measured figures only)
-status:     not-started
+status:     in-review
 ```
 T3.9 grounds each grade after the judge answers, by finding a verbatim run of a verified quote in the reason. With the prompt unchanged, Super paraphrases and never quotes, so no recorded flag or setting survives. All three demo titles replay as **unclear**, including Roblox's contact area, which a real quote backs ("a child predator might ask where you are"). The grades are now honest, but a demo of three unclear cards does not work.
 
@@ -618,6 +618,26 @@ The prompt and the reply shape change, so the recorded judge replies no longer r
 - The handoff log gives each title's verdict, grades agreed and quotes found, next to T3.6b and T3.9.
 - The reader's unquoted-drop rate and the replies at the cap are measured, before and after.
 - The demo titles' verdicts are reported to the user, who decides any re-pick.
+
+**Result (T3.9b).**
+- **Reply and rules.** The reply keeps `"findings": [ids]` per area, but the prompt now says to cite the few findings that decide the area, a flag only on risks, a setting on a risk and a mitigation whose quote names it, and that one bad id voids the grade. `checkCitations` (judge.go) runs on the judge's own list before `checklist.Enforce`: a flag or ok_with_setting stands only if it cites at least one id and every id is in the verified findings, in the grade's area, with a fitting stance. Otherwise it is unknown and the area is thin. `ground` keeps only the setting check (T3.9's content-word rule against a cited mitigation quote). Parsing is unchanged (last grades block wins, truncated block is an error).
+- **T3.9's verbatim-run check on the reason is dropped.** On the recorded replies it rejected correctly cited grades: Minecraft's contact flag and Roblox's money setting both cite real, on-topic quotes, and their paraphrased reasons share no four-word run with them. Only 4 of 11 standing grades pass it. It would also have caught the invented developer_record reason below, but it would reject 7 grades to do so, and Khan's contact grade, a weak one, passes it. A paraphrasing judge fails it by design.
+- **Open item (L1 stays).** A reason can still say something no cited quote says. Minecraft's developer_record flag cites a risk-labelled marketing line ("Explore how we work, what we value, and how we build together.") and the reason claims regulatory fines. Structure cannot see that. Follow-up: an entailment check, or a judge that must quote.
+- **Live re-record** (Token Factory only; OpenRouter set untouched): reader at `max_tokens` 8192, judge unchanged, $0.106048 for the three titles against the $0.50 cap. Replay: 0 misses, numbers identical to the live run.
+
+| Title | Verdict (T3.6b / T3.9 / T3.9b) | Grades agree (T3.6b / T3.9 / T3.9b) | Quotes found (same) | Thin areas (T3.9b) |
+|---|---|---|---|---|
+| Roblox (9) | no / unclear / **no** | 3/6, 1/6, 3/6 | 1/6, 1/6, 0/6 | data, content |
+| Minecraft (9) | no / unclear / **no** | 0/6, 2/6, 1/6 | 1/5, 1/5, 2/5 | money, age gating |
+| Khan Academy Kids (5) | no / unclear / **no** | 2/6, 2/6, 2/6 | 0/5, 0/5, 0/5 | none |
+| **Total** | | 5/18, 5/18, **6/18** | 2/16, 2/16, **2/16** | |
+
+(Quotes found is a reader measure, and the reader reran, so it moves run to run.) Expected by T0.5: Roblox no, Minecraft yes with settings, Khan yes. Roblox agrees; Minecraft and Khan come back **no** on flags that cite verified quotes. Khan's four flags (contact, money, data, content) cite weak risk-labelled quotes (a comments feature, a subscription price, a school price). Reported to the user, who decides any re-pick.
+
+- **Reader cap, before and after.** Unquoted drops over raw findings: 164/705 (23.3%) before; 171/796 (21.5%) after (Roblox 67/248, Minecraft 58/339, Khan 46/209). Reader replies at a cap: 4 of 103 at 4,096 before (1, 2, 1); 1 of 103 at 8,192 after (Minecraft). Run-to-run noise in the reader is a few points, so the cap is not shown to matter.
+- **Cost.** Per check, Token Factory, mean of three: $0.035349 (was $0.030861). Per title: Roblox $0.033910, Minecraft $0.047094, Khan $0.025044. Budget: 565 checks at the mean (was 648), reserve 141 fresh checks (was 162). No ceiling or cap changed. Minecraft's conflict pass ran to its 16,000-token cap and was discarded.
+- **Tests.** `TestRecordedRepliesGradesRestOnVerifiedQuotes` (pin: no grade stands without valid cited ids, plus levels, thin areas and verdicts), `TestCitationsMustCheckOut`, `TestGroundSettingNeedsANamingMitigation`, `TestJudgeCitationEndToEnd`, `TestSettingNeedsEveryContentWord`, `TestThinAreasReachTheCard`.
+- **Outside `owns`:** `internal/pipeline/pipeline_test.go` (the `ruleJudge` stub flagged on risks and mitigations together, which the new rule voids, so it cites risks only). `tools/eval/standin.go` is untouched: it already cites risk ids for a flag and mitigation ids for a setting, so the offline baseline is unchanged (7/18, 6/16). `ThinReason` keeps its text so `testdata/contracts/card-unclear.json` is unchanged.
 
 ---
 

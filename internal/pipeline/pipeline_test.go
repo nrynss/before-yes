@@ -63,7 +63,7 @@ func (r *ruleJudge) Chat(_ context.Context, msgs []model.Message, _ model.Option
 	for _, a := range areas {
 		g := checklist.Grade{Area: a, Level: checklist.Unknown, Findings: []string{}, Reason: "Not enough evidence."}
 		if ids := risks[string(a)]; len(ids) > 0 {
-			g = checklist.Grade{Area: a, Level: checklist.Flag, Findings: append(ids, mits[string(a)]...), Reason: "A risk stands: " + quotes[ids[0]]}
+			g = checklist.Grade{Area: a, Level: checklist.Flag, Findings: ids, Reason: "A risk stands: " + quotes[ids[0]]}
 		} else if ids := mits[string(a)]; len(ids) > 0 {
 			g = checklist.Grade{Area: a, Level: checklist.OKWithSetting, Setting: quotes[ids[0]], Findings: ids, Reason: "A setting answers it: " + quotes[ids[0]]}
 		}

@@ -1,0 +1,8 @@
+{
+  "text": "\n\n{\n  \"grades\": [\n    {\n      \"area\": \"contact\",\n      \"level\": \"ok_with_setting\",\n      \"reason\": \"Strangers can message or voice chat with your child, but you can limit chat to friends only or turn it off.\",\n      \"setting\": \"friends only\",\n      \"findings\": [\n        \"f_329653f277766b45\",\n        \"f_d3937e99a98f8280\"\n      ]\n    },\n    {\n      \"area\": \"money\",\n      \"level\": \"ok_with_setting\",\n      \"reason\": \"Children can lose money to scams and accidental purchases, but parental controls can block spending.\",\n      \"setting\": \"parental controls\",\n      \"findings\": [\n        \"f_26b246d771b4b227\",\n        \"f_5c944121c4fbb0b1\"\n      ]\n    },\n    {\n      \"area\": \"data\",\n      \"level\": \"ok_with_setting\",\n      \"reason\": \"Roblox collects facial and personal data for age verification, but you can opt‑out of facial age estimation.\",\n      \"setting\": \"opt-out of using facial age estimation\",\n      \"findings\": [\n        \"f_fe6269d598fd7147\",\n        \"f_6e61cfcbe7176301\"\n      ]\n    },\n    {\n      \"area\": \"age_gating\",\n      \"level\": \"flag\",\n      \"reason\": \"Parents report that the age verification can be bypassed, incorrectly labels ages, and lets under‑13 children access the app.\",\n      \"setting\": \"\",\n      \"findings\": [\n        \"f_a9ee277e435765d7\",\n        \"f_274d0f70da09eeb6\",\n        \"f_114458bd87247c81\"\n      ]\n    }\n  ]\n}",
+  "input_tokens": 13842,
+  "output_tokens": 9977,
+  "price_nano": 13131900,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

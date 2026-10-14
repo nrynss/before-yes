@@ -14,3 +14,5 @@ Layout, which `tools/eval -models replay` reads:
 The recordings are built from the saved gather fixtures, so no Tavily call was made to produce them. A recording of an unparseable reply is kept: the reader counts it as a failed chunk, the same way the live run did.
 
 To re-record, delete a title's directory and run `go run ./tools/eval -models live -live-only <slug> -live-ledger <file outside the repo>` with the keys exported. A live run with recordings present makes no call.
+
+T3.9b re-recorded the Token Factory replies for roblox, minecraft and khan-academy-kids: the judge prompt now asks for citations by finding id (see `judgeSystem` in `internal/pipeline/judge.go`), so the old judge recordings no longer match, and the reader ran at `max_tokens` 8192 (`tools/eval/live.go`). The `openrouter-free/` recordings are from T3.6b and were not re-recorded; they answer the old prompt.

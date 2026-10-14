@@ -1,8 +1,0 @@
-{
-  "text": "\n\n{\n  \"grades\": [\n    {\n      \"area\": \"contact\",\n      \"level\": \"ok_with_setting\",\n      \"reason\": \"Parents report strangers can message or voice chat via the forum, but the forum feature can be turned off.\",\n      \"setting\": \"Forum feature off\",\n      \"findings\": [\n        \"f_d1082c34870ec1e2\",\n        \"f_fc01980304afdd15\",\n        \"f_1d6293fbf75df53e\"\n      ]\n    },\n    {\n      \"area\": \"money\",\n      \"level\": \"ok\",\n      \"reason\": \"Multiple parents say the app is completely free with no in‑app purchases, loot boxes or subscriptions.\",\n      \"setting\": \"\",\n      \"findings\": [\n        \"f_7cb07a46507e7716\",\n        \"f_69c6991478d2267e\",\n        \"f_bf9f90f44491980e\",\n        \"f_7ef91ada63a9f262\",\n        \"f_639b0e3730abafed\",\n        \"f_36f50762f4f49220\",\n        \"f_7b42949ba863a5cd\",\n        \"f_e102924337b2c30c\",\n        \"f_57f245627858be5a\"\n      ]\n    },\n    {\n      \"area\": \"data\",\n      \"level\": \"ok\",\n      \"reason\": \"Several parents report the app collects no data for ads or third parties, only asks for a name/age, and allows account deletion.\",\n      \"setting\": \"\",\n      \"findings\": [\n        \"f_fe96a018fcd10a6b\",\n        \"f_0a29e46e6dc96108\",\n        \"f_2bf383539b4ddf3e\",\n        \"f_b7cc30c0abfcbb5f\",\n        \"f_c58cc821303e27ae\",\n        \"f_3ff5cf1ad6280ec9\"\n      ]\n    }\n  ]\n}",
-  "input_tokens": 4393,
-  "output_tokens": 4506,
-  "price_nano": 5373300,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

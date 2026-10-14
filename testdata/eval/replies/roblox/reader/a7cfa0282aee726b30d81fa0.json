@@ -1,8 +1,8 @@
 {
-  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D520]\",\n      \"area\": \"contact\",\n      \"claim\": \"A parent reports that chat options are limited to help make the app more annoying than unsafe.\",\n      \"stance\": \"risk\",\n      \"quote\": \"limits on chat options helps make that more annoying than unsafe.\"\n    },\n    {\n      \"ref\": \"[D520]\",\n      \"area\": \"money\",\n      \"claim\": \"The app is free to try, but it may include in-app purchases.\",\n      \"stance\": \"neutral\",\n      \"quote\": \"Pricing structure : Free to try\"\n    },\n    {\n      \"ref\": \"[D520]\",\n      \"area\": \"data\",\n      \"claim\": \"The app's privacy policy states that an email address will only be used to contact you about your comment.\",\n      \"stance\": \"mitigation\",\n      \"quote\": \"Your privacy is important to us. We won't share this comment without your permission. If you chose to provide an email address, it will only be used to contact you about your comment.\"\n    }\n  ]\n}",
+  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D520]\",\n      \"area\": \"contact\",\n      \"claim\": \"A parent reports that chat options are limited and closing the app can be tricky at first.\",\n      \"stance\": \"neutral\",\n      \"quote\": \"limits on chat options helps make that more annoying than unsafe. Closing out of the app is tricky the first time, but kids just need to swipe from the line at the bottom of the screen.\"\n    },\n    {\n      \"ref\": \"[D520]\",\n      \"area\": \"money\",\n      \"claim\": \"The app is free to try, but it may include in-app purchases.\",\n      \"stance\": \"neutral\",\n      \"quote\": \"Pricing structure : Free to try\"\n    }\n  ]\n}",
   "input_tokens": 1287,
-  "output_tokens": 241,
-  "price_nano": 135060,
+  "output_tokens": 170,
+  "price_nano": 118020,
   "measured": true,
   "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B"
 }

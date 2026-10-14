@@ -29,19 +29,24 @@ Areas:
 	b.WriteString(`
 For each area give one level:
 - "ok": nothing in the findings is a concern for a child of this age.
-- "ok_with_setting": a concern exists, and a specific setting or control answers it. Name the setting exactly as a parent would find it ("Parental Controls > Chat > Off", "Ask to Buy"). Cite the findings that show the concern and the setting.
-- "flag": a concern for this age that no setting answers. Cite at least one "risk" finding.
+- "ok_with_setting": a concern exists, and a specific setting or control answers it. Name the setting exactly as the quote of a cited "mitigation" finding names it ("Parental Controls > Chat > Off", "Ask to Buy"). Cite the "risk" finding that shows the concern and the "mitigation" finding that names the setting.
+- "flag": a concern for this age that no setting answers. Cite only "risk" findings.
 - "unknown": the findings are too thin to say.
 
 How to weigh evidence:
 - First-hand reports of what actually happened outweigh what a policy or a store listing claims. One credible report that a filter or an age gate failed for a young child can decide an area.
 - Grade against the child's age. What is fine at 13 may be a flag at 7.
 - A source listed as unread was not read. Its silence is not evidence: do not grade an area "ok" because a policy that could not be read said nothing.
-- Cite only finding ids from the list. Do not invent ids.
+
+How to cite. Every verdict a parent sees rests on the quotes of the findings you cite, so a citation is checked by code:
+- "findings" lists the ids of the findings your grade rests on, copied exactly from the list. Cite the few that decide the area (usually one to four), never every finding in it. Do not invent ids.
+- Every id you cite must be in that area. A "flag" may cite only findings whose stance is "risk". An "ok_with_setting" may cite only "risk" or "mitigation" findings, and at least one "mitigation" finding's quote must name the setting.
+- One id that does not exist, is in another area, or has the wrong stance voids the whole grade: it becomes "unknown". If you cannot cite a finding that fits, grade the area "unknown".
+- Write the reason in your own plain words for a parent. It must say only what the cited quotes say.
 
 Reply with one JSON object:
 {"grades": [{"area": "...", "level": "...", "reason": "one plain sentence for a parent", "setting": "...", "findings": ["id", ...]}, ...]}
-with exactly one grade per area.`)
+with exactly one grade per area. Leave "setting" empty unless the level is "ok_with_setting".`)
 	return b.String()
 }
 
@@ -149,8 +154,9 @@ type Judgement struct {
 	// ConflictErr says why that pass did not count, when it did not.
 	Conflicted  []checklist.Area
 	ConflictErr error
-	// Thin lists the areas ground dropped to unknown because no verified
-	// quote backed the reason or the setting (T3.9). The card carries it
+	// Thin lists the areas dropped to unknown because a cited id did not
+	// check out or no cited mitigation quote named the setting (T3.9,
+	// T3.9b). The card carries it
 	// as ThinAreas.
 	Thin []checklist.Area
 	Cost cost.Price
@@ -211,10 +217,16 @@ func (j *Judge) Judge(ctx context.Context, title string, age int, ref string, fs
 		}
 	}
 
+	// Citations are checked on the judge's own list, before Enforce drops
+	// the ids it cannot use: one bad id voids a flag or a setting (T3.9b).
+	var cited, grounded []checklist.Demotion
+	var thinCited, thinGround []checklist.Area
+	grades, cited, thinCited = checkCitations(grades, fs)
 	out.Grades, out.Demotions = checklist.Enforce(grades, finding.Cited(fs))
-	var grounded []checklist.Demotion
-	out.Grades, grounded, out.Thin = ground(out.Grades, fs)
+	out.Demotions = append(cited, out.Demotions...)
+	out.Grades, grounded, thinGround = ground(out.Grades, fs)
 	out.Demotions = append(out.Demotions, grounded...)
+	out.Thin = thinAreas(out.Grades, thinCited, thinGround)
 	out.Verdict, err = checklist.Decide(out.Grades)
 	if err != nil {
 		return out, fmt.Errorf("judge: %w", err)
@@ -258,45 +270,86 @@ func replace(first, second []checklist.Grade, areas []checklist.Area) []checklis
 	return out
 }
 
-// Demotions ground makes. Both leave the grade unknown and its area in
-// Judgement.Thin.
+// Demotions the judge step makes after Enforce. Each leaves the grade
+// unknown and its area in Judgement.Thin.
 const (
-	// RuleThinEvidence: a flag or ok_with_setting whose reason contains no
-	// verbatim run of any cited verified quote of a fitting stance.
-	RuleThinEvidence = "reason_without_quote"
+	// RuleBadCitation: a flag or ok_with_setting that cites no finding, or
+	// cites an id that is not a verified finding, is in another area, or has
+	// a stance the grade does not fit (T3.9b). One bad id voids the grade.
+	RuleBadCitation = "citation_invalid"
 	// RuleSettingUnbacked: an ok_with_setting whose setting appears in no
 	// cited verified mitigation quote.
 	RuleSettingUnbacked = "setting_without_quote"
 )
 
-// ThinReason is the card reason for a grade ground dropped to unknown. The
-// card's structured signal is Card.ThinAreas; this text is for the parent.
+// ThinReason is the card reason for a grade checkCitations dropped
+// to unknown. The card's structured signal is Card.ThinAreas; this text is
+// for the parent.
 const ThinReason = "Changed to unknown: the evidence was thin. No verified quote backs the reason the judge gave."
 
 // SettingThinReason is the card reason when only the setting was unbacked.
 const SettingThinReason = "Changed to unknown: the evidence was thin. No verified quote names the setting."
 
-// reasonRun is how many consecutive words of a verified quote a reason must
-// carry, after normalising case and punctuation, to name that quote. At
-// least two of them must be content words, so a run of glue ("it is a
-// the") names nothing. A quote shorter than reasonRun words must appear
-// whole. A setting is checked by settingIn instead.
-const (
-	reasonRun = 4
-)
+// checkCitations holds every flag and ok_with_setting to the findings it
+// cites (T3.9b). It reads the judge's own citation list, before
+// checklist.Enforce drops the ids it cannot use. The grade stands only if
+// it cites at least one finding and every cited id is a verified finding in
+// fs (fs holds only findings that passed finding.Verify), belongs to the
+// grade's area, and has a fitting stance: a risk for a flag; a risk or a
+// mitigation for ok_with_setting. A grade that fails becomes unknown with
+// no setting and no citations, a RuleBadCitation demotion, and its area in
+// thin. ok and unknown grades pass through, and the input is not modified.
+func checkCitations(grades []checklist.Grade, fs []finding.Finding) (out []checklist.Grade, dem []checklist.Demotion, thin []checklist.Area) {
+	byID := make(map[string]finding.Finding, len(fs))
+	for _, f := range fs {
+		byID[f.ID] = f
+	}
+	out = make([]checklist.Grade, len(grades))
+	for i, g := range grades {
+		g.Findings = slices.Clone(g.Findings)
+		out[i] = g
+		if (g.Level != checklist.Flag && g.Level != checklist.OKWithSetting) || !g.Area.Valid() {
+			continue
+		}
+		bad := ""
+		seen := 0
+		for _, id := range g.Findings {
+			id = strings.TrimSpace(id)
+			f, ok := byID[id]
+			switch {
+			case !ok:
+				bad = id + " is not a verified finding"
+			case f.Area != g.Area:
+				bad = id + " is in area " + string(f.Area)
+			case !stanceFits(g.Level, f.Stance):
+				bad = id + " is a " + string(f.Stance) + " finding"
+			default:
+				seen++
+				continue
+			}
+			break
+		}
+		if bad == "" && seen == 0 {
+			bad = "no finding cited"
+		}
+		if bad == "" {
+			continue
+		}
+		dem = append(dem, checklist.Demotion{Area: g.Area, Rule: RuleBadCitation, Detail: string(g.Level) + ": " + bad})
+		thin = append(thin, g.Area)
+		g.Level, g.Setting, g.Reason, g.Findings = checklist.Unknown, "", ThinReason, []string{}
+		out[i] = g
+	}
+	return out, dem, thin
+}
 
-// ground holds every flag and ok_with_setting to quotes it actually carries
-// (T3.9). Enforce has already kept only verified citations in the grade's
-// own area. A cited finding is named when it has a fitting stance (a risk
-// for flag; a risk or mitigation for ok_with_setting) and the reason holds
-// a verbatim run of its quote (see reasonRun). Only the verified quote
-// counts, never the reader's claim, so two shared words cannot carry a
-// grade. An ok_with_setting must also have its setting backed on its own: a
-// setting the quote names (see settingIn), in a cited mitigation
-// quote. The grade keeps only the findings that name it. A grade that fails
-// falls to unknown with its setting cleared, a demotion, and its area in
-// thin, so its flag no longer counts toward the verdict. ok, unknown, and
-// the verdict rule are untouched. The input is not modified.
+// ground holds every ok_with_setting to a setting a cited mitigation quote
+// names (T3.9, kept by T3.9b; see settingIn). By now checkCitations has
+// shown every cited id is a verified finding of a fitting stance in the
+// grade's area. A setting no cited mitigation quote names falls to unknown
+// with its setting cleared, a RuleSettingUnbacked demotion, and its area in
+// thin. flag, ok and unknown, and the verdict rule, are untouched. The input
+// is not modified.
 func ground(grades []checklist.Grade, fs []finding.Finding) (out []checklist.Grade, dem []checklist.Demotion, thin []checklist.Area) {
 	byID := make(map[string]finding.Finding, len(fs))
 	for _, f := range fs {
@@ -306,44 +359,45 @@ func ground(grades []checklist.Grade, fs []finding.Finding) (out []checklist.Gra
 	for i, g := range grades {
 		g.Findings = slices.Clone(g.Findings)
 		out[i] = g
-		if g.Level != checklist.Flag && g.Level != checklist.OKWithSetting {
+		if g.Level != checklist.OKWithSetting {
 			continue
 		}
-		reason := normWords(g.Reason)
 		setting := normWords(g.Setting)
-		var named []string
-		reasonNamed, settingBacked := false, false
+		backed := false
 		for _, id := range g.Findings {
-			f, ok := byID[id]
-			if !ok || f.Area != g.Area || !stanceFits(g.Level, f.Stance) {
-				continue
-			}
-			q := normWords(f.Quote)
-			byReason := carries(reason, q, reasonRun, 2)
-			bySetting := g.Level == checklist.OKWithSetting && f.Stance == finding.Mitigation && settingIn(q, setting)
-			reasonNamed = reasonNamed || byReason
-			settingBacked = settingBacked || bySetting
-			if byReason || bySetting {
-				named = append(named, id)
+			if f, ok := byID[id]; ok && f.Area == g.Area && f.Stance == finding.Mitigation && settingIn(normWords(f.Quote), setting) {
+				backed = true
+				break
 			}
 		}
-		rule, why := "", ""
-		switch {
-		case !reasonNamed:
-			rule, why = RuleThinEvidence, ThinReason
-		case g.Level == checklist.OKWithSetting && !settingBacked:
-			rule, why = RuleSettingUnbacked, SettingThinReason
-		}
-		if rule != "" {
-			dem = append(dem, checklist.Demotion{Area: g.Area, Rule: rule, Detail: string(g.Level)})
-			thin = append(thin, g.Area)
-			g.Level, g.Setting, g.Reason = checklist.Unknown, "", why
-			out[i] = g
+		if backed {
 			continue
 		}
-		out[i].Findings = named
+		dem = append(dem, checklist.Demotion{Area: g.Area, Rule: RuleSettingUnbacked, Detail: string(g.Level)})
+		thin = append(thin, g.Area)
+		g.Level, g.Setting, g.Reason = checklist.Unknown, "", SettingThinReason
+		out[i] = g
 	}
 	return out, dem, thin
+}
+
+// thinAreas merges the areas each step dropped, once each, in card order,
+// keeping only those whose final grade is unknown (a duplicate grade for an
+// area is discarded by Enforce, and its twin may stand).
+func thinAreas(final []checklist.Grade, parts ...[]checklist.Area) []checklist.Area {
+	var out []checklist.Area
+	for _, g := range final {
+		if g.Level != checklist.Unknown {
+			continue
+		}
+		for _, p := range parts {
+			if slices.Contains(p, g.Area) {
+				out = append(out, g.Area)
+				break
+			}
+		}
+	}
+	return out
 }
 
 // settingIn reports whether a quote backs a setting: the whole setting

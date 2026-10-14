@@ -1,8 +1,8 @@
 {
-  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D532]\",\n      \"area\": \"money\",\n      \"claim\": \"It offers in‑app purchases of Minecoins.\",\n      \"stance\": \"risk\",\n      \"quote\": \"It offers in‑app purchases of Minecoins.\"\n    },\n    {\n      \"ref\": \"[D532]\",\n      \"area\": \"data\",\n      \"claim\": \"It collects user data for advertising and shares it with third parties.\",\n      \"stance\": \"risk\",\n      \"quote\": \"It collects user data for advertising and shares it with third parties.\"\n    },\n    {\n      \"ref\": \"[D532]\",\n      \"area\": \"age_gating\",\n      \"claim\": \"The age gate requires users to be at least 13 years old.\",\n      \"stance\": \"neutral\",\n      \"quote\": \"The age gate requires users to be at least 13 years old.\"\n    }\n  ]\n}",
+  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D532]\",\n      \"area\": \"money\",\n      \"claim\": \"The app offers in‑app purchases of Minecoins.\",\n      \"stance\": \"risk\",\n      \"quote\": \"Minecraft Marketplace offers items that can be purchased with Minecoins.\"\n    },\n    {\n      \"ref\": \"[D532]\",\n      \"area\": \"data\",\n      \"claim\": \"The app collects user data for advertising and shares it with third parties.\",\n      \"stance\": \"risk\",\n      \"quote\": \"The app may collect usage data and share it with third‑party advertising partners.\"\n    }\n  ]\n}",
   "input_tokens": 980,
-  "output_tokens": 208,
-  "price_nano": 108720,
+  "output_tokens": 146,
+  "price_nano": 93840,
   "measured": true,
   "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B"
 }

@@ -109,7 +109,7 @@ func TestJudgeConflictPassFlagsContact(t *testing.T) {
 	)
 	second := "<think>Contact: {weighing} the parent's first-hand report against the terms.</think>\n```json\n" +
 		gradesJSON(t,
-			checklist.Grade{Area: checklist.Contact, Level: checklist.Flag, Findings: []string{decisive.ID, mit.ID}, Reason: "A parent reports a child predator might ask where the child is."},
+			checklist.Grade{Area: checklist.Contact, Level: checklist.Flag, Findings: []string{decisive.ID}, Reason: "A parent reports a child predator might ask where the child is."},
 			// Not asked: the second pass answers only the conflicted areas.
 			checklist.Grade{Area: checklist.Money, Level: checklist.OK, Findings: []string{money.ID}},
 		) + "\n```"
@@ -177,9 +177,9 @@ func TestJudgeConflictPassFlagsContact(t *testing.T) {
 }
 
 func TestJudgeConflictPassFailureKeepsFirst(t *testing.T) {
-	decisive, mit, _, fs := robloxFindings(t)
+	decisive, _, _, fs := robloxFindings(t)
 	first := gradesJSON(t,
-		checklist.Grade{Area: checklist.Contact, Level: checklist.Flag, Findings: []string{decisive.ID, mit.ID}, Reason: "A parent reports a child predator might ask where the child is."},
+		checklist.Grade{Area: checklist.Contact, Level: checklist.Flag, Findings: []string{decisive.ID}, Reason: "A parent reports a child predator might ask where the child is."},
 	)
 	for _, second := range []any{errors.New("overloaded"), "I cannot decide."} {
 		rec := &superRecorder{replies: []any{first, second}, price: 10}
@@ -263,8 +263,8 @@ func TestParseGradesTakesTheLastBlock(t *testing.T) {
 // A conflict pass that parses but grades none of the conflicted areas
 // counts as failed: the first grades stand and the record says why.
 func TestConflictPassAnsweringNothingFails(t *testing.T) {
-	decisive, mit, money, fs := robloxFindings(t)
-	first := gradesJSON(t, checklist.Grade{Area: checklist.Contact, Level: checklist.Flag, Findings: []string{decisive.ID, mit.ID}, Reason: "A child predator might ask where the child is."})
+	decisive, _, money, fs := robloxFindings(t)
+	first := gradesJSON(t, checklist.Grade{Area: checklist.Contact, Level: checklist.Flag, Findings: []string{decisive.ID}, Reason: "A child predator might ask where the child is."})
 	second := gradesJSON(t, checklist.Grade{Area: checklist.Money, Level: checklist.Flag, Findings: []string{money.ID}})
 	rec := &superRecorder{replies: []any{first, second}}
 	got, err := (&Judge{Model: rec, Meter: openTestMeter(t)}).Judge(context.Background(), "Roblox", 9, "c", fs, nil)
@@ -349,25 +349,30 @@ func (r *recordedReplies) Settings() model.Settings {
 	return model.Settings{Provider: "replay", Model: "recorded-" + r.role}
 }
 
-// TestRecordedRepliesGradesRestOnVerifiedQuotes is T3.9's pin. It replays
-// T3.6b's recorded Token Factory replies for the three demo titles through
-// Collect and Decide, with the judge switches the recordings were made with,
-// and checks that every flag and ok_with_setting left on the card cites only
-// verified findings of a fitting stance, that its reason carries a verbatim
-// run of one of their quotes and its setting a run of a cited mitigation
-// quote; that every area in Card.ThinAreas is unknown; and that the thin
-// areas and verdicts are the ones T3.9 measured.
+// TestRecordedRepliesGradesRestOnVerifiedQuotes is T3.9b's pin. It replays
+// the Token Factory replies recorded under T3.9b for the three demo titles
+// through Collect and Decide, with the judge switches the recordings were
+// made with, and checks that no flag or ok_with_setting stands on the card
+// without a valid citation: at least one cited id, every one a verified
+// finding in the grade's area with a fitting stance, and for a setting, a
+// cited mitigation quote that names it. It checks that every area in
+// Card.ThinAreas is unknown, and pins each title's grade levels, thin areas
+// and verdict. The judge's reasons are not checked against the quotes.
 func TestRecordedRepliesGradesRestOnVerifiedQuotes(t *testing.T) {
-	all := []checklist.Area{"contact", "money", "data", "age_gating", "content", "developer_record"}
+	L := func(ls ...checklist.Level) []checklist.Level { return ls }
+	const (
+		ok, set, flag, unk = checklist.OK, checklist.OKWithSetting, checklist.Flag, checklist.Unknown
+	)
 	cases := []struct {
 		d       demo
 		age     int
 		verdict checklist.Verdict
+		levels  []checklist.Level // in card order
 		thin    []checklist.Area
 	}{
-		{demos[0], 9, checklist.Unclear, all},
-		{demos[1], 9, checklist.Unclear, all},
-		{demos[2], 5, checklist.Unclear, []checklist.Area{"contact", "age_gating", "content"}},
+		{demos[0], 9, checklist.No, L(set, set, unk, flag, unk, flag), []checklist.Area{"data", "content"}},
+		{demos[1], 9, checklist.No, L(flag, unk, unk, unk, flag, flag), []checklist.Area{"money", "age_gating"}},
+		{demos[2], 5, checklist.No, L(flag, flag, flag, ok, flag, unk), nil},
 	}
 	tokenFactory := func(on bool) map[string]any {
 		return map[string]any{"chat_template_kwargs": map[string]any{"enable_thinking": on}}
@@ -416,21 +421,22 @@ func TestRecordedRepliesGradesRestOnVerifiedQuotes(t *testing.T) {
 				if len(g.Findings) == 0 {
 					t.Errorf("%s %s stands with no citation", g.Area, g.Level)
 				}
-				reasonNamed, settingBacked := false, false
+				settingBacked := false
 				for _, id := range g.Findings {
 					f, ok := byID[id]
 					if !ok || f.Area != g.Area || !stanceFits(g.Level, f.Stance) {
 						t.Errorf("%s %s cites %s, not a verified finding of a fitting stance", g.Area, g.Level, id)
 						continue
 					}
-					reasonNamed = reasonNamed || carries(normWords(g.Reason), normWords(f.Quote), reasonRun, 2)
 					settingBacked = settingBacked || (f.Stance == finding.Mitigation && settingIn(normWords(f.Quote), normWords(g.Setting)))
-				}
-				if !reasonNamed {
-					t.Errorf("%s: reason %q carries no cited quote", g.Area, g.Reason)
 				}
 				if g.Level == checklist.OKWithSetting && !settingBacked {
 					t.Errorf("%s: setting %q is in no cited mitigation quote", g.Area, g.Setting)
+				}
+			}
+			for i, g := range card.Grades {
+				if g.Level != c.levels[i] {
+					t.Errorf("%s graded %s, pinned %s", g.Area, g.Level, c.levels[i])
 				}
 			}
 			if card.Verdict != c.verdict {
@@ -443,59 +449,139 @@ func TestRecordedRepliesGradesRestOnVerifiedQuotes(t *testing.T) {
 	}
 }
 
-// TestGroundRequiresVerbatimRuns pins ground on hand-made findings.
-//   - A flag whose reason carries four consecutive words of a cited risk
-//     quote stands, citing only that finding.
-//   - The round-1 attack: a benign quote shares generic words with an
-//     invented reason ("sells her data to advertisers"); it falls to unknown.
-//   - An ok_with_setting whose setting ("Turn on Delete My Account") no cited
-//     quote names falls to unknown, even though its reason quotes a finding.
-//   - An ok_with_setting backed in both reason and setting stands.
-//   - ok is left alone, and the input is not modified.
-func TestGroundRequiresVerbatimRuns(t *testing.T) {
+// TestCitationsMustCheckOut pins checkCitations on hand-made findings. A
+// flag or ok_with_setting stands only if every cited id is a verified
+// finding in the grade's area with a fitting stance.
+func TestCitationsMustCheckOut(t *testing.T) {
 	fs := []finding.Finding{
 		{ID: "r1", Area: "contact", Stance: finding.Risk, Quote: "A stranger sent my daughter private messages in chat."},
-		{ID: "r2", Area: "contact", Stance: finding.Risk, Quote: "the water splash sound is the same"},
-		{ID: "r3", Area: "data", Stance: finding.Risk, Quote: "Great game, my daughter loves building worlds with her friends every single afternoon."},
+		{ID: "m1", Area: "contact", Stance: finding.Mitigation, Quote: "Chat can be switched off in Parental Controls."},
+		{ID: "n1", Area: "contact", Stance: finding.Neutral, Quote: "The game has a chat feature for players."},
+		{ID: "r2", Area: "money", Stance: finding.Risk, Quote: "Kids can buy gems without asking anyone."},
+		{ID: "m2", Area: "money", Stance: finding.Mitigation, Quote: "Turn on Ask to Buy in Family Sharing."},
+	}
+	cases := []struct {
+		name  string
+		grade checklist.Grade
+		stand bool
+		why   string
+	}{
+		{"flag cites a risk", checklist.Grade{Area: "contact", Level: checklist.Flag, Findings: []string{"r1"}}, true, ""},
+		{"setting cites a risk and a mitigation", checklist.Grade{Area: "contact", Level: checklist.OKWithSetting, Setting: "Parental Controls", Findings: []string{"r1", "m1"}}, true, ""},
+		{"setting cites a mitigation alone", checklist.Grade{Area: "money", Level: checklist.OKWithSetting, Setting: "Ask to Buy", Findings: []string{"m2"}}, true, ""},
+		{"unknown id", checklist.Grade{Area: "contact", Level: checklist.Flag, Findings: []string{"r1", "f_madeup"}}, false, "f_madeup is not a verified finding"},
+		{"unverified finding", checklist.Grade{Area: "money", Level: checklist.Flag, Findings: []string{"f_dropped_by_verify"}}, false, "not a verified finding"},
+		{"wrong area", checklist.Grade{Area: "contact", Level: checklist.Flag, Findings: []string{"r1", "r2"}}, false, "r2 is in area money"},
+		{"flag cites a mitigation", checklist.Grade{Area: "contact", Level: checklist.Flag, Findings: []string{"r1", "m1"}}, false, "m1 is a mitigation finding"},
+		{"flag cites a neutral", checklist.Grade{Area: "contact", Level: checklist.Flag, Findings: []string{"n1"}}, false, "n1 is a neutral finding"},
+		{"setting cites a neutral", checklist.Grade{Area: "contact", Level: checklist.OKWithSetting, Setting: "Parental Controls", Findings: []string{"m1", "n1"}}, false, "n1 is a neutral finding"},
+		{"flag cites nothing", checklist.Grade{Area: "contact", Level: checklist.Flag, Findings: []string{}}, false, "no finding cited"},
+		{"setting cites nothing", checklist.Grade{Area: "money", Level: checklist.OKWithSetting, Setting: "Ask to Buy"}, false, "no finding cited"},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			in := []checklist.Grade{c.grade}
+			orig := fmt.Sprint(in)
+			got, dem, thin := checkCitations(in, fs)
+			if fmt.Sprint(in) != orig {
+				t.Fatal("checkCitations modified its input")
+			}
+			if c.stand {
+				if got[0].Level != c.grade.Level || !reflect.DeepEqual(got[0].Findings, c.grade.Findings) || len(dem) != 0 || len(thin) != 0 {
+					t.Errorf("did not stand: %+v %+v %v", got[0], dem, thin)
+				}
+				return
+			}
+			if got[0].Level != checklist.Unknown || got[0].Setting != "" || len(got[0].Findings) != 0 || got[0].Reason != ThinReason {
+				t.Errorf("not dropped to unknown: %+v", got[0])
+			}
+			if !reflect.DeepEqual(thin, []checklist.Area{c.grade.Area}) || len(dem) != 1 || dem[0].Rule != RuleBadCitation || !strings.Contains(dem[0].Detail, c.why) {
+				t.Errorf("thin %v, demotions %+v; want rule %s with %q", thin, dem, RuleBadCitation, c.why)
+			}
+		})
+	}
+	// ok and unknown pass through untouched, bad ids and all (Enforce deals with them).
+	pass := []checklist.Grade{{Area: "contact", Level: checklist.OK, Findings: []string{"n1", "f_x"}}, {Area: "money", Level: checklist.Unknown}}
+	if got, dem, thin := checkCitations(pass, fs); !reflect.DeepEqual(got, pass) || len(dem) != 0 || len(thin) != 0 {
+		t.Errorf("ok and unknown changed: %+v %+v %v", got, dem, thin)
+	}
+}
+
+// TestGroundSettingNeedsANamingMitigation pins ground: an ok_with_setting
+// stands only when a cited mitigation quote names the setting. A risk quote
+// does not, and neither does a mitigation that never mentions it. A reason
+// with no quoted words does not matter (T3.9b dropped that guard).
+func TestGroundSettingNeedsANamingMitigation(t *testing.T) {
+	fs := []finding.Finding{
 		{ID: "r4", Area: "money", Stance: finding.Risk, Quote: "The app collects personal data about every account."},
 		{ID: "m4", Area: "money", Stance: finding.Mitigation, Quote: "Purchases need a parent's approval with Ask to Buy turned on."},
 		{ID: "m5", Area: "content", Stance: finding.Mitigation, Quote: "everything is curated by teachers"},
-		{ID: "r6", Area: "age_gating", Stance: finding.Risk, Quote: "Kids can buy gems without asking anyone."},
+		{ID: "r6", Area: "age_gating", Stance: finding.Risk, Quote: "Kids can buy gems without asking anyone, so Ask to Buy matters."},
 		{ID: "m6", Area: "age_gating", Stance: finding.Mitigation, Quote: "Turn on Ask to Buy in Family Sharing to approve every purchase."},
+		{ID: "m7", Area: "data", Stance: finding.Mitigation, Quote: "Parents may request deletion by emailing the support team."},
 	}
 	in := []checklist.Grade{
-		{Area: "contact", Level: checklist.Flag, Reason: "A parent says a stranger sent my daughter private messages.", Findings: []string{"r2", "r1"}},
-		{Area: "data", Level: checklist.Flag, Reason: "The company sells her data to advertisers and refuses deletion; friends' worlds are exposed.", Findings: []string{"r3"}},
-		{Area: "money", Level: checklist.OKWithSetting, Setting: "Turn on Delete My Account", Reason: "A parent notes the app collects personal data about every account.", Findings: []string{"r4", "m4"}},
-		{Area: "age_gating", Level: checklist.OKWithSetting, Setting: "Ask to Buy", Reason: "Kids can buy gems without asking, but a parent can approve every purchase.", Findings: []string{"r6", "m6"}},
+		{Area: "money", Level: checklist.OKWithSetting, Setting: "Turn on Delete My Account", Reason: "Paraphrase only.", Findings: []string{"r4", "m4"}},
+		{Area: "age_gating", Level: checklist.OKWithSetting, Setting: "Ask to Buy", Reason: "Paraphrase only.", Findings: []string{"r6", "m6"}},
 		{Area: "content", Level: checklist.OK, Reason: "Fine.", Findings: []string{"m5"}},
+		{Area: "data", Level: checklist.OKWithSetting, Setting: "Ask to Buy", Reason: "Paraphrase only.", Findings: []string{"m7"}},
+		{Area: "contact", Level: checklist.Flag, Reason: "Paraphrase only.", Findings: []string{"r4"}},
 	}
 	orig := fmt.Sprint(in)
 	got, dem, thin := ground(in, fs)
 	if fmt.Sprint(in) != orig {
 		t.Fatal("ground modified its input")
 	}
-	if g := got[0]; g.Level != checklist.Flag || !reflect.DeepEqual(g.Findings, []string{"r1"}) {
-		t.Errorf("contact: %+v, want a flag citing only r1", g)
+	for _, i := range []int{0, 3} {
+		if g := got[i]; g.Level != checklist.Unknown || g.Setting != "" || g.Reason != SettingThinReason {
+			t.Errorf("%s (unbacked setting): %+v, want unknown", g.Area, g)
+		}
 	}
-	if g := got[1]; g.Level != checklist.Unknown || g.Setting != "" {
-		t.Errorf("data (invented reason): %+v, want unknown", g)
+	if g := got[1]; g.Level != checklist.OKWithSetting || g.Setting != "Ask to Buy" || !reflect.DeepEqual(g.Findings, []string{"r6", "m6"}) {
+		t.Errorf("age_gating: %+v, want the setting to stand", g)
 	}
-	if g := got[2]; g.Level != checklist.Unknown || g.Setting != "" {
-		t.Errorf("money (unbacked setting): %+v, want unknown", g)
+	if !reflect.DeepEqual(got[2], in[2]) || !reflect.DeepEqual(got[4], in[4]) {
+		t.Errorf("ok or flag changed: %+v %+v", got[2], got[4])
 	}
-	if g := got[3]; g.Level != checklist.OKWithSetting || !reflect.DeepEqual(g.Findings, []string{"r6", "m6"}) {
-		t.Errorf("age_gating: %+v, want ok_with_setting citing r6 and m6", g)
-	}
-	if !reflect.DeepEqual(got[4], in[4]) {
-		t.Errorf("ok grade changed: %+v", got[4])
-	}
-	if want := []checklist.Area{"data", "money"}; !reflect.DeepEqual(thin, want) {
+	if want := []checklist.Area{"money", "data"}; !reflect.DeepEqual(thin, want) {
 		t.Errorf("thin %v, want %v", thin, want)
 	}
-	want := []checklist.Demotion{{Area: "data", Rule: RuleThinEvidence, Detail: "flag"}, {Area: "money", Rule: RuleSettingUnbacked, Detail: "ok_with_setting"}}
+	want := []checklist.Demotion{{Area: "money", Rule: RuleSettingUnbacked, Detail: "ok_with_setting"}, {Area: "data", Rule: RuleSettingUnbacked, Detail: "ok_with_setting"}}
 	if !reflect.DeepEqual(dem, want) {
 		t.Errorf("demotions %+v, want %+v", dem, want)
+	}
+}
+
+// The whole judge step: a flag citing an unverified id drops to unknown and
+// its area is thin; a setting no cited mitigation names drops too; a valid
+// citation stands whatever words the reason uses.
+func TestJudgeCitationEndToEnd(t *testing.T) {
+	decisive, mit, money, fs := robloxFindings(t)
+	reply := gradesJSON(t,
+		checklist.Grade{Area: checklist.Contact, Level: checklist.Flag, Findings: []string{decisive.ID}, Reason: "Strangers can reach the child."},
+		checklist.Grade{Area: checklist.Money, Level: checklist.Flag, Findings: []string{money.ID, "f_not_verified"}, Reason: "Purchases are a problem."},
+		checklist.Grade{Area: checklist.Data, Level: checklist.OKWithSetting, Setting: "Unrelated Switch", Findings: []string{mit.ID}, Reason: "x"},
+	)
+	rec := &superRecorder{replies: []any{reply, reply}}
+	got, err := (&Judge{Model: rec, Meter: openTestMeter(t)}).Judge(context.Background(), "Roblox", 9, "c", fs, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	by := map[checklist.Area]checklist.Grade{}
+	for _, g := range got.Grades {
+		by[g.Area] = g
+	}
+	if g := by[checklist.Contact]; g.Level != checklist.Flag || !reflect.DeepEqual(g.Findings, []string{decisive.ID}) {
+		t.Errorf("contact %+v, want a flag on the cited finding", g)
+	}
+	if by[checklist.Money].Level != checklist.Unknown || by[checklist.Data].Level != checklist.Unknown {
+		t.Errorf("money %+v, data %+v; want both unknown", by[checklist.Money], by[checklist.Data])
+	}
+	if want := []checklist.Area{checklist.Money, checklist.Data}; !reflect.DeepEqual(got.Thin, want) {
+		t.Errorf("thin %v, want %v", got.Thin, want)
+	}
+	if got.Verdict != checklist.No {
+		t.Errorf("verdict %s, want no on the contact flag", got.Verdict)
 	}
 }
 
@@ -503,8 +589,9 @@ func TestGroundRequiresVerbatimRuns(t *testing.T) {
 func TestThinAreasReachTheCard(t *testing.T) {
 	decisive, mit, money, fs := robloxFindings(t)
 	reply := gradesJSON(t,
-		checklist.Grade{Area: checklist.Contact, Level: checklist.Flag, Findings: []string{decisive.ID, mit.ID}, Reason: "A parent reports a child predator might ask where the child is."},
-		checklist.Grade{Area: checklist.Money, Level: checklist.Flag, Findings: []string{money.ID}, Reason: "Purchases are charged twice."},
+		checklist.Grade{Area: checklist.Contact, Level: checklist.Flag, Findings: []string{decisive.ID}, Reason: "A parent reports a child predator might ask where the child is."},
+		// Cites a contact mitigation for a money flag: wrong area, wrong stance.
+		checklist.Grade{Area: checklist.Money, Level: checklist.Flag, Findings: []string{money.ID, mit.ID}, Reason: "Purchases are charged twice."},
 	)
 	rec := &superRecorder{replies: []any{reply, reply}}
 	p := &Pipeline{Judge: &Judge{Model: rec, Meter: openTestMeter(t)}}
@@ -559,7 +646,7 @@ func TestSettingNeedsEveryContentWord(t *testing.T) {
 func TestMatcherAppliesNFC(t *testing.T) {
 	quote := normWords("Strangers message the caf\u00e9 chat.")
 	reason := normWords("A parent says strangers message the cafe\u0301 chat.")
-	if !carries(reason, quote, reasonRun, 2) {
+	if !carries(reason, quote, 4, 2) {
 		t.Errorf("NFC: %q does not carry %q", reason, quote)
 	}
 }
