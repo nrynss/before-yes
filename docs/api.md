@@ -16,7 +16,8 @@ All bodies are JSON. Ids are Keel `id` values: a card id starts `c_`, a check id
 | `GET /api/cards/{id}` | A card, exactly the shape of [`card-*.json`](../testdata/contracts/) | `get-card.json`, `get-card-404.json` |
 | `GET /api/cards` | `{cards: [{id, title, age, verdict, checklist_version, checked_at}]}`: recent cards, one per title and age, newest first | `get-cards.json` |
 | `GET /api/checklist` | `{version, areas: [{id, label, question}], levels, verdicts}` in card order | `get-checklist.json` |
-| `GET /api/status` | `{live, budget: {token_factory_remaining_nano, tavily_credits_remaining, fresh_checks_remaining_today}}` | `get-status.json` |
+| `GET /api/status` | `{live, checklist_version, budget: {token_factory_remaining_nano, tavily_credits_remaining, fresh_checks_remaining_today}}` | `get-status.json` |
+| `GET /healthz` | `200 ok` (text), for the deploy check | none |
 
 ### `POST /api/checks`
 

@@ -125,7 +125,7 @@ requires:   T4.1, T2.4
 fixture-ok: yes
 size:       XS · light
 owns:       internal/server/status.go, internal/server/web.go, cmd/before-yes/
-status:     drafted
+status:     in-review
 ```
 `GET /api/status` reports the live switch, the checklist version, and budget remaining in both pools. `GET /api/checklist` serves the areas and their questions. `GET /healthz` answers for the deploy check.
 
@@ -136,6 +136,26 @@ It builds the pipeline the way `tools/eval` does. Set `Judge.Entail` to the read
 The built Chaaya app is served from a directory, and unknown paths fall back to `index.html` so `/card/{id}` loads in a fresh tab.
 
 **Done when:** Tests cover every route, and a deep link to a card path returns the app shell.
+
+**Implementation notes (T4.4).**
+- `internal/server/status.go`: `Status{Meter, Flags, Live}` serves `GET /api/status` (live from the same flag the switch reads, failing closed to `false`; `checklist_version`; remaining nanodollars, whole Tavily credits and fresh checks today), `GET /api/checklist` (the body of `get-checklist.json`) and `GET /healthz` (`ok`).
+- `internal/server/web.go`: `App(api, status, webFS)` is the whole surface: the status routes, `/api/` to the gated API, and every other path to the built app, with a path that is not a file answered by `index.html` (`no-cache`), so `/card/{id}` loads in a fresh tab. Only GET and HEAD reach the app. A missing `web_dir` serves no app. Composing here keeps `checks.go`'s `Handler()` untouched.
+- `cmd/before-yes`: `serve`, `check`, `config`. `Settings` takes every key of `before-yes.toml.example` (the loader is strict); secrets are Keel `config.Secret` references. `buildCore` builds the pipeline as `tools/eval` does on real clients: `Judge.Entail` is the reader's Nano client, and the gatherer, reader and judge all book on one `*spend.Meter` (model, Tavily and daily-check pools) in its own file `data_dir/spend.db`; cards, jobs, the evidence cache and flags share `data_dir/before-yes.db`. The meter gets its own file because it opens its own SQLite handle, and two handles writing one file lost `Done` bookings to `SQLITE_BUSY` under concurrent checks (feedback.md). `NewServeApp` sets `Server.Checks` and `Pipeline.Checks` to that meter, opens the Keel flag store for `LiveFlag(live)`, resolves `[gate.passcode]` (unset means no passcode), and mounts `GatedHandler` inside `App`.
+- `check` reserves one daily check like the server (`Done` or `Fail`), runs `Pipeline.Run` and prints the card JSON. It does not look for alternatives and does not use the evidence cache.
+- **Outside owns (additive):** `testdata/contracts/api/get-status.json` and `docs/api.md` gain `checklist_version` on `GET /api/status`, which this task's text asks for and the contract lacked; `docs/api.md` also lists `GET /healthz`.
+- The scratch draft (`scratch/cmd/before-yes/main.go`, `server.T4.4.go`) was read for reference only, not moved: its APIs predate T4.1 to T4.5, and the code here is written fresh. It stays unclaimed on `draft/scratch`.
+- One process owns the meter: `buildCore` takes an exclusive, non-blocking `flock` on `data_dir/spend.db.lock` for the process's lifetime, so `check` refuses (`ErrMeterBusy`, naming `spend.db`) while `serve` runs, and so does a second `serve`. The upstream fix is nrynss/keel#100 (`BEGIN IMMEDIATE`), which the user filed and rated not blocking.
+- `check` takes its flags anywhere among the title's words (`check Roblox -age 12`).
+- **Outside owns (one line):** `before-yes.toml.example`'s comment on `daily_fresh_checks` no longer says no loader reads it.
+
+**Round-1 remediation (T4.4).**
+
+| Finding | Fix | Pin |
+|---|---|---|
+| M1 two processes on one `spend.db` lose bookings | Exclusive OS lock on `spend.db.lock` in `buildCore`: a second `check` or `serve` refuses with a clear error and opens no meter. Upstream: nrynss/keel#100 | `TestMeterLockRefusesSecondProcess`, `TestMeterLosesNoBookings` (400 concurrent `BeginCheck`+`Done`, three rounds, 0 lost; the second meter cannot open) |
+| L1 `check Roblox -age 12` read as the title | `parseArgs` reads flags anywhere; an unknown trailing flag is refused | `TestCheckFlagsAnywhere` |
+| L2 stale `daily_fresh_checks` comment | Comment says `cmd/before-yes` reads it | doc |
+| A1 to A4 | Accepted by the reviewer | none |
 
 ---
 
