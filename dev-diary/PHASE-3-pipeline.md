@@ -22,7 +22,7 @@ Every model and Tavily call goes through `pipeline.Meter`. Tests use a fake mete
 requires:   T1.3, T2.2, T2.3, T0.4a
 fixture-ok: yes
 size:       M · frontier
-owns:       internal/pipeline/gather.go, internal/pipeline/gather_test.go
+owns:       internal/pipeline/gather.go, internal/pipeline/gather_test.go, tools/capture/
 status:     in-review
 ```
 A fixed source plan per title, about eight Tavily credits:
@@ -51,7 +51,7 @@ Record the source kinds that came back empty, for the card's small print.
 - Reddit snippets are documents of kind `reddit`, with the chrome stripped. Common Sense "Parents say" and "Kids say" lines are dropped. Error and not-found pages are counted as missing. Raw content is capped at 60000 characters.
 - Fixture results: Roblox has no policy (its policy hits are the download page and homepages). Minecraft has no policy or terms (the only policy hit on its host is the usage guidelines, and the EULA was never captured). Khan Academy Kids has no policy or terms (homepage only). Toca has both.
 - `Doc` lives in gather.go, not doc.go, because T3.1 produces it first.
-- `tools/capture` is outside this task's `owns`, so it still copies the plan. Pointing it at `pipeline.Plan` is a follow-up.
+- **Owns widened, approved by the user:** T3.1 now owns `tools/capture/` as well. `tools/capture` builds its searches from `pipeline.Plan` (main capture and the `-only reddit` run), so its own copy of the plan is gone. Its request-body test now expects the seven planned searches and eight credits.
 
 ---
 
