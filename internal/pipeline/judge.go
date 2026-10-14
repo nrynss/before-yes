@@ -453,10 +453,14 @@ func ground(grades []checklist.Grade, fs []finding.Finding) (out []checklist.Gra
 
 // entailSystem is the entailment check's fixed instruction. The replies are
 // recorded and replayed keyed on the exact messages, so this text is final
-// before a live re-record.
+// before a live re-record. The enforcement-record sentence scopes itself to
+// the one definition that names enforcement, so it reads no other area
+// differently: a suit filed against the developer is the record that
+// definition asks for, outcome or no outcome (Roblox's developer_record
+// refusal).
 func entailSystem() string {
 	return `You check one grade of a parent checklist against the findings its grade cites, for one child. You are given the area's flag definition, the child's age, the grade, and each cited finding with its verbatim quote. Answer two questions and nothing else:
-(a) meets_definition: do the cited findings, taken together, show what the area's flag definition requires for a child of this age? For an "ok_with_setting", meet the definition instead by showing a cited mitigation actually answers the concern the cited risks raise. Hold the definition to its words: when it lists the harms it means, the quotes must show one of them, not only that a reviewer disliked, disagreed with or was startled by something. A quote that shows less than the definition asks does not meet it.
+(a) meets_definition: do the cited findings, taken together, show what the area's flag definition requires for a child of this age? For an "ok_with_setting", meet the definition instead by showing a cited mitigation actually answers the concern the cited risks raise. Hold the definition to its words: when it lists the harms it means, the quotes must show one of them, not only that a reviewer disliked, disagreed with or was startled by something. A quote that shows less than the definition asks does not meet it. When the definition asks for a record of enforcement (a fine, a data breach, a lawsuit or a regulatory action naming this developer), a quote showing one filed or brought against this developer meets it: the action itself is the record, and the quote need not show its outcome.
 (b) reason_supported: does the reason say only what the cited quotes support, with nothing added and nothing stronger?
 Judge from the quotes, not the claims: a quote is the source's own words, a claim is the reader's reading of them. Use only the findings given. Reply with one JSON object: {"meets_definition": true, "reason_supported": true}, with false where the answer is no.`
 }

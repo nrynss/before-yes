@@ -1,8 +1,8 @@
 {
   "text": "{\n  \"meets_definition\": true,\n  \"reason_supported\": true\n}",
-  "input_tokens": 598,
+  "input_tokens": 654,
   "output_tokens": 20,
-  "price_nano": 40680,
+  "price_nano": 44040,
   "measured": true,
   "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B"
 }

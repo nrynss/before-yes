@@ -372,10 +372,11 @@ func TestRecordedRepliesGradesRestOnVerifiedQuotes(t *testing.T) {
 		levels  []checklist.Level // in card order, after every demotion
 		thin    []checklist.Area
 	}{
-		// Roblox: the money, age_gating and content flags stand the
-		// entailment check; contact, data and developer_record are dropped by
-		// it (flag_not_earned) and land thin.
-		{demos[0], 9, checklist.No, L(unk, flag, unk, flag, flag, unk), []checklist.Area{"contact", "data", "developer_record"}},
+		// Roblox: the money, age_gating, content and developer_record flags
+		// stand the entailment check (developer_record on the enforcement-
+		// record sentence: the LA County suit is filed against the developer);
+		// contact and data are dropped by it (flag_not_earned) and land thin.
+		{demos[0], 9, checklist.No, L(unk, flag, unk, flag, flag, flag), []checklist.Area{"contact", "data"}},
 		// Minecraft: four ok_with_settings, each naming a setting a cited
 		// mitigation quote backs; data and developer_record are the judge's
 		// own unknowns, so nothing is thin.
