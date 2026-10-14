@@ -162,6 +162,13 @@ func TestExamplesObeyRules(t *testing.T) {
 		if !reflect.DeepEqual(checklist.Settings(c.Grades), c.Settings) {
 			t.Errorf("%s: settings %v do not follow the grades", name, c.Settings)
 		}
+		for _, a := range c.ThinAreas {
+			for _, gr := range c.Grades {
+				if gr.Area == a && gr.Level != checklist.Unknown {
+					t.Errorf("%s: thin area %s graded %s", name, a, gr.Level)
+				}
+			}
+		}
 		if c.ChecklistVersion != checklist.Version {
 			t.Errorf("%s: version %q", name, c.ChecklistVersion)
 		}
@@ -260,6 +267,7 @@ type cardSpec struct {
 	grades                    []checklist.Grade // Findings hold spec indexes as strings
 	alts                      []Alternative
 	altNote                   string
+	thin                      []checklist.Area // T3.9: areas ground dropped to unknown
 	missing                   []string
 	conflicted                []checklist.Area
 }
@@ -334,7 +342,7 @@ func build(t *testing.T, cs cardSpec) (Card, Evidence) {
 		kind = KindIOS
 	}
 	card := Card{ID: cs.cardID, Title: cs.title, Kind: kind, KindLabel: KindLabel(kind), Age: cs.age, ChecklistVersion: checklist.Version,
-		CheckedAt: collected.Add(40 * time.Second), CollectedAt: collected, Verdict: verdict, Grades: grades,
+		CheckedAt: collected.Add(40 * time.Second), CollectedAt: collected, Verdict: verdict, Grades: grades, ThinAreas: cs.thin,
 		Settings: checklist.Settings(grades), Findings: onCard, Alternatives: alts, AlternativesNote: cs.altNote, App: cs.app, Stats: stats}
 	evStats := stats
 	evStats.ConflictedAreas, evStats.JudgeCostNano, evStats.JudgeModel = []checklist.Area{}, 0, ""
@@ -450,11 +458,12 @@ func cardSpecs() []cardSpec {
 			grades: []checklist.Grade{
 				g(checklist.Contact, checklist.Unknown, "", "No source settled whether players can message each other."),
 				g(checklist.Money, checklist.OKWithSetting, "Ask to Buy (Family Sharing)", "In-app purchases are sold; Ask to Buy stops them.", "0"),
-				g(checklist.Data, checklist.Unknown, "", ""),
+				g(checklist.Data, checklist.Unknown, "", ThinReason),
 				g(checklist.AgeGating, checklist.Unknown, "", ""),
 				g(checklist.Content, checklist.Unknown, "", "No reviews were read."),
 				g(checklist.DeveloperRecord, checklist.Unknown, "", "No developer record found."),
 			},
+			thin:    []checklist.Area{checklist.Data},
 			missing: []string{"review", "reddit", "news"},
 		},
 		// User decision (T3.7): a title no signal placed is kind unknown,

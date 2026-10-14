@@ -122,6 +122,10 @@ type Card struct {
 	Verdict          checklist.Verdict `json:"verdict"`
 	// Grades holds six grades in card order.
 	Grades []checklist.Grade `json:"grades"`
+	// ThinAreas lists the areas whose grade fell to unknown because no
+	// verified quote backed the judge's reason or setting (T3.9). Omitted
+	// when empty.
+	ThinAreas []checklist.Area `json:"thin_areas,omitempty"`
 	// Settings are the settings to turn on, from ok_with_setting grades.
 	Settings []string `json:"settings"`
 	// Findings holds the findings the grades cite plus every risk finding.

@@ -148,7 +148,11 @@ type Judgement struct {
 	// ConflictErr says why that pass did not count, when it did not.
 	Conflicted  []checklist.Area
 	ConflictErr error
-	Cost        cost.Price
+	// Thin lists the areas ground dropped to unknown because no verified
+	// quote backed the reason or the setting (T3.9). The card carries it
+	// as ThinAreas.
+	Thin []checklist.Area
+	Cost cost.Price
 }
 
 // Judge grades every area for a child of age, re-judges the areas whose
@@ -207,9 +211,9 @@ func (j *Judge) Judge(ctx context.Context, title string, age int, ref string, fs
 	}
 
 	out.Grades, out.Demotions = checklist.Enforce(grades, finding.Cited(fs))
-	var thin []checklist.Demotion
-	out.Grades, thin = ground(out.Grades, fs, title)
-	out.Demotions = append(out.Demotions, thin...)
+	var grounded []checklist.Demotion
+	out.Grades, grounded, out.Thin = ground(out.Grades, fs)
+	out.Demotions = append(out.Demotions, grounded...)
 	out.Verdict, err = checklist.Decide(out.Grades)
 	if err != nil {
 		return out, fmt.Errorf("judge: %w", err)
@@ -253,64 +257,94 @@ func replace(first, second []checklist.Grade, areas []checklist.Area) []checklis
 	return out
 }
 
-// RuleThinEvidence is the demotion ground makes: a flag or ok_with_setting
-// whose reason names none of the verified findings it cites.
-const RuleThinEvidence = "reason_without_quote"
+// Demotions ground makes. Both leave the grade unknown and its area in
+// Judgement.Thin.
+const (
+	// RuleThinEvidence: a flag or ok_with_setting whose reason contains no
+	// verbatim run of any cited verified quote of a fitting stance.
+	RuleThinEvidence = "reason_without_quote"
+	// RuleSettingUnbacked: an ok_with_setting whose setting appears in no
+	// cited verified mitigation quote.
+	RuleSettingUnbacked = "setting_without_quote"
+)
 
-// ThinReason is the card reason for a grade ground dropped to unknown.
+// ThinReason is the card reason for a grade ground dropped to unknown. The
+// card's structured signal is Card.ThinAreas; this text is for the parent.
 const ThinReason = "Changed to unknown: the evidence was thin. No verified quote backs the reason the judge gave."
 
-// minShared is how many content words a reason (and, for ok_with_setting,
-// its setting) must share with a cited finding's verified quote to name it.
-const minShared = 2
+// SettingThinReason is the card reason when only the setting was unbacked.
+const SettingThinReason = "Changed to unknown: the evidence was thin. No verified quote names the setting."
 
-// ground holds every flag and ok_with_setting to the findings its reason
-// names (T3.9). Enforce has already kept only verified citations in the
-// grade's own area. A cited finding is named when it has the right stance
-// (a risk for flag; a risk or mitigation for ok_with_setting) and its
-// verified quote shares at least minShared content words with the reason (the
-// claim is the reader's paraphrase, so it does not count). The
-// grade keeps only the findings its reason names. A grade whose reason names
-// none falls to unknown with ThinReason, so its flag no longer counts toward
-// the verdict. ok, unknown, and the verdict rule are untouched. The input is
-// not modified.
-func ground(grades []checklist.Grade, fs []finding.Finding, title string) ([]checklist.Grade, []checklist.Demotion) {
+// reasonRun is how many consecutive words of a verified quote a reason must
+// carry, after normalising case and punctuation, to name that quote. At
+// least two of them must be content words, so a run of glue ("it is a
+// the") names nothing. A quote shorter than reasonRun words must appear
+// whole. settingRun is the same for a setting against a mitigation quote;
+// settings are short, so a setting of fewer words must appear whole.
+const (
+	reasonRun  = 4
+	settingRun = 3
+)
+
+// ground holds every flag and ok_with_setting to quotes it actually carries
+// (T3.9). Enforce has already kept only verified citations in the grade's
+// own area. A cited finding is named when it has a fitting stance (a risk
+// for flag; a risk or mitigation for ok_with_setting) and the reason holds
+// a verbatim run of its quote (see reasonRun). Only the verified quote
+// counts, never the reader's claim, so two shared words cannot carry a
+// grade. An ok_with_setting must also have its setting backed on its own: a
+// verbatim run of the setting (see settingRun) inside a cited mitigation
+// quote. The grade keeps only the findings that name it. A grade that fails
+// falls to unknown with its setting cleared, a demotion, and its area in
+// thin, so its flag no longer counts toward the verdict. ok, unknown, and
+// the verdict rule are untouched. The input is not modified.
+func ground(grades []checklist.Grade, fs []finding.Finding) (out []checklist.Grade, dem []checklist.Demotion, thin []checklist.Area) {
 	byID := make(map[string]finding.Finding, len(fs))
 	for _, f := range fs {
 		byID[f.ID] = f
 	}
-	skip := map[string]bool{}
-	for w := range contentWords(title, nil) {
-		skip[w] = true
-	}
-	var dem []checklist.Demotion
-	out := make([]checklist.Grade, len(grades))
+	out = make([]checklist.Grade, len(grades))
 	for i, g := range grades {
 		g.Findings = slices.Clone(g.Findings)
 		out[i] = g
 		if g.Level != checklist.Flag && g.Level != checklist.OKWithSetting {
 			continue
 		}
-		said := contentWords(g.Reason+" "+g.Setting, skip)
+		reason := normWords(g.Reason)
+		setting := normWords(g.Setting)
 		var named []string
+		reasonNamed, settingBacked := false, false
 		for _, id := range g.Findings {
 			f, ok := byID[id]
 			if !ok || f.Area != g.Area || !stanceFits(g.Level, f.Stance) {
 				continue
 			}
-			if shared(said, contentWords(f.Quote, skip)) >= minShared {
+			q := normWords(f.Quote)
+			byReason := carries(reason, q, reasonRun, 2)
+			bySetting := g.Level == checklist.OKWithSetting && f.Stance == finding.Mitigation && carries(q, setting, settingRun, -1)
+			reasonNamed = reasonNamed || byReason
+			settingBacked = settingBacked || bySetting
+			if byReason || bySetting {
 				named = append(named, id)
 			}
 		}
-		if len(named) == 0 {
-			dem = append(dem, checklist.Demotion{Area: g.Area, Rule: RuleThinEvidence, Detail: string(g.Level)})
-			g.Level, g.Setting, g.Reason = checklist.Unknown, "", ThinReason
+		rule, why := "", ""
+		switch {
+		case !reasonNamed:
+			rule, why = RuleThinEvidence, ThinReason
+		case g.Level == checklist.OKWithSetting && !settingBacked:
+			rule, why = RuleSettingUnbacked, SettingThinReason
+		}
+		if rule != "" {
+			dem = append(dem, checklist.Demotion{Area: g.Area, Rule: rule, Detail: string(g.Level)})
+			thin = append(thin, g.Area)
+			g.Level, g.Setting, g.Reason = checklist.Unknown, "", why
 			out[i] = g
 			continue
 		}
 		out[i].Findings = named
 	}
-	return out, dem
+	return out, dem, thin
 }
 
 func stanceFits(l checklist.Level, s finding.Stance) bool {
@@ -320,46 +354,67 @@ func stanceFits(l checklist.Level, s finding.Stance) bool {
 	return s == finding.Risk || s == finding.Mitigation
 }
 
-func shared(a, b map[string]bool) int {
-	n := 0
-	for w := range a {
-		if b[w] {
-			n++
+// carries reports whether text holds a run of n consecutive words of span,
+// at least minContent of them content words. A span shorter than n words
+// must appear whole, with at least one content word. minContent -1 is the
+// setting rule: settings name controls in short words ("Ask to Buy"), so a
+// run needs one word of three letters or more that is not glue.
+func carries(text, span []string, n, minContent int) bool {
+	if len(span) == 0 || len(text) == 0 {
+		return false
+	}
+	isContent := contentWord
+	if minContent < 0 {
+		minContent, isContent = 1, settingWord
+	}
+	if len(span) < n {
+		n, minContent = len(span), 1
+	}
+	for i := 0; i+n <= len(span); i++ {
+		run := span[i : i+n]
+		c := 0
+		for _, w := range run {
+			if isContent(w) {
+				c++
+			}
+		}
+		if c < minContent {
+			continue
+		}
+		for j := 0; j+n <= len(text); j++ {
+			if slices.Equal(text[j:j+n], run) {
+				return true
+			}
 		}
 	}
-	return n
+	return false
 }
 
-// stopWords are words too common in reasons and quotes to show that a
-// reason speaks to a quote.
+// stopWords are words too common to show that a run of words names a quote.
 var stopWords = map[string]bool{}
 
 func init() {
-	for _, w := range strings.Fields(`about above after again against also although among another because been before being below between both cannot could does doing down during each even every from further have having here into itself just like many more most much must only other over same several should since some such than that their them then there these they this those through under until very were what when where which while with within without would your yours
-	parent parents child children kids users user people game games play playing player players report reports reported says said app apps make makes made allow allows allowed multiple there's isn't doesn't don't can't`) {
+	for _, w := range strings.Fields(`about above after again against also although among another because been before being below between both cannot could does doing down during each even every from further have having here into itself just like many more most much must only other over same several should since some such than that their them then there these they this those through under until very were what when where which while with within without would your yours dont doesnt isnt cant`) {
 		stopWords[w] = true
 	}
 }
 
-// contentWords returns the stems of the words in s that carry meaning: four
-// letters or more, not a stop word or in skip, cut to five letters so
-// "message" and "messages" meet.
-func contentWords(s string, skip map[string]bool) map[string]bool {
-	out := map[string]bool{}
-	for _, w := range strings.FieldsFunc(strings.ToLower(s), func(r rune) bool {
-		return !unicode.IsLetter(r) && !unicode.IsDigit(r) && r != '\''
-	}) {
-		w = strings.Trim(w, "'")
-		r := []rune(w)
-		if len(r) < 4 || stopWords[w] {
-			continue
-		}
-		if len(r) > 5 {
-			r = r[:5]
-		}
-		if st := string(r); !skip[st] {
-			out[st] = true
-		}
-	}
-	return out
+func settingWord(w string) bool {
+	return len([]rune(w)) >= 3 && !stopWords[w] && !settingGlue[w]
+}
+
+// settingGlue are short words a setting shares with any sentence.
+var settingGlue = map[string]bool{"the": true, "and": true, "for": true, "you": true, "can": true, "off": true, "all": true, "any": true, "are": true, "has": true, "not": true, "out": true, "use": true, "turn": true}
+
+func contentWord(w string) bool {
+	return len([]rune(w)) >= 4 && !stopWords[w]
+}
+
+// normWords lowercases s, drops apostrophes, and splits it into words of
+// letters and digits.
+func normWords(s string) []string {
+	s = strings.NewReplacer("'", "", "’", "", "‘", "").Replace(strings.ToLower(s))
+	return strings.FieldsFunc(s, func(r rune) bool {
+		return !unicode.IsLetter(r) && !unicode.IsDigit(r)
+	})
 }

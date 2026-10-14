@@ -314,6 +314,7 @@ func (p *Pipeline) Decide(ctx context.Context, ev Evidence, age int, ref string)
 		CollectedAt:      ev.CollectedAt,
 		Verdict:          j.Verdict,
 		Grades:           j.Grades,
+		ThinAreas:        j.Thin,
 		Settings:         checklist.Settings(j.Grades),
 		Findings:         cited(ev.Findings, j.Grades),
 		Alternatives:     []Alternative{},
