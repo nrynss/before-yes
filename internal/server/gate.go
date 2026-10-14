@@ -148,10 +148,16 @@ func (s *Server) liveSwitch(flags flag.Store, live flag.Bool, next http.Handler)
 		on, _, err := flags.Bool(r.Context(), live)
 		if err != nil {
 			s.log().Error("read live switch", "err", err)
-			wire.WriteError(w, http.StatusServiceUnavailable, CodeLiveChecksOff, liveOffMessage, nil)
-			return
+			on = false
 		}
 		if !on {
+			// Live is off. A request that would join a running check goes
+			// through marked join-only: the handler joins it or refuses it
+			// under its lock, and never starts a new check (T4.6).
+			if s.joinsRunning(r, body) {
+				next.ServeHTTP(w, r.WithContext(withJoinOnly(r.Context())))
+				return
+			}
 			wire.WriteError(w, http.StatusServiceUnavailable, CodeLiveChecksOff, liveOffMessage, nil)
 			return
 		}
@@ -176,4 +182,18 @@ func (s *Server) cachedOrInvalid(ctx context.Context, body []byte) bool {
 	}
 	cid, ok, err := s.CardCache.Fresh(ctx, req.Title, req.Age)
 	return err == nil && ok && strings.TrimSpace(cid) != ""
+}
+
+// joinsRunning reports whether the check handler would join a running
+// check for this body (docs/api.md step 4, before live_checks_off; T4.6).
+func (s *Server) joinsRunning(r *http.Request, body []byte) bool {
+	var req pipeline.Request
+	if err := json.NewDecoder(bytes.NewReader(body)).Decode(&req); err != nil {
+		return false
+	}
+	req, err := req.Normalize()
+	if err != nil {
+		return false
+	}
+	return s.joinable(r, req.Title, req.Age)
 }
