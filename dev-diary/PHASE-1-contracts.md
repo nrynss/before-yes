@@ -120,6 +120,14 @@ The parser accepts a JSON object with a `findings` array, a bare array, or eithe
 | L1 | Each end of a match must touch the text's edge, whitespace, or a punctuation rune in the text beside a word rune in the quote. A quote that starts or ends with punctuation can no longer begin or end inside a token ("-safe" in "un-safe"). Underscore is a word rune ("safe" in "filter_safe"). | `TestWordBoundariesRound2` |
 | L2 | The round-1 reason for the pin was wrong. **Corrected:** the graph already requires `golang.org/x/sync v0.22.0`, and every `x/text` up to v0.41.0 requires sync v0.22.0 or older (checked against the proxy's `.mod` files), so none of them bumps anything. v0.42.0 needs sync v0.23.0. The pin is now **v0.41.0**, the newest version that changes no other requirement. Only the `golang.org/x/text` line in `go.mod` and its `go.sum` lines change. | `git diff main -- go.mod` |
 | T1.3 round 2 L1 | The `Source.Kind` vocabulary comment (`article`, `store` added) is now made here in T1.2, which owns `internal/finding/`, rather than on T1.3's branch. Comment only. | `git diff task-t1.2-finding task-t1.3-payloads -- internal/finding` is empty after the merge |
+
+**Remediation, round 3** ([review](adversarial-review/t1.2-round3.md)). The boundary rule is now one rule: a cut is refused only when the runes on both sides of it belong to one word.
+
+| Finding | Fix | Test |
+|---|---|---|
+| H1 | A hyphen with a word rune on each side is part of the word, as the apostrophe already was. "safe for young kids" no longer verifies in "un-safe", nor "violent content" in "non-violent", including U+2011. **Decision:** `Normalize` folds every dash (U+2010–U+2015, minus sign) to `-`, so an en or em dash written between two letters with no spaces also joins them. At worst that is a false negative (a quote cut at "word—word" is refused), never a false match. A spaced dash (" - ") is still a boundary. | `TestWordBoundaryTable` |
+| M1 | A cut with punctuation on both sides is allowed. "the chat is totally filtered." now verifies in `(…filtered.)`, in `"…filtered."` (straight or curly), and before "...!". | `TestWordBoundaryTable` |
+| table | One 25-case table covers hyphens (straight, U+2011, en dash), punctuation edges, and every earlier rule (prefix, apostrophe, underscore, digits, later whole-word occurrence, possessive). The round-1 and round-2 tests still pass. | `TestWordBoundaryTable`, `TestWordBoundaries`, `TestWordBoundariesRound2` |
 ---
 
 ### T1.3: Evidence and card payloads ★

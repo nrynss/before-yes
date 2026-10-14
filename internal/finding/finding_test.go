@@ -251,3 +251,48 @@ func TestWordBoundariesRound2(t *testing.T) {
 		}
 	}
 }
+
+// T1.2 round 3: hyphens join words; punctuation beside punctuation is a fine
+// cut. One broad table so boundary rules are pinned together.
+func TestWordBoundaryTable(t *testing.T) {
+	cases := []struct {
+		text, quote string
+		want        bool
+	}{
+		// hyphen joins (H1)
+		{"This chat is un-safe for young kids.", "safe for young kids", false},
+		{"This chat is un-safe for young kids.", "-safe for young kids", false},
+		{"This chat is un-safe for young kids.", "un-safe for young kids", true},
+		{"Only non-violent content for little kids", "violent content for little kids", false},
+		{"Only non\u2011violent content for little kids", "violent content for little kids", false},
+		{"Only non\u2011violent content for little kids", "non-violent content for little kids", true},
+		{"Only non\u2013violent content for little kids", "violent content for little kids", false},
+		{"the chat is safe - mostly for older kids", "mostly for older kids", true},
+		{"the chat is safe - mostly for older kids", "the chat is safe", true},
+		{"a well-known chat filter problem", "well-known chat filter", true},
+		{"a well-known chat filter problem", "known chat filter problem", false},
+		// punctuation at the edges (M1)
+		{"(the chat is totally filtered.)", "the chat is totally filtered.", true},
+		{"She said \"the chat is totally filtered.\"", "the chat is totally filtered.", true},
+		{"She said \u201cthe chat is totally filtered.\u201d", "\"the chat is totally filtered.\"", true},
+		{"the chat is totally filtered...!", "the chat is totally filtered.", true},
+		{"[the chat is totally filtered], she wrote", "[the chat is totally filtered]", true},
+		{"filtered.chat is totally open", "chat is totally open", true},
+		// earlier rules still hold
+		{"This game is unsafe for young kids", "safe for young kids", false},
+		{"Parents say strangers can\u2019t message my kid", "Parents say strangers can", false},
+		{"Parents say strangers can't message my kid", "strangers can't message", true},
+		{"This is filter_safe for young kids", "safe for young kids", false},
+		{"100% safe for little kids", "00% safe for little kids", false},
+		{"100% safe for little kids", "100% safe for little kids", true},
+		{"it is unsafe for kids. it is safe for kids at home", "safe for kids at home", true},
+		{"kids' chat is open to anyone", "kids' chat is open", true},
+	}
+	for _, c := range cases {
+		s := map[string]Segment{"D1": {Text: c.text, Source: Source{URL: "u"}}}
+		fs, _ := Verify([]Raw{{Ref: "D1", Area: "contact", Stance: "risk", Quote: c.quote}}, s)
+		if (len(fs) == 1) != c.want {
+			t.Errorf("%q in %q: verified=%v, want %v", c.quote, c.text, len(fs) == 1, c.want)
+		}
+	}
+}
