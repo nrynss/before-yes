@@ -151,7 +151,7 @@ requires:   T2.3
 fixture-ok: no
 size:       XS · light
 owns:       internal/appstore/live_test.go
-status:     in-review
+status:     done
 ```
 Search and read all pages for one title in `us` and one other storefront. Record how many reviews each storefront serves. This answers the brief's open question about which countries to read.
 

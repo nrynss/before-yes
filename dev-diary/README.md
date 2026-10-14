@@ -98,7 +98,7 @@ P0 and P1 are the serial bottleneck. Once the contracts freeze, four tracks run 
 
 | Track | Phase | Network required? | First task | Notes |
 |---|---|---|---|---|
-| **A: Clients** | P2 | 7 / 10 | T2.1, T2.1a, T2.1b, T2.2, T2.2b, T2.3 and T2.4 are done. T2.3b got REMEDIATE: Apple's review feed is returning no reviews (H1, the user's decision). T2.1c, the model timeout, and T2.5 are not started. |
+| **A: Clients** | P2 | `b` tasks only | T2.1 | Model, Tavily and App Store clients, the meter and budgets. Progress is on the status board. |
 | **B: Pipeline** | P3 | `b` tasks only | T3.1 | Gather, read, judge, alternatives. The product's depth lives here. |
 | **C: Server** | P4 | No | T4.1 | Jobs, progress stream, card store, gate. |
 | **D: Frontend** | P5 | No | T5.1 | Chaaya app against the example payloads from T1.3. |
@@ -180,7 +180,7 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 |---|---|---|
 | P0 | 9 / 9 | Done. Two exit criteria wait on later tasks: a live Nano call (T2.1b) and the config check (T4.4). CI is green. |
 | P1 | 4 / 4 | Done. The `job.Failure` exit criterion waits on T4.1. The main-checkout pins and `.env` leak check, waived at landing, ran at the P1–P2 integration and passed. |
-| P2 | 5 / 9 | T2.1, T2.1a, T2.2, T2.3 and T2.4 are done. T2.1b (in review), T2.2b and T2.3b are implemented on OpenCode's branches, not yet reviewed or landed. T2.5 is not started. |
+| P2 | 8 / 10 | T2.1, T2.1a, T2.1b, T2.2, T2.2b, T2.3, T2.3b and T2.4 are done. T2.1c, the model timeout, and T2.5 are not started. |
 | P3 | 0 / 10 | Not started. T3.1–T3.4 drafted. |
 | P4 | 0 / 5 | Not started. T4.1, T4.2 and T4.4 drafted. |
 | P5 | 0 / 7 | Not started. |
@@ -192,8 +192,14 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 
 Newest first. One entry per closed task, finding, or split.
 
+- **T2.3b closed.** Reviews: [round 1](adversarial-review/t2.3b-round1.md) (Sonnet, REMEDIATE: H 1, M 3, L 1), [round 2](adversarial-review/t2.3b-round2.md) (a fresh Sonnet reviewer, REMEDIATE: L 2), and [round 3](adversarial-review/t2.3b-round3.md) (a fresh Sonnet reviewer, APPROVE, zero residue). A fresh Sonnet remediator ran after each REMEDIATE.
+  - **What the probe shows:** the search half works (us 3 hits, gb 5 for Roblox). The review feed is dark in both storefronts, so the probe FAILs loudly and every audit prints "not run". The transcript is at [`live/t2.3b-transcript.txt`](live/t2.3b-transcript.txt). It needs no key and spends no credits.
+  - **Still passes on a populated feed:** reviewers in rounds 2 and 3 each pointed the probe at a local server serving the T0.4 Roblox fixtures. It read 500 reviews in 10 pages per storefront, and the raw-body pin compared. Both reverted the edit.
+  - **Unconfirmed while the feed is dark:** the single-entry page shape, the countries question and the field audit. The PHASE-2 block lists them. T3.8a and T3.8 stand in for the feed.
+  - **Orchestrator documentation fix:** dates were removed from the handoff log and the T2.2b transcript (`Date:` headers withheld).
+  - OpenCode's `task-t2.3b-appstore-live` branch and worktree are superseded by `main`. They are OpenCode's to remove.
 - **Apple's review feed is dark; store-page fallback chosen; scratch draft moved to `draft/scratch`.**
-  - **The feed** returns HTTP 200 with no entries for every app tried, Facebook as a control included. That holds from this machine at two probes about 40 minutes apart, and from the Hetzner box (167.233.247.107), so it is not throttling of one host.
+  - **The feed** returns HTTP 200 with no entries for every app tried, Facebook as a control included. That holds from this machine in two probes, and from the Hetzner box (167.233.247.107), so it is not throttling of one host.
   - **The user chose a fallback:** extract the title's App Store web page through Tavily (T3.8a captures it, T3.8 parses it). The feed stays first in T3.1's plan in case it returns. The 500-review T0.4 fixtures still drive offline work and the demo cards.
   - **T2.3b** stays at REMEDIATE. Its probe needs to fail loudly on an empty feed (M4) and record the dark-feed result.
   - **The scratch draft:** 10 draft files are now on the `draft/scratch` branch on GitHub, so remote sessions such as Grok can claim them. Local copies were checked byte for byte against the branch and removed. The superseded `internal/finding` draft stays local only. The claim rule above is rewritten as a pushed deletion.
