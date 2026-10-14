@@ -317,13 +317,13 @@ func TestSelfInAnyFormSkipped(t *testing.T) {
 // stand-in.
 func TestListPageEntries(t *testing.T) {
 	list := "Looking for something calmer?\n" +
-		"## 1. Calm Builder\nA gentle building game.\n" +
-		"## 2. Roblox\nThe title itself, skipped.\n" +
-		"3) Quiet Garden - grow plants, no chat\n" +
-		"4. This entry reads like a long sentence about many different things at once\n" +
-		"5. Animal Crossing: New Horizons (Switch)\n" +
-		"6. Sixth Pick\n"
-	got := listNames(list, func(n string) bool { return sameTitle(n, "Roblox") })
+		"## 1. **Calm Builder**\nA gentle building game.\n" +
+		"## 2. **Roblox**\nThe title itself, skipped.\n" +
+		"3) [Quiet Garden](https://example.com/qg) - grow plants, no chat\n" +
+		"4. **This entry reads like a long sentence about many things**\n" +
+		"5. **Animal Crossing: New Horizons** (Switch)\n" +
+		"6. **Sixth Pick**\n"
+	got := listNames(list, func(n string) bool { return sameTitle(n, "Roblox") }, nil)
 	if strings.Join(got, "|") != "Calm Builder|Quiet Garden|Animal Crossing: New Horizons" {
 		t.Errorf("listNames = %q", got)
 	}
@@ -352,18 +352,57 @@ func TestListPageEntries(t *testing.T) {
 // itself take no slot, and markdown is stripped from names.
 func TestListPageRejectsHeadingsAndSteps(t *testing.T) {
 	notRoblox := func(n string) bool { return sameTitle(n, "Roblox") }
-	cases := []struct{ page, want string }{
+	knownSet := func(names ...string) func(string) bool {
+		return func(n string) bool {
+			for _, k := range names {
+				if appName(k) == appName(n) {
+					return true
+				}
+			}
+			return false
+		}
+	}
+	cases := []struct {
+		page  string
+		known func(string) bool
+		want  string
+	}{
 		{"## Why parents worry about Roblox\n## Our top picks\n1. **Minecraft**\n2. [Toca Life World](https://example.com/toca)\n3. Lego Builder\n## Conclusion\n",
-			"Minecraft|Toca Life World|Lego Builder"},
-		{"## How we chose\n## 1. Minecraft\n## 2. Toca\n", "Minecraft|Toca"},
-		{"1. Turn on parental controls\n2. Set a spending limit\n3. Talk to your kid\n", ""},
-		{"## FAQ\n1. Is Minecraft safe?\n## Top Picks for 2026\n## Best overall\n", ""},
-		{"1. Roblox\n2. *Minecraft*.\n3. Minecraft\n4. `Toca Boca World`\n## **Lego Builder**\n5. Sky\n", "Minecraft|Toca Boca World|Lego Builder"},
+			knownSet("Lego Builder"), "Minecraft|Toca Life World|Lego Builder"},
+		{"## How we chose\n## 1. Minecraft\n## 2. Toca\n", knownSet("Minecraft", "Toca"), "Minecraft|Toca"},
+		{"## How we chose\n## 1. Minecraft\n## 2. Toca\n", nil, ""},
+		{"1. Turn on parental controls\n2. Set a spending limit\n3. Talk to your kid\n", nil, ""},
+		{"1. Download the app\n2. Open settings\n3. Disable chat\n", nil, ""},
+		{"## FAQ\n1. **Is Minecraft safe?**\n## Top Picks for 2026\n## Best overall\n", nil, ""},
+		{"1. **Roblox**\n2. *Minecraft*.\n3. **Minecraft**\n4. [`Toca Boca World`](u)\n## **Lego Builder**\n5. **Sky**\n", nil, "Minecraft|Toca Boca World|Lego Builder"},
+		{"1. **Stop Motion Studio**\n2. [Read Along by Google](u)\n3. **Pick a Path** - stories\n4. **Top Eleven**\n", nil, "Stop Motion Studio|Read Along by Google|Pick a Path"},
+		{"## **Top Eleven**\n1. **download the app**\n", nil, "Top Eleven"},
 	}
 	for _, c := range cases {
-		if got := strings.Join(listNames(c.page, notRoblox), "|"); got != c.want {
+		if got := strings.Join(listNames(c.page, notRoblox, c.known), "|"); got != c.want {
 			t.Errorf("listNames(%q) = %q, want %q", c.page, got, c.want)
 		}
+	}
+}
+
+// A plain ranked entry counts when the same search response has a hit
+// titled with that name.
+func TestListEntryCorroboratedBySearch(t *testing.T) {
+	e, s, _, card := altE2E(t)
+	s.hits = []tavily.Result{
+		{URL: "https://www.example.com/list", Title: "Best Games Like Roblox", RawContent: "1. Download the app\n2. **Minecraft**\n3. Lego Builder\n4. Open settings\n"},
+		{URL: "https://play.google.com/store/apps/details?id=lego", Title: "Lego Builder - Apps on Google Play"},
+	}
+	pending, err := e.p.FindAlternatives(context.Background(), card, "check-1")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var names []string
+	for _, a := range pending {
+		names = append(names, a.Title)
+	}
+	if strings.Join(names, ",") != "Minecraft,Lego Builder" {
+		t.Errorf("candidates %v", names)
 	}
 }
 

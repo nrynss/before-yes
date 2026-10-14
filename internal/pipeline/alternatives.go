@@ -92,8 +92,10 @@ var (
 	// markedHeading is an unnumbered heading that is only a link or bold
 	// text, the way list pages mark an entry: "## [Lego Builder](url)".
 	markedHeading = regexp.MustCompile(`(?m)^[ \t]*#{2,4}[ \t]+(\*\*[^*]+\*\*|\[[^\]]+\]\([^)]*\))[ \t]*$`)
-	// notAName is the start of a section heading or an advice step.
-	notAName = regexp.MustCompile(`(?i)^(why|how|what|when|where|who|which|our|top|best|the best|conclusion|faq|faqs|final|summary|verdict|bottom line|related|more|other|frequently|tips?|step|methodology|turn|set|talk|make|use|check|keep|limit|block|enable|disable|review|read|try|consider|avoid|create|choose|pick|ask|watch|learn|get|go|find|look|start|stop|don't|do|is|are|can|should|will)\b`)
+	// markedLead is a name marked as a title at the start of an entry: a
+	// bold span or a link, as list pages mark each pick ("**Minecraft** -
+	// great for builders", "[Toca Life World](url)", "[**Toca**](url)").
+	markedLead = regexp.MustCompile(`^(?:\*\*([^*]+)\*\*|__([^_]+)__|\[([^\]]+)\]\([^)]*\))`)
 	// mdLink, mdEmph and mdCode are markdown around an entry's name.
 	mdLink = regexp.MustCompile(`\[([^\]]*)\]\([^)]*\)`)
 	mdEmph = regexp.MustCompile(`\*{1,2}([^*]+)\*{1,2}|__([^_]+)__`)
@@ -119,6 +121,17 @@ func cleanName(s string) string {
 // list rather than one title: "Toca Life World App Review | Common Sense
 // Media" names "Toca Life World"; "10 Best Games Like Roblox" names none.
 func candidateName(hitTitle string) string {
+	name := siteName(hitTitle)
+	if name == "" || listicle.MatchString(name) {
+		return ""
+	}
+	return name
+}
+
+// siteName is a page title with invisible characters and known site
+// suffixes removed. A list entry uses it without the list-title check, so a
+// marked "Top Eleven" stays a name.
+func siteName(hitTitle string) string {
 	name := cleanName(hitTitle)
 	for {
 		cut := strings.TrimSpace(siteSuffix.ReplaceAllString(name, ""))
@@ -126,9 +139,6 @@ func candidateName(hitTitle string) string {
 			break
 		}
 		name = cut
-	}
-	if name == "" || listicle.MatchString(name) {
-		return ""
 	}
 	return name
 }
@@ -143,13 +153,16 @@ func stripMarkdown(s string) string {
 	return strings.TrimRight(strings.TrimSpace(s), ".,;:!*_ ")
 }
 
-// listNames are the titles a list page names, in page order: its ranked
-// entries ("1. Minecraft") and headings that are only a link or bold text.
-// Section headings, questions, advice steps and anything over six words are
-// not names. Repeats on the page and names skip rejects (the title itself,
-// names already taken) are dropped before the bound is applied, so they
-// use no slot; at most maxListEntries are returned.
-func listNames(text string, skip func(string) bool) []string {
+// listNames are the titles a list page names, in page order. An entry is a
+// ranked line ("1. X", "## 1. X") or a heading that is only a link or bold
+// text, and it counts only with a positive title signal: its name is marked
+// as a link or bold span, or the same search response has a hit titled with
+// that name (known). A plain "1. Download the app" has neither, so it is no
+// candidate. Questions and names over six words are dropped too. Repeats on
+// the page and names skip rejects (the title itself, names already taken)
+// are dropped before the bound is applied, so they use no slot; at most
+// maxListEntries are returned.
+func listNames(text string, skip, known func(string) bool) []string {
 	type at struct {
 		pos  int
 		text string
@@ -164,12 +177,20 @@ func listNames(text string, skip func(string) bool) []string {
 	var out []string
 	own := map[string]bool{}
 	for _, e := range entries {
-		entry := stripMarkdown(e.text)
+		raw := strings.TrimSpace(e.text)
+		marked := false
+		if m := markedLead.FindStringSubmatch(raw); m != nil {
+			raw, marked = m[1]+m[2]+m[3], true
+		}
+		entry := stripMarkdown(raw)
 		entry, _, _ = strings.Cut(entry, " - ")
 		entry, _, _ = strings.Cut(entry, " – ")
 		entry, _, _ = strings.Cut(entry, " (")
-		name := stripMarkdown(candidateName(entry))
-		if name == "" || strings.ContainsAny(name, "?") || notAName.MatchString(name) || len(strings.Fields(name)) > 6 {
+		name := stripMarkdown(siteName(entry))
+		if !plausibleName(name) {
+			continue
+		}
+		if !marked && (known == nil || !known(name)) {
 			continue
 		}
 		if own[appName(name)] || (skip != nil && skip(name)) {
@@ -182,6 +203,17 @@ func listNames(text string, skip func(string) bool) []string {
 		}
 	}
 	return out
+}
+
+// plausibleName is the cheap check, with no call, that a name could be a
+// title before it costs a Collect: not empty, not a question, at most six
+// words, and starting with a capital letter or a digit.
+func plausibleName(name string) bool {
+	if name == "" || strings.Contains(name, "?") || len(strings.Fields(name)) > 6 {
+		return false
+	}
+	r := []rune(name)[0]
+	return unicode.IsUpper(r) || unicode.IsDigit(r)
 }
 
 // sameTitle reports whether a hit is about the title itself in any form:
@@ -227,6 +259,15 @@ func (p *Pipeline) FindAlternatives(ctx context.Context, card Card, ref string) 
 		out = append(out, Alternative{Title: name, Reason: reason, Status: AltPending})
 		return len(out) == MaxAlternatives
 	}
+	// titled is every single-title name in this response, for list entries
+	// with no markup to be corroborated by.
+	titled := map[string]bool{}
+	for _, h := range hits {
+		if name := candidateName(h.Title); name != "" {
+			titled[appName(name)] = true
+		}
+	}
+	known := func(name string) bool { return titled[appName(name)] }
 	for _, h := range hits {
 		site := registrable(h.URL)
 		if name := candidateName(h.Title); name != "" {
@@ -243,7 +284,7 @@ func (p *Pipeline) FindAlternatives(ctx context.Context, card Card, ref string) 
 			text = h.Content
 		}
 		full := false
-		for _, name := range listNames(text, taken) {
+		for _, name := range listNames(text, taken, known) {
 			if full = add(name, "Listed by "+site+": "+cleanName(h.Title)); full {
 				break
 			}

@@ -246,6 +246,13 @@ Alternatives multiply cost. They are bounded by count, run after the main card i
 | L1: markdown kept in names | `stripMarkdown` removes links, bold, italics, code, heading marks and trailing punctuation | `TestStripMarkdown` |
 | L2: the 3-slot bound applied before the self and duplicate skips | `listNames` drops the title, names already taken and repeats on the page before counting | `TestListPageEntries`, `TestListPageRejectsHeadingsAndSteps` |
 
+**Round-3 remediation (T3.5).**
+
+| Finding | Fix | Test |
+|---|---|---|
+| M1: advice steps not on the stoplist ("1. Download the app") became candidates | The stoplist is gone. A list entry needs a positive title signal: its name is marked as a bold span or link (or the heading is only one), or the same search response has a hit titled with that name. Before any `Collect`, a check with no call (`plausibleName`) drops empty names, questions, names over six words and names not starting with a capital or digit | `TestListPageRejectsHeadingsAndSteps`, `TestListEntryCorroboratedBySearch` |
+| L1: real titles starting with Stop/Read/Pick/Top were dropped | With no stoplist, and list entries skipping the list-title check (`siteName`), marked "Stop Motion Studio", "Read Along by Google", "Pick a Path" and "Top Eleven" are kept | `TestListPageRejectsHeadingsAndSteps` |
+
 ---
 
 ### T3.6: Quality pass on the three titles ★
