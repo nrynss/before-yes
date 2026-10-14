@@ -52,7 +52,8 @@ type Doc struct {
 // shape are hashed into the key on their own; see pipeline.ReaderVersion.)
 // plan-3: round-2 error-page, host and link rules.
 // plan-4: the App Store page stands in for an empty review feed (T3.8).
-const PlanVersion = "plan-4"
+// plan-5: the plan depends on the kind of title (T3.7).
+const PlanVersion = "plan-5"
 
 // Source kinds a plan query or the store step fills. A kind with no usable
 // document is reported in Gathered.Missing, for the card's small print.
@@ -150,6 +151,9 @@ type Gathered struct {
 	// missing because a call failed may be there next time, so the
 	// pipeline does not cache such evidence.
 	Failures []string
+	// Kind is the kind of title (T3.7): KindIOS when the App Store
+	// matched, else what DetectKind read off the policy and rating hits.
+	Kind Kind
 	// ReviewSource says where the reviews came from: ReviewsFromFeed,
 	// ReviewsFromPage when the feed returned nothing and the App Store web
 	// page stood in (T3.8), or empty when there are none.
@@ -211,23 +215,17 @@ func (g *Gatherer) Gather(ctx context.Context, title, ref string) (Gathered, err
 	}
 
 	// 2. Policy first. With no host yet, its hits name one: a hit whose
-	// domain is the developer's or the title's own name.
-	plan := Plan(title, out.Host)
+	// domain is the developer's or the title's own name. The policy hits
+	// can also settle the App Store listing.
 	hits := map[string][]tavily.Result{}
-	for i, q := range plan {
+	run := func(q Query) error {
 		if err := ctx.Err(); err != nil {
-			return out, err
-		}
-		if q.Kind == KindTerms && out.Host != "" && len(q.Search.IncludeDomains) == 0 {
-			// The host was found from the policy hits after the plan was
-			// drawn, so the terms search is narrowed now.
-			q.Search.IncludeDomains = []string{out.Host}
-			plan[i] = q
+			return err
 		}
 		res, used, err := g.search(ctx, ref, q.Search)
 		out.Credits += used
 		if err != nil {
-			return out, fmt.Errorf("gather: %s search: %w", q.Name, err)
+			return fmt.Errorf("gather: %s search: %w", q.Name, err)
 		}
 		hits[q.Name] = res
 		if q.Kind == KindPolicy && out.Host == "" {
@@ -237,6 +235,45 @@ func (g *Gatherer) Gather(ctx context.Context, title, ref string) (Gathered, err
 					out.App = a
 				}
 			}
+		}
+		return nil
+	}
+	base := Plan(title, out.Host)
+	if err := run(base[0]); err != nil {
+		return out, err
+	}
+
+	// The kind (T3.7). A title the App Store matched is iOS. Otherwise the
+	// rating search runs next and its hits, with the policy hits, decide.
+	out.Kind = KindIOS
+	if out.App == nil {
+		for _, q := range base {
+			if q.Name == "rating" {
+				if err := run(q); err != nil {
+					return out, err
+				}
+			}
+		}
+		out.Kind = DetectKind(title, append(append([]tavily.Result{}, hits["policy"]...), hits["rating"]...))
+	}
+	plan := PlanFor(out.Kind, title, out.Host)
+	for i, q := range plan {
+		if _, done := hits[q.Name]; done {
+			continue
+		}
+		if q.Kind == KindTerms && out.Host != "" && len(q.Search.IncludeDomains) == 0 {
+			// The host was found from the policy hits after the plan was
+			// drawn, so the terms search is narrowed now.
+			q.Search.IncludeDomains = []string{out.Host}
+			plan[i] = q
+		}
+		if err := run(q); err != nil {
+			return out, err
+		}
+	}
+	if out.Kind == KindAndroid {
+		for name, hs := range hits {
+			hits[name] = dropPlayStore(hs)
 		}
 	}
 
