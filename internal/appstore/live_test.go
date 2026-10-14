@@ -155,8 +155,8 @@ func probeCountry(t *testing.T, ctx context.Context, country string) *countryPro
 	// An empty first page is not a client error (the client returns no
 	// reviews and no error), but it is a failed probe: the probe exists to
 	// measure what the feed serves, and an empty feed measures nothing. On
-	// 14 Oct 2026 the feed returned HTTP 200 with no entry for every app
-	// tried, including a control; see the T2.3b block in PHASE-2-clients.md.
+	// the feed went dark: HTTP 200 with no entry for every app tried,
+	// including a control; see the T2.3b block in PHASE-2-clients.md.
 	pages := rec.exchanges()[len(search):]
 	audit := logReviews(t, country, pages, reviews)
 	if len(reviews) == 0 {
@@ -309,7 +309,7 @@ func logReviews(t *testing.T, country string, pages []exchange, reviews []Review
 		if len(shape.entries) == 0 {
 			empties = append(empties, fmt.Sprintf("page %d (%s)", page, shape.shape))
 		}
-		t.Logf("live reviews %s: page %d: entry %s, %d review(s), HTTP %d, %s, %s, feed updated %s",
+		t.Logf("live reviews %s: page %d: entry %s, %d review(s), HTTP %d, %s, %s, feed updated stamp %s",
 			country, page, shape.shape, onPage, ex.status, ex.took.Round(time.Millisecond), bytesLabel(len(ex.body)), feedUpdated(ex.body))
 	}
 	t.Logf("live reviews %s: %d page request(s) in %s total: %s", country, len(pages), total.Round(time.Millisecond), strings.Join(shapes, " "))
@@ -347,10 +347,18 @@ func logReviews(t *testing.T, country string, pages []exchange, reviews []Review
 	} else {
 		t.Logf("live reviews %s: %s", country, audit.summary())
 	}
-	t.Logf("live reviews %s: entry members seen: %s", country, memberList(audit.members))
+	if audit.entries == 0 {
+		t.Logf("live reviews %s: entry members seen: not run (feed empty)", country)
+	} else {
+		t.Logf("live reviews %s: entry members seen: %s", country, memberList(audit.members))
+	}
 	t.Logf("live reviews %s: %d review ids read, %d unique", country, len(ids), unique(ids))
-	t.Logf("live reviews %s: sortby=mostrecent: %d out-of-order adjacent pair(s) in %d",
-		country, inversions(times), len(times)-1)
+	if len(times) == 0 {
+		t.Logf("live reviews %s: sortby=mostrecent: not run (feed empty)", country)
+	} else {
+		t.Logf("live reviews %s: sortby=mostrecent: %d out-of-order adjacent pair(s) in %d",
+			country, inversions(times), len(times)-1)
+	}
 	if len(reviews) > 0 {
 		first, last := reviews[0], reviews[len(reviews)-1]
 		t.Logf("live reviews %s: index %d first: id %s, rating %d, updated %s", country, first.Index, first.ID, first.Rating, stamp(first.Updated))
@@ -431,8 +439,12 @@ func compareStorefronts(t *testing.T, us, gb *countryProbe) {
 	if len(gb.reviews) > 0 {
 		pct = float64(shared) * 100 / float64(len(gb.reviews))
 	}
-	t.Logf("review ids in both us and gb: %d of %d gb reviews (%.1f%%), of %d us reviews",
-		shared, len(gb.reviews), pct, len(us.reviews))
+	if len(us.reviews) == 0 || len(gb.reviews) == 0 {
+		t.Logf("review ids in both us and gb: not run (feed empty)")
+	} else {
+		t.Logf("review ids in both us and gb: %d of %d gb reviews (%.1f%%), of %d us reviews",
+			shared, len(gb.reviews), pct, len(us.reviews))
+	}
 	t.Logf("review window: us %s; gb %s", span(us.reviews), span(gb.reviews))
 }
 
@@ -637,8 +649,8 @@ func uaLabel(ua string) string {
 	return strconv.Quote(ua)
 }
 
-// feedUpdated reads the feed skeleton's updated stamp. A stamp near now shows
-// the response is generated live, not a stale cached page.
+// feedUpdated reports whether the feed skeleton carries an updated stamp. It
+// never returns the stamp itself.
 func feedUpdated(body []byte) string {
 	var out struct {
 		Feed struct {
@@ -648,9 +660,9 @@ func feedUpdated(body []byte) string {
 		} `json:"feed"`
 	}
 	if err := json.Unmarshal(body, &out); err != nil || out.Feed.Updated.Label == "" {
-		return "unknown"
+		return "absent"
 	}
-	return out.Feed.Updated.Label
+	return "present"
 }
 
 func trackID(hit map[string]json.RawMessage) int64 {
