@@ -206,7 +206,7 @@ The card cites the findings its grades rest on, plus every risk finding, so a pa
 requires:   T3.4
 fixture-ok: yes
 size:       L · frontier
-owns:       internal/pipeline/alternatives.go, internal/pipeline/alternatives_test.go
+owns:       internal/pipeline/alternatives.go, internal/pipeline/alternatives_test.go, plus its hook in internal/pipeline/pipeline.go and an additive card field in internal/pipeline/types.go
 status:     not-started
 ```
 The brief: safer alternatives, found with Tavily and checked the same way. Tavily is load-bearing twice, gathering evidence and finding alternatives, which is the case for the Best Use of Tavily award.
@@ -292,10 +292,10 @@ If a demo title lands on a different verdict from T0.5's expectation, the eviden
 
 ### T3.7: Kinds of title
 ```yaml
-requires:   T3.1
+requires:   T3.1, T3.8
 fixture-ok: yes
 size:       M · frontier
-owns:       internal/pipeline/kind.go, internal/pipeline/kind_test.go
+owns:       internal/pipeline/kind.go, internal/pipeline/kind_test.go, plus the plan change in internal/pipeline/gather.go and an additive card field in internal/pipeline/types.go
 status:     not-started
 ```
 The brief names four kinds: iOS app or game, Android-only app or game, console or PC game, YouTube channel. Detect the kind from the App Store result and the rating search, and adjust the plan:
@@ -334,7 +334,7 @@ Inspect the result and report: how many reviews the page shows, whether each rev
 requires:   T3.8a, T3.1, T1.2
 fixture-ok: yes
 size:       M · frontier
-owns:       internal/pipeline/storepage.go, internal/pipeline/storepage_test.go
+owns:       internal/pipeline/storepage.go, internal/pipeline/storepage_test.go, plus the empty-feed fallback in internal/pipeline/gather.go and an additive source field in internal/pipeline/types.go
 status:     not-started
 ```
 Turn the extracted App Store page into review documents the reader can quote, one per review. Each document keeps its position on the page, so a card can cite "App Store review 3". Each carries kind `review` and the page URL as its source. Never invent a field the page does not carry. The page's own aggregate text, such as the rating summary or "Ratings and Reviews", is not a review and is never a document.
