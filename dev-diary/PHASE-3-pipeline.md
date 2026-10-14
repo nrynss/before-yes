@@ -23,7 +23,7 @@ requires:   T1.3, T2.2, T2.3, T0.4a
 fixture-ok: yes
 size:       M · frontier
 owns:       internal/pipeline/gather.go, internal/pipeline/gather_test.go, tools/capture/
-status:     in-review
+status:     done
 ```
 A fixed source plan per title, about eight Tavily credits:
 1. App Store search. If a hit's name starts with the title, read its reviews and description, and take its seller URL as the official host. A near miss is worse than no reviews, so a non-matching hit is ignored. **Apple's review feed has been returning no entries for every app** (see the handoff log). When it is empty, fall back to the reviews on the title's App Store web page (T3.8). Try the feed first, in case it returns.
@@ -84,7 +84,7 @@ requires:   T1.2, T3.1
 fixture-ok: yes
 size:       L · frontier
 owns:       internal/pipeline/doc.go, internal/pipeline/read.go, internal/pipeline/read_test.go
-status:     in-review
+status:     done
 ```
 **Chunking.** Token Factory serves Nano with a 32k context and 4k output tokens. Reviews share a chunk. A long document is split on paragraph or sentence boundaries, with a small overlap and rune-safe cuts, and every piece keeps its document's ref. Each segment is labelled `[R312]` for a review or `[D3]` for a document.
 
