@@ -32,34 +32,32 @@ Tasks that import Keel: T1.4, T2.1, T2.2, T2.4, T2.5, T3.1–T3.5, T3.7, T4.1–
 
 ## Starting from the scratch draft
 
-`scratch/` (in the main checkout, `/home/nryn/work/before-yes/scratch/`) holds the earlier backend draft. It is not on git, and nothing in it has been reviewed.
+The earlier backend draft lives on the branch **`draft/scratch`** on GitHub, under `scratch/`. It is not on `main`, and nothing in it has been reviewed. A task can start from it on any machine, local or remote.
 
-**Move, never copy.** An agent that claims a `drafted` task moves the scratch files its task owns into its own worktree with `mv`. Once a file has left `scratch/`, it is claimed, and no other agent can start from it or overwrite it. A copy would leave a second version behind, and two agents would end up editing the same code apart.
+**Move, never copy. A claim is a pushed deletion.** To claim a file, an agent:
+1. Takes the file into its task branch: `git checkout origin/draft/scratch -- scratch/<path>`, then `git mv scratch/<path> <real path>`.
+2. Claims it on the draft branch: in a checkout of `draft/scratch`, `git rm scratch/<path>`, then commit "claim <task>: <path>" and **push**. Push the claim before building on the file. If the push is rejected because the branch moved, fetch it. If the file is gone, another task claimed it first, and its code reaches you through `main` when that task lands.
 
-- Move only the files the table below gives your task. Reading another task's scratch file for reference is fine. Moving or editing it is not.
-- If the file you need is gone from `scratch/`, another task has claimed it. Its code reaches you through git once that task lands, not through `scratch/`.
-- A draft file that spans several tasks is moved by the first task listed. That task keeps its own part and moves the rest back into `scratch/` as a new file named for the next task, for example `scratch/internal/server/server.T4.3.go`. That is still a move, so the code exists in one place only.
-- Record every move in the handoff log: which files, into which worktree, for which task.
-- A drafted task still goes through review before it closes. The draft is a starting point, not evidence.
+A file still on `draft/scratch` is unclaimed. Reading a file for reference is fine. Editing it on the draft branch is not.
 
-| Scratch path | Moved by |
+- Move only the files the table gives your task.
+- A draft file that spans several tasks is claimed by the first task listed. That task keeps its own part and, in the same claim commit, adds the remainder back to `draft/scratch` as a new file named for the next task, for example `scratch/internal/server/server.T4.3.go`.
+- Record every claim in your report: which files, for which task.
+- A drafted task still goes through review. The draft is a starting point, not evidence.
+
+| Draft path on `draft/scratch` | Claimed by |
 |---|---|
-| `go.mod`, `go.sum` | T0.1 |
-| ~~`internal/checklist/`~~ | Deleted. T1.1 wrote the package fresh. |
-| `internal/finding/` | T1.2 |
-| `internal/pipeline/pipeline.go`, `pipeline_test.go` | T1.3 takes the types into `types.go`, then T3.4 takes the rest |
-| `internal/model/` | T2.1 |
-| `internal/tavily/` | T2.2 |
-| `internal/appstore/` | T2.3 |
-| `internal/spend/` | T2.4 |
-| `internal/pipeline/gather.go` | T3.1 |
-| `internal/pipeline/doc.go`, `read.go` | T3.2 |
-| `internal/pipeline/judge.go` | T3.3 |
-| `internal/server/server.go` | T4.1 takes the check job and the check and card routes, then T4.2 the evidence cache wiring, then T4.3 the gate, then T4.4 the status, checklist and static routes |
-| `internal/cards/` | T4.2 |
-| `cmd/before-yes/main.go` | T4.4 |
+| `scratch/internal/pipeline/pipeline.go`, `pipeline_test.go` | T3.4 (T1.3 already wrote `types.go` fresh) |
+| `scratch/internal/pipeline/gather.go` | T3.1 |
+| `scratch/internal/pipeline/doc.go`, `read.go` | T3.2 |
+| `scratch/internal/pipeline/judge.go` | T3.3 |
+| `scratch/internal/server/server.go` | T4.1 takes the check job and the check and card routes, then T4.2 the evidence cache wiring, then T4.3 the gate, then T4.4 the status, checklist and static routes |
+| `scratch/internal/cards/` | T4.2 |
+| `scratch/cmd/before-yes/main.go` | T4.4 |
 
-When `scratch/` is empty, delete it and say so in the handoff log.
+Already claimed or superseded: `go.mod` (T0.1), `internal/model` (T2.1), `internal/tavily` (T2.2), `internal/appstore` (T2.3), `internal/spend` (T2.4). `internal/checklist` and `internal/finding` were written fresh by T1.1 and T1.2. The checklist draft is deleted, and the finding draft stays only in the main checkout's local `scratch/`.
+
+When `draft/scratch` holds no files, delete the branch and say so in the handoff log.
 
 ---
 
@@ -183,7 +181,7 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 | P0 | 9 / 9 | Done. Two exit criteria wait on later tasks: a live Nano call (T2.1b) and the config check (T4.4). CI is green. |
 | P1 | 4 / 4 | Done. The `job.Failure` exit criterion waits on T4.1. The main-checkout pins and `.env` leak check, waived at landing, ran at the P1–P2 integration and passed. |
 | P2 | 5 / 9 | T2.1, T2.1a, T2.2, T2.3 and T2.4 are done. T2.1b (in review), T2.2b and T2.3b are implemented on OpenCode's branches, not yet reviewed or landed. T2.5 is not started. |
-| P3 | 0 / 8 | Not started. T3.1–T3.4 drafted. |
+| P3 | 0 / 10 | Not started. T3.1–T3.4 drafted. |
 | P4 | 0 / 5 | Not started. T4.1, T4.2 and T4.4 drafted. |
 | P5 | 0 / 7 | Not started. |
 | P6 | 0 / 6 | Not started. |
@@ -194,6 +192,11 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 
 Newest first. One entry per closed task, finding, or split.
 
+- **Apple's review feed is dark; store-page fallback chosen; scratch draft moved to `draft/scratch`.**
+  - **The feed** returns HTTP 200 with no entries for every app tried, Facebook as a control included. That holds from this machine at two probes about 40 minutes apart, and from the Hetzner box (167.233.247.107), so it is not throttling of one host.
+  - **The user chose a fallback:** extract the title's App Store web page through Tavily (T3.8a captures it, T3.8 parses it). The feed stays first in T3.1's plan in case it returns. The 500-review T0.4 fixtures still drive offline work and the demo cards.
+  - **T2.3b** stays at REMEDIATE. Its probe needs to fail loudly on an empty feed (M4) and record the dark-feed result.
+  - **The scratch draft:** 10 draft files are now on the `draft/scratch` branch on GitHub, so remote sessions such as Grok can claim them. Local copies were checked byte for byte against the branch and removed. The superseded `internal/finding` draft stays local only. The claim rule above is rewritten as a pushed deletion.
 - **T2.1b closed.** Reviews: [round 1](adversarial-review/t2.1b-round1.md) (Sonnet, REMEDIATE: M 3, L 3), remediation by a fresh Sonnet agent, and [round 2](adversarial-review/t2.1b-round2.md) (a fresh Sonnet reviewer, APPROVE: L 2). The orchestrator closed both round-2 Ls on the branch.
   - **Settings now confirmed live.** Token Factory ids are case-sensitive: `nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B` works and the lowercase id 404s. `[reader.extra]` turns the reader's thinking off. Nano thinks by default, at about 45 times the billed output. The thinking switch is `chat_template_kwargs.enable_thinking` on Token Factory and build.nvidia.com, and `reasoning.enabled` on OpenRouter. The rate limits are 100 a minute for Nano and 300 for Super. A round-2 reviewer decoded `before-yes.toml.example`, and both alternative tables, with go-toml.
   - Seven Token Factory and Nemotron entries are in [feedback.md](feedback.md), the first for the Devpost feedback. The transcript is at [`live/t2.1b-transcript.txt`](live/t2.1b-transcript.txt), with no account id.

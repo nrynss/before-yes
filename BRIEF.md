@@ -32,7 +32,7 @@ Common Sense Media covers a limited catalogue and lags behind new titles. A chat
 ## What it does
 
 1. **Request.** The parent enters the title and the child's age: "Roblox, 9."
-2. **Gather (Tavily).** Privacy policy, terms of service, developer history, parent-forum and Reddit threads, news and regulatory actions. App Store reviews from Apple's public customer-review feed (up to about 500 recent reviews per country).
+2. **Gather (Tavily).** Privacy policy, terms of service, developer history, parent-forum and Reddit threads, news and regulatory actions. App Store reviews from Apple's public customer-review feed (up to about 500 recent reviews per country). *Update: the feed went dark during development (HTTP 200 with no entries, from two hosts). The reviews on the App Store web page, extracted through Tavily, stand in for it (T3.8).*
 3. **Read (Nemotron 3 Nano).** Every document, in chunks, becomes structured findings. Each finding carries the exact quote it came from and the source URL. Chunking means no call needs a large context window.
 4. **Judge (Nemotron 3 Super).** Scores the findings against a fixed parent checklist and gives an age-specific verdict. Where the evidence conflicts, a second pass runs with thinking on.
 5. **Card.** One page with:

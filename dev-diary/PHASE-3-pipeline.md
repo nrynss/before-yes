@@ -26,7 +26,7 @@ owns:       internal/pipeline/gather.go, internal/pipeline/gather_test.go
 status:     drafted
 ```
 A fixed source plan per title, about eight Tavily credits:
-1. App Store search. If a hit's name starts with the title, read its reviews and description, and take its seller URL as the official host. A near miss is worse than no reviews, so a non-matching hit is ignored.
+1. App Store search. If a hit's name starts with the title, read its reviews and description, and take its seller URL as the official host. A near miss is worse than no reviews, so a non-matching hit is ignored. **Apple's review feed has been returning no entries for every app** (see the handoff log). When it is empty, fall back to the reviews on the title's App Store web page (T3.8). Try the feed first, in case it returns.
 2. Privacy policy and terms searches, narrowed to the official host when one is known. Extract the top hit of each.
 3. **Reddit, wider.** Two searches on `reddit.com`: one for parents' experiences and one for the title's own community (chat, scams, moderation). Tavily returns no thread text (`raw_content` is null on every hit), and Reddit refuses Tavily's extract. Each hit's `content` snippet is therefore its own document, with kind `reddit` and the thread URL. A snippet is verbatim text, so its quotes pass the check. Strip the page chrome ("Skip to main content", "Open menu", "Log In") before reading.
 4. Forum search (Common Sense Media, Mumsnet, Netmums), news search (fines, lawsuits, regulators, breaches), and rating search (ESRB, PEGI, parental controls), with raw content capped per document.
@@ -173,6 +173,40 @@ Whether the YouTube Data API's made-for-kids status adds anything is an open que
 
 ---
 
+### T3.8a: Capture App Store pages
+```yaml
+requires:   T0.4
+fixture-ok: no
+size:       S · mid
+owns:       tools/capture/, testdata/titles/*/tavily-extract-storepage.json
+status:     not-started
+```
+Apple's public review feed went dark: HTTP 200 with no entries for every app, from two hosts. The user chose the App Store web page as the fallback review source.
+
+Extend `tools/capture` with `-only storepage`. For each of the four titles, extract the title's `trackViewUrl` (from `appstore-search.json`) with Tavily: basic depth first, then advanced if basic yields no review text. Save the raw response and append the URL, status and credits to `MANIFEST.md`. The budget is about 1 to 2 credits per title. Run Roblox first and stop at 3 credits per title.
+
+Inspect the result and report: how many reviews the page shows, whether each review's title, body, rating, date and reviewer name survive extraction, and what separates one review from the next.
+
+**Done when:** All four titles have `tavily-extract-storepage.json`, with credits recorded. The handoff text answers the inspection questions with a short anonymised excerpt and says plainly whether the page is usable.
+
+---
+
+### T3.8: Store-page reviews as documents ★
+```yaml
+requires:   T3.8a, T3.1, T1.2
+fixture-ok: yes
+size:       M · frontier
+owns:       internal/pipeline/storepage.go, internal/pipeline/storepage_test.go
+status:     not-started
+```
+Turn the extracted App Store page into review documents the reader can quote, one per review. Each document keeps its position on the page, so a card can cite "App Store review 3". Each carries kind `review` and the page URL as its source. Never invent a field the page does not carry. The page's own aggregate text, such as the rating summary or "Ratings and Reviews", is not a review and is never a document.
+
+T3.1 calls this when the review feed returns nothing. The card's small print says which source the reviews came from, the feed or the page, and how many.
+
+**Done when:** Against the T3.8a fixtures, each title yields its page's reviews as separate documents with verbatim text. A finding quoted from one passes `finding.Verify`. A page with no reviews yields no documents and is recorded as a missing source.
+
+---
+
 ## Exit Criteria
 
 - [ ] Review 312 decides the card end to end, by test.
@@ -181,3 +215,4 @@ Whether the YouTube Data API's made-for-kids status adds anything is an open que
 - [ ] Alternatives found with Tavily and checked the same way.
 - [ ] Offline eval baseline and live Token Factory results recorded.
 - [ ] All four kinds of title handled.
+- [ ] App Store page reviews stand in when the review feed is empty (T3.8).
