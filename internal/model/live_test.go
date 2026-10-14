@@ -18,6 +18,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -243,7 +244,7 @@ func (p *liveProbe) client(r liveRole) *Client {
 		PerMinute:  r.perMinute,
 	}, func() (string, error) { return p.key, nil })
 	if err != nil {
-		p.t.Fatalf("%s: %v", r.model, err)
+		p.t.Fatalf("%s: %s", r.model, scrubErr(err))
 	}
 	return c
 }
@@ -257,7 +258,7 @@ func (p *liveProbe) listModels(ctx context.Context) {
 		p.t.Fatalf("GET /v1/models: %v", err)
 	}
 	if status != http.StatusOK {
-		p.t.Fatalf("GET /v1/models: HTTP %d: %s", status, snippet(raw))
+		p.t.Fatalf("GET /v1/models: HTTP %d (%d-byte body withheld)", status, len(raw))
 	}
 	var out struct {
 		Data []struct {
@@ -308,7 +309,7 @@ func (p *liveProbe) refusedIDs(ctx context.Context) {
 		}
 		_, status, err := p.raw(ctx, http.MethodPost, "/chat/completions", payload)
 		if err != nil {
-			p.t.Fatalf("refused id %q: %v", id, err)
+			p.t.Fatalf("refused id %q: %s", id, scrubErr(err))
 		}
 		// The host's refusal body names the account, so the log carries the
 		// status and a fixed reason, never the body.
@@ -318,6 +319,17 @@ func (p *liveProbe) refusedIDs(ctx context.Context) {
 
 // refusalReason is the fixed text logged for a status in place of the host's
 // body, which can carry an account identifier.
+// scrubErr renders an error for the probe's log without a host's response
+// body. A *Error carries the body, which can name the account, so only its
+// status is logged. Any other error has no body and is logged as is.
+func scrubErr(err error) string {
+	var he *Error
+	if errors.As(err, &he) {
+		return fmt.Sprintf("HTTP %d (body withheld)", he.Status)
+	}
+	return err.Error()
+}
+
 func refusalReason(status int) string {
 	switch {
 	case status == http.StatusNotFound:
@@ -407,7 +419,7 @@ func (p *liveProbe) rateLimits(ctx context.Context) {
 		}
 		raw, status, err := p.raw(ctx, http.MethodPost, "/chat/completions", payload)
 		if err != nil {
-			p.t.Fatalf("%s rate limits: %v", r.name, err)
+			p.t.Fatalf("%s rate limits: %s", r.name, scrubErr(err))
 		}
 		var out struct {
 			Usage *struct {
@@ -416,7 +428,7 @@ func (p *liveProbe) rateLimits(ctx context.Context) {
 			} `json:"usage"`
 		}
 		if err := json.Unmarshal(raw, &out); err != nil {
-			p.t.Logf("%s rate-limit call: HTTP %d, undecodable body: %s", r.name, status, snippet(raw))
+			p.t.Logf("%s rate-limit call: HTTP %d, undecodable %d-byte body (withheld)", r.name, status, len(raw))
 			p.t.Logf("%s rate-limit headers: %s", r.name, p.rateLimitLine())
 			continue
 		}
@@ -481,7 +493,7 @@ func (p *liveProbe) chat(ctx context.Context, r liveRole, extra map[string]any, 
 	reply, err := c.Chat(ctx, msgs, o)
 	elapsed := time.Since(start)
 	if err != nil {
-		p.t.Fatalf("%s: %v", label, err)
+		p.t.Fatalf("%s: %s", label, scrubErr(err))
 	}
 	if reply.Measured {
 		p.total += reply.Price

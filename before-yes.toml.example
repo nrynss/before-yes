@@ -77,7 +77,7 @@ per_minute   = 300
 # The Nano id the catalogue lists, nvidia/nemotron-nano-3-30b-a3b, is listed but
 # answers HTTP 404 ("Function ... Not found for account"), so the reader here is
 # the Lightning 30B-A3B, not Nano. This host takes the same switch as Token
-# Factory, chat_template_kwargs.enable_thinking (4 output tokens off, 501 on),
+# Factory, chat_template_kwargs.enable_thinking (4 output tokens off, 308 on; 512 at the cap in the declared-switch check),
 # so judge_fast and judge_think above stay as they are.
 #
 # [reader]

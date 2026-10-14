@@ -54,7 +54,7 @@ requires:   T2.1, T0.2, T0.3
 fixture-ok: no
 size:       S · mid
 owns:       internal/model/live_test.go, before-yes.toml.example
-status:     in-review
+status:     done
 ```
 Behind `//go:build live`. For each host (Token Factory, OpenRouter, build.nvidia.com):
 - list `GET /v1/models` and record the exact Nemotron 3 Nano and Super ids;
@@ -70,7 +70,7 @@ Transcript of the remediation run: [live/t2.1b-transcript.txt](live/t2.1b-transc
 Forward notes from the T2.1 and T2.1a handoffs, as the round-1 review (M3) found them:
 - **Retry-After over 60 s:** not measured. The probe never provokes a 429, so it never sees a `Retry-After`. Token Factory sends dynamic rate-limit headers on every reply (`X-Ratelimit-Limit-Requests` 100 for the reader and 300 for the judge, `X-Ratelimit-Limit-Tokens` 800000 and 200000, `-Remaining-` and `-Reset-` values of 1 s, `X-Ratelimit-Dynamic-Scale-*` 1.00, `X-Ratelimit-Dynamic-Period-Remaining` 525 s). OpenRouter and build.nvidia.com send no `X-Ratelimit-*` headers. Whether any host sends a `Retry-After` above 60 s on a 429 stays open.
 - **Empty `choices` on a 200:** not observed on any host in the probe's calls. Deferred.
-- **Timeout:** measured, and moved to T2.1c. Output rates are about 65 tokens a second for Token Factory Nano and build.nvidia.com, about 150 for Token Factory Super, about 43 for OpenRouter's free judge. A 16,000-token thinking call takes about 245 s on Nano and about 375 s on OpenRouter, past the client's 3-minute timeout.
+- **Timeout:** measured, and moved to T2.1c. Rates vary between runs. The round-1 run gave about 65 tokens a second for Token Factory Nano and build.nvidia.com, about 150 for Token Factory Super, and about 43 for OpenRouter's free judge. The [committed transcript](live/t2.1b-transcript.txt) gives Nano about 90 a second and the OpenRouter judge about 35. A 16,000-token thinking call therefore takes between about 180 s and 245 s on Nano, which is at or past the client's 3-minute timeout, and about 375 s to 450 s on OpenRouter, which is past it.
 - **Pacer:** the per-model limits seen were 100 a minute for the reader and 300 for the judge, so the cap looks per model. Whether a shared account-wide counter also exists is unknown; the probe does not test it.
 
 ---
@@ -83,7 +83,7 @@ size:       S · mid
 owns:       internal/model/model.go, internal/model/model_test.go
 status:     not-started
 ```
-Split from T2.1b's round-1 review (M3). The client's HTTP timeout is a fixed 3 minutes. Measured output rates are about 65 tokens a second for Token Factory Nano and build.nvidia.com, about 150 for Token Factory Super, and about 43 for OpenRouter's free judge. So a 16,000-token thinking call takes about 245 s on Nano and about 375 s on OpenRouter, and goes past the timeout. The judge's conflict pass (T3.3) asks for 16,000 tokens with thinking on.
+Split from T2.1b's round-1 review (M3). The client's HTTP timeout is a fixed 3 minutes. Measured output rates vary between runs: about 65 to 90 tokens a second for Token Factory Nano, about 150 for Token Factory Super, and about 35 to 43 for OpenRouter's free judge (T2.1b, both review rounds). So a 16,000-token thinking call takes about 180 s to 245 s on Nano, which is at or past the timeout, and about 375 s to 450 s on OpenRouter, which is past it. Re-measure before choosing the floor and ceiling. The judge's conflict pass (T3.3) asks for 16,000 tokens with thinking on.
 
 Make the per-call deadline scale with the call's `max_tokens`, or make it a setting per role, with a floor and a ceiling. A timed-out call must still never book at $0, keeping T2.1's unmeasured-reply rule.
 
