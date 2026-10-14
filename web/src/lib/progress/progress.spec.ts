@@ -1,8 +1,12 @@
 import { test, expect, type Page } from '@playwright/test';
 import { readFileSync } from 'node:fs';
-const id = 'j_3Fh8sQ2mVx7Kp1Lz9RtWc';
-const card = 'c_7Hq2mXv9pK3wLr8sTn4bYe';
 const fixture = (name:string) => JSON.parse(readFileSync(`../testdata/contracts/api/${name}.json`,'utf8')).response.body;
+const id: string = fixture('get-check-running').id;
+const card: string = fixture('get-check-done').card_id;
+const cardFixture = JSON.parse(readFileSync('../testdata/contracts/card-no.json','utf8'));
+test.beforeEach(async ({page}) => {
+ await page.route(`**/api/cards/${card}`, route => route.fulfill({json:cardFixture}));
+});
 const frames = readFileSync('../testdata/contracts/api/events-done.txt','utf8').split('200 text/event-stream\n\n')[1].trim().split('\n\n');
 async function mock(page: Page, state = fixture('get-check-running')) {
  await page.addInitScript(({id,state}) => {
@@ -54,13 +58,11 @@ for(const status of ['cancelled','interrupted']) test(`${status} tells parent to
 test('malformed snapshot retry works with keyboard',async({page})=>{
  await mock(page,{id,status:'done',card_id:'../../unsafe'});await page.goto(`/check/${id}`);await expect(page.getByRole('status')).toContainText('couldn’t read');await state(page,fixture('get-check-done'));await page.getByRole('button',{name:'Retry following'}).focus();await page.keyboard.press('Enter');await expect(page).toHaveURL(`/card/${card}`);
 });
-// Invoke explicitly with CHAAYA_UPSTREAM_PIN=1. Required recovery is blocked by the published dependency.
-for (const status of ['done','error']) test(`BLOCKED upstream: state-only ${status} after counted Read reconnect`,async({page})=>{
- test.skip(process.env.CHAAYA_UPSTREAM_PIN !== '1','Chaaya terminal catch-up gap; explicit upstream regression pin');
+for (const status of ['done','error']) test(`count-free terminal snapshot: ${status} after counted Read reconnect`,async({page})=>{
  await mock(page);await page.goto(`/check/${id}`);await opened(page);await push(page,frames[1]);await expect(page.getByRole('status')).toContainText('120 of 500');
  await state(page,{id,status,card_id:card,code:'budget_exhausted',detail:{pool:'token_factory'}});
  await page.evaluate(() => (window as unknown as {research:{streams:ReadableStreamDefaultController<Uint8Array>[]}}).research.streams[0].close());await opened(page,2);
- if(status === 'done') await expect(page).toHaveURL(`/card/${card}`);else await expect(page.getByRole('status')).toContainText('research budget');
+ if(status === 'done') {await expect(page).toHaveURL(`/card/${card}`);await expect(page.getByRole('heading',{level:1})).toHaveText('No');}else await expect(page.getByRole('status')).toContainText('research budget');
 });
 for(const mode of ['light','dark']) test(`active Read at 360px ${mode} passes Chaaya accessibility`,async({page})=>{
  await mock(page);await page.addInitScript(mode=>localStorage.setItem('chaaya-theme',mode),mode);await page.goto(`/check/${id}`);await opened(page);await push(page,frames[1]);await expect(page.getByRole('status')).toContainText('120 of 500');
@@ -111,4 +113,12 @@ test('rapid retry ignores stale failed read from the previous attempt',async({pa
  // Two starts in one event turn deliberately stress overlap, even before rerender removes the button.
  await page.getByRole('button',{name:'Retry following'}).evaluate(button=>{(button as HTMLButtonElement).click();(button as HTMLButtonElement).click();});
  await expect(page).toHaveURL(`/card/${card}`);await page.evaluate(()=>(window as unknown as {stale:{release:()=>void}}).stale.release());await page.waitForTimeout(100);await expect(page).toHaveURL(`/card/${card}`);
+});
+
+for (const bad of ['j_legacy', 'j_' + 'A'.repeat(32), 'j_' + '0'.repeat(31), 'j_' + '0'.repeat(33), 'c_' + '0'.repeat(32)]) test(`invalid check ID ${bad} refuses requests`, async ({page}) => {
+ const requests: string[] = []; page.on('request', request => {if(request.url().includes('/api/checks/')) requests.push(request.url());});
+ await page.goto(`/check/${bad}`);await expect(page.getByRole('status')).toContainText('couldn’t find');expect(requests).toEqual([]);
+});
+for (const bad of ['c_legacy', 'c_' + 'A'.repeat(32), 'c_' + '0'.repeat(31), 'c_' + '0'.repeat(33), 'j_' + '0'.repeat(32), 'c_' + '0'.repeat(32) + '\n']) test(`invalid saved card ID ${JSON.stringify(bad)} stays on check`, async ({page}) => {
+ await mock(page,{id,status:'done',card_id:bad});await page.goto(`/check/${id}`);await expect(page.getByRole('status')).toContainText('couldn’t read');await expect(page).toHaveURL(`/check/${id}`);
 });

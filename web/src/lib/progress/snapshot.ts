@@ -1,5 +1,5 @@
 import { ApiError, type JobSnapshot, type JobStatus } from '@nrynss/chaaya/keel';
-export const validId = (id: unknown, prefix: 'j' | 'c'): id is string => typeof id === 'string' && new RegExp(`^${prefix}_[A-Za-z0-9]+$`).test(id);
+export const validId = (id: unknown, prefix: 'j' | 'c'): id is string => typeof id === 'string' && id.length === 34 && new RegExp(`^${prefix}_[0-9a-f]{32}$`).test(id);
 const statuses = ['queued', 'running', 'done', 'error', 'cancelled', 'interrupted'];
 export function snapshot(body: unknown, id: string): JobSnapshot & {cardId?: string} {
  if (!body || typeof body !== 'object') throw new Error('Malformed snapshot');
