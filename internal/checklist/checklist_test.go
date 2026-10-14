@@ -57,10 +57,15 @@ func TestDecideRules(t *testing.T) {
 		{"three unknowns is unclear", map[Area]Level{Money: Unknown, Data: Unknown, AgeGating: Unknown}, Unclear},
 		{"two unknowns elsewhere is still yes", map[Area]Level{Money: Unknown, DeveloperRecord: Unknown}, Yes},
 		{"two unknowns and a setting", map[Area]Level{Data: Unknown, AgeGating: Unknown, Money: OKWithSetting}, YesWithSettings},
+		{"unknown citing findings is unclear", nil, Unclear},
 		{"all unknown is unclear", map[Area]Level{Contact: Unknown, Money: Unknown, Data: Unknown, AgeGating: Unknown, Content: Unknown, DeveloperRecord: Unknown}, Unclear},
 	}
 	for _, c := range cases {
-		got, err := Decide(set(c.over))
+		gs := set(c.over)
+		if c.name == "unknown citing findings is unclear" {
+			gs[1] = Grade{Area: Money, Level: Unknown, Findings: []string{"m-risk"}}
+		}
+		got, err := Decide(gs)
 		if err != nil || got != c.want {
 			t.Errorf("%s: got %q, %v; want %q", c.name, got, err, c.want)
 		}
@@ -150,8 +155,8 @@ func TestEnforce(t *testing.T) {
 		{"setting with finding stands", []Grade{{Area: Money, Level: OKWithSetting, Setting: "Ask to Buy", Findings: []string{"m-mit"}}},
 			Money, OKWithSetting, []string{"m-mit"}, nil},
 		{"skipped area added unknown", nil, DeveloperRecord, Unknown, []string{}, []string{"developer_record:skipped_area"}},
-		{"duplicate discarded", []Grade{{Area: Money, Level: OK}, {Area: Money, Level: Flag, Findings: []string{"m-risk"}}},
-			Money, OK, []string{}, []string{"money:duplicate_grade"}},
+		{"duplicate discarded", []Grade{{Area: Money, Level: OK, Findings: []string{"m-mit"}}, {Area: Money, Level: Flag, Findings: []string{"m-risk"}}},
+			Money, OK, []string{"m-mit"}, []string{"money:duplicate_grade"}},
 		{"contact ok without finding demoted", []Grade{{Area: Contact, Level: OK, Findings: []string{"nope"}}},
 			Contact, Unknown, []string{}, []string{"contact:missing_finding", "contact:ok_without_finding"}},
 		{"content ok without finding demoted", []Grade{{Area: Content, Level: OK}},
@@ -164,8 +169,12 @@ func TestEnforce(t *testing.T) {
 			Contact, OK, []string{"c-risk", "c-mit"}, nil},
 		{"zero-width setting demoted", []Grade{{Area: Money, Level: OKWithSetting, Setting: "\u200b \u2060", Findings: []string{"m-mit"}}},
 			Money, Unknown, []string{"m-mit"}, []string{"money:setting_without_name"}},
-		{"other area ok without finding stands", []Grade{{Area: Money, Level: OK}},
-			Money, OK, []string{}, nil},
+		{"other area ok without finding demoted", []Grade{{Area: Money, Level: OK}},
+			Money, Unknown, []string{}, []string{"money:ok_without_finding"}},
+		{"money ok on pay-to-win risk demoted", []Grade{{Area: Money, Level: OK, Findings: []string{"m-risk"}}},
+			Money, Unknown, []string{"m-risk"}, []string{"money:ok_without_finding"}},
+		{"money ok with mitigation stands", []Grade{{Area: Money, Level: OK, Findings: []string{"m-mit"}}},
+			Money, OK, []string{"m-mit"}, nil},
 		{"blank setting demoted", []Grade{{Area: Money, Level: OKWithSetting, Setting: "   ", Findings: []string{"m-mit"}}},
 			Money, Unknown, []string{"m-mit"}, []string{"money:setting_without_name"}},
 		{"repeated id kept once", []Grade{{Area: Contact, Level: Flag, Findings: []string{"c-risk", "c-risk"}}},
@@ -241,6 +250,60 @@ func TestRiskOnlyOKIsNotYes(t *testing.T) {
 	out, _ := Enforce(in, ev)
 	if v, _ := Decide(out); v != Unclear {
 		t.Errorf("got %q, want unclear", v)
+	}
+}
+
+// T1.1 round 3 M1: in every area, ok on risks alone (or on nothing) is demoted.
+func TestOKNeedsSupportEveryArea(t *testing.T) {
+	evAll := map[string]Cited{}
+	for _, s := range Areas() {
+		evAll["risk-"+string(s.ID)] = Cited{Area: s.ID, Risk: true}
+		evAll["ok-"+string(s.ID)] = Cited{Area: s.ID}
+	}
+	for _, target := range Areas() {
+		var in []Grade
+		for _, s := range Areas() {
+			id := "ok-" + string(s.ID)
+			if s.ID == target.ID {
+				id = "risk-" + string(s.ID)
+			}
+			in = append(in, Grade{Area: s.ID, Level: OK, Findings: []string{id}})
+		}
+		out, dem := Enforce(in, evAll)
+		if g := one(t, out, target.ID); g.Level != Unknown || len(dem) != 1 || dem[0].Rule != RuleOKNoProof {
+			t.Errorf("%s ok on risk only: %s %v", target.ID, g.Level, dem)
+		}
+		if v, _ := Decide(out); v == Yes {
+			t.Errorf("%s ok on risk only gave yes", target.ID)
+		}
+	}
+	// The round 3 probe: money ok citing a pay-to-win risk, rest supported.
+	var in []Grade
+	for _, s := range Areas() {
+		id := "ok-" + string(s.ID)
+		if s.ID == Money {
+			id = "risk-money"
+		}
+		in = append(in, Grade{Area: s.ID, Level: OK, Findings: []string{id}})
+	}
+	out, _ := Enforce(in, evAll)
+	if v, _ := Decide(out); v != Unclear || one(t, out, Money).Level != Unknown {
+		t.Errorf("money ok on pay-to-win: %s, want unclear", v)
+	}
+}
+
+// T1.1 round 3 L1: invisible characters at a setting's edges are trimmed and
+// the setting dedupes with its clean form.
+func TestSettingInvisibleEdges(t *testing.T) {
+	out, _ := Enforce([]Grade{
+		{Area: Contact, Level: OKWithSetting, Setting: "\u200bRestricted mode\u200b", Findings: []string{"c-mit"}},
+		{Area: Money, Level: OKWithSetting, Setting: "\ufeffRestricted mode ", Findings: []string{"m-mit"}},
+	}, ev)
+	if g := one(t, out, Contact); g.Setting != "Restricted mode" {
+		t.Errorf("setting %q", g.Setting)
+	}
+	if got := Settings(out); len(got) != 1 || got[0] != "Restricted mode" {
+		t.Errorf("settings %q", got)
 	}
 }
 
