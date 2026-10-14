@@ -25,7 +25,7 @@ requires:   T1.4
 fixture-ok: yes
 size:       S · mid
 owns:       web/package.json, web/vite.config.ts, web/src/app.html, web/src/lib/theme/, web/src/routes/+layout.svelte, plus the shell's other config at web/ root (pnpm-lock.yaml, svelte.config.js, tsconfig.json, lint and test config) and a placeholder +page.svelte per route
-status:     not-started
+status:     claimed:gpt-6.1-sol
 ```
 Scaffold the app with Chaaya's theme tokens. Light and dark themes, both passing Chaaya's contrast gate. Phone first: a parent asks on the spot, with the child standing there.
 
