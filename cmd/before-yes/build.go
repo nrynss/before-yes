@@ -60,6 +60,7 @@ type core struct {
 	Meter    *spend.Meter
 	DB       *sqlite.DB
 	DBPath   string
+	lock     *os.File
 }
 
 func (c *core) Close() {
@@ -68,6 +69,9 @@ func (c *core) Close() {
 	}
 	if c.DB != nil {
 		_ = c.DB.Close()
+	}
+	if c.lock != nil {
+		_ = c.lock.Close()
 	}
 }
 
@@ -82,12 +86,19 @@ func buildCore(ctx context.Context, s Settings) (*core, error) {
 	}
 	path := filepath.Join(s.DataDir, dbName)
 	c := &core{DBPath: path}
+	lock, err := lockMeter(filepath.Join(s.DataDir, spendName))
+	if err != nil {
+		return nil, err
+	}
+	c.lock = lock
 	reader, err := model.New(s.Reader, reveal(s.Secrets.Reader))
 	if err != nil {
+		c.Close()
 		return nil, fmt.Errorf("reader: %w", err)
 	}
 	judge, err := model.New(s.Judge, reveal(s.Secrets.Judge))
 	if err != nil {
+		c.Close()
 		return nil, fmt.Errorf("judge: %w", err)
 	}
 	c.Meter, err = spend.Open(ctx, spend.Config{
@@ -99,6 +110,7 @@ func buildCore(ctx context.Context, s Settings) (*core, error) {
 		},
 	})
 	if err != nil {
+		c.Close()
 		return nil, err
 	}
 	c.DB, err = sqlite.Open(ctx, sqlite.Config{Path: path, BusyTimeout: 5 * time.Second})
