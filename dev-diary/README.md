@@ -79,7 +79,7 @@ Do not wait for a whole phase to finish. If a task requires only `T1.2`, start i
 |---|---|---|---|---|
 | **P0** Ground | [PHASE-0-ground.md](PHASE-0-ground.md) | none | none | everything |
 | **P1** Contracts | [PHASE-1-contracts.md](PHASE-1-contracts.md) | T0.1 | none | P2–P5 |
-| **P2** Clients and meter | [PHASE-2-clients.md](PHASE-2-clients.md) | P1 | P3, P4, P5 | P3 live runs, P4 |
+| **P2** Clients and meter | [PHASE-2-clients.md](PHASE-2-clients.md) | P1 | 3 / 4 | In progress. T1.1–T1.3 done; the rest approved, landing in order. |
 | **P3** Pipeline | [PHASE-3-pipeline.md](PHASE-3-pipeline.md) | P1, T0.4 | P2, P4, P5 | P4 jobs, P6 |
 | **P4** Server | [PHASE-4-server.md](PHASE-4-server.md) | T1.3, T1.4, T2.4 | P2, P3, P5 | P5 live wiring, P6 |
 | **P5** Frontend | [PHASE-5-frontend.md](PHASE-5-frontend.md) | T1.3, T1.4 | P2, P3, P4 | P6 |
@@ -194,6 +194,25 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 
 Newest first. One entry per closed task, finding, or split.
 
+- **T1.3 closed.** Reviews: rounds 1–6, APPROVE in round 6. PR #3.
+  - `internal/pipeline/types.go` holds Evidence, Card, AppInfo, Stats and Alternative. `testdata/contracts/` holds `evidence.json`, `card-yes`, `card-settings`, `card-no` and `card-unclear`.
+  - **`owns` widened** to include `internal/pipeline/types_test.go`. T3.4 must not edit it.
+  - The examples are **generated** from the T0.4 fixtures through the real `Verify`, `Enforce` and `Decide`: `go test ./internal/pipeline -run TestGenerate -update`. Never hand-edit them. The test fails when they are stale, and a struct field missing from every example fails `TestExamplesCoverEveryField`.
+  - **The user accepted `card-yes` as an example only.** Its Khan contact quote is thin, and the Khan content risk in review 17 is left out. Khan's real verdict belongs to T3.6b.
+  - `card-no`'s deciding quote is review 355: in the captured feed, review 312 is not about contact. Source kinds: review, policy, terms, reddit, forum, article, news, rating, store.
+- **T1.2 closed.** Reviews: rounds 1–6, APPROVE in round 6. PR #2.
+  - `internal/finding/`: `Verify` matches quotes on word boundaries after `Normalize`. `Normalize` does NFC, case, whitespace, typographic quotes, every Unicode Pd dash plus U+2027, U+2043 and U+2212 folded to `-`, hyphen runs collapsed, Cf characters dropped, and the ellipsis character. An apostrophe or hyphen between word runes joins them. A risk reading wins a duplicate. Ids hash the URL, the review index, the area and the normalized quote. `Parse` also accepts prose around unfenced JSON. T3.2 can rely on that.
+  - **New dependency: `golang.org/x/text` v0.41.0**, for `unicode/norm` (NFC), which the standard library lacks. v0.41.0 is the newest version that changes no other requirement in the graph: it needs `golang.org/x/sync` v0.22.0 or older, which the graph already holds, and v0.42.0 needs sync v0.23.0. Checked against the proxy `.mod` files. The round-1 note gave a wrong reason, and round 2 corrected it.
+  - Surprise: the boundary rule took four review rounds (prefixes, apostrophes, hyphens, invisible characters, dash variants). `TestWordBoundaryTable` pins every case. Extend it, do not fork it.
+- **T1.1 closed.** Reviews: [round 1](adversarial-review/t1.1-round1.md) through [round 6](adversarial-review/t1.1-round6.md), APPROVE in round 6. PR #1.
+  - `internal/checklist/` was written fresh from the spec. The scratch draft was not reachable from the implementing session, so nothing moved out of `scratch/`. `scratch/internal/checklist/` is still there, unclaimed: delete it or compare it against the landed code.
+  - **The user decided:** `unclear` is kept, and that is final. **Also the user's:** an `ok` that cites only risk findings becomes `flag`.
+  - `checklist.Version` is `v7`. Each rule change in remediation bumped it, and nothing is cached yet. The final rules are in PHASE-1 T1.1, round 4 onward.
+  - **Process deviations, recorded:**
+    - The orchestrator session also implemented and remediated all four P1 tasks. No separate implementer agent was available. Reviews were independent.
+    - Each task went through a stacked PR on GitHub (the user's preference) rather than a local-only worktree.
+    - **Waived by the user:** the main-checkout pins (with `scratch/` and `.env` present), and the `.env` key-leak grep at landing. Neither could run from the remote box that landed P1. Run `./tools/check.sh` in `/home/nryn/work/before-yes` on the next pull.
+    - Lambo `lambo_record_action` and `lambo_derive` were not available, so the landing is recorded here only.
 - **Repository pushed.** `github.com/nrynss/before-yes` is private, and becomes public before submission (T6.5). Before the push, a scan of all 27 commits found none of the four `.env` values. The first CI run of `tools/check.sh` passed.
 - **Orchestrator protocol written.**
   - [ORCHESTRATOR.md](ORCHESTRATOR.md) sets out the loop and the four separate roles. The `AGENTS.md` review section now points to it.

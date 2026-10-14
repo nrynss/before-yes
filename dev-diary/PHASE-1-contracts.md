@@ -20,7 +20,7 @@ requires:   T0.1
 fixture-ok: yes
 size:       M · frontier
 owns:       internal/checklist/
-status:     in-review
+status:     done
 ```
 The brief says it plainly: the checklist is the product. It is fixed, versioned, and the same for every title.
 
@@ -101,7 +101,7 @@ requires:   T1.1
 fixture-ok: yes
 size:       M · frontier
 owns:       internal/finding/
-status:     in-review
+status:     done
 ```
 A finding is one claim: `area`, `claim`, `stance` (`risk`, `mitigation`, `neutral`), a verbatim `quote`, and a `source` (url, kind, title, review index, fetched at). It gets a stable id: a hash of source URL, area and normalized quote, so the same quote keeps its id across runs and duplicates collapse.
 
@@ -174,7 +174,7 @@ requires:   T1.1, T1.2
 fixture-ok: yes
 size:       S · frontier
 owns:       internal/pipeline/types.go, internal/pipeline/types_test.go, testdata/contracts/evidence.json, testdata/contracts/card-*.json
-status:     in-review
+status:     done
 ```
 **Evidence** is everything read about a title before any age applies: title, collected at, App Store info, verified findings, stats. It is cached by title and reused across ages.
 
