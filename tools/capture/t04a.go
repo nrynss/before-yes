@@ -51,10 +51,10 @@ func parseOnly(s string) (map[string]bool, error) {
 	for _, k := range strings.Split(s, ",") {
 		k = strings.TrimSpace(k)
 		switch k {
-		case kindCSM, kindReddit, kindAdvanced:
+		case kindCSM, kindReddit, kindAdvanced, kindStorePage:
 			kinds[k] = true
 		default:
-			return nil, fmt.Errorf("-only: unknown kind %q (want csm, reddit or advanced)", k)
+			return nil, fmt.Errorf("-only: unknown kind %q (want csm, reddit, advanced or storepage)", k)
 		}
 	}
 	return kinds, nil
@@ -70,6 +70,12 @@ func (c *capturer) captureT04a(d demo, out string, only map[string]bool) error {
 			return fmt.Errorf("-only advanced runs alone; it cannot be combined with csm or reddit")
 		}
 		return c.captureT04b(d, out)
+	}
+	if only[kindStorePage] {
+		if len(only) > 1 {
+			return fmt.Errorf("-only storepage runs alone; it cannot be combined with other kinds")
+		}
+		return c.captureStorePage(d, out)
 	}
 	manifest := filepath.Join(out, "MANIFEST.md")
 	old, err := os.ReadFile(manifest)

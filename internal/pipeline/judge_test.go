@@ -275,3 +275,18 @@ func TestConflictPassAnsweringNothingFails(t *testing.T) {
 		}
 	}
 }
+
+// A final block cut off after a draft is an error, not the draft.
+func TestParseGradesTruncatedFinalFails(t *testing.T) {
+	for _, reply := range []string{
+		`Draft {"grades":[{"area":"contact","level":"ok","findings":[]}]} Final: {"grades":[{"area":"contact","level":"flag","findings":["f_1"]},{"area":"mon`,
+		`Draft {"grades":[{"area":"contact","level":"ok","findings":[]}]} Final: {"grades": [oops]}`,
+	} {
+		if gs, err := parseGrades(reply); err == nil || !strings.Contains(err.Error(), "truncated") {
+			t.Errorf("parseGrades(%.50q) = %+v, %v; want a truncation error", reply, gs, err)
+		}
+	}
+	if _, err := parseGrades(`{"grades":[{"area":"contact","level":"flag","findings":[]}]} done`); err != nil {
+		t.Errorf("a whole final block failed: %v", err)
+	}
+}

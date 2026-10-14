@@ -5,14 +5,16 @@ import (
 	"crypto/rand"
 	"crypto/sha256"
 	"encoding/hex"
+	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/nrynss/before-yes/internal/appstore"
 	"math"
+	"reflect"
 	"strings"
 	"sync"
 	"time"
 
+	"github.com/nrynss/before-yes/internal/appstore"
 	"github.com/nrynss/before-yes/internal/checklist"
 	"github.com/nrynss/before-yes/internal/finding"
 )
@@ -79,25 +81,67 @@ func (c *MemCache) Put(_ context.Context, key string, ev Evidence) error {
 }
 
 // readerChunking names the reader's chunking and ref scheme. Bump it when
-// chunkDocs or assignRefs change what the reader is shown.
+// chunkDocs or assignRefs change what the reader is shown in a way the
+// sample in ReaderVersion would not catch.
 const readerChunking = "chunk-1"
 
-// ReaderVersion names the reader's prompt and chunking: a short hash of
-// the system prompt plus readerChunking. Editing the prompt changes it on
-// its own, so a prompt fix never serves findings read under the old one.
+// ReaderVersion names what the reader is shown and told: a short hash of
+// the system prompt, the user prompt as rendered for a sample set of
+// documents (so the template, the chunking, the overlap and the ref scheme
+// are all in it), the chunk sizes and readerChunking. Editing any of them
+// changes the key on its own, so no one has to remember to bump.
 func ReaderVersion() string {
-	h := sha256.Sum256([]byte(readerChunking + "\n" + readerSystem()))
-	return "reader-" + hex.EncodeToString(h[:])[:12]
+	h := sha256.New()
+	fmt.Fprintf(h, "%s\n%d\n%d\n%s\n", readerChunking, chunkChars, overlapChars, readerSystem())
+	docs := versionSample()
+	for _, c := range chunkDocs(docs) {
+		h.Write([]byte(readerUser("Sample Title", c, docs)))
+	}
+	return "reader-" + hex.EncodeToString(h.Sum(nil))[:12]
+}
+
+// versionSample is a fixed set of documents that exercises every path of
+// the chunker: two reviews with the same index, a short page, and a page
+// long enough to split with overlap.
+func versionSample() []Doc {
+	long := strings.Repeat("A sample sentence about chat and purchases. ", chunkChars/40)
+	return []Doc{
+		{Source: finding.Source{Kind: KindReview, Index: 1, Title: "Review one"}, Text: "Review text one."},
+		{Source: finding.Source{Kind: KindReview, Index: 1, Title: "Review again"}, Text: "Review text again."},
+		{Source: finding.Source{Kind: KindPolicy, URL: "https://example.com/privacy", Title: "Privacy"}, Text: "We collect your email."},
+		{Source: finding.Source{Kind: KindNews, URL: "https://example.com/news", Title: "News"}, Text: long},
+	}
+}
+
+// GatherVersion names what the gatherer asks and returns: PlanVersion
+// (hand-bumped for rule changes inside Gather), the plan as drawn for a
+// sample title with and without a host, and the field names and types of
+// Gathered and Doc. A new query, a changed search option or a new output
+// field changes the key on its own.
+func GatherVersion() string {
+	h := sha256.New()
+	fmt.Fprintln(h, PlanVersion)
+	for _, host := range []string{"", "example.com"} {
+		b, _ := json.Marshal(Plan("Sample Title", host))
+		h.Write(b)
+	}
+	for _, v := range []any{Gathered{}, Doc{}, finding.Source{}} {
+		t := reflect.TypeOf(v)
+		for i := 0; i < t.NumField(); i++ {
+			fmt.Fprintf(h, "%s.%s %s;", t.Name(), t.Field(i).Name, t.Field(i).Type)
+		}
+	}
+	return PlanVersion + "-" + hex.EncodeToString(h.Sum(nil))[:12]
 }
 
 // EvidenceKey is the evidence cache key: the title folded to lower case
-// with its whitespace collapsed, the plan version, the reader version, the
+// with its whitespace collapsed, the gather version, the reader version, the
 // storefront and the reader model. Any of them changing changes what
 // Collect would gather or read, so each is part of the key. No key or
 // secret is ever part of it.
 func EvidenceKey(title, storefront, readerModel string) string {
 	t := strings.ToLower(strings.Join(strings.Fields(title), " "))
-	return strings.Join([]string{"evidence", PlanVersion, ReaderVersion(), strings.ToLower(storefront), readerModel, t}, "|")
+	return strings.Join([]string{"evidence", GatherVersion(), ReaderVersion(), strings.ToLower(storefront), readerModel, t}, "|")
 }
 
 // Storefronter is a store that can say which App Store country it reads.
@@ -164,7 +208,10 @@ func (p *Pipeline) Run(ctx context.Context, req Request, ref string) (Card, erro
 // is, with hit true, and costs nothing. Otherwise it gathers the sources and
 // reads them, books every call under ref, and caches the result. A failed
 // collect is never cached, nor is one where more than MaxFailedChunks
-// reader chunks failed. A cache hit costs nothing now: its Stats keep the
+// reader chunks failed, nor one where a source call errored
+// (Gathered.Failures: an App Store search or review feed error, a page
+// Tavily could not read). A source that is absent (no listing, an empty
+// feed, a 404 page) is a fact and is cached. A cache hit costs nothing now: its Stats keep the
 // read cost paid when it was collected (see the T3.4 notes for T4).
 func (p *Pipeline) Collect(ctx context.Context, title, ref string) (ev Evidence, hit bool, err error) {
 	if p.Gatherer == nil || p.Reader == nil || p.Reader.Model == nil {
@@ -225,7 +272,7 @@ func (p *Pipeline) Collect(ctx context.Context, title, ref string) (ev Evidence,
 		ReadCostNano:  int64(rd.Cost),
 		ReaderModel:   readerModel,
 	}
-	if p.Cache != nil && rd.Failed <= MaxFailedChunks {
+	if p.Cache != nil && rd.Failed <= MaxFailedChunks && len(g.Failures) == 0 {
 		// A cache that will not store is not a failed check: the card is
 		// still good, the next ask just pays again.
 		_ = p.Cache.Put(ctx, key, ev)
