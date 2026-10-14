@@ -424,7 +424,7 @@ func TestRecordedRepliesGradesRestOnVerifiedQuotes(t *testing.T) {
 						continue
 					}
 					reasonNamed = reasonNamed || carries(normWords(g.Reason), normWords(f.Quote), reasonRun, 2)
-					settingBacked = settingBacked || (f.Stance == finding.Mitigation && carries(normWords(f.Quote), normWords(g.Setting), settingRun, 1))
+					settingBacked = settingBacked || (f.Stance == finding.Mitigation && settingIn(normWords(f.Quote), normWords(g.Setting)))
 				}
 				if !reasonNamed {
 					t.Errorf("%s: reason %q carries no cited quote", g.Area, g.Reason)
@@ -521,5 +521,45 @@ func TestThinAreasReachTheCard(t *testing.T) {
 	}
 	if card.Verdict != checklist.No {
 		t.Errorf("verdict %s: the backed contact flag must still make no", card.Verdict)
+	}
+}
+
+// Round 2: a setting is backed only when the quote names every content word
+// of it (or holds it whole). A shared phrase like "made in the app" does not
+// back a spending PIN no quote mentions; "Ask to Buy" still matches.
+func TestSettingNeedsEveryContentWord(t *testing.T) {
+	q := func(s string) []string { return normWords(s) }
+	cases := []struct {
+		quote, setting string
+		want           bool
+	}{
+		{"All purchases made in the app are listed on the receipt page.", "Turn on the spending PIN made in the app", false},
+		{"Turn on Ask to Buy in Family Sharing to approve every purchase.", "Ask to Buy", true},
+		{"Parents can switch chat off under Parental Controls.", "Parental Controls > Chat > Off", true},
+		{"Parents can switch chat off.", "Turn on", false},
+	}
+	for _, c := range cases {
+		if got := settingIn(q(c.quote), q(c.setting)); got != c.want {
+			t.Errorf("settingIn(%q, %q) = %v, want %v", c.quote, c.setting, got, c.want)
+		}
+	}
+	fs := []finding.Finding{
+		{ID: "r1", Area: "money", Stance: finding.Risk, Quote: "A PIN exists: purchases made in the app are blocked."},
+		{ID: "m1", Area: "money", Stance: finding.Mitigation, Quote: "All purchases made in the app are listed on the receipt page."},
+	}
+	got, dem, thin := ground([]checklist.Grade{{Area: "money", Level: checklist.OKWithSetting,
+		Setting: "Turn on the spending PIN made in the app", Reason: "A PIN exists: purchases made in the app are blocked.", Findings: []string{"r1", "m1"}}}, fs)
+	if got[0].Level != checklist.Unknown || !reflect.DeepEqual(thin, []checklist.Area{"money"}) || dem[0].Rule != RuleSettingUnbacked {
+		t.Errorf("invented PIN setting stood: %+v %v %v", got[0], thin, dem)
+	}
+}
+
+// Round 2 L2: the matcher applies NFC as finding.Verify does, so a reason
+// with a decomposed accent still carries a composed quote.
+func TestMatcherAppliesNFC(t *testing.T) {
+	quote := normWords("Strangers message the caf\u00e9 chat.")
+	reason := normWords("A parent says strangers message the cafe\u0301 chat.")
+	if !carries(reason, quote, reasonRun, 2) {
+		t.Errorf("NFC: %q does not carry %q", reason, quote)
 	}
 }

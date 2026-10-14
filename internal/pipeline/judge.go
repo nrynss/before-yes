@@ -10,6 +10,7 @@ import (
 	"unicode"
 
 	"github.com/nrynss/keel/cost"
+	"golang.org/x/text/unicode/norm"
 
 	"github.com/nrynss/before-yes/internal/checklist"
 	"github.com/nrynss/before-yes/internal/finding"
@@ -279,11 +280,9 @@ const SettingThinReason = "Changed to unknown: the evidence was thin. No verifie
 // carry, after normalising case and punctuation, to name that quote. At
 // least two of them must be content words, so a run of glue ("it is a
 // the") names nothing. A quote shorter than reasonRun words must appear
-// whole. settingRun is the same for a setting against a mitigation quote;
-// settings are short, so a setting of fewer words must appear whole.
+// whole. A setting is checked by settingIn instead.
 const (
-	reasonRun  = 4
-	settingRun = 3
+	reasonRun = 4
 )
 
 // ground holds every flag and ok_with_setting to quotes it actually carries
@@ -293,7 +292,7 @@ const (
 // a verbatim run of its quote (see reasonRun). Only the verified quote
 // counts, never the reader's claim, so two shared words cannot carry a
 // grade. An ok_with_setting must also have its setting backed on its own: a
-// verbatim run of the setting (see settingRun) inside a cited mitigation
+// setting the quote names (see settingIn), in a cited mitigation
 // quote. The grade keeps only the findings that name it. A grade that fails
 // falls to unknown with its setting cleared, a demotion, and its area in
 // thin, so its flag no longer counts toward the verdict. ok, unknown, and
@@ -321,7 +320,7 @@ func ground(grades []checklist.Grade, fs []finding.Finding) (out []checklist.Gra
 			}
 			q := normWords(f.Quote)
 			byReason := carries(reason, q, reasonRun, 2)
-			bySetting := g.Level == checklist.OKWithSetting && f.Stance == finding.Mitigation && carries(q, setting, settingRun, -1)
+			bySetting := g.Level == checklist.OKWithSetting && f.Stance == finding.Mitigation && settingIn(q, setting)
 			reasonNamed = reasonNamed || byReason
 			settingBacked = settingBacked || bySetting
 			if byReason || bySetting {
@@ -347,6 +346,36 @@ func ground(grades []checklist.Grade, fs []finding.Finding) (out []checklist.Gra
 	return out, dem, thin
 }
 
+// settingIn reports whether a quote backs a setting: the whole setting
+// appears in it, or every content word of the setting does (settingWord:
+// three letters or more, not glue such as "turn", "on" or "the"), with at
+// least one such word. A shared phrase such as "made in the app" cannot
+// carry a control the quote never names.
+func settingIn(quote, setting []string) bool {
+	var content []string
+	for _, w := range setting {
+		if settingWord(w) {
+			content = append(content, w)
+		}
+	}
+	if len(content) == 0 {
+		return false // "Turn on" names no control
+	}
+	if carries(quote, setting, len(setting), 0) {
+		return true
+	}
+	have := map[string]bool{}
+	for _, w := range quote {
+		have[w] = true
+	}
+	for _, w := range content {
+		if !have[w] {
+			return false
+		}
+	}
+	return true
+}
+
 func stanceFits(l checklist.Level, s finding.Stance) bool {
 	if l == checklist.Flag {
 		return s == finding.Risk
@@ -356,25 +385,20 @@ func stanceFits(l checklist.Level, s finding.Stance) bool {
 
 // carries reports whether text holds a run of n consecutive words of span,
 // at least minContent of them content words. A span shorter than n words
-// must appear whole, with at least one content word. minContent -1 is the
-// setting rule: settings name controls in short words ("Ask to Buy"), so a
-// run needs one word of three letters or more that is not glue.
+// must appear whole, with at least one content word.
 func carries(text, span []string, n, minContent int) bool {
 	if len(span) == 0 || len(text) == 0 {
 		return false
 	}
-	isContent := contentWord
-	if minContent < 0 {
-		minContent, isContent = 1, settingWord
-	}
 	if len(span) < n {
-		n, minContent = len(span), 1
+		n = len(span)
+		minContent = min(minContent, 1)
 	}
 	for i := 0; i+n <= len(span); i++ {
 		run := span[i : i+n]
 		c := 0
 		for _, w := range run {
-			if isContent(w) {
+			if contentWord(w) {
 				c++
 			}
 		}
@@ -413,7 +437,7 @@ func contentWord(w string) bool {
 // normWords lowercases s, drops apostrophes, and splits it into words of
 // letters and digits.
 func normWords(s string) []string {
-	s = strings.NewReplacer("'", "", "’", "", "‘", "").Replace(strings.ToLower(s))
+	s = strings.NewReplacer("'", "", "’", "", "‘", "").Replace(strings.ToLower(norm.NFC.String(s)))
 	return strings.FieldsFunc(s, func(r rune) bool {
 		return !unicode.IsLetter(r) && !unicode.IsDigit(r)
 	})

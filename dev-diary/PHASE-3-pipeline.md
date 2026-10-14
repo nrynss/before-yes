@@ -556,7 +556,7 @@ The verdict rule (any `flag` makes **no**) is unchanged. Only unsupported flags 
 
 
 **Implementation notes (after round 1):**
-- `ground` in `judge.go` runs after `checklist.Enforce`. A cited finding is named by a reason only when the reason carries a verbatim run of four consecutive words of its verified quote, at least two of them content words, after normalising case and punctuation (the whole quote if it is shorter). The reader's claim never counts. A `flag` needs a named risk finding; an `ok_with_setting` needs a named risk or mitigation finding **and**, separately, its setting inside a cited mitigation quote (a run of three words, or the whole setting if shorter). A grade that fails becomes `unknown`, its setting is cleared, a `reason_without_quote` or `setting_without_quote` demotion is recorded, and its area goes into `Judgement.Thin` and the additive `Card.thin_areas` field (`card-unclear.json` shows one). The judge's request is unchanged, so the recordings replay.
+- `ground` in `judge.go` runs after `checklist.Enforce`. A cited finding is named by a reason only when the reason carries a verbatim run of four consecutive words of its verified quote, at least two of them content words, after normalising case and punctuation (the whole quote if it is shorter). The reader's claim never counts. A `flag` needs a named risk finding; an `ok_with_setting` needs a named risk or mitigation finding **and**, separately, its setting named by a cited mitigation quote: every content word of the setting (three letters or more, not glue such as turn, on, off, the) appears in the quote, or the whole setting does (round 2). Words are NFC-normalised as in `finding.Verify`. A grade that fails becomes `unknown`, its setting is cleared, a `reason_without_quote` or `setting_without_quote` demotion is recorded, and its area goes into `Judgement.Thin` and the additive `Card.thin_areas` field (`card-unclear.json` shows one). The judge's request is unchanged, so the recordings replay.
 - Pins: `TestRecordedRepliesGradesRestOnVerifiedQuotes`, `TestGroundRequiresVerbatimRuns` (holds the round-1 attack case and the unbacked "Turn on Delete My Account" setting), `TestThinAreasReachTheCard`.
 - Replay, after round 1: Roblox **unclear** (grades 1/6, quotes 1/6; all six areas thin); Minecraft **unclear** (2/6, 1/5; all six thin); Khan Academy Kids **unclear** (2/6, 0/5; contact, age gating and content thin). Total 5/18, 2/16, against T3.6b's 5/18, 2/16. The Super judge paraphrases and never quotes, so with an unchanged prompt no recorded flag or setting survives. The stand-in baseline is unchanged.
 - The two Roblox open-item cases from the first version now fall to unknown: `data` (no quote names its deletion setting) and `developer_record` (its reason carries no run of the safety-protections quote).
@@ -575,6 +575,19 @@ The verdict rule (any `flag` makes **no**) is unchanged. Only unsupported flags 
 | H2 setting never checked | Setting must sit in a cited mitigation quote on its own | `TestGroundRequiresVerbatimRuns` ("Turn on Delete My Account" falls to unknown) |
 | M1 thin signal only in prose | `Card.thin_areas` (additive), from `Judgement.Thin`; `card-unclear.json` updated | `TestThinAreasReachTheCard`; `TestExamplesCoverEveryField`; `TestExamplesObeyRules` |
 | M2 max_tokens bullet open | toml.example reader cap 8192; live measurement descoped by the user, exact re-record recorded above; baseline unquoted rate measured | replay still 0 misses |
+
+
+**Round 2 remediation:**
+
+| Finding | Fix | Pin |
+|---|---|---|
+| M1 a setting is backed by any generic 3-word run | `settingIn`: every content word of the setting must appear in the cited mitigation quote, or the whole setting must; a setting with no content word names nothing | `TestSettingNeedsEveryContentWord` (the "spending PIN made in the app" case falls to unknown; "Ask to Buy" and "Parental Controls > Chat > Off" still match) |
+| L2 matcher skipped NFC | `normWords` applies `norm.NFC` as `finding.Normalize` does | `TestMatcherAppliesNFC` (fails without NFC) |
+| L1 a reason can paste a real run beside an invented claim | Accepted for this task | Open item below |
+
+Replay after round 2 is unchanged: all three titles unclear, grades 5/18, quotes 2/16, 0 misses.
+
+**Open item (L1, accepted):** a reason that pastes a verbatim run of a real quote next to an invented claim still stands; a string check cannot tell whether a claim follows from its quote. The cited finding is still verified, in its area, with a fitting stance, and its quote is shown beside the reason. The follow-up is a judge prompt that requires quoting, or a separate entailment check, with a live re-record.
 
 ---
 
