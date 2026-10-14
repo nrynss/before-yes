@@ -6,6 +6,7 @@ import (
 	"errors"
 	"github.com/nrynss/before-yes/internal/appstore"
 	"regexp"
+	"strconv"
 	"strings"
 	"sync"
 	"sync/atomic"
@@ -29,7 +30,7 @@ type ruleJudge struct {
 	calls int
 }
 
-var findingLine = regexp.MustCompile(`(?m)^- id=(\S+) area=(\S+) stance=(\S+) `)
+var findingLine = regexp.MustCompile(`(?m)^- id=(\S+) area=(\S+) stance=(\S+) .*\n  claim: .*\n  quote: (".*")$`)
 var onlyLine = regexp.MustCompile(`(?m)^Grade only these areas: (.+)$`)
 
 func (r *ruleJudge) Chat(_ context.Context, msgs []model.Message, _ model.Options) (model.Reply, error) {
@@ -48,7 +49,9 @@ func (r *ruleJudge) Chat(_ context.Context, msgs []model.Message, _ model.Option
 		}
 	}
 	risks, mits := map[string][]string{}, map[string][]string{}
+	quotes := map[string]string{}
 	for _, m := range findingLine.FindAllStringSubmatch(user, -1) {
+		quotes[m[1]], _ = strconv.Unquote(m[4])
 		switch m[3] {
 		case "risk":
 			risks[m[2]] = append(risks[m[2]], m[1])
@@ -60,9 +63,9 @@ func (r *ruleJudge) Chat(_ context.Context, msgs []model.Message, _ model.Option
 	for _, a := range areas {
 		g := checklist.Grade{Area: a, Level: checklist.Unknown, Findings: []string{}, Reason: "Not enough evidence."}
 		if ids := risks[string(a)]; len(ids) > 0 {
-			g = checklist.Grade{Area: a, Level: checklist.Flag, Findings: append(ids, mits[string(a)]...), Reason: "A risk stands."}
+			g = checklist.Grade{Area: a, Level: checklist.Flag, Findings: append(ids, mits[string(a)]...), Reason: "A risk stands: " + quotes[ids[0]]}
 		} else if ids := mits[string(a)]; len(ids) > 0 {
-			g = checklist.Grade{Area: a, Level: checklist.OKWithSetting, Setting: "Parental controls", Findings: ids, Reason: "A setting answers it."}
+			g = checklist.Grade{Area: a, Level: checklist.OKWithSetting, Setting: "Parental controls", Findings: ids, Reason: "A setting answers it: " + quotes[ids[0]]}
 		}
 		gs = append(gs, g)
 	}
