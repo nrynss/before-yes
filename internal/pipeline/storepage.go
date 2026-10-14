@@ -28,7 +28,11 @@ type PageReview struct {
 }
 
 var (
-	devResponse  = regexp.MustCompile(`^Developer Response\b`)
+	// devResponse is the label line of a developer response, exactly: the
+	// words and a date, as every capture shows ("Developer Response
+	// 01/30/2023", "Developer Response Jun 22"). A review titled
+	// "Developer Response is slow" is not a label.
+	devResponse  = regexp.MustCompile(`^Developer Response (\d{1,2}/\d{1,2}/\d{2,4}|[A-Z][a-z]{2,8} \d{1,2}(, \d{4})?)$`)
 	reviewsStart = "Ratings & Reviews"
 	reviewsEnd   = regexp.MustCompile(`^What[’']s New$`)
 	editorsPick  = regexp.MustCompile(`^Editors[’']? Choice$`)
@@ -38,16 +42,22 @@ var (
 // T3.8a captures fix the shape:
 //
 //   - reviews sit between the "Ratings & Reviews" heading and "What's New";
-//   - a review is a title line and a body line, with nothing else marking it;
+//   - a review is a title line and a body, with nothing else marking it;
 //   - each block appears twice in a row;
-//   - a developer response appears first as a bare line with no label, and
-//     only in the repeat after a "Developer Response <date>" line;
-//   - "Editors' Choice" and the line after it are an editorial blurb.
+//   - a developer response appears in the first copy as bare lines at the
+//     end, and in the repeat after a "Developer Response <date>" line;
+//   - an "Editors' Choice" block is an editorial blurb.
 //
-// Responses and blurbs are dropped, the labelled response bodies are used
-// to drop their unlabelled first copies, and blocks are deduplicated by
-// content. A page with no such section, or none left after the drops, has
-// no reviews.
+// Block boundaries come from the doubling, not from counting lines: at each
+// line the parser looks for the shortest run of lines that is followed at
+// once by its own repeat, where the repeat may carry one response label
+// the first copy lacks. That run is one block: its first line is the
+// title, the lines before the label's place are the body, and the lines
+// after it are the response, which is dropped. A line that starts no
+// doubled block (a rating summary, "See All", other page chrome) is
+// skipped. An Editors' Choice block is dropped whole. Blocks are kept once
+// by content and numbered from 1 after the drops. A page with no such
+// section, or none left, has no reviews.
 func ParseStorePage(text string) []PageReview {
 	lines := strings.Split(text, "\n")
 	start := -1
@@ -60,53 +70,80 @@ func ParseStorePage(text string) []PageReview {
 	if start < 0 {
 		return nil
 	}
-	var section []string
+	var sec []string
 	for _, l := range lines[start:] {
 		l = strings.TrimSpace(l)
 		if reviewsEnd.MatchString(l) {
 			break
 		}
 		if l != "" {
-			section = append(section, l)
+			sec = append(sec, l)
 		}
 	}
 
-	// Pass 1: the labelled responses name the bodies to drop, and the
-	// editorial blurbs are dropped with their text.
-	responses := map[string]bool{}
-	var kept []string
-	for i := 0; i < len(section); i++ {
-		l := section[i]
-		if devResponse.MatchString(l) || editorsPick.MatchString(l) {
-			if devResponse.MatchString(l) && i+1 < len(section) {
-				responses[section[i+1]] = true
-			}
-			i++ // the label's own text
-			continue
-		}
-		kept = append(kept, l)
-	}
-	// Pass 2: the unlabelled first copy of each response goes too.
-	var rest []string
-	for _, l := range kept {
-		if !responses[l] {
-			rest = append(rest, l)
-		}
-	}
-
-	// Pass 3: title and body pairs, each once, in page order.
 	var out []PageReview
 	seen := map[string]bool{}
-	for i := 0; i+1 < len(rest); i += 2 {
-		title, body := rest[i], rest[i+1]
+	for i := 0; i < len(sec); {
+		n, resp, used := doubledBlock(sec, i)
+		if n == 0 {
+			i++ // chrome: no block starts here
+			continue
+		}
+		block := sec[i : i+n]
+		i += used
+		if editorsPick.MatchString(block[0]) {
+			continue
+		}
+		title, body := block[0], strings.Join(block[1:resp], "\n")
 		key := title + "\n" + body
-		if seen[key] {
+		if body == "" || seen[key] {
 			continue
 		}
 		seen[key] = true
 		out = append(out, PageReview{Position: len(out) + 1, Title: title, Body: body})
 	}
 	return out
+}
+
+// doubledBlock finds the shortest block of at least two lines starting at
+// i that is repeated straight after itself. It returns the block's length
+// n, the index within the block where a developer response begins (n when
+// there is none), and how many lines the block and its repeat use. n is 0
+// when no block starts at i.
+func doubledBlock(sec []string, i int) (n, resp, used int) {
+	for k := 2; i+2*k <= len(sec)+1; k++ {
+		if i+k >= len(sec) || sec[i+k] != sec[i] {
+			continue
+		}
+		first := sec[i : i+k]
+		p, q, label := 0, i+k, -1
+		ok := true
+		for p < k {
+			if q >= len(sec) {
+				ok = false
+				break
+			}
+			if label < 0 && p > 1 && devResponse.MatchString(sec[q]) && !devResponse.MatchString(first[p]) {
+				label = p
+				q++
+				continue
+			}
+			if sec[q] != first[p] {
+				ok = false
+				break
+			}
+			p++
+			q++
+		}
+		if !ok {
+			continue
+		}
+		if label < 0 {
+			label = k
+		}
+		return k, label, q - i
+	}
+	return 0, 0, 0
 }
 
 // storePageDocs reads the listing's web page with one basic extract and
