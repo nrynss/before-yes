@@ -145,6 +145,12 @@ Every grade then goes through `checklist.Enforce`, and the verdict comes from `c
 | L1 | A conflict pass that parses but grades none of the conflicted areas sets `ConflictErr` ("graded none of the conflicted areas") and the first grades stand. | `TestConflictPassAnsweringNothingFails` |
 | L2 | Accepted by the user: the judge is tested on hand-written stand-in replies until T3.6b records real ones. | stand-in note above |
 
+**Round 2 remediation (T3.3).**
+
+| ID | Fix | Test |
+|---|---|---|
+| L1 | If a `"grades"` key appears after the last block that decodes (a final answer cut off at the token cap, or malformed), `parseGrades` returns an error ("final grades block is truncated or unparseable") instead of using the draft. On the first pass that fails the check. On the conflict pass it sets `ConflictErr`, and the first grades stand. The reply has no finish reason to check. A whole draft block restated after the answer still wins as the last block, because the text cannot tell it from an answer; that is left as is. | `TestParseGradesTruncatedFinalFails` |
+
 ---
 
 ### T3.4: Collect, decide, and the evidence cache ★
