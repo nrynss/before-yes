@@ -106,8 +106,10 @@ func TestEvalStandinOffline(t *testing.T) {
 // Replay mode with no recordings fails every call, and says so, rather
 // than quietly falling back to the stand-ins.
 func TestReplayWithoutRecordingsFails(t *testing.T) {
-	if _, err := os.Stat(filepath.Join(root, "testdata", "eval", "replies")); err == nil {
-		t.Skip("recordings exist")
+	for _, slug := range []string{"roblox", "minecraft", "khan-academy-kids"} {
+		if _, err := os.Stat(filepath.Join(root, "testdata", "eval", "replies", slug)); err == nil {
+			t.Skip("recordings exist")
+		}
 	}
 	rs, err := evaluate(root, "replay")
 	if err != nil {

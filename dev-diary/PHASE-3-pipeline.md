@@ -186,6 +186,8 @@ This is how prompt changes are judged from here on: by the eval, not by reading 
   - Minecraft at 9: verdict no (want yes_with_settings). Grades agree 0/6. Decisive quotes found 2/5. 7 credits.
   - Khan Academy Kids at 5: verdict no (want yes). Grades agree 3/6. Decisive quotes found 1/5. 7 credits.
   - Total: grades agree 7/18. Decisive quotes found 6/16.
+- **Stand-ins, accepted by the user:** with no recordings, the eval runs on stand-ins, and its baseline above is a stand-in baseline. T3.6b must replace the stand-ins with real recordings in `testdata/eval/replies/` (layout in its README.md) and record a new baseline from the replay run.
+- **Expectations confirmed by the user:** Roblox `developer_record` is flag, Roblox `data` is unknown, and Khan Academy Kids `data` is ok.
 
 ---
 

@@ -14,7 +14,11 @@
 //	go run ./tools/eval -json            # machine-readable
 //
 // The stand-ins are a keyword reader and a judge that reads stances. They
-// are a floor for the harness, not a measure of Nano or Super.
+// are a floor for the harness, not a measure of Nano or Super. The user
+// accepted them, and the hand-written replies in the internal/pipeline
+// tests, as stand-ins until T3.6b records real replies under
+// testdata/eval/replies. T3.6b must replace them, and the baseline then
+// comes from the replay run, not from the stand-ins.
 package main
 
 import (
