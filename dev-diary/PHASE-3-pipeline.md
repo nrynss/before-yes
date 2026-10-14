@@ -23,7 +23,7 @@ requires:   T1.3, T2.2, T2.3, T0.4a
 fixture-ok: yes
 size:       M · frontier
 owns:       internal/pipeline/gather.go, internal/pipeline/gather_test.go, tools/capture/
-status:     in-review
+status:     done
 ```
 A fixed source plan per title, about eight Tavily credits:
 1. App Store search. If a hit's name starts with the title, read its reviews and description, and take its seller URL as the official host. A near miss is worse than no reviews, so a non-matching hit is ignored. **Apple's review feed has been returning no entries for every app** (see the handoff log). When it is empty, fall back to the reviews on the title's App Store web page (T3.8). Try the feed first, in case it returns.
@@ -84,7 +84,7 @@ requires:   T1.2, T3.1
 fixture-ok: yes
 size:       L · frontier
 owns:       internal/pipeline/doc.go, internal/pipeline/read.go, internal/pipeline/read_test.go
-status:     in-review
+status:     done
 ```
 **Chunking.** Token Factory serves Nano with a 32k context and 4k output tokens. Reviews share a chunk. A long document is split on paragraph or sentence boundaries, with a small overlap and rune-safe cuts, and every piece keeps its document's ref. Each segment is labelled `[R312]` for a review or `[D3]` for a document.
 
@@ -118,7 +118,7 @@ requires:   T1.1, T3.2
 fixture-ok: yes
 size:       L · frontier
 owns:       internal/pipeline/judge.go, internal/pipeline/judge_test.go
-status:     in-review
+status:     done
 ```
 Super receives the child's age, the six area questions, and every verified finding: id, area, stance, source kind or review number, claim, and quote. It returns one grade per area, citing finding ids. A grade cannot cite anything else.
 
@@ -161,7 +161,7 @@ requires:   T3.2, T3.3
 fixture-ok: yes
 size:       M · mid
 owns:       internal/pipeline/pipeline.go, internal/pipeline/pipeline_test.go
-status:     in-review
+status:     done
 ```
 Split the run into `Collect(title) → Evidence` and `Decide(evidence, age) → Card`. Collect is where the Tavily credits and most model tokens go. It is cached by title, plan version, storefront and reader model, so asking about the same title for another age costs one judge call.
 
@@ -356,9 +356,9 @@ T3.1 calls this when the review feed returns nothing. The card's small print say
 
 ## Exit Criteria
 
-- [ ] Review 312 decides the card end to end, by test.
-- [ ] No finding reaches a card without a verified quote.
-- [ ] A second age on cached evidence makes no Tavily or reader call.
+- [x] Review 312 decides the card end to end, by test. (Review 355, the captures' equivalent: `TestReview355DecidesTheCard`.)
+- [x] No finding reaches a card without a verified quote. (`finding.Verify` in the reader; the invented R356 quote never reaches the card in `TestReview355DecidesTheCard`.)
+- [x] A second age on cached evidence makes no Tavily or reader call. (`TestReview355DecidesTheCard`: the second age books only the judge.)
 - [ ] Alternatives found with Tavily and checked the same way.
 - [ ] Offline eval baseline and live Token Factory results recorded.
 - [ ] All four kinds of title handled.
