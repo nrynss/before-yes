@@ -83,11 +83,15 @@ func asMap(t *testing.T, b []byte) map[string]any {
 	return m
 }
 
-var keelID = regexp.MustCompile(`^[0-9a-f]{32}$`)
+var (
+	keelID   = regexp.MustCompile(`^[0-9a-f]{32}$`)
+	publicID = regexp.MustCompile(`^c_[0-9a-f]{32}$`)
+)
 
-// An id that is not a Keel id is refused before any query. The proof is a
-// database closed under the store: a query would fail with a database
-// error, and the invalid id still comes back ErrNotFound.
+// An id that does not start with "c_" or whose remainder is not a 32-hex Keel
+// id is refused before any query. The proof is a database closed under the
+// store: a query would fail with a database error, and the invalid id still
+// comes back ErrNotFound.
 func TestInvalidIDRefusedBeforeAnyQuery(t *testing.T) {
 	ctx := context.Background()
 	db := openDB(t)
@@ -95,10 +99,27 @@ func TestInvalidIDRefusedBeforeAnyQuery(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	valid := strings.Repeat("ab", 16)
+	validHex := strings.Repeat("ab", 16)
+	validUnknown := "c_" + validHex
 	invalid := []string{
-		"", "short", "c_7Hq2mXv9pK3wLr8sTn4bYe", strings.ToUpper(valid), valid + "0", valid[:31],
-		"zz" + valid[2:], "' OR 1=1 --", valid[:30] + "\n\n", "../" + valid,
+		// Bare hex (no c_ prefix)
+		validHex,
+		// Wrong prefix
+		"j_" + validHex,
+		"x_" + validHex,
+		// Fixture-style non-hex IDs
+		"c_7Hq2mXv9pK3wLr8sTn4bYe",
+		"c_Tc6vRb1nQ8zKp2dWm5sLhA",
+		// Other invalid formats
+		"", "short", "c_", "c_short",
+		"c_" + strings.ToUpper(validHex),
+		"c_" + validHex + "0",
+		"c_" + validHex[:31],
+		"c_zz" + validHex[2:],
+		"' OR 1=1 --",
+		"c_' OR 1=1 --",
+		validHex[:30] + "\n\n",
+		"../" + validHex,
 	}
 
 	// On a live store: invalid is NotFound, and so is a valid unknown id.
@@ -107,7 +128,7 @@ func TestInvalidIDRefusedBeforeAnyQuery(t *testing.T) {
 			t.Errorf("Get(%q) = %v, want ErrNotFound", bad, err)
 		}
 	}
-	if _, err := s.Get(ctx, valid); !errors.Is(err, ErrNotFound) {
+	if _, err := s.Get(ctx, validUnknown); !errors.Is(err, ErrNotFound) {
 		t.Errorf("Get(valid unknown) = %v, want ErrNotFound", err)
 	}
 
@@ -116,7 +137,7 @@ func TestInvalidIDRefusedBeforeAnyQuery(t *testing.T) {
 	if err := db.Close(); err != nil {
 		t.Fatal(err)
 	}
-	_, err = s.Get(ctx, valid)
+	_, err = s.Get(ctx, validUnknown)
 	if err == nil || errors.Is(err, ErrNotFound) {
 		t.Fatalf("Get(valid unknown) on a closed db = %v, want a database error that is not ErrNotFound", err)
 	}
@@ -134,7 +155,8 @@ func TestGetUndecodableBodyIsAnErrorNotNotFound(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if _, err := s.w.ExecContext(ctx, `UPDATE cards SET body = ? WHERE id = ?`, []byte(`{"age": "nine"`), cid); err != nil {
+	rawID := strings.TrimPrefix(cid, "c_")
+	if _, err := s.w.ExecContext(ctx, `UPDATE cards SET body = ? WHERE id = ?`, []byte(`{"age": "nine"`), rawID); err != nil {
 		t.Fatal(err)
 	}
 	_, err = s.Get(ctx, cid)
@@ -156,8 +178,8 @@ func TestPutGetRoundTripKeelID(t *testing.T) {
 		if err != nil {
 			t.Fatalf("%s: Put: %v", name, err)
 		}
-		if !keelID.MatchString(cid) {
-			t.Errorf("%s: id %q is not 32 lowercase hex", name, cid)
+		if !publicID.MatchString(cid) {
+			t.Errorf("%s: id %q does not match ^c_[0-9a-f]{32}$", name, cid)
 		}
 		if in.ID != orig {
 			t.Errorf("%s: Put changed the caller's card id %q to %q", name, orig, in.ID)
@@ -169,10 +191,18 @@ func TestPutGetRoundTripKeelID(t *testing.T) {
 		if got.ID != cid {
 			t.Errorf("%s: body id %q, row id %q", name, got.ID, cid)
 		}
-		// The stored row's own id column is the body's id.
-		var rowID string
-		if err := s.r.QueryRowContext(ctx, `SELECT json_extract(body, '$.id') FROM cards WHERE id = ?`, cid).Scan(&rowID); err != nil || rowID != cid {
-			t.Errorf("%s: json id in the stored body = %q (%v), want %q", name, rowID, err, cid)
+		// The stored row's own id column is the 32-hex Keel ID without prefix.
+		rawID := strings.TrimPrefix(cid, "c_")
+		if !keelID.MatchString(rawID) {
+			t.Errorf("%s: raw id %q is not 32 lowercase hex", name, rawID)
+		}
+		var colID string
+		if err := s.r.QueryRowContext(ctx, `SELECT id FROM cards WHERE id = ?`, rawID).Scan(&colID); err != nil || colID != rawID {
+			t.Errorf("%s: row id column = %q (%v), want %q", name, colID, err, rawID)
+		}
+		var rowJSONID string
+		if err := s.r.QueryRowContext(ctx, `SELECT json_extract(body, '$.id') FROM cards WHERE id = ?`, rawID).Scan(&rowJSONID); err != nil || rowJSONID != cid {
+			t.Errorf("%s: json id in the stored body = %q (%v), want %q", name, rowJSONID, err, cid)
 		}
 		// Everything but the id is the contract card, byte for byte as JSON.
 		want := asMap(t, raw)
@@ -253,6 +283,9 @@ func TestLatestByTitleAgeChecklistAndSince(t *testing.T) {
 		if err != nil || got != c.want {
 			t.Errorf("%s: Latest = %q, %v; want %q", c.name, got, err, c.want)
 		}
+		if !publicID.MatchString(got) {
+			t.Errorf("%s: Latest returned %q; want ^c_[0-9a-f]{32}$", c.name, got)
+		}
 	}
 	if older == newer {
 		t.Fatal("ids collided")
@@ -278,7 +311,7 @@ func TestVerdictAndTimeLookupFromColumns(t *testing.T) {
 	_, _ = s.Put(ctx, mk("Minecraft", 9, checklist.Yes, t0.Add(time.Hour)))
 	noLater, _ := s.Put(ctx, mk("Toca", 6, checklist.No, t0.Add(2*time.Hour)))
 
-	const q = `SELECT id FROM cards WHERE verdict = ? AND created_at >= ? ORDER BY created_at`
+	const q = `SELECT 'c_' || id FROM cards WHERE verdict = ? AND created_at >= ? ORDER BY created_at`
 	rows, err := s.r.QueryContext(ctx, q, string(checklist.No), t0.UnixMilli())
 	if err != nil {
 		t.Fatal(err)
@@ -341,6 +374,9 @@ func TestRecentOnePerTitleAndAge(t *testing.T) {
 	got := mustRecent(t, s, 10)
 	var ids []string
 	for _, sm := range got {
+		if !publicID.MatchString(sm.ID) {
+			t.Errorf("Recent ID %q does not match ^c_[0-9a-f]{32}$", sm.ID)
+		}
 		ids = append(ids, sm.ID)
 	}
 	want := []string{tieLast, robloxTen, robloxNew, khan}
@@ -424,7 +460,7 @@ func TestPutWithAlternativesRemapsIDs(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(altIDs) != 2 || !keelID.MatchString(mainID) || !keelID.MatchString(altIDs[0]) || !keelID.MatchString(altIDs[1]) {
+	if len(altIDs) != 2 || !publicID.MatchString(mainID) || !publicID.MatchString(altIDs[0]) || !publicID.MatchString(altIDs[1]) {
 		t.Fatalf("ids = %q %q", mainID, altIDs)
 	}
 	if main.ID == mainID || main.Alternatives[0].CardID != origLink || len(main.Alternatives) != 6 || altA.ID == altIDs[0] {
@@ -442,8 +478,8 @@ func TestPutWithAlternativesRemapsIDs(t *testing.T) {
 		t.Fatalf("stored alternatives = %+v, want the two with stored cards (dangling, unlinked, pending and refused dropped)", got.Alternatives)
 	}
 	for i, a := range got.Alternatives {
-		if a.CardID != altIDs[i] || !keelID.MatchString(a.CardID) {
-			t.Errorf("alternative %d links %q, want the Keel id %q", i, a.CardID, altIDs[i])
+		if a.CardID != altIDs[i] || !publicID.MatchString(a.CardID) {
+			t.Errorf("alternative %d links %q, want the public id %q", i, a.CardID, altIDs[i])
 		}
 		linked, err := s.Get(ctx, a.CardID)
 		if err != nil {
@@ -467,6 +503,12 @@ func TestPutWithAlternativesRemapsIDs(t *testing.T) {
 	a2, _ := s.Get(ctx, ids2[0])
 	if len(a2.Alternatives) != 1 || a2.Alternatives[0].CardID != ids2[1] {
 		t.Errorf("alt card links = %+v, want one link to %s", a2.Alternatives, ids2[1])
+	}
+	if !publicID.MatchString(a2.Alternatives[0].CardID) {
+		t.Errorf("a2 alternative link %q does not match ^c_[0-9a-f]{32}$", a2.Alternatives[0].CardID)
+	}
+	if linkedAlt, err := s.Get(ctx, a2.Alternatives[0].CardID); err != nil || linkedAlt.ID != ids2[1] {
+		t.Fatalf("alt card alternative link does not resolve with Get: %v", err)
 	}
 
 	// No alternatives at all is a plain Put.
@@ -638,5 +680,92 @@ func TestTitleKeyMatchesEvidenceKey(t *testing.T) {
 	}
 	if TitleKey("Roblox") != TitleKey("  rOBLOX ") {
 		t.Error("case and spaces must fold together")
+	}
+}
+
+func TestIDsMatchPublicCardIDFormat(t *testing.T) {
+	ctx := context.Background()
+	s := openStore(t)
+	main := mk("Main", 9, checklist.Yes, t0)
+	alt := mk("Alt", 9, checklist.Yes, t0)
+	main.Alternatives = pipeline.Alternatives{{Title: alt.Title, CardID: alt.ID, Status: pipeline.AltChecked, Verdict: checklist.Yes}}
+
+	// Put
+	putID, err := s.Put(ctx, mk("Single", 9, checklist.Yes, t0))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !publicID.MatchString(putID) {
+		t.Errorf("Put ID %q does not match %s", putID, publicID)
+	}
+	if keelID.MatchString(putID) {
+		t.Errorf("Put ID %q is bare hex; must have c_ prefix", putID)
+	}
+
+	// PutWithAlternatives
+	mainID, altIDs, err := s.PutWithAlternatives(ctx, main, []pipeline.Card{alt})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !publicID.MatchString(mainID) {
+		t.Errorf("PutWithAlternatives mainID %q does not match %s", mainID, publicID)
+	}
+	if len(altIDs) != 1 || !publicID.MatchString(altIDs[0]) {
+		t.Errorf("PutWithAlternatives altID %q does not match %s", altIDs, publicID)
+	}
+
+	// Stored card's JSON body and relinked alternatives
+	gotMain, err := s.Get(ctx, mainID)
+	if err != nil {
+		t.Fatalf("Get(mainID): %v", err)
+	}
+	if gotMain.ID != mainID || !publicID.MatchString(gotMain.ID) {
+		t.Errorf("gotMain.ID = %q, want %q", gotMain.ID, mainID)
+	}
+	if len(gotMain.Alternatives) != 1 || gotMain.Alternatives[0].CardID != altIDs[0] {
+		t.Errorf("gotMain.Alternatives[0].CardID = %q, want %q", gotMain.Alternatives[0].CardID, altIDs[0])
+	}
+	gotAlt, err := s.Get(ctx, gotMain.Alternatives[0].CardID)
+	if err != nil {
+		t.Fatalf("Get(relinked alt): %v", err)
+	}
+	if gotAlt.ID != altIDs[0] || !publicID.MatchString(gotAlt.ID) {
+		t.Errorf("gotAlt.ID = %q, want %q", gotAlt.ID, altIDs[0])
+	}
+
+	// Latest
+	latestID, err := s.Latest(ctx, "Single", 9, checklist.Version, time.Time{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !publicID.MatchString(latestID) {
+		t.Errorf("Latest ID %q does not match %s", latestID, publicID)
+	}
+	if latestID != putID {
+		t.Errorf("Latest ID = %q, want %q", latestID, putID)
+	}
+
+	// Recent
+	recs, err := s.Recent(ctx, 10)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(recs) == 0 {
+		t.Fatal("Recent returned 0 summaries")
+	}
+	for _, sm := range recs {
+		if !publicID.MatchString(sm.ID) {
+			t.Errorf("Recent summary ID %q does not match %s", sm.ID, publicID)
+		}
+	}
+
+	// Ensure stored table row keys on the 32-hex Keel ID without prefix.
+	rawPut := strings.TrimPrefix(putID, "c_")
+	if !keelID.MatchString(rawPut) {
+		t.Errorf("rawPut %q is not 32 lowercase hex", rawPut)
+	}
+	var colID string
+	if err := s.r.QueryRowContext(ctx, `SELECT id FROM cards WHERE id = ?`, rawPut).Scan(&colID); err != nil || colID != rawPut {
+		t.Errorf("cards table id column = %q (%v), want raw 32-hex %q", colID, err, rawPut)
 	}
 }

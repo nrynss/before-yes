@@ -68,7 +68,7 @@ A failed make is never cached.
   - Active flights are cleaned up on `Collect` return via defer matching leader tokens, preventing in-memory map leaks.
   - `CardCache` checks `cards.Latest` within `MaxAge`. Failed makes never write to the card store.
 - Contract notes:
-  - Keel IDs are bare 32-hex characters; the `c_` prefixes in `docs/api.md` are illustrative.
+  - public card ids are c_ + a 32-hex Keel id; the store keys on the hex part.
   - `docs/api.md` mentions ages 2 to 17, while `pipeline.Request.Normalize` enforces 3 to 17.
   - `storefrontOf` is duplicated in `internal/server/cache.go` because `pipeline.storefrontOf` is unexported.
 

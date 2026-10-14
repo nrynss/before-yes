@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"path/filepath"
+	"regexp"
 	"sync"
 	"testing"
 	"time"
@@ -309,11 +310,25 @@ func TestCardFoundAgainByTitleAndAge(t *testing.T) {
 	if err != nil {
 		t.Fatalf("cardStore.Put: %v", err)
 	}
+	cardIDPattern := regexp.MustCompile(`^c_[0-9a-f]{32}$`)
+	if !cardIDPattern.MatchString(cid) {
+		t.Errorf("cardStore.Put ID %q does not match ^c_[0-9a-f]{32}$", cid)
+	}
 
 	// 1. Same title & age: hits.
 	gotID, ok, err := cc.Fresh(context.Background(), "Roblox", 9)
 	if err != nil || !ok || gotID != cid {
 		t.Fatalf("Fresh('Roblox', 9) = (%q, %v, %v); want (%q, true, nil)", gotID, ok, err, cid)
+	}
+	if !cardIDPattern.MatchString(gotID) {
+		t.Errorf("Fresh returned id %q; want ^c_[0-9a-f]{32}$", gotID)
+	}
+	gotCard, err := cardStore.Get(context.Background(), gotID)
+	if err != nil {
+		t.Fatalf("cardStore.Get(%q): %v", gotID, err)
+	}
+	if gotCard.ID != gotID || gotCard.Title != "Roblox" {
+		t.Errorf("cardStore.Get = %+v; want ID=%q, Title=Roblox", gotCard, gotID)
 	}
 
 	// 2. Whitespace and case folding: hits.
