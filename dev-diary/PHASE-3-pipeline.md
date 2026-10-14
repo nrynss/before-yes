@@ -90,6 +90,13 @@ status:     in-review
 - `Chatter` (the model surface) and `chat()` live in read.go and are reused by the judge.
 - **Stand-in replies, accepted by the user:** the recorded replies in read_test.go are hand-written stand-ins, not real model output. T3.6b must replace them with real recordings from `testdata/eval/replies/`.
 
+**Round 1 remediation (T3.2).**
+
+| ID | Fix | Test |
+|---|---|---|
+| L1 | `assignRefs` labels every doc uniquely. A review is `R<index>` the first time its index appears; a later review with the same index takes `D<i+1>`. Chunking and verification use the same labels, so T3.8's store-page reviews cannot collide with the feed's. | `TestReviewRefsUnique` |
+| L2 | Not enforced, by design. The spec puts the 10 to 40 word range in the prompt; verification (T1.2) only requires `finding.MinQuote` normalized runes. Real decisive quotes are shorter than 10 words (review 242: "they can’t stop the child predators and E-Daters", 8 words), so dropping them would cost recall. Short fragments are kept out of T3.6's score by its stricter coverage rule instead. | documented; T3.6 M1 |
+
 ---
 
 ### T3.3: Judge (Super) and the conflict pass ★
