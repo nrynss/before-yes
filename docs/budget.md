@@ -118,7 +118,7 @@ With the measured figures, and the lower of the two pools binding:
 | Tavily, 900 a month, 8 credits per check | 900 / 8 = 112.5 | **112 a month** |
 | Tavily, 900 a month, 7 credits per check | 900 / 7 = 128.6 | 128 a month |
 
-Tavily binds at both per-check costs, so the monthly figure is 112 to 128 checks. The model pool does not bind for a month of checks: 493 checks is more than four months at 112 a month.
+Tavily binds at both per-check costs, so the monthly figure is 112 to 128 checks. The model pool does not bind for a month of checks: 492 checks is more than four months at 112 a month.
 
 Checks in the table are fresh checks. Cache hits (`card_max_age_hours`, `evidence_max_age_hours` in the settings) add none to either pool.
 
