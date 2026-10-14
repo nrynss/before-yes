@@ -1,0 +1,8 @@
+{
+  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D532]\",\n      \"area\": \"contact\",\n      \"claim\": \"Minecraft has an ESRB rating indicating 'Users Interact' and online features.\",\n      \"stance\": \"risk\",\n      \"quote\": \"Everyone 10+ ESRB. Fantasy Violence. In-Game Purchases / Users Interact. Online Music Not Rated by the ESRB\"\n    }\n  ]\n}",
+  "input_tokens": 980,
+  "output_tokens": 99,
+  "price_nano": 0,
+  "measured": true,
+  "model": "nvidia/nemotron-3.5-lightning:free"
+}

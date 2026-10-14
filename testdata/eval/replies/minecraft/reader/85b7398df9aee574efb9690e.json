@@ -1,0 +1,8 @@
+{
+  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D525]\",\n      \"area\": \"developer_record\",\n      \"claim\": \"The developer has faced regulatory action and fines for COPPA violations and dark pattern practices.\",\n      \"stance\": \"risk\",\n      \"quote\": \"Epic agreed to pay $520 million: a $245 million refund order and a $275 million COPPA penalty. Only the $245 million pays players.\"\n    }\n  ]\n}",
+  "input_tokens": 4740,
+  "output_tokens": 110,
+  "price_nano": 310800,
+  "measured": true,
+  "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B"
+}

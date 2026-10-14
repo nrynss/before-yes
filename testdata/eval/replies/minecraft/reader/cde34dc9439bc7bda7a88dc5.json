@@ -1,0 +1,8 @@
+{
+  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D523]\",\n      \"area\": \"age_gating\",\n      \"claim\": \"The app is intended for users 13 and older.\",\n      \"stance\": \"neutral\",\n      \"quote\": \"Snapchat is a social app built around quick, disappearing messages called \\\"snaps\\\" that teens send directly to friends. It feels more private and casual than traditional social media, encouraging in-the-moment sharing without public likes or comments.\"\n    }\n  ]\n}",
+  "input_tokens": 4464,
+  "output_tokens": 111,
+  "price_nano": 294480,
+  "measured": true,
+  "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B"
+}

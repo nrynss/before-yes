@@ -1,0 +1,8 @@
+{
+  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D527]\",\n      \"area\": \"data\",\n      \"claim\": \"A parent reports that Microsoft collects personal data such as credentials, contact and payment data, device and usage data, and activity information, and that this data can be accessed or controlled through the Microsoft privacy dashboard or by contacting Microsoft.\",\n      \"stance\": \"neutral\",\n      \"quote\": \"Personal data associated with your Microsoft account includes credentials, contact and payment data, device and usage data and activity-related information.\"\n    }\n  ]\n}",
+  "input_tokens": 3679,
+  "output_tokens": 119,
+  "price_nano": 249300,
+  "measured": true,
+  "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B"
+}

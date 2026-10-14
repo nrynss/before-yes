@@ -1,0 +1,8 @@
+{
+  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D518]\",\n      \"area\": \"contact\",\n      \"claim\": \"The app requires microphone access for some activities to work fully.\",\n      \"stance\": \"neutral\",\n      \"quote\": \"Parents must allow access to their device's microphone for some activities to work fully.\"\n    }\n  ]\n}",
+  "input_tokens": 4731,
+  "output_tokens": 79,
+  "price_nano": 0,
+  "measured": true,
+  "model": "nvidia/nemotron-3.5-lightning:free"
+}

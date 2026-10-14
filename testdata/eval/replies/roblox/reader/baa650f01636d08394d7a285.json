@@ -1,0 +1,8 @@
+{
+  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D527]\",\n      \"area\": \"money\",\n      \"claim\": \"A parent reports that the app pushes in-app purchases and uses dark patterns to drive unauthorized purchases.\",\n      \"stance\": \"risk\",\n      \"quote\": \"Epic Games to pay record $520 million fine over Fortnite’s dark billing practices and children’s privacy violation\"\n    }\n  ]\n}",
+  "input_tokens": 3487,
+  "output_tokens": 95,
+  "price_nano": 232020,
+  "measured": true,
+  "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B"
+}

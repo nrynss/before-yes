@@ -1,0 +1,8 @@
+{
+  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D533]\",\n      \"area\": \"money\",\n      \"claim\": \"A monthly subscription to Roblox Premium includes a monthly deposit of Robux along with bonus features.\",\n      \"stance\": \"neutral\",\n      \"quote\": \"A paid monthly subscription to [*Roblox* Premium] includes a monthly deposit of Robux along with a variety of bonus features.\"\n    },\n    {\n      \"ref\": \"[D533]\",\n      \"area\": \"money\",\n      \"claim\": \"Parental controls can block spending entirely on Roblox.\",\n      \"stance\": \"mitigation\",\n      \"quote\": \"don’t forget to set parental controls to manage how much your kids are allowed to spend (or block spending entirely).\"\n    }\n  ]\n}",
+  "input_tokens": 1388,
+  "output_tokens": 170,
+  "price_nano": 0,
+  "measured": true,
+  "model": "nvidia/nemotron-3.5-lightning:free"
+}

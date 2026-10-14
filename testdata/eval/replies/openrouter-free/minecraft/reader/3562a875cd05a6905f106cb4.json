@@ -1,0 +1,8 @@
+{
+  "text": "{\"findings\": [{\"ref\": \"[D530]\", \"area\": \"money\", \"claim\": \"Epic Games was penalized for alleged children's privacy law violations\", \"stance\": \"risk\", \"quote\": \"Epic Games to pay $275 million for alleged children's privacy law violations. Million Penalty and Injunction for Alleged Violations of Children's Privacy Law\"}, {\"ref\": \"[D531]\", \"area\": \"data\", \"claim\": \"The text describes sextortion emails as a scam threat\", \"stance\": \"neutral\", \"quote\": \"Got an email saying a hacker recorded you and wants Bitcoin? How to tell a mass sextortion scam from a real threat, and exactly what to do next.\"}]}",
+  "input_tokens": 555,
+  "output_tokens": 163,
+  "price_nano": 0,
+  "measured": true,
+  "model": "nvidia/nemotron-3.5-lightning:free"
+}

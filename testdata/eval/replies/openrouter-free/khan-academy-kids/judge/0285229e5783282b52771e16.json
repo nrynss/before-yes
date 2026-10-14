@@ -1,0 +1,8 @@
+{
+  "text": "{\n  \"grades\": [\n    {\n      \"area\": \"contact\",\n      \"level\": \"flag\",\n      \"reason\": \"The app’s community forum lets users ask each other questions, which could expose a 5‑year‑old to contact with strangers, and no parental setting disables it.\",\n      \"setting\": \"\",\n      \"findings\": [\n        \"f_d1082c34870ec1e2\"\n      ]\n    },\n    {\n      \"area\": \"money\",\n      \"level\": \"ok\",\n      \"reason\": \"The app is free with no ads, in‑app purchases, or subscription tricks, and no concerning money‑related reports were found.\",\n      \"setting\": \"\",\n      \"findings\": []\n    },\n    {\n      \"area\": \"data\",\n      \"level\": \"flag\",\n      \"reason\": \"The app tracks children’s information and continues to send emails after deletion, with no parental setting to stop this data collection.\",\n      \"setting\": \"\",\n      \"findings\": [\n        \"f_729325e2c4eb263f\",\n        \"f_71782f9062d109b6\"\n      ]\n    },\n    {\n      \"area\": \"content\",\n      \"level\": \"flag\",\n      \"reason\": \"About 27 % of videos watched by young kids are aimed at older audiences and may include violence, and the app offers no setting to filter such content.\",\n      \"setting\": \"\",\n      \"findings\": [\n        \"f_5782b4b920fa7bd1\"\n      ]\n    }\n  ]\n}",
+  "input_tokens": 6380,
+  "output_tokens": 5511,
+  "price_nano": 0,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b:free"
+}

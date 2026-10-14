@@ -1,0 +1,8 @@
+{
+  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D521]\",\n      \"area\": \"age_gating\",\n      \"claim\": \"Discord's terms and child privacy laws state kids under 13 shouldn't be on the platform.\",\n      \"stance\": \"neutral\",\n      \"quote\": \"Based on the platform's terms and child privacy laws, kids under 13 shouldn't be on Discord.\"\n    }\n  ]\n}",
+  "input_tokens": 3553,
+  "output_tokens": 95,
+  "price_nano": 0,
+  "measured": true,
+  "model": "nvidia/nemotron-3.5-lightning:free"
+}

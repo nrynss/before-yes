@@ -1,0 +1,8 @@
+{
+  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D527]\",\n      \"area\": \"money\",\n      \"claim\": \"The FTC fined Epic Games $520 million for violating children's privacy and dark billing practices in Fortnite.\",\n      \"stance\": \"risk\",\n      \"quote\": \"The US Federal Trade Commission (FTC) has hit Epic Games with a $520 million fine. The Fortnite maker will pay a whopping sum for violating\"\n    }\n  ]\n}",
+  "input_tokens": 3487,
+  "output_tokens": 111,
+  "price_nano": 0,
+  "measured": true,
+  "model": "nvidia/nemotron-3.5-lightning:free"
+}

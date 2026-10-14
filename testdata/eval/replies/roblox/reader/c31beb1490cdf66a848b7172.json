@@ -1,0 +1,8 @@
+{
+  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D523]\",\n      \"area\": \"data\",\n      \"claim\": \"A lawsuit alleges Roblox tracks children's data without parental consent.\",\n      \"stance\": \"risk\",\n      \"quote\": \"Roblox, an online gaming platform for children, is facing a nationwide class action lawsuit. This lawsuit alleges that Roblox has violated the privacy of its users by tracking data without consent.\"\n    },\n    {\n      \"ref\": \"[D523]\",\n      \"area\": \"data\",\n      \"claim\": \"Roblox collects mouse movements, keystrokes, chat messages, and search terms.\",\n      \"stance\": \"risk\",\n      \"quote\": \"the platform utilizes a secret tracking technology to collect data on a range of interactions, including mouse movements, keystrokes, chat messages and search terms.\"\n    },\n    {\n      \"ref\": \"[D523]\",\n      \"area\": \"data\",\n      \"claim\": \"Collected data is monetized to display targeted content or shared with third-party advertisers.\",\n      \"stance\": \"risk\",\n      \"quote\": \"Roblox then monetizes the collected information to display targeted content for the user, keeping them engaged with the platform or providing the information to third-party advertisers.\"\n    }\n  ]\n}",
+  "input_tokens": 3896,
+  "output_tokens": 277,
+  "price_nano": 300240,
+  "measured": true,
+  "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B"
+}

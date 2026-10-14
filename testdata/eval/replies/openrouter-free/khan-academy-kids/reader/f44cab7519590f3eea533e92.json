@@ -1,0 +1,8 @@
+{
+  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D528]\",\n      \"area\": \"contact\",\n      \"claim\": \"The app description does not mention any messaging or voice chat features.\",\n      \"stance\": \"neutral\",\n      \"quote\": \"About this app\"\n    }\n  ]\n}",
+  "input_tokens": 4407,
+  "output_tokens": 67,
+  "price_nano": 0,
+  "measured": true,
+  "model": "nvidia/nemotron-3.5-lightning:free"
+}

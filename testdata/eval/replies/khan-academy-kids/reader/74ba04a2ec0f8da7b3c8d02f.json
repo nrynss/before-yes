@@ -1,0 +1,8 @@
+{
+  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D522]\",\n      \"area\": \"age_gating\",\n      \"claim\": \"A parent reports that the age gate is not enforced in practice.\",\n      \"stance\": \"risk\",\n      \"quote\": \"As more schools shut down to stave off the spread of [the coronavirus](/resources-for-families-during-the-coronavirus-pandemic), you might be wondering what the heck you're supposed to do with your kids home all day.\"\n    }\n  ]\n}",
+  "input_tokens": 4725,
+  "output_tokens": 113,
+  "price_nano": 310620,
+  "measured": true,
+  "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B"
+}

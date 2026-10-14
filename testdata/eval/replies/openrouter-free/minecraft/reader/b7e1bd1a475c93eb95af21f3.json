@@ -1,0 +1,8 @@
+{
+  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D524]\",\n      \"area\": \"money\",\n      \"claim\": \"A Dutch consumer group accuses Epic of pressuring children to spend real money on skins and other items.\",\n      \"stance\": \"risk\",\n      \"quote\": \"A Dutch consumer group says Epic is pressuring children to spend real money on skins and other items and claims Fortnite uses limited-time offers to create urgency to buy.\"\n    },\n    {\n      \"ref\": \"[D524]\",\n      \"area\": \"money\",\n      \"claim\": \"Epic agreed to pay $520 million in an FTC settlement over children's privacy and unwanted purchases.\",\n      \"stance\": \"risk\",\n      \"quote\": \"In 2022, the company agreed to pay $520 million in an FTC settlement over children's privacy and unwanted purchases.\"\n    },\n    {\n      \"ref\": \"[D524]\",\n      \"area\": \"data\",\n      \"claim\": \"Epic is accused of collecting children's personal data without parental consent.\",\n      \"stance\": \"risk\",\n      \"quote\": \"The group also accuses Epic of collecting children's personal data without parental consent.\"\n    },\n    {\n      \"ref\": \"[D524]\",\n      \"area\": \"developer_record\",\n      \"claim\": \"Dutch regulators fined Epic for practices targeting children.\",\n      \"stance\": \"risk\",\n      \"quote\": \"Dutch regulators also fined Epic for practices targeting children.\"\n    }\n  ]\n}",
+  "input_tokens": 6049,
+  "output_tokens": 327,
+  "price_nano": 0,
+  "measured": true,
+  "model": "nvidia/nemotron-3.5-lightning:free"
+}

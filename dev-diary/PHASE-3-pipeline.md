@@ -278,7 +278,7 @@ requires:   T3.6, T2.1b
 fixture-ok: no
 size:       M · frontier
 owns:       tools/eval/live.go, testdata/eval/replies/
-status:     not-started
+status:     in-review
 ```
 Run the eval with real Nano and Super on Token Factory, then with the free stand-ins, and record both. This answers the brief's open question about real Nano quality against the stand-in.
 
@@ -287,6 +287,43 @@ Save the replies as the recorded replies T3.2, T3.3 and T3.6 replay. Record meas
 If a demo title lands on a different verdict from T0.5's expectation, the evidence decides, not the expectation. Report it to the user, who picks again from the shortlist.
 
 **Done when:** Live results for both model sets are in the handoff log, recorded replies are committed, and cost per title is measured.
+
+**Result (T3.6b).** `-models live` (tools/eval/live.go) sent every reader and judge call to the host and saved each measured reply. Token Factory replies are in `testdata/eval/replies/<slug>/`; the OpenRouter stand-in replies are in `testdata/eval/replies/openrouter-free/<slug>/`. A replay of the Token Factory recordings reproduces the live numbers exactly, with no missed call. No Tavily call was made: every run read the saved fixtures.
+
+Grades and quotes, per title (grades agree per area; decisive quotes found):
+
+| Title (age, expected) | Set | Verdict, want to got | Grades agree | Decisive found | Chunks failed |
+|---|---|---|---|---|---|
+| Roblox (9, no) | Token Factory | no to no, agrees | 3/6 | 1/6 | 1 of 36 |
+| Roblox (9, no) | OpenRouter | no to no, agrees | 1/6 | 3/6 | 2 of 36 |
+| Minecraft (9, yes with settings) | Token Factory | yes with settings to **no**, differs | 0/6 | 1/5 | 2 of 45 |
+| Minecraft (9, yes with settings) | OpenRouter | yes with settings to **no**, differs | 3/6 | 1/5 | 4 of 45 |
+| Khan Academy Kids (5, yes) | Token Factory | yes to **no**, differs | 2/6 | 0/5 | 1 of 22 |
+| Khan Academy Kids (5, yes) | OpenRouter | yes to **no**, differs | 0/6 | 0/5 | 5 of 22 |
+| **Total** | Token Factory | | **5/18** | **2/16** | |
+| **Total** | OpenRouter | | **4/18** | **4/16** | |
+
+The stand-in baseline was 7/18 grades and 6/16 quotes. Real Nano found fewer decisive quotes than the keyword stand-in (2/16 against 6/16), so the stand-in is not a floor for the real reader. "Chunks failed" counts replies the reader could not parse (15 replies across both sets hit the 4,096-token cap); call failures were zero in every live run.
+
+**Verdicts against T0.5.** Roblox agrees on both sets. Minecraft and Khan Academy Kids come back **no** on both sets, where T0.5 expected yes with settings and yes. The evidence decides, so both go to the user to pick again from the shortlist; I did not tune the checklist.
+
+Cost per title, Token Factory (booked by the live client from reply usage at the configured prices, Nano 0.06 and 0.24, Super 0.30 and 0.90 per million tokens):
+
+| Title | Reader calls | Reader tokens in / out | Reader $ | Judge calls (conflict) | Judge tokens in / out | Judge $ | Title total $ |
+|---|---|---|---|---|---|---|---|
+| Roblox | 36 | 134,885 / 24,955 | 0.014082 | 2 (1) | 26,444 / 11,084 | 0.017909 | 0.031991 |
+| Minecraft | 45 | 167,562 / 37,467 | 0.019046 | 2 (1) | 40,050 / 9,965 | 0.020983 | 0.040029 |
+| Khan Academy Kids | 22 | 86,514 / 20,899 | 0.010207 | 2 (1) | 16,456 / 6,022 | 0.010357 | 0.020564 |
+
+Averages over the three titles, for the budget formula: R_in 129,654; R_out 27,774; J_in 27,650; J_out 9,024; K 1. Model cost per check is **$0.030861** (budget.md estimate: $0.0255). Tavily credits per check, measured live: **0**. The fixture captures report 7 to 8 credits per title (the eval's Tavily column); if a live check ran Tavily, that is the figure to use, and it gives a daily cap maximum of 7 at 8 credits (`floor(900 / (15 x 8))`), so the cap of 5 still holds.
+
+OpenRouter costs $0 booked; its tokens are in the live summary lines and `testdata/eval/replies/openrouter-free/`.
+
+**Total spend.** Token Factory: **$0.092584** of the $1.50 cap (`ledger` in the run's scratch directory, not the repo), across Roblox, Minecraft and Khan, with no refused call. Tavily: 0 live credits. Development spend before this run (T2.1b, about $0.0018) is not in the cap.
+
+**Pins.** `TestStandinBaselinePinned` runs the stand-ins explicitly and is unchanged. The two replay tests skip when recordings exist. The pipeline tests use their own hand-written replies and are unchanged. Behaviour change: `go run ./tools/eval` (auto) now replays the Token Factory recordings for the three titles and no longer uses the stand-ins for them.
+
+**Edit outside owns.** `tools/eval/main.go`: a `-models live` branch in `chatters`, the judge's Fast and Think switches passed in `runOne`, a live-only filter in `evaluate`, and the per-title summary and refusal check in `runOne`'s defer. Without the switches, the eval's judge sent no thinking switch, so the replay keys and the live calls would not match production's settings.
 
 ---
 

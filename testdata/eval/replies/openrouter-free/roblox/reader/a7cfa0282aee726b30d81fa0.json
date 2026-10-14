@@ -1,0 +1,8 @@
+{
+  "text": "{\"findings\": [{\"ref\": \"[D520]\", \"area\": \"contact\", \"claim\": \"A parent notes that limits on chat options make interactions more annoying than unsafe.\", \"stance\": \"mitigation\", \"quote\": \"limits on chat options helps make that more annoying than unsafe.\"}, {\"ref\": \"[D520]\", \"area\": \"money\", \"claim\": \"The app is free to try with in-app purchase options discussed for families.\", \"stance\": \"neutral\", \"quote\": \"Pricing structure : Free to try\"}, {\"ref\": \"[D520]\", \"area\": \"data\", \"claim\": \"No information is provided about data collection, tracking, or deletion.\", \"stance\": \"neutral\", \"quote\": \"No information provided.\"}]}",
+  "input_tokens": 1287,
+  "output_tokens": 164,
+  "price_nano": 0,
+  "measured": true,
+  "model": "nvidia/nemotron-3.5-lightning:free"
+}

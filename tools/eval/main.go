@@ -11,6 +11,7 @@
 //	go run ./tools/eval                  # replay where recorded, else stand-ins
 //	go run ./tools/eval -models standin  # stand-ins only
 //	go run ./tools/eval -models replay   # recorded replies only
+//	go run ./tools/eval -models live     # real hosts, spend-capped (live.go)
 //	go run ./tools/eval -json            # machine-readable
 //
 // The stand-ins are a keyword reader and a judge that reads stances. They
@@ -158,6 +159,9 @@ func evaluate(root, models string) ([]Result, error) {
 	}
 	var out []Result
 	for _, e := range exps {
+		if !liveWanted(e.Slug) {
+			continue
+		}
 		out = append(out, runOne(root, models, e))
 	}
 	return out, nil
@@ -202,19 +206,23 @@ func runOne(root, models string, e Expectation) Result {
 		}
 	}
 	defer func() {
+		liveSummarise(e.Title, reader, judge)
 		if res.Err != "" {
 			return
 		}
 		if msg := replayMisses(reader, judge); msg != "" {
 			res.Err = msg
+			return
 		}
+		res.Err = liveRefusals(reader, judge)
 	}()
 	res.Models = reader.Settings().Model + " + " + judge.Settings().Model
+	fast, think := judgeSwitches(models)
 	now := func() time.Time { return evalNow }
 	p := &pipeline.Pipeline{
 		Gatherer: &pipeline.Gatherer{Store: publicFeed{appstore.New(srv.URL, "us"), appstore.New("", "us")}, Search: tc, Meter: meter, Now: now},
 		Reader:   &pipeline.Reader{Model: reader, Meter: meter},
-		Judge:    &pipeline.Judge{Model: judge, Meter: meter},
+		Judge:    &pipeline.Judge{Model: judge, Meter: meter, Fast: fast, Think: think},
 		Now:      now,
 	}
 	ev, _, err := p.Collect(ctx, e.Title, "eval-"+e.Slug)
@@ -248,6 +256,9 @@ func (s publicFeed) FeedURL(id int64, page int) string { return s.public.FeedURL
 func (s publicFeed) Storefront() string { return s.Client.Country }
 
 func chatters(root, models, slug string) (pipeline.Chatter, pipeline.Chatter) {
+	if models == "live" {
+		return liveChatters(root, slug)
+	}
 	dir := filepath.Join(root, "testdata", "eval", "replies", slug)
 	recorded := false
 	if st, err := os.Stat(dir); err == nil && st.IsDir() {

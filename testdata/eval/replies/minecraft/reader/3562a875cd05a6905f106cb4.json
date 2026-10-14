@@ -1,0 +1,8 @@
+{
+  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"D530\",\n      \"area\": \"money\",\n      \"claim\": \"Epic Games will pay $275 million for alleged children's privacy law violations.\",\n      \"stance\": \"risk\",\n      \"quote\": \"Epic Games to pay $275 million for alleged children's privacy law violations.\"\n    },\n    {\n      \"ref\": \"D531\",\n      \"area\": \"contact\",\n      \"claim\": \"A sextortion email claims a hacker recorded the user and demands Bitcoin.\",\n      \"stance\": \"risk\",\n      \"quote\": \"Got an email saying a hacker recorded you and wants Bitcoin?\"\n    }\n  ]\n}",
+  "input_tokens": 555,
+  "output_tokens": 152,
+  "price_nano": 69780,
+  "measured": true,
+  "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B"
+}
