@@ -98,7 +98,7 @@ P0 and P1 are the serial bottleneck. Once the contracts freeze, four tracks run 
 
 | Track | Phase | Network required? | First task | Notes |
 |---|---|---|---|---|
-| **A: Clients** | P2 | 7 / 10 | T2.1, T2.1a, T2.1b, T2.2, T2.2b, T2.3 and T2.4 are done. T2.3b got REMEDIATE: Apple's review feed is returning no reviews (H1, the user's decision). T2.1c, the model timeout, and T2.5 are not started. |
+| **A: Clients** | P2 | `b` tasks only | T2.1 | Model, Tavily and App Store clients, the meter and budgets. Progress is on the status board. |
 | **B: Pipeline** | P3 | `b` tasks only | T3.1 | Gather, read, judge, alternatives. The product's depth lives here. |
 | **C: Server** | P4 | No | T4.1 | Jobs, progress stream, card store, gate. |
 | **D: Frontend** | P5 | No | T5.1 | Chaaya app against the example payloads from T1.3. |
@@ -180,8 +180,8 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 |---|---|---|
 | P0 | 9 / 9 | Done. Two exit criteria wait on later tasks: a live Nano call (T2.1b) and the config check (T4.4). CI is green. |
 | P1 | 4 / 4 | Done. The `job.Failure` exit criterion waits on T4.1. The main-checkout pins and `.env` leak check, waived at landing, ran at the P1–P2 integration and passed. |
-| P2 | 5 / 9 | T2.1, T2.1a, T2.2, T2.3 and T2.4 are done. T2.1b (in review), T2.2b and T2.3b are implemented on OpenCode's branches, not yet reviewed or landed. T2.5 is not started. |
-| P3 | 0 / 10 | Not started. T3.1–T3.4 drafted. |
+| P2 | 11 / 12 | T2.1, T2.1a, T2.1b, T2.1c, T2.1d, T2.2, T2.2b, T2.3, T2.3b, T2.4 and T2.4b are done. T2.5 is landed but blocked on T3.6 for the measured cost per check. |
+| P3 | 1 / 10 | T3.8a is done: App Store page fixtures for all four titles. T3.1–T3.4 and T3.6 are in progress remotely, on stacked branches `task-t3.1-gather` → `task-t3.2-reader` → `task-t3.3-judge` → `task-t3.4-pipeline` → `task-t3.6-eval`. Each has had a round-1 review and remediation. Their scratch files are claimed on `draft/scratch`. The branches predate T2.1c, T2.4b and T3.8a on `main` and need a rebase before landing. |
 | P4 | 0 / 5 | Not started. T4.1, T4.2 and T4.4 drafted. |
 | P5 | 0 / 7 | Not started. |
 | P6 | 0 / 6 | Not started. |
@@ -192,8 +192,72 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 
 Newest first. One entry per closed task, finding, or split.
 
+- **P2 exit criteria checked; branches and worktrees cleaned up.**
+  - **P2:** five of six exit criteria are met and ticked in `PHASE-2-clients.md`. The sixth, the measured cost per check, waits on T3.6, which T2.5 is blocked on.
+  - **Removed at the user's request:**
+    - OpenCode's four P2 worktrees and branches (`task-t2.1b-model-live`, `task-t2.2-tavily`, `task-t2.2b-tavily-live`, `task-t2.3b-appstore-live`). Each was clean, and `git cherry` showed no commit missing from `main`. Every file difference was newer work on `main`.
+    - The local branch `task-t2.1a-extra`, which `main` already contains.
+    - The P1 branches on GitHub (`task-t1.1-checklist` to `task-t1.4-api`), which `main` already contains.
+  - **Left alone:** `draft/scratch`, and the five P3 branches on GitHub (T3.1–T3.4 and T3.6), which are active remote work.
+- **T2.4b closed.** Haiku implemented it, and the orchestrator validated it with no review loop. It went back once.
+  - **What landed in `internal/spend`:**
+    - A `checks_daily` pool (unit `check`, `cost.DailyUTC`), with `BeginCheck(ctx, ref)` and then `Done` or `Fail`. A cache hit never calls it.
+    - `Open` pins tavily to `MonthlyUTC` and the checks pool to `DailyUTC`, whatever the caller passes.
+    - `Spend` books a work that hit its own `context.DeadlineExceeded` at the estimate, unmeasured, while the caller's context is live. A caller's cancel or expired context still releases.
+    - `Config.Now` injects the clock for tests.
+    - `daily_fresh_checks = 5` is live in the example settings.
+  - **Sent back once:** holds used Keel's default 10-minute reservation TTL. A model call can run up to 15 minutes (T2.1c), and a check can run longer, so a hold could lapse mid-call. A sixth check could then start, or concurrent calls could pass the dollar ceiling. Keel's `settleBooks` books a lapsed hold correctly (read from source), so only the in-flight protection was lost. The fix is `Config.ReservationTTL`, default 30 minutes, on every pool. Two clock-injected tests prove holds still block at 20 minutes and lapse after 30.
+  - **Orchestrator validation:**
+    - Read the diff.
+    - Confirmed Keel's expiry and settle behaviour in its source.
+    - All 18 spend tests pass under `-race`, with no sleeps.
+    - The diff stays inside owns, plus one line in the settings example.
+    - Gate rc 0 in the worktree after the rebase, and on main. No key values found. No dates.
+  - **Left open, for the pipeline task that wires the meter (T3.4):** call `BeginCheck` only on a cache miss, and end every check with `Done` or `Fail`.
+- **T2.1d closed.** Haiku implemented it, and the orchestrator validated it with no review loop.
+  - **What changed:** the live probe has no fixed client timeout now. `liveProbe.raw`, the only place the probe sends a request itself, gives each request `DefaultTimeouts.For(max_tokens)`: 0 for the model list, which gets the floor; 8 for the refused-id checks; the role's cap for the rate-limit call. Chat calls get the same rule through `Client.Chat`. The 8-minute overall context stays.
+  - **Orchestrator validation:**
+    - The diff stays inside owns.
+    - The only `http.Do` in the file is in `raw`, and chat builds its client with `New`.
+    - `go vet -tags live`, `go build -tags live ./...` and the gate pass in the worktree and on main. No key values found. No live run.
+- **T3.8a closed.** Haiku implemented it, and the orchestrator validated it with no review loop, by the user's ruling.
+  - **What landed:** `tools/capture -only storepage` makes one basic Tavily extract of each title's `trackViewUrl`, taken from the saved search fixture. It moves to advanced only when basic shows no review text, and stops at 3 credits per title. There is also a `-depth` flag.
+  - **Spend:** 1 credit in total (Khan 1, the other three 0, as Tavily reported). Advanced was never needed.
+  - **What the page holds:** 3 or 4 user reviews per title (Roblox 4, Minecraft 3, Khan 3, Toca 3). Title and body come through verbatim. Rating, date and reviewer name do not. Each block appears twice. Toca Life World is listed as "Toca Boca World: Game & Play", so the lookup goes by trackId, not by name. The page is usable for T3.8, but thin.
+  - **Orchestrator validation:**
+    - Opened all four saved extracts myself: one result each, no failures, credits as reported. Read the review blocks for Roblox and Khan Academy Kids.
+    - The capture tests pass under `-race`. Gate rc 0 in the worktree after the rebase, and on main. No key values found. No dates.
+  - **Found by the orchestrator and added to T3.8:** a developer response first appears with no label, and only its repeat carries "Developer Response". T3.8's block now lists the page's shape.
+- **T2.1c closed.** Haiku implemented it, and the orchestrator validated it with no review loop, by the user's ruling.
+  - **What changed:** the fixed 3-minute client timeout is gone. Each attempt now gets `clamp(60 s + max_tokens / 30 tok/s, 90 s, 15 min)`, so a 16,000-token thinking call gets about 593 s and a short call keeps 90 s. The numbers are in `model.DefaultTimeouts`. There is no new setting, because the role's `max_tokens` already sets how long its calls run.
+  - **Timed-out calls:** a timed-out call returns `context.DeadlineExceeded`. It is not retried, since a retry could bill twice. Its reply is unmeasured and priced at the estimate, never $0.
+  - **Re-measured:** 4 live calls at 4,000 tokens, about $0.006 spent. Nano ran at about 68 tok/s, Super at about 156, and OpenRouter's free judge at 91 (35–43 at T2.1b). A floor of 30 sits below the slowest rate seen.
+  - **Orchestrator validation:**
+    - The diff stays inside owns.
+    - The four Done-when tests pass under `-race`, in about 2 s.
+    - `Retryable` refuses `DeadlineExceeded`.
+    - Gate rc 0 in the worktree after the rebase, and on main. No key values found. No dates.
+  - **Found and moved to T2.4b:** `spend.Meter.Spend` releases the hold on any error from the call, so a timed-out model call books $0 today.
+  - **Left open:** `internal/model/live_test.go` builds its own probe client with a 3-minute timeout. A live 16,000-token probe would be cut. Whichever task next touches that file should fix it.
+- **T2.5 landed, blocked on T3.6; T2.4b split out.** Haiku implemented it. By the user's ruling, T2.1c, T2.5 and T3.8a have no review loop: the orchestrator validates each one and sends the same agent back if something is wrong.
+  - **Decided** in [`docs/budget.md`](../docs/budget.md):
+    - The model pool has a lifetime ceiling of $20, with $5 of the $25 credit in reserve.
+    - Tavily has a monthly ceiling of 900 of the 1,000 free credits.
+    - Fresh checks are capped at 5 per UTC day while judging runs: 5 × 12 credits × 15 days = 900.
+  - **Estimated, pending T3.6:** one fresh check costs about $0.0255 of model spend, from the brief's token counts at the brief's prices, plus about 8 Tavily credits, from T3.1's source plan. Tavily is the tighter limit, at about 112 checks a month. The doc gives the formula T3.6b fills in. The brief leaves out Nano output and the conflict pass, so the model figure may be low.
+  - **Orchestrator validation:**
+    - The prices and arithmetic match BRIEF.md.
+    - The claim that `spend.Open` knows only two pools, and leaves each pool's period to the caller, matches the code.
+    - The diff stays inside owns. Gate rc 0 in the worktree and on main. No key values found. No dates.
+  - **Split:** T2.4b, the daily checks pool, which also pins the tavily pool to `MonthlyUTC`.
+- **T2.3b closed.** Reviews: [round 1](adversarial-review/t2.3b-round1.md) (Sonnet, REMEDIATE: H 1, M 3, L 1), [round 2](adversarial-review/t2.3b-round2.md) (a fresh Sonnet reviewer, REMEDIATE: L 2), and [round 3](adversarial-review/t2.3b-round3.md) (a fresh Sonnet reviewer, APPROVE, zero residue). A fresh Sonnet remediator ran after each REMEDIATE.
+  - **What the probe shows:** the search half works (us 3 hits, gb 5 for Roblox). The review feed is dark in both storefronts, so the probe FAILs loudly and every audit prints "not run". The transcript is at [`live/t2.3b-transcript.txt`](live/t2.3b-transcript.txt). It needs no key and spends no credits.
+  - **Still passes on a populated feed:** reviewers in rounds 2 and 3 each pointed the probe at a local server serving the T0.4 Roblox fixtures. It read 500 reviews in 10 pages per storefront, and the raw-body pin compared. Both reverted the edit.
+  - **Unconfirmed while the feed is dark:** the single-entry page shape, the countries question and the field audit. The PHASE-2 block lists them. T3.8a and T3.8 stand in for the feed.
+  - **Orchestrator documentation fix:** dates were removed from the handoff log and the T2.2b transcript (`Date:` headers withheld).
+  - OpenCode's `task-t2.3b-appstore-live` branch and worktree are superseded by `main`. They are OpenCode's to remove.
 - **Apple's review feed is dark; store-page fallback chosen; scratch draft moved to `draft/scratch`.**
-  - **The feed** returns HTTP 200 with no entries for every app tried, Facebook as a control included. That holds from this machine at two probes about 40 minutes apart, and from the Hetzner box (167.233.247.107), so it is not throttling of one host.
+  - **The feed** returns HTTP 200 with no entries for every app tried, Facebook as a control included. That holds from this machine in two probes, and from the Hetzner box (167.233.247.107), so it is not throttling of one host.
   - **The user chose a fallback:** extract the title's App Store web page through Tavily (T3.8a captures it, T3.8 parses it). The feed stays first in T3.1's plan in case it returns. The 500-review T0.4 fixtures still drive offline work and the demo cards.
   - **T2.3b** stays at REMEDIATE. Its probe needs to fail loudly on an empty feed (M4) and record the dark-feed result.
   - **The scratch draft:** 10 draft files are now on the `draft/scratch` branch on GitHub, so remote sessions such as Grok can claim them. Local copies were checked byte for byte against the branch and removed. The superseded `internal/finding` draft stays local only. The claim rule above is rewritten as a pushed deletion.
