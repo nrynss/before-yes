@@ -137,6 +137,7 @@ The card cites the findings its grades rest on, plus every risk finding, so a pa
 - Card ids are `c_` followed by 22 base-62 characters from crypto/rand.
 - `Kind` is `ios` when an App Store hit matched, and empty otherwise; console and YouTube are later tasks.
 - An end-to-end test runs the Roblox fixtures with recorded reader replies and a rule-based judge stand-in. Review 355 (the captures' review-312 equivalent) decides "no"; without it the card is "unclear". A second age makes no Tavily or reader call and one judge call. The card's model cost equals `Spent(PoolModel)`, and its credits equal `Spent(PoolTavily)`.
+- **Stand-in replies, accepted by the user:** the recorded replies in pipeline_test.go are hand-written stand-ins, not real model output. T3.6b must replace them with real recordings from `testdata/eval/replies/`.
 
 ---
 
