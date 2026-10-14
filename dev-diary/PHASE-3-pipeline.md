@@ -118,7 +118,7 @@ requires:   T1.1, T3.2
 fixture-ok: yes
 size:       L · frontier
 owns:       internal/pipeline/judge.go, internal/pipeline/judge_test.go
-status:     in-review
+status:     done
 ```
 Super receives the child's age, the six area questions, and every verified finding: id, area, stance, source kind or review number, claim, and quote. It returns one grade per area, citing finding ids. A grade cannot cite anything else.
 
