@@ -194,6 +194,21 @@ func runOne(root, models string, e Expectation) Result {
 	tc.Retry.Sleep = func(context.Context, time.Duration) error { return nil }
 
 	reader, judge := chatters(root, models, e.Slug)
+	if models == "replay" {
+		dir := filepath.Join(root, "testdata", "eval", "replies", e.Slug)
+		if st, err := os.Stat(dir); err != nil || !st.IsDir() {
+			res.Err = fmt.Sprintf("replay: no recordings for %s (want %s; record them with T3.6b)", e.Title, dir)
+			return res
+		}
+	}
+	defer func() {
+		if res.Err != "" {
+			return
+		}
+		if msg := replayMisses(reader, judge); msg != "" {
+			res.Err = msg
+		}
+	}()
 	res.Models = reader.Settings().Model + " + " + judge.Settings().Model
 	now := func() time.Time { return evalNow }
 	p := &pipeline.Pipeline{
@@ -229,6 +244,9 @@ type publicFeed struct {
 
 func (s publicFeed) FeedURL(id int64, page int) string { return s.public.FeedURL(id, page) }
 
+// Storefront is the fixture client's country, for the evidence key.
+func (s publicFeed) Storefront() string { return s.Client.Country }
+
 func chatters(root, models, slug string) (pipeline.Chatter, pipeline.Chatter) {
 	dir := filepath.Join(root, "testdata", "eval", "replies", slug)
 	recorded := false
@@ -241,9 +259,30 @@ func chatters(root, models, slug string) (pipeline.Chatter, pipeline.Chatter) {
 	return keywordReader{}, stanceJudge{}
 }
 
+// replayMisses says how many replayed calls had no recording, or "" when
+// none missed or the models are not replayers. A miss would otherwise show
+// only as a failed chunk or a quietly worse score.
+func replayMisses(cs ...pipeline.Chatter) string {
+	var parts []string
+	for _, c := range cs {
+		if r, ok := c.(*replayer); ok && r.misses.Load() > 0 {
+			parts = append(parts, fmt.Sprintf("%s %d of %d calls", r.role, r.misses.Load(), r.misses.Load()+r.hits.Load()))
+		}
+	}
+	if len(parts) == 0 {
+		return ""
+	}
+	return "replay: no recording for " + strings.Join(parts, ", ")
+}
+
+// quoteCover is the share of a decisive quote's words a finding's quote
+// must carry, when it quotes only a stretch of it, to count as finding it.
+const quoteCover = 2.0 / 3
+
 // compare fills res from the card and the evidence. A decisive quote counts
 // as found when a verified finding in its area, from the same review or
-// URL, quotes it or a stretch of it, after normalizing both. The evidence is
+// URL, quotes all of it, or a stretch of it holding at least quoteCover of
+// its words, after normalizing both. The evidence is
 // searched, not only the card, so a quote the reader found but the judge did
 // not cite still counts as found by the reader.
 func compare(res *Result, e Expectation, card pipeline.Card, ev pipeline.Evidence) {
@@ -296,7 +335,11 @@ func foundQuote(fs []finding.Finding, area checklist.Area, q Quote) bool {
 			continue
 		}
 		got := finding.Normalize(f.Quote)
-		if strings.Contains(got, want) || (len(got) >= finding.MinQuote && strings.Contains(want, got)) {
+		if strings.Contains(got, want) {
+			return true
+		}
+		if len(got) >= finding.MinQuote && strings.Contains(want, got) &&
+			float64(len(strings.Fields(got))) >= quoteCover*float64(len(strings.Fields(want))) {
 			return true
 		}
 	}

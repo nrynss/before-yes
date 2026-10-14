@@ -223,6 +223,25 @@ This is how prompt changes are judged from here on: by the eval, not by reading 
 - **Stand-ins, accepted by the user:** with no recordings, the eval runs on stand-ins, and its baseline above is a stand-in baseline. T3.6b must replace the stand-ins with real recordings in `testdata/eval/replies/` (layout in its README.md) and record a new baseline from the replay run.
 - **Expectations confirmed by the user:** Roblox `developer_record` is flag, Roblox `data` is unknown, and Khan Academy Kids `data` is ok.
 
+**Round 1 remediation (T3.6).**
+
+| ID | Fix | Test |
+|---|---|---|
+| M1 | A decisive quote counts as found only when a finding's quote (same area, same source) holds all of it, or holds a stretch of it with at least 2/3 of its words (`quoteCover`). A 12-character fragment no longer counts. | `TestFoundQuoteNeedsCover` |
+| L1 | `-models replay` names the missing directory ("replay: no recordings for <title> (want testdata/eval/replies/<slug>)") instead of scoring every chunk as failed. A run with recordings that misses any call fails with "replay: no recording for reader N of M calls". | `TestReplayMissingDirIsClear`, `TestReplayMissesReported`, `TestReplayWithoutRecordingsFails` |
+| L2 | The baseline is pinned per title (agreed, decisive found/total, chunks) and in total. | `TestStandinBaselinePinned` |
+
+**Baseline after round 1 (stand-ins, offline; recomputed with the stricter match and the T3.1 gather fixes):**
+
+| Title | grades agree | decisive quotes found | chunks (failed) | missing |
+|---|---|---|---|---|
+| Roblox, 9 | 4/6 | 3/6 | 36 (0) | policy |
+| Minecraft, 9 | 0/6 | 2/5 | 45 (0) | policy, terms |
+| Khan Academy Kids, 5 | 3/6 | 1/5 | 22 (0) | policy, terms |
+| **Total** | **7/18** | **6/16** | | |
+
+The totals did not move. Every quote the stand-in reader matched already holds the whole decisive quote or most of it, so the stricter rule removed no hit, and the T3.1 changes did not change which documents the fixtures serve for these quotes. These are stand-in numbers only. T3.6b replaces them with recorded replies.
+
 ---
 
 ### T3.6b: Quality pass, live on Token Factory

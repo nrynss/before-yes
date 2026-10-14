@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"github.com/nrynss/before-yes/internal/checklist"
 	"os"
 	"path/filepath"
 	"strings"
@@ -120,4 +121,92 @@ func TestReplayWithoutRecordingsFails(t *testing.T) {
 			t.Errorf("%s: replay with no recordings did not fail", r.Title)
 		}
 	}
+}
+
+// A decisive quote is found only by a quote that holds it, or a stretch of
+// it with at least quoteCover of its words. Twelve characters of a long
+// quote is not finding it.
+func TestFoundQuoteNeedsCover(t *testing.T) {
+	want := Quote{Source: "R355", Quote: "if your kid plays Roblox high chance a child predator might ask where you are"}
+	f := func(q string) []finding.Finding {
+		return []finding.Finding{{Area: checklist.Contact, Quote: q, Source: finding.Source{Kind: pipeline.KindReview, Index: 355}}}
+	}
+	for q, ok := range map[string]bool{
+		"Mom here: if your kid plays Roblox high chance a child predator might ask where you are.": true,
+		"plays Roblox high chance a child predator might ask where you are":                        true, // 12 of 15 words
+		"if your kid plays Roblox": false, // 5 of 15
+		"a child predator":         false,
+	} {
+		if got := foundQuote(f(q), checklist.Contact, want); got != ok {
+			t.Errorf("foundQuote(%q) = %v, want %v", q, got, ok)
+		}
+	}
+	if foundQuote(f(want.Quote), checklist.Money, want) {
+		t.Error("a quote in another area counted")
+	}
+}
+
+// The replay misses report names the role and the count.
+func TestReplayMissesReported(t *testing.T) {
+	r := &replayer{role: "reader"}
+	r.misses.Add(2)
+	r.hits.Add(3)
+	if msg := replayMisses(r, keywordReader{}); !strings.Contains(msg, "reader 2 of 5 calls") {
+		t.Errorf("replayMisses = %q", msg)
+	}
+	if msg := replayMisses(&replayer{role: "judge"}); msg != "" {
+		t.Errorf("no misses reported %q", msg)
+	}
+}
+
+// The stand-in baseline, pinned. A change to the gatherer, reader,
+// judge, scoring or fixtures that moves it must update this table and the
+// T3.6 notes together.
+func TestStandinBaselinePinned(t *testing.T) {
+	rs, err := evaluate(root, "standin")
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := map[string][4]int{ // agreed/6, decisive found/total, chunks
+		"Roblox":            {4, 3, 6, 36},
+		"Minecraft":         {0, 2, 5, 45},
+		"Khan Academy Kids": {3, 1, 5, 22},
+	}
+	agreed, found, total := 0, 0, 0
+	for _, r := range rs {
+		w, ok := want[r.Title]
+		if !ok {
+			t.Errorf("unpinned title %q", r.Title)
+			continue
+		}
+		if got := [4]int{r.Agreed, r.DecisiveHit, r.DecisiveAll, r.Chunks}; got != w {
+			t.Errorf("%s: agreed, found, total, chunks = %v, pinned %v", r.Title, got, w)
+		}
+		agreed, found, total = agreed+r.Agreed, found+r.DecisiveHit, total+r.DecisiveAll
+	}
+	if agreed != 7 || found != 6 || total != 16 {
+		t.Errorf("total grades %d/18, quotes %d/%d; pinned 7/18, 6/16", agreed, found, total)
+	}
+}
+
+// Replay mode names the missing recordings directory, rather than scoring
+// every chunk as failed.
+func TestReplayMissingDirIsClear(t *testing.T) {
+	if _, err := os.Stat(filepath.Join(root, "testdata", "eval", "replies", "roblox")); err == nil {
+		t.Skip("recordings exist")
+	}
+	for _, r := range mustEval(t, "replay") {
+		if !strings.Contains(r.Err, "no recordings for "+r.Title) {
+			t.Errorf("%s: err %q", r.Title, r.Err)
+		}
+	}
+}
+
+func mustEval(t *testing.T, models string) []Result {
+	t.Helper()
+	rs, err := evaluate(root, models)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return rs
 }
