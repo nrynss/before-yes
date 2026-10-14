@@ -61,7 +61,7 @@ requires:   T1.2, T3.1
 fixture-ok: yes
 size:       L · frontier
 owns:       internal/pipeline/doc.go, internal/pipeline/read.go, internal/pipeline/read_test.go
-status:     drafted
+status:     in-review
 ```
 **Chunking.** Token Factory serves Nano with a 32k context and 4k output tokens. Reviews share a chunk. A long document is split on paragraph or sentence boundaries, with a small overlap and rune-safe cuts, and every piece keeps its document's ref. Each segment is labelled `[R312]` for a review or `[D3]` for a document.
 
@@ -70,6 +70,14 @@ status:     drafted
 **Verification.** Every finding is checked against the whole text of the document its ref names (T1.2). A ref outside the chunk counts as unquoted. Calls run with bounded concurrency. A chunk whose call fails is counted and skipped. A check fails only if every chunk fails.
 
 **Done when:** With recorded Nano replies for the fixtures, the review 312 equivalent in the "no" title survives as a risk finding, every invented quote is dropped, and drop counts are reported by reason.
+
+**Implementation notes (T3.2).**
+- `Reader.Read(ctx, title, ref, docs)` returns `Read{Findings, Drops, Chunks, Failed, Cost}`. Every call goes through `chat()`, which uses `Meter.Spend` on `spend.PoolModel` with kind `<provider>:read`. The card cost is what the meter settled at.
+- Each chunk's reply is parsed, and any ref outside that chunk counts as unquoted. Then one `finding.Verify` runs over all chunks against every document's whole text, so duplicates collapse across chunks.
+- Concurrency is bounded (default 4). A failed call, or a reply that will not parse, is counted in `Failed` and skipped. Read errors only when every chunk fails.
+- `split` cuts always land on rune boundaries, including the overlap start; a test exercises this with multibyte text that has no spaces.
+- The "recorded Nano replies" here are hand-written replies inside read_test.go, served by a fake model keyed by segment ref. Real recordings belong to T3.6b (testdata/eval/replies/), which needs keys. Against the Roblox fixtures, review 355 (the fixtures' review-312 equivalent) survives as a contact risk. Invented quotes, a ref from another chunk and a ref no document has are all dropped as unquoted; bad area, bad stance, short quote and duplicate drops are counted.
+- `Chatter` (the model surface) and `chat()` live in read.go and are reused by the judge.
 
 ---
 
