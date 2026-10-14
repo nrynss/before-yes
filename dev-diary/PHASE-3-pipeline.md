@@ -161,7 +161,7 @@ requires:   T3.2, T3.3
 fixture-ok: yes
 size:       M · mid
 owns:       internal/pipeline/pipeline.go, internal/pipeline/pipeline_test.go
-status:     in-review
+status:     done
 ```
 Split the run into `Collect(title) → Evidence` and `Decide(evidence, age) → Card`. Collect is where the Tavily credits and most model tokens go. It is cached by title, plan version, storefront and reader model, so asking about the same title for another age costs one judge call.
 
@@ -321,9 +321,9 @@ T3.1 calls this when the review feed returns nothing. The card's small print say
 
 ## Exit Criteria
 
-- [ ] Review 312 decides the card end to end, by test.
-- [ ] No finding reaches a card without a verified quote.
-- [ ] A second age on cached evidence makes no Tavily or reader call.
+- [x] Review 312 decides the card end to end, by test. (Review 355, the captures' equivalent: `TestReview355DecidesTheCard`.)
+- [x] No finding reaches a card without a verified quote. (`finding.Verify` in the reader; the invented R356 quote never reaches the card in `TestReview355DecidesTheCard`.)
+- [x] A second age on cached evidence makes no Tavily or reader call. (`TestReview355DecidesTheCard`: the second age books only the judge.)
 - [ ] Alternatives found with Tavily and checked the same way.
 - [ ] Offline eval baseline and live Token Factory results recorded.
 - [ ] All four kinds of title handled.
