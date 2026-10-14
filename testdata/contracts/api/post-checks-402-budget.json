@@ -1,0 +1,22 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/api/checks",
+    "body": {
+      "title": "Fortnite",
+      "age": 11
+    }
+  },
+  "response": {
+    "status": 402,
+    "body": {
+      "error": {
+        "code": "budget_exhausted",
+        "message": "today's budget for fresh checks is spent",
+        "detail": {
+          "pool": "daily_checks"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/api/checks",
+    "body": {
+      "title": "",
+      "age": 40
+    }
+  },
+  "response": {
+    "status": 400,
+    "body": {
+      "error": {
+        "code": "invalid_request",
+        "message": "title is required and age must be between 2 and 17"
+      }
+    }
+  }
+}

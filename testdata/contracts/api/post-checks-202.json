@@ -1,0 +1,16 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/api/checks",
+    "body": {
+      "title": "Roblox",
+      "age": 9
+    }
+  },
+  "response": {
+    "status": 202,
+    "body": {
+      "check_id": "j_3Fh8sQ2mVx7Kp1Lz9RtWc"
+    }
+  }
+}

@@ -1,0 +1,13 @@
+GET /api/checks/j_9Qm2Wd5Hn8Bx4Kv7Ts1Ra/events
+Accept: text/event-stream
+
+200 text/event-stream
+
+id: 1
+event: progress
+data: {"job_id":"j_9Qm2Wd5Hn8Bx4Kv7Ts1Ra","stage":"gather","detail":{"message":"searching for the privacy policy"}}
+
+id: 2
+event: error
+data: {"job_id":"j_9Qm2Wd5Hn8Bx4Kv7Ts1Ra","status":"error","error":{"code":"budget_exhausted","message":"the Token Factory budget is spent","detail":{"pool":"token_factory"}}}
+

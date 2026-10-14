@@ -1,0 +1,19 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/api/checks",
+    "body": {
+      "title": "Fortnite",
+      "age": 11
+    }
+  },
+  "response": {
+    "status": 503,
+    "body": {
+      "error": {
+        "code": "live_checks_off",
+        "message": "live checks are switched off; cached cards are still served"
+      }
+    }
+  }
+}

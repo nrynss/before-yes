@@ -1,0 +1,15 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/api/checks/j_9Qm2Wd5Hn8Bx4Kv7Ts1Ra"
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "id": "j_9Qm2Wd5Hn8Bx4Kv7Ts1Ra",
+      "status": "error",
+      "code": "no_sources",
+      "message": "nothing could be read about this title"
+    }
+  }
+}

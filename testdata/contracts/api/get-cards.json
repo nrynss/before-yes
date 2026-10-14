@@ -1,0 +1,37 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/api/cards"
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "cards": [
+        {
+          "id": "c_7Hq2mXv9pK3wLr8sTn4bYe",
+          "title": "Roblox",
+          "age": 9,
+          "verdict": "no",
+          "checklist_version": "v1",
+          "checked_at": "2026-10-13T18:58:40Z"
+        },
+        {
+          "id": "c_Mn8cRf4tZq1xHw6pLs3kVb",
+          "title": "Minecraft",
+          "age": 9,
+          "verdict": "yes_with_settings",
+          "checklist_version": "v1",
+          "checked_at": "2026-10-13T18:58:40Z"
+        },
+        {
+          "id": "c_Kh3nAc9dYm2sWq7vLp4tRx",
+          "title": "Khan Academy Kids",
+          "age": 5,
+          "verdict": "yes",
+          "checklist_version": "v1",
+          "checked_at": "2026-10-13T18:58:40Z"
+        }
+      ]
+    }
+  }
+}

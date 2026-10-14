@@ -108,7 +108,7 @@ requires:   T1.3
 fixture-ok: yes
 size:       S · frontier
 owns:       docs/api.md, testdata/contracts/api/
-status:     not-started
+status:     in-review
 ```
 Write down the routes and their bodies:
 
@@ -130,6 +130,13 @@ The progress event's `detail` carries `{"message": "..."}`, for example "reading
 
 **Done when:** `docs/api.md` covers every route, code and event, with one example request and response per route in `testdata/contracts/api/`.
 
+
+**Implementation notes (in review).**
+- `docs/api.md` covers the seven routes, every code (Keel's `invalid_request`, `not_found`, `internal_error`, `job_failed`, the gate's `rate_limited` and `passcode_required`, and Before Yes's five), and every stream event. `testdata/contracts/api/` holds at least one request and response per route, plus refusal examples for each request-time code and one stream ending `done` and one ending `error`.
+- Job status uses Keel's values: a failed check is `error`, not `failed`.
+- Choices made here, listed under "Decisions taken in this contract" in the doc: HTTP 402 for `budget_exhausted` at request time, 503 for `live_checks_off` and `busy`, 403 for `passcode_required` (Keel's gate), and age 2 to 17.
+- `get-card.json` embeds `card-no.json`. Nothing tests that the two stay equal yet; T4.1 or T4.4 should add that check when the handlers exist.
+- The `job.Failure` exit criterion is documented here. It is proven only when T4.1 builds the job.
 ---
 
 ## Exit Criteria
