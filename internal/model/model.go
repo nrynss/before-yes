@@ -63,8 +63,10 @@ type Client struct {
 // New returns a client for s. key is read on every call, so a rotated secret
 // takes effect without a restart. A nil key reads as no key at all.
 //
-// Extra is copied, nested maps included, so a caller that keeps the map it
-// passed in cannot change a later request through it.
+// Extra is copied, and every nested map[string]any inside it, so a caller
+// that keeps the map it passed in cannot change a later request through it.
+// A map reached through any other container — inside a slice, or a
+// map[string]string — is kept as it is, so do not mutate one after New.
 func New(s Settings, key func() (string, error)) (*Client, error) {
 	if s.BaseURL == "" || s.Model == "" {
 		return nil, errors.New("model: base_url and model are required")
@@ -95,8 +97,9 @@ func New(s Settings, key func() (string, error)) (*Client, error) {
 	}, nil
 }
 
-// Settings returns the role's settings. Extra is copied, nested maps
-// included, so nothing a caller does to the result can change the client.
+// Settings returns the role's settings. Extra is copied, and every nested
+// map[string]any inside it, so nothing a caller does to the result can change
+// the client; a map reached through any other container is shared, as in New.
 func (c *Client) Settings() Settings {
 	s := c.s
 	s.Extra = cloneExtra(s.Extra)
@@ -106,8 +109,10 @@ func (c *Client) Settings() Settings {
 // cloneExtra copies m so a caller and the client cannot reach each other
 // through it. Nested map[string]any values — the thinking-switch objects
 // hosts take — are copied all the way down. Values of any other type,
-// slices included, are copied as they are: the client keeps no alias to a
-// map, but a caller should not mutate a slice it left in Extra.
+// slices included, are copied as they are. A map reached through any other
+// container — a map[string]string, or a map inside a slice — is stored as
+// the caller's own map, so a caller must not mutate one after New or
+// Settings.
 func cloneExtra(m map[string]any) map[string]any {
 	if m == nil {
 		return nil
