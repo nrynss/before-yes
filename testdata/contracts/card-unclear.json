@@ -1,0 +1,93 @@
+{
+  "id": "c_Tc6vRb1nQ8zKp2dWm5sLhA",
+  "title": "Toca Life World",
+  "kind": "ios",
+  "age": 6,
+  "checklist_version": "v1",
+  "checked_at": "2026-10-13T18:58:40Z",
+  "collected_at": "2026-10-13T18:58:00Z",
+  "verdict": "unclear",
+  "grades": [
+    {
+      "area": "contact",
+      "level": "unknown",
+      "findings": [],
+      "reason": "No source settled whether players can message each other."
+    },
+    {
+      "area": "money",
+      "level": "ok_with_setting",
+      "setting": "Ask to Buy (Family Sharing)",
+      "findings": [
+        "f_2354881628f44dd5"
+      ],
+      "reason": "In-app purchases are sold; Ask to Buy stops them."
+    },
+    {
+      "area": "data",
+      "level": "unknown",
+      "findings": []
+    },
+    {
+      "area": "age_gating",
+      "level": "unknown",
+      "findings": []
+    },
+    {
+      "area": "content",
+      "level": "unknown",
+      "findings": [],
+      "reason": "No reviews were read."
+    },
+    {
+      "area": "developer_record",
+      "level": "ok",
+      "findings": [],
+      "reason": "No fines or actions reported."
+    }
+  ],
+  "settings": [
+    "Ask to Buy (Family Sharing)"
+  ],
+  "findings": [
+    {
+      "id": "f_2354881628f44dd5",
+      "area": "money",
+      "claim": "The game sells in-app purchases billed to a card",
+      "stance": "risk",
+      "quote": "bill your credit card or use other payment methods if you make an In-App Purchase",
+      "source": {
+        "url": "https://www.tocaboca.com/docs/en/terms-of-service",
+        "kind": "terms",
+        "title": "Terms of Service - Toca Boca",
+        "fetched_at": "2026-10-13T18:57:30Z"
+      }
+    }
+  ],
+  "alternatives": [],
+  "app": null,
+  "stats": {
+    "sources": 9,
+    "reviews": 0,
+    "chunks": 31,
+    "failed_chunks": 1,
+    "drops": {
+      "bad_area": 1,
+      "bad_stance": 0,
+      "no_quote": 2,
+      "unquoted": 4,
+      "duplicates": 3
+    },
+    "conflicted_areas": [],
+    "missing_kinds": [
+      "review",
+      "reddit",
+      "news"
+    ],
+    "tavily_credits": 8,
+    "read_cost_nano": 11800000,
+    "judge_cost_nano": 13600000,
+    "reader_model": "nvidia/nvidia-nemotron-3-nano-30b-a3b",
+    "judge_model": "nvidia/nemotron-3-super-120b-a12b"
+  }
+}

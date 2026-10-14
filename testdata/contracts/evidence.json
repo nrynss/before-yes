@@ -1,0 +1,118 @@
+{
+  "title": "Roblox",
+  "kind": "ios",
+  "collected_at": "2026-10-13T18:58:00Z",
+  "app": {
+    "track_id": 431946152,
+    "name": "Roblox",
+    "seller": "Roblox Corporation",
+    "seller_url": "http://www.roblox.com/",
+    "store_url": "https://apps.apple.com/us/app/roblox/id431946152?uo=4",
+    "content_rating": "12+",
+    "price": "Free",
+    "genre": "Games",
+    "description": "ROBLOX – MILLIONS OF GAMES ACROSS EVERY GENRE. PLAY FREE."
+  },
+  "findings": [
+    {
+      "id": "f_f388c9866abc9bb6",
+      "area": "contact",
+      "claim": "A parent reports that a child predator may ask a child where they are",
+      "stance": "risk",
+      "quote": "if your kid plays Roblox high chance a child predator might ask where you are",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/id=431946152/sortby=mostrecent/json",
+        "kind": "review",
+        "index": 355,
+        "fetched_at": "2026-10-13T18:57:30Z"
+      }
+    },
+    {
+      "id": "f_bafb54e5b334df04",
+      "area": "contact",
+      "claim": "A player reports moderation does not stop predators",
+      "stance": "risk",
+      "quote": "they can’t stop the child predators and E-Daters",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/id=431946152/sortby=mostrecent/json",
+        "kind": "review",
+        "index": 242,
+        "fetched_at": "2026-10-13T18:57:30Z"
+      }
+    },
+    {
+      "id": "f_18122cb5811971ae",
+      "area": "contact",
+      "claim": "Chat can be limited to friends or turned off",
+      "stance": "mitigation",
+      "quote": "consider setting chat to \"friends only\" or turning it off completely",
+      "source": {
+        "url": "https://www.commonsensemedia.org/articles/parents-ultimate-guide-to-roblox",
+        "kind": "forum",
+        "title": "Parents' Ultimate Guide to Roblox | Common Sense Media",
+        "fetched_at": "2026-10-13T18:57:30Z"
+      }
+    },
+    {
+      "id": "f_d1e13ff8269d5ba2",
+      "area": "money",
+      "claim": "A child reports a Robux purchase that did not arrive in full",
+      "stance": "risk",
+      "quote": "I got Robux and I got only 246 Robux instead of 1800",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/id=431946152/sortby=mostrecent/json",
+        "kind": "review",
+        "index": 1,
+        "fetched_at": "2026-10-13T18:57:30Z"
+      }
+    },
+    {
+      "id": "f_2a39c5128c2a1f28",
+      "area": "age_gating",
+      "claim": "A 14-year-old reports the age check placed them at 9-12",
+      "stance": "risk",
+      "quote": "Im 14 but it said 9-12 on the age check",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/id=431946152/sortby=mostrecent/json",
+        "kind": "review",
+        "index": 147,
+        "fetched_at": "2026-10-13T18:57:30Z"
+      }
+    },
+    {
+      "id": "f_5764e8d54ee407cb",
+      "area": "content",
+      "claim": "A reviewer reports inappropriate horror games",
+      "stance": "risk",
+      "quote": "It’s also a very inappropriate game with all the horror games",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/id=431946152/sortby=mostrecent/json",
+        "kind": "review",
+        "index": 491,
+        "fetched_at": "2026-10-13T18:57:30Z"
+      }
+    }
+  ],
+  "stats": {
+    "sources": 9,
+    "reviews": 500,
+    "chunks": 31,
+    "failed_chunks": 1,
+    "drops": {
+      "bad_area": 1,
+      "bad_stance": 0,
+      "no_quote": 2,
+      "unquoted": 4,
+      "duplicates": 3
+    },
+    "conflicted_areas": [],
+    "missing_kinds": [
+      "news"
+    ],
+    "tavily_credits": 8,
+    "read_cost_nano": 11800000,
+    "judge_cost_nano": 0,
+    "reader_model": "nvidia/nvidia-nemotron-3-nano-30b-a3b",
+    "judge_model": ""
+  }
+}

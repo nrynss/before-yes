@@ -81,7 +81,7 @@ requires:   T1.1, T1.2
 fixture-ok: yes
 size:       S · frontier
 owns:       internal/pipeline/types.go, testdata/contracts/evidence.json, testdata/contracts/card-*.json
-status:     not-started
+status:     in-review
 ```
 **Evidence** is everything read about a title before any age applies: title, collected at, App Store info, verified findings, stats. It is cached by title and reused across ages.
 
@@ -91,6 +91,15 @@ Commit one example card per verdict (`card-yes.json`, `card-settings.json`, `car
 
 **Done when:** The example payloads round-trip through the Go types with no loss, and a test fails if a field is added to a type without updating the examples.
 
+
+**Implementation notes (in review).**
+- **Outside `owns`:** `internal/pipeline/types_test.go`. The Done-when needs a test and `pipeline_test.go` belongs to T3.4, so the test lives in its own file. Raise it if a reviewer wants it moved.
+- `card-unclear.json` is committed because T1.1 provisionally keeps `unclear`.
+- **The examples are generated, not hand-written.** `go test ./internal/pipeline -run TestGenerate -update` builds them from the T0.4 fixtures: every quote goes through `finding.Verify` against real review or Tavily text, and every grade through `Enforce` and `Decide`. Without `-update` the same test fails if a committed file is stale. Stats, card ids and times are illustrative.
+- **Review 312:** in the captured Roblox feed, review 312 is not about contact. `card-no.json` uses review 355 ("if your kid plays Roblox high chance a child predator might ask where you are") as the deciding contact quote. The brief's "review 312" is the illustration; the index will be whatever the live feed holds.
+- `card-unclear.json` uses Toca Life World with reviews withheld, as a shape example only. It is not a prediction (the README expects yes with settings).
+- Tests: strict decode with unknown fields refused and re-encode compared as JSON (round trip); every JSON member path of `Card` and `Evidence` must appear in at least one example (adding a field fails); examples obey `Decide`, `Enforce`, `Settings`, `checklist.Version` and the finding id hash.
+- Money in nanodollars (`read_cost_nano`, `judge_cost_nano`). `app` is `null` when no App Store hit matched. Optional values are present-but-empty rather than omitted, except `grades[].setting` and `grades[].reason`.
 ---
 
 ### T1.4: HTTP API and error codes ★
