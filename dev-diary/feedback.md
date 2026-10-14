@@ -16,6 +16,8 @@ Each entry gives what happened, the evidence, what it cost, and what would fix i
 
 - **Fixed in v0.7.1–v0.7.3:** cost-store namespaces could not share one file (nrynss/keel#82), and a failed job always carried `job_failed` (nrynss/keel#83). Both were found by this project and fixed upstream.
 
+- **An error event nests the envelope one level deeper than its doc comment suggests.** `wire.ErrorEvent.Error` holds the whole `{"error": {code, message, detail}}` body, so the frame reads `"error":{"error":{...}}`. It is consistent (one parser for responses and events), but easy to document wrongly; T1.4 did. *Evidence:* `testdata/contracts/api/events-error.txt`, written by `wire.WriteEvent` with `wire.NewErrorEvent`. *Fix:* show a full example frame in the `ErrorEvent` doc.
+
 ## Token Factory and Nemotron
 
 - *No entries yet.* T2.1b makes the first live calls. Record model ids, the thinking switch, usage reporting, rate limits and latency there.

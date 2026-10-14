@@ -8,8 +8,11 @@
     "body": {
       "id": "j_9Qm2Wd5Hn8Bx4Kv7Ts1Ra",
       "status": "error",
-      "code": "no_sources",
-      "message": "nothing could be read about this title"
+      "code": "budget_exhausted",
+      "message": "the Token Factory budget is spent",
+      "detail": {
+        "pool": "token_factory"
+      }
     }
   }
 }

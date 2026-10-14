@@ -141,7 +141,7 @@ Commit one example card per verdict (`card-yes.json`, `card-settings.json`, `car
 requires:   T1.3
 fixture-ok: yes
 size:       S · frontier
-owns:       docs/api.md, testdata/contracts/api/
+owns:       docs/api.md, testdata/contracts/api/, internal/pipeline/api_examples_test.go
 status:     in-review
 ```
 Write down the routes and their bodies:
@@ -171,6 +171,17 @@ The progress event's `detail` carries `{"message": "..."}`, for example "reading
 - Choices made here, listed under "Decisions taken in this contract" in the doc: HTTP 402 for `budget_exhausted` at request time, 503 for `live_checks_off` and `busy`, 403 for `passcode_required` (Keel's gate), and age 2 to 17.
 - `get-card.json` embeds `card-no.json`. Nothing tests that the two stay equal yet; T4.1 or T4.4 should add that check when the handlers exist.
 - The `job.Failure` exit criterion is documented here. It is proven only when T4.1 builds the job.
+
+**Remediation, round 1** ([review](adversarial-review/t1.4-round1.md)). The orchestrator added `internal/pipeline/api_examples_test.go` to `owns`. Nothing under `testdata/` compiles, so the API examples' tests live in the pipeline package beside T1.3's contract tests.
+
+| Finding | Fix | Test |
+|---|---|---|
+| M1 | `docs/api.md` states the order of answers for `POST /api/checks`: gate, then validation, then the **card cache**, then joining a running check, then `live_checks_off`, `budget_exhausted`, `busy`, then a new check. A fresh cached card answers `200` even when live checks are off, the budget is spent or the server is busy. New example: `post-checks-200-cached-while-live-off.json`. | doc and example. The ordering itself is pinned when T4.1 builds the handler |
+| L1 | `get-card.json` and `get-checklist.json` are generated from `card-no.json` and the `checklist` package, and a test fails when either drifts. `post-checks-200` and `get-check-done` must name the card's id. | `TestAPICardMatchesContract`, `TestAPIChecklistMatches`, `TestAPIGenerate` |
+| L2 | The wording is corrected: `code` comes from `Result.Code`, and `detail` from `Result.Detail`, which is now exposed (`detail?`) so `detail.pool` survives a reconnect. `message` is the server's fixed sentence per code, never `Result.Err`'s text. | `get-check-error.json` |
+| L3 | The event streams are now written by `wire.WriteEvent` itself (`event:` before `id:`). Doing this showed that an `error` event nests the full envelope: `"error": {"error": {code, ...}}`. The doc said `"error": {code, ...}`, and now matches Keel. | `TestAPIGenerate` |
+
+Also added: every non-2xx example must be a strict wire envelope whose code appears in `docs/api.md` (`TestAPIErrorEnvelopes`).
 ---
 
 ## Exit Criteria

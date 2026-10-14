@@ -4,9 +4,7 @@
     "path": "/api/checklist"
   },
   "response": {
-    "status": 200,
     "body": {
-      "version": "v1",
       "areas": [
         {
           "id": "contact",
@@ -50,7 +48,9 @@
         "yes_with_settings",
         "no",
         "unclear"
-      ]
-    }
+      ],
+      "version": "v2"
+    },
+    "status": 200
   }
 }
