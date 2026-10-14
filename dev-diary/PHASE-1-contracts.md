@@ -40,7 +40,7 @@ Bump `checklist.Version` whenever an area's wording or a rule changes, because c
 
 
 **Implementation notes (in review).** The scratch draft was not reachable from the implementing session (it lives only in the main checkout), so `internal/checklist/` was written fresh from this spec and the brief.
-- **Verdict question: decided by the user. `unclear` is kept, and the decision is final.** It stops a title with no evidence on contact or content from computing to "yes". Rules in `Decide` (as of `v4`), in order: refuse an incomplete, duplicated or invalid set (`ErrGrades`); any `flag` is `no`; contact or content `unknown` is `unclear`; three or more of six `unknown` is `unclear`; any `unknown` that still cites findings is `unclear`; any `ok_with_setting` is `yes_with_settings`; otherwise `yes`. T1.3 keeps `card-unclear.json`.
+- **Verdict question: decided by the user. `unclear` is kept, and the decision is final.** It stops a title with no evidence on contact or content from computing to "yes". Rules in `Decide` (as of `v5`), in order: refuse an incomplete, duplicated or invalid set (`ErrGrades`); any `flag` is `no`; contact or content `unknown` is `unclear`; three or more of six `unknown` is `unclear`; any `ok_with_setting` is `yes_with_settings`; otherwise `yes`. T1.3 keeps `card-unclear.json`.
 - `Decide` takes grades only. The child's age reaches the verdict through the judge's grades, not through a rule here.
 - `Enforce(grades, map[id]Cited)` takes a small `Cited{Area, Risk}` view of each verified finding, so `checklist` does not import `finding` (T1.2 requires T1.1). It returns six grades in card order plus a `Demotion` list. Beyond the four spec rules it also discards a grade with an unknown area or level, and a second grade for an area, and clears `setting` on any grade demoted to `unknown`.
 - `Decide` also refuses `ok_with_setting` with no setting, so `Enforce` output is the only safe input.
@@ -68,6 +68,18 @@ Bump `checklist.Version` whenever an area's wording or a rule changes, because c
 |---|---|---|
 | M1 | Generalized: in **every** area, `ok` needs at least one remaining mitigation or neutral finding. Otherwise it becomes `unknown` (`ok_without_finding`). That covers `ok` with no findings, and `ok` citing only risks, such as money `ok` on a pay-to-win quote. `Decide` gains a rule (5): an `unknown` area that still cites findings makes the verdict `unclear`, because its evidence did not support the grade. So money `ok` on a pay-to-win risk gives `unclear`, not `yes`. Rules 6 and 7 (settings, yes) are renumbered. An evidence-free `unknown` still counts only toward the three-unknowns rule. | `TestOKNeedsSupportEveryArea` (each area in turn, plus the round-3 money probe), `TestEnforce` money cases |
 | L1 | Settings are trimmed of whitespace and invisible format characters (Cf) at both ends, with the same predicate `blank` uses. So `"\u200bRestricted mode\u200b"` becomes `"Restricted mode"`, and `Settings` dedupes it with the clean form. | `TestSettingInvisibleEdges` |
+
+**Remediation, round 4: user decision.** `checklist.Version` is bumped to `v5`.
+
+- **Decision (the user's): an `ok` grade that cites only risk findings becomes `flag`**, so the verdict is `no`. The verified evidence contradicts the grade. Rule `ok_on_risk_only`. An `ok` with **no** remaining finding becomes `unknown` (`ok_without_finding`), as before. An `ok` citing a risk beside a mitigation or neutral finding stays `ok`, because weighing mixed evidence is the judge's job.
+- **Round 3's extra Decide rule ("an `unknown` that still cites findings is `unclear`") is removed.** It existed only to keep a risk-only `ok` from reaching `yes`, and that case is now a `flag`. The cases still left are an unbacked `flag` or `ok_with_setting` demoted to `unknown`. The spec already says what happens to those (they become `unknown`) and gives them no special verdict, so the spec's own rules apply: contact or content `unknown` is `unclear`, and three or more `unknown` is `unclear`. That is the smallest rule set the spec supports.
+- **Final rules.** `Enforce`, per grade: drop cited ids that are missing or belong to another area, and keep repeated ids once. `flag` with no risk finding becomes `unknown`. `ok_with_setting` with a blank setting or no finding becomes `unknown`. `ok` with no finding becomes `unknown`. `ok` on risks only becomes `flag`. A skipped area is added as `unknown`. An invalid or duplicate grade is discarded. `Decide`: invalid set is refused; any `flag` is `no`; contact or content `unknown` is `unclear`; three or more `unknown` is `unclear`; any `ok_with_setting` is `yes_with_settings`; otherwise `yes`.
+
+| Change | Test |
+|---|---|
+| `ok` on risks only becomes `flag`, in every area. Money `ok` on a pay-to-win risk gives `no`. | `TestOKNeedsSupportEveryArea`, `TestRiskOnlyOKIsNotYes`, `TestEnforce` "...raised to flag" |
+| `ok` with no finding (including only missing ids) becomes `unknown`. One evidence-free `unknown` outside contact and content still allows `yes`. | `TestOKNeedsSupportEveryArea`, `TestEnforce` "ok on missing id is unknown" |
+| Decide rule "an `unknown` with findings is `unclear`" removed. Rules renumbered 1–6. | `TestDecideRules` |
 ---
 
 ### T1.2: Finding format and the quote check ★
@@ -246,7 +258,7 @@ Noted from the review, not this task's: `go mod tidy -diff` is non-empty on `mai
 
 ## Exit Criteria
 
-- [ ] Checklist frozen (`checklist.Version`, now `v4`), with the verdict question decided.
+- [ ] Checklist frozen (`checklist.Version`, now `v5`), with the verdict question decided.
 - [ ] The quote check rejects a changed word and an invented quote, by test.
 - [ ] Example evidence and card payloads committed, one card per verdict.
 - [ ] API and error codes documented, with examples.
