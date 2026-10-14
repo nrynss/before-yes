@@ -12,7 +12,7 @@ Where a phase document and the brief conflict, the brief wins. Record the discre
 
 Each phase document gives an engineer starting cold the complete context for its tasks.
 
-**Current status:** P0 and P1 are done. P2, P3, P4 and P5 can start (each by its own `requires`). An earlier backend draft sits in `scratch/` at the repository root, uncommitted and unreviewed. Tasks it covers show `status: drafted`, which means there is code to start from, not that the task is done. See [Starting from the scratch draft](#starting-from-the-scratch-draft).
+**Current status:** P0 and P1 are done. P2 is 11 of 12. P3 is 6 of 10: the offline pipeline (gather, read, judge, pipeline and eval) is on `main`. P2, P3, P4 and P5 can start (each by its own `requires`). An earlier backend draft sits in `scratch/` at the repository root, uncommitted and unreviewed. Tasks it covers show `status: drafted`, which means there is code to start from, not that the task is done. See [Starting from the scratch draft](#starting-from-the-scratch-draft).
 
 ---
 
@@ -181,7 +181,7 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 | P0 | 9 / 9 | Done. Two exit criteria wait on later tasks: a live Nano call (T2.1b) and the config check (T4.4). CI is green. |
 | P1 | 4 / 4 | Done. The `job.Failure` exit criterion waits on T4.1. The main-checkout pins and `.env` leak check, waived at landing, ran at the P1–P2 integration and passed. |
 | P2 | 11 / 12 | T2.1, T2.1a, T2.1b, T2.1c, T2.1d, T2.2, T2.2b, T2.3, T2.3b, T2.4 and T2.4b are done. T2.5 is landed but blocked on T3.6 for the measured cost per check. |
-| P3 | 1 / 10 | T3.8a is done: App Store page fixtures for all four titles. T3.1–T3.4 and T3.6 are in progress remotely, on stacked branches `task-t3.1-gather` → `task-t3.2-reader` → `task-t3.3-judge` → `task-t3.4-pipeline` → `task-t3.6-eval`. Each has had a round-1 review and remediation. Their scratch files are claimed on `draft/scratch`. The branches predate T2.1c, T2.4b and T3.8a on `main` and need a rebase before landing. |
+| P3 | 6 / 10 | T3.1, T3.2, T3.3, T3.4, T3.6 and T3.8a are done. The offline pipeline runs end to end on fixtures: review 355 decides the Roblox card, and a second age on cached evidence calls only the judge. Next: T3.6b (record real replies to replace the stand-ins), T3.5, T3.7 and T3.8. |
 | P4 | 0 / 5 | Not started. T4.1, T4.2 and T4.4 drafted. |
 | P5 | 0 / 7 | Not started. |
 | P6 | 0 / 6 | Not started. |
@@ -192,6 +192,30 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 
 Newest first. One entry per closed task, finding, or split.
 
+- **T3.1, T3.2, T3.3, T3.4 and T3.6 closed** (PRs #5–#9, stacked). Three review rounds: round 1 and round 2 were remediated, and round 3 approved all five.
+  - **What landed in `internal/pipeline`:**
+    - Gather: a 7-search plan; the official host from the App Store seller URL or a policy hit, using the public suffix list, with shared platforms refused; policy and terms extraction that follows homepage links only on the official host; a not-found page rule pinned to the captured Common Sense 404s; `Gathered.Failures` separates failed calls from absent sources.
+    - Read: chunked and metered; quotes checked by `finding.Verify`; unique review refs.
+    - Judge: the last grades block wins, and a truncated final block is an error; a conflict pass runs with thinking on.
+    - Pipeline: `Collect`/`Decide`, and an evidence cache. The key holds hashed gather and reader versions, the storefront taken from the store, and the reader model. Evidence is not cached when any reader chunk failed or any source call errored.
+    - `tools/eval`: stand-in models and a replay mode.
+  - **Baseline (stand-ins, offline; pinned by `TestStandinBaselinePinned`):**
+
+    | Title | Grades agree | Decisive quotes found | Chunks |
+    |---|---|---|---|
+    | Roblox, 9 | 4/6 | 3/6 | 36 |
+    | Minecraft, 9 | 0/6 | 2/5 | 45 |
+    | Khan Academy Kids, 5 | 3/6 | 1/5 | 22 |
+    | **Total** | **7/18** | **6/16** | |
+
+    These are stand-in numbers. The replies in `testdata/eval/replies` are hand-written, which the user accepted, and T3.6b must replace them with recorded ones.
+  - **New dependency:** `golang.org/x/net` (for `publicsuffix`). A hand-kept two-label rule gets multi-label suffixes and shared hosts wrong. It was already in the module graph at v0.58.0 through keel, so go.mod gains one require line and go.sum two lines, with no version changes.
+  - **Open for T4:**
+    - Evidence for a title whose page never reads (Khan's homepage) is never cached. It needs a short TTL rather than none.
+    - Cache-hit cost: a hit books nothing new. Its `Stats` keep the collect cost paid earlier, so T4 should show judge cost as the new spend and collect cost as "already paid".
+  - **Low notes from the T3.1 round-3 review:** support and link hosts (helpshift.com, zendesk.com, bit.ly, onelink.me, page.link) are not yet on the shared-platform denylist. `errorPage` drops a real page that carries a stray standalone "Page not found" line (the safe direction; no fixture hits it).
+  - **Not run:** the main-checkout pin with `scratch/` and `.env`, and the `.env` leak grep. Neither was reachable from the remote box, so both must run on the user's machine.
+  - **PRs:** to get GitHub to mark the stacked PRs #6–#9 merged, each task branch was fast-forwarded (not forced) to `main`. The branches are kept, and all now point at `main`'s tip.
 - **P2 exit criteria checked; branches and worktrees cleaned up.**
   - **P2:** five of six exit criteria are met and ticked in `PHASE-2-clients.md`. The sixth, the measured cost per check, waits on T3.6, which T2.5 is blocked on.
   - **Removed at the user's request:**
