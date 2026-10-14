@@ -195,6 +195,8 @@ Commit one example card per verdict (`card-yes.json`, `card-settings.json`, `car
 | `card-settings`: age gating `ok` cites "On a child account, multiplayer starts off" (virtual-addiction.com, mitigation). Developer record is now `unknown`, because no fixture quote supports it, which makes two unknowns. The verdict is still `yes_with_settings`. | same | same |
 | `card-unclear`: developer record is now `unknown` (no supporting quote). The verdict is still `unclear`. | same | same |
 | All quotes re-verified under T1.2's round-3 boundary rule. | T1.2 H1 and M1 | `TestGenerate` |
+
+**Round 4 (inherited from T1.1 `v5`).** The examples were regenerated under `v5`. No example grade changed: none of them has an `ok` resting only on risks. The verdicts are still yes, yes_with_settings, no and unclear.
 ---
 
 ### T1.4: HTTP API and error codes ★
