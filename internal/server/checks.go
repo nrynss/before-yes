@@ -143,12 +143,12 @@ func (s *Server) log() *slog.Logger {
 func (s *Server) startCheck(w http.ResponseWriter, r *http.Request) {
 	var req pipeline.Request
 	if err := json.NewDecoder(io.LimitReader(r.Body, 4096)).Decode(&req); err != nil {
-		wire.WriteError(w, http.StatusBadRequest, wire.CodeInvalidRequest, "title is required and age must be between 2 and 17", nil)
+		wire.WriteError(w, http.StatusBadRequest, wire.CodeInvalidRequest, "title is required and age must be between 3 and 17", nil)
 		return
 	}
 	normReq, err := req.Normalize()
 	if err != nil {
-		wire.WriteError(w, http.StatusBadRequest, wire.CodeInvalidRequest, "title is required and age must be between 2 and 17", nil)
+		wire.WriteError(w, http.StatusBadRequest, wire.CodeInvalidRequest, "title is required and age must be between 3 and 17", nil)
 		return
 	}
 	req = normReq

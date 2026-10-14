@@ -38,7 +38,7 @@ The job reports progress as Keel `job.Progress`: stage, current and total when c
   - `NewRunner` configures kind `check` with `Limit` and `Idempotent: false`, ensuring interrupted checks across process restarts are terminated and not rerun.
   - Seam for T4.5: `Checks` interface declared on `Server` without wiring into `startCheck`.
 - HTTP Routes in `Handler()`:
-  - `POST /api/checks` -> `startCheck`: decodes up to 4KB body, validates with `req.Normalize()` (400 `invalid_request` with message `"title is required and age must be between 2 and 17"`), returns 200 `{"card_id": cid}` on `CardCache` hit, starts Keel job on miss, maps `job.ErrLimit` to 503 `busy` with `Retry-After: 20` header and body detail, returns 202 `{"check_id": "j_" + jid}` on start.
+  - `POST /api/checks` -> `startCheck`: decodes up to 4KB body, validates with `req.Normalize()` (400 `invalid_request` with message `"title is required and age must be between 3 and 17"`), returns 200 `{"card_id": cid}` on `CardCache` hit, starts Keel job on miss, maps `job.ErrLimit` to 503 `busy` with `Retry-After: 20` header and body detail, returns 202 `{"check_id": "j_" + jid}` on start.
   - `GET /api/checks/{id}` -> `getCheck`: requires `"j_"` prefix + valid 32-hex Keel ID (bare or invalid IDs rejected with 404 before queries), fetches `Runner.Result`. Reports `running`, `queued`, `done` with `card_id: "c_" + cid`, `error` with matched code/message/detail, or `interrupted` with restart message.
   - `GET /api/checks/{id}/events` -> `checkEvents`: validates `"j_"` check ID and streams SSE topic via `Broker.ServeTopic`.
   - `GET /api/cards/{id}` -> `getCard`: requires `"c_"` prefix + valid 32-hex Keel ID, queries `Cards.Get` and returns 200 with card JSON or 404 `not_found`.
@@ -87,7 +87,7 @@ A failed make is never cached.
   - `CardCache` checks `cards.Latest` within `MaxAge`. Failed makes never write to the card store.
 - Contract notes:
   - public card ids are c_ + a 32-hex Keel id; the store keys on the hex part.
-  - `docs/api.md` mentions ages 2 to 17, while `pipeline.Request.Normalize` enforces 3 to 17.
+  - Age range: `docs/api.md`, `pipeline.MinAge` and the 400 message now all say 3 to 17 (the user chose 3).
   - `storefrontOf` is duplicated in `internal/server/cache.go` because `pipeline.storefrontOf` is unexported.
 
 ---

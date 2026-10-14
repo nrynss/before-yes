@@ -20,7 +20,7 @@ All bodies are JSON. Ids are Keel `id` values: a card id starts `c_`, a check id
 
 ### `POST /api/checks`
 
-- `title`: non-empty string, trimmed. `age`: integer from 2 to 17. Anything else is `400 invalid_request`.
+- `title`: non-empty string, trimmed. `age`: integer from 3 to 17. Anything else is `400 invalid_request`.
 - "Fresh" means a card for the same normalized title, age and `checklist.Version`. The cache window is the server's setting (T4.2), not part of this contract.
 - A double-click joins the running check: the second request gets the same `check_id`.
 - **Order of answers.** The server checks in this order, and the first match answers:
@@ -94,5 +94,5 @@ The Runner puts `Code` and `Detail` on the stream's terminal `error` event, and 
 
 - **402 for `budget_exhausted` at request time**, **503 for `live_checks_off` and `busy`**. HTTP status is advisory; the code is the contract.
 - **`passcode_required` is 403**, matching Keel's `gate`.
-- **Age range 2 to 17.** The brief's audience is 5 to 14; the wider range keeps a sibling's age valid. Narrow it here if the user prefers.
+- **Age range 3 to 17.** The brief's audience is 5 to 14; the wider range keeps a sibling's age valid. The user chose 3 as the floor, matching `pipeline.MinAge` and the Ask form.
 - **`GET /api/status` budget fields** use nanodollars for Token Factory, matching card stats.

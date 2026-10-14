@@ -197,6 +197,8 @@ Newest first. One entry per closed task, finding, or split.
     - Round 1 found thin evidence written over an expired row (High), fixed and pinned with a direct sqlite read.
     - The orchestrator held the first version: it served bare 32-hex ids, against the frozen contract (`docs/api.md`: a card id starts `c_`). Round 3 made public ids `c_` + hex everywhere they leave the package.
   - **T4.1:** `internal/server/checks.go` serves `POST /api/checks`, `GET /api/checks/{id}`, its events stream, `GET /api/cards` and `GET /api/cards/{id}`. Check ids are `j_` + hex. Bad ids are a 404 before any query. Failures carry `budget_exhausted` (with `detail.pool`), `no_sources` or `check_failed`, never `job_failed`. The `Checks` seam for T4.5 is declared, not wired.
+  - **Scratch moves** on `draft/scratch`: T4.2 took `scratch/internal/cards/` (868d653). T4.1 took `scratch/internal/server/server.go` (604fdac) and split the remainder into `server.T4.3.go` (gate) and `server.T4.4.go` (status, checklist, static routes) for those tasks.
+  - **Age range, resolved:** `docs/api.md` said 2 to 17, `pipeline.MinAge` is 3, and the 400 message said "between 2 and 17". The user chose 3 to 17; the orchestrator aligned the doc, the message, its test and `post-checks-400.json`.
   - **Contract gap, open:** the T1.4 fixtures use 22-character made-up ids (`c_7Hq2mXv9pK3wLr8sTn4bYe`); the server emits `c_` + 32 hex. Frontend id checks must accept the server's shape.
   - **Feedback:** two Keel entries: `cache.GetOrMake` hides whether a caller joined a flight, and `wire.WriteError` sets `Retry-After` only for 429.
 - **T5.2 closed (PR #19).** The frontend orchestrator implemented it; a fresh reviewer returned APPROVE with zero findings (`adversarial-review/t5.2-round1.md`).

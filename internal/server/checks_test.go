@@ -816,8 +816,8 @@ func TestCheckInvalidRequest(t *testing.T) {
 			if errResp.Error.Code != "invalid_request" {
 				t.Errorf("code = %q; want invalid_request", errResp.Error.Code)
 			}
-			if errResp.Error.Message != "title is required and age must be between 2 and 17" {
-				t.Errorf("message = %q; want 'title is required and age must be between 2 and 17'", errResp.Error.Message)
+			if errResp.Error.Message != "title is required and age must be between 3 and 17" {
+				t.Errorf("message = %q; want 'title is required and age must be between 3 and 17'", errResp.Error.Message)
 			}
 		})
 	}
