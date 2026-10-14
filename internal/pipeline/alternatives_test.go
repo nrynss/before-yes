@@ -265,16 +265,85 @@ func TestAlternativesOnlyForNoAndSettings(t *testing.T) {
 
 func TestCandidateName(t *testing.T) {
 	for in, want := range map[string]string{
-		"Toca Life World App Review | Common Sense Media": "Toca Life World",
-		"Minecraft: Education Edition - Apps":             "Minecraft",
-		"10 Best Games Like Roblox":                       "",
-		"Safe alternatives to Roblox":                     "",
-		"Top apps for kids":                               "",
-		"Roblox vs Minecraft":                             "",
-		"PBS Kids Games Game Review":                      "PBS Kids Games",
+		"Toca Life World App Review | Common Sense Media":     "Toca Life World",
+		"Minecraft: Education Edition - Apps":                 "Minecraft: Education Edition",
+		"Animal Crossing: New Horizons":                       "Animal Crossing: New Horizons",
+		"\u200eToca Boca World: Game & Play on the App Store": "Toca Boca World: Game & Play",
+		"Sample Game - Apps on Google Play":                   "Sample Game",
+		"Sample Game on Steam":                                "Sample Game",
+		"10 Best Games Like Roblox":                           "",
+		"Safe alternatives to Roblox":                         "",
+		"Top apps for kids":                                   "",
+		"Roblox vs Minecraft":                                 "",
+		"PBS Kids Games Game Review":                          "PBS Kids Games",
 	} {
 		if got := candidateName(in); got != want {
 			t.Errorf("candidateName(%q) = %q, want %q", in, got, want)
 		}
+	}
+}
+
+// The round-1 attack cases: the title's own pages are never candidates.
+func TestSelfInAnyFormSkipped(t *testing.T) {
+	for _, h := range []string{"Roblox on the App Store", "Roblox Parents Guide", "Is Roblox Safe for Kids?", "\u200eRoblox - Apps on Google Play", "ROBLOX App Review | Common Sense Media"} {
+		if !sameTitle(h, "Roblox") {
+			t.Errorf("%q not taken as Roblox itself", h)
+		}
+	}
+	if sameTitle("Robloxian Tycoon", "Roblox") {
+		t.Error("a word containing the title is not the title")
+	}
+	e, s, _, card := altE2E(t)
+	s.hits = append([]tavily.Result{
+		{URL: "https://apps.apple.com/us/app/roblox/id1", Title: "\u200eRoblox on the App Store"},
+		{URL: "https://www.example.com/guide", Title: "Roblox Parents Guide"},
+		{URL: "https://www.example.com/safe", Title: "Is Roblox Safe for Kids?"},
+	}, s.hits...)
+	pending, err := e.p.FindAlternatives(context.Background(), card, "check-1")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var names []string
+	for _, a := range pending {
+		names = append(names, a.Title)
+	}
+	if strings.Join(names, ",") != "Chatty World,Calm Builder,Blank Slate" {
+		t.Errorf("candidates %v", names)
+	}
+}
+
+// A list page's entries become candidates, bounded, from the one metered
+// search's page text. No capture covers a live list page; this is a
+// stand-in.
+func TestListPageEntries(t *testing.T) {
+	list := "Looking for something calmer?\n" +
+		"## 1. Calm Builder\nA gentle building game.\n" +
+		"## 2. Roblox\nThe title itself, skipped.\n" +
+		"3) Quiet Garden - grow plants, no chat\n" +
+		"4. This entry reads like a long sentence about many different things at once\n" +
+		"5. Animal Crossing: New Horizons (Switch)\n" +
+		"6. Sixth Pick\n"
+	got := listNames(list)
+	if strings.Join(got, "|") != "Calm Builder|Roblox|Quiet Garden" {
+		t.Errorf("listNames = %q", got)
+	}
+	e, s, _, card := altE2E(t)
+	s.hits = []tavily.Result{{URL: "https://www.example.com/list", Title: "10 Best Games Like Roblox for Kids", RawContent: list}}
+	pending, err := e.p.FindAlternatives(context.Background(), card, "check-1")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var names []string
+	for _, a := range pending {
+		names = append(names, a.Title)
+		if !strings.HasPrefix(a.Reason, "Listed by example.com") {
+			t.Errorf("reason %q", a.Reason)
+		}
+	}
+	if strings.Join(names, ",") != "Calm Builder,Quiet Garden" {
+		t.Errorf("candidates %v", names)
+	}
+	if s.altCalls != 1 {
+		t.Errorf("searches %d, want 1 (the list is read from the search's page text)", s.altCalls)
 	}
 }

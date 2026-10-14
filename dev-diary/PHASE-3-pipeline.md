@@ -229,6 +229,15 @@ Alternatives multiply cost. They are bounded by count, run after the main card i
 - **Fixtures:** the main card is the captured Roblox fixture (review 355 gives "no"). The alternatives search and the candidates' sources are fakes in `alternatives_test.go`: Calm Builder, which answers every area with a setting; Chatty World, which has a contact risk; and Blank Slate, which says nothing. No live call was made.
 - **Tests:** `TestNoTitleGetsABetterAlternative` (the Done-when: Calm Builder, yes_with_settings, its own card id; the list and self skipped; the count bounded; each candidate under its own ref; a second run reads nothing again, so the evidence is cached); `TestBudgetRefusalLeavesMainCard` (the Done-when: refused candidate checks are marked refused and the card is otherwise byte-identical; a refused search returns the card unchanged); `TestAlternativesOnlyForNoAndSettings`; `TestCandidateName`.
 
+
+**Round-1 remediation (T3.5).**
+
+| Finding | Fix | Test |
+|---|---|---|
+| M1: the title's own pages ("X on the App Store", "X Parents Guide", "Is X Safe for Kids?") became candidates | `sameTitle` skips any single-title hit whose words contain the title's words as a run | `TestSelfInAnyFormSkipped` |
+| L1: names cut at ": "; U+200E kept | `candidateName` keeps ": ", strips only known site suffixes (" - Apps on Google Play", " on the App Store", " on Steam", " \| Common Sense Media", review tails) and every format character | `TestCandidateName` |
+| L2: list pages gave no names | `listNames` reads numbered entries and headings from the one search's page text (`IncludeRaw`), at most three, short names only, the title itself skipped; no extra call is made | `TestListPageEntries` (a stand-in page; no capture covers a live list page) |
+
 ---
 
 ### T3.6: Quality pass on the three titles ★

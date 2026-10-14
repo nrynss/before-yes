@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"regexp"
 	"strings"
+	"unicode"
 
 	"github.com/nrynss/keel/cost"
 
@@ -74,31 +75,96 @@ func alternativesSearch(card Card) tavily.Search {
 	}
 	return tavily.Search{
 		Query:      fmt.Sprintf("safer %s like %s for a %d year old", genre, card.Title, card.Age),
-		MaxResults: 8,
+		MaxResults: 8, IncludeRaw: true,
 	}
 }
 
 var (
-	listicle   = regexp.MustCompile(`(?i)^(the )?(\d+|best|top|safe|safer|good|great|apps?|games?|channels?)\b|\b(like|alternatives?|vs\.?)\b`)
-	reviewTail = regexp.MustCompile(`(?i)\s+(app|game|tv|website|youtube)?\s*review$`)
-	titleCut   = regexp.MustCompile(`\s+[|–—-]\s+|:\s+`)
+	listicle = regexp.MustCompile(`(?i)^(the )?(\d+|best|top|safe|safer|good|great|apps?|games?|channels?)\b|\b(like|alternatives?|vs\.?)\b`)
+	// siteSuffix is the tail a site puts on its own page titles. Only these
+	// are cut; a ": " is kept, so "Animal Crossing: New Horizons" stays
+	// whole.
+	siteSuffix = regexp.MustCompile(`(?i)(\s+[|–—-]\s+.*|\s+on the app store|\s+on steam|\s+(app|game|tv|website|youtube)?\s*review)$`)
+	// listEntry is a numbered entry or a heading in a list page's text:
+	// "1. Minecraft", "2) Toca Life World", "## 3. PBS Kids Games".
+	listEntry = regexp.MustCompile(`(?m)^\s*(?:#{1,4}\s*)?(?:\d{1,2}[.)]\s+)(.+?)\s*$|^#{2,4}\s+(.+?)\s*$`)
 )
+
+// maxListEntries bounds how many names one list page can add.
+const maxListEntries = MaxAlternatives
+
+// cleanName strips invisible format characters (the App Store puts U+200E
+// before its page titles) and spaces.
+func cleanName(s string) string {
+	s = strings.Map(func(r rune) rune {
+		if unicode.Is(unicode.Cf, r) {
+			return -1
+		}
+		return r
+	}, s)
+	return strings.Join(strings.Fields(s), " ")
+}
 
 // candidateName is the title a search hit names, or "" when the hit is a
 // list rather than one title: "Toca Life World App Review | Common Sense
 // Media" names "Toca Life World"; "10 Best Games Like Roblox" names none.
 func candidateName(hitTitle string) string {
-	name := strings.TrimSpace(titleCut.Split(hitTitle, 2)[0])
-	name = strings.TrimSpace(reviewTail.ReplaceAllString(name, ""))
+	name := cleanName(hitTitle)
+	for {
+		cut := strings.TrimSpace(siteSuffix.ReplaceAllString(name, ""))
+		if cut == name {
+			break
+		}
+		name = cut
+	}
 	if name == "" || listicle.MatchString(name) {
 		return ""
 	}
 	return name
 }
 
+// listNames are the titles a list page names in its numbered entries or
+// headings, up to maxListEntries, each cleaned like a hit title and kept
+// short: an entry that reads like a sentence is not a name.
+func listNames(text string) []string {
+	var out []string
+	for _, m := range listEntry.FindAllStringSubmatch(text, -1) {
+		entry := m[1]
+		if entry == "" {
+			entry = m[2]
+		}
+		entry, _, _ = strings.Cut(entry, " - ")
+		entry, _, _ = strings.Cut(entry, " – ")
+		entry, _, _ = strings.Cut(entry, " (")
+		name := candidateName(entry)
+		if name == "" || len(strings.Fields(name)) > 6 {
+			continue
+		}
+		out = append(out, name)
+		if len(out) == maxListEntries {
+			break
+		}
+	}
+	return out
+}
+
+// sameTitle reports whether a hit is about the title itself in any form:
+// its words, in order, inside the hit's ("Roblox on the App Store",
+// "Roblox Parents Guide", "Is Roblox Safe for Kids?").
+func sameTitle(hitText, title string) bool {
+	words := func(s string) string {
+		return " " + strings.Join(strings.FieldsFunc(strings.ToLower(cleanName(s)), func(r rune) bool {
+			return !unicode.IsLetter(r) && !unicode.IsDigit(r)
+		}), " ") + " "
+	}
+	t := words(title)
+	return strings.TrimSpace(t) != "" && strings.Contains(words(hitText), t)
+}
+
 // FindAlternatives runs the search and returns up to MaxAlternatives
 // candidates, pending. A card that does not want alternatives gets none and
-// no search. The search is metered under ref.
+// no search. The search is metered under ref, and asks for page text so a
+// list page's entries can be read without another call.
 func (p *Pipeline) FindAlternatives(ctx context.Context, card Card, ref string) ([]Alternative, error) {
 	if !wantsAlternatives(card.Verdict) {
 		return nil, nil
@@ -110,18 +176,39 @@ func (p *Pipeline) FindAlternatives(ctx context.Context, card Card, ref string) 
 	if err != nil {
 		return nil, fmt.Errorf("alternatives: search: %w", err)
 	}
-	self := appName(card.Title)
-	seen := map[string]bool{self: true}
+	seen := map[string]bool{}
 	var out []Alternative
-	for _, h := range hits {
-		name := candidateName(h.Title)
+	add := func(name, reason string) bool {
 		key := appName(name)
-		if name == "" || seen[key] {
-			continue
+		if name == "" || key == "" || seen[key] || sameTitle(name, card.Title) {
+			return false
 		}
 		seen[key] = true
-		out = append(out, Alternative{Title: name, Reason: "Suggested by " + registrable(h.URL) + ": " + strings.TrimSpace(h.Title), Status: AltPending})
-		if len(out) == MaxAlternatives {
+		out = append(out, Alternative{Title: name, Reason: reason, Status: AltPending})
+		return len(out) == MaxAlternatives
+	}
+	for _, h := range hits {
+		site := registrable(h.URL)
+		if name := candidateName(h.Title); name != "" {
+			if sameTitle(h.Title, card.Title) {
+				continue // the title's own page, guide or safety article
+			}
+			if add(name, "Suggested by "+site+": "+cleanName(h.Title)) {
+				break
+			}
+			continue
+		}
+		text := h.RawContent
+		if text == "" {
+			text = h.Content
+		}
+		full := false
+		for _, name := range listNames(text) {
+			if full = add(name, "Listed by "+site+": "+cleanName(h.Title)); full {
+				break
+			}
+		}
+		if full {
 			break
 		}
 	}
