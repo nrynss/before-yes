@@ -87,7 +87,7 @@ requires:   T1.1, T3.2
 fixture-ok: yes
 size:       L · frontier
 owns:       internal/pipeline/judge.go, internal/pipeline/judge_test.go
-status:     drafted
+status:     in-review
 ```
 Super receives the child's age, the six area questions, and every verified finding: id, area, stance, source kind or review number, claim, and quote. It returns one grade per area, citing finding ids. A grade cannot cite anything else.
 
@@ -98,6 +98,14 @@ The prompt states the weighting rule from the brief: a first-hand report of what
 Every grade then goes through `checklist.Enforce`, and the verdict comes from `checklist.Decide`.
 
 **Done when:** With recorded Super replies, the "no" title's contact area is flagged on the review 312 finding, the conflict pass runs only on conflicted areas, and a grade citing a made-up id is demoted.
+
+**Implementation notes (T3.3).**
+- `Judge.Judge(ctx, title, age, ref, findings, missing)` returns `Judgement{Grades, Demotions, Verdict, Conflicted, ConflictErr, Cost}`.
+- The first pass uses JSON mode with `Fast` merged in. Areas that have both a risk and a mitigation finding are re-judged alone (prompt line "Grade only these areas") with `Think` merged in and a 16000-token cap. Its grades replace the first-pass grades only for those areas. When it fails (a call error or no grades in the reply), the first-pass grades stand and the reason is kept in `ConflictErr`.
+- After that, `checklist.Enforce` runs with `finding.Cited`, then `checklist.Decide`. Both calls are metered (`<provider>:judge` and `<provider>:judge_think`).
+- The prompt lists unread source kinds and says their silence is not evidence, so the data area is not graded `ok` on a policy that was never read.
+- `parseGrades` tries every opening brace, so it copes with reasoning text and code fences in front of the answer.
+- The recorded Super replies are hand-written in judge_test.go, against real verified Roblox finding ids. The contact flag rests on review 355. The conflict pass runs only for contact. A money flag citing a made-up id is demoted to unknown.
 
 ---
 
