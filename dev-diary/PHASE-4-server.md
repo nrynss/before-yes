@@ -136,7 +136,7 @@ requires:   T4.1, T2.5
 fixture-ok: yes
 size:       M · frontier
 owns:       internal/server/byok.go, internal/server/byok_test.go
-status:     not-started
+status:     in-review
 ```
 From the brief's guardrails for judging: demo titles are precomputed, fresh checks are capped per day, and a visitor may paste their own Token Factory and Tavily keys for unlimited use. Those keys are held for the request only and never stored.
 
@@ -145,6 +145,15 @@ A check run on visitor keys uses clients built for that job alone and a meter th
 The daily cap follows T2.5's decision: 5 fresh checks per UTC day, `[budget] daily_fresh_checks`. Enforce it with `spend.Meter.BeginCheck` and then `Done` or `Fail` (T2.4b). Call `BeginCheck` only on a cache miss, before the check's first paid call. End every check with `Done` or `Fail`. A visitor-key check does not count against the cap. As T3.4 notes, a cache hit books nothing new. Show its judge cost as new spend and its collect cost as already paid. The pipeline already calls `BeginCheck` for alternatives: T3.5 reserves one check per fresh (uncached) alternative through `Pipeline.Checks`, and cached ones run free. Set `Pipeline.Checks` to the same `*spend.Meter` the server uses, and reserve only the main check here. Leaving it unset runs alternatives uncapped, and reserving them again counts them twice (feedback.md).
 
 **Done when:** A test runs a check on visitor keys and then scans the database file, the job store and the captured logs for the key and finds nothing. The cap refuses with `budget_exhausted` once spent.
+
+**Implementation notes (T4.5).**
+- **Visitor keys arrive as two headers on `POST /api/checks`:** `X-Token-Factory-Key` and `X-Tavily-Key`. Both or neither; half a pair, an over-long key (512 bytes) or one with spaces or non-printable bytes is `400 invalid_request` with a fixed message that never quotes the key. T5.7 sends these headers. This adds request headers to the contract; no response field and no contract fixture changed.
+- `VisitorPipeline(base, keys)` copies the server's pipeline with new `model.Client`s (reader, judge, and `Entail` when set) and a new `tavily.Client`, each reading the visitor's key, with base's settings and retry tuning, so the evidence cache key is unchanged. Its meter is a `VisitorMeter`, which runs and records each call and draws on none of our pools. `Pipeline.Checks` is nil on the copy, so a visitor's alternatives do not count against the cap either. The App Store client and the evidence cache are shared; neither holds a key. Cards are stored like any other.
+- `VisitorKeys` has unexported fields and redacts in `String`, `GoString`, `LogValue` and `MarshalJSON`. A failed visitor job has every key replaced by `[redacted]` in its error text before the runner stores or logs it, because the model and Tavily clients put the host's error body in the error, and a host may echo the key.
+- **The daily cap:** on a card-cache miss with no visitor keys, `startCheck` calls `Server.Checks.BeginCheck` before starting the job (the order in `docs/api.md`: `budget_exhausted` before `busy`). A spent cap is `402 budget_exhausted`, `detail.pool` `daily_checks`, before any paid call. The job ends the hold with `Done` on a card and `Fail` on any failure or panic; a job that never starts (`busy`) releases it. Only the main check is reserved here.
+- **One meter for the main check and alternatives.** `Handler()` refuses (`ErrInvalidConfig`) unless `Server.Checks` and `Pipeline.Checks` are both nil or the same value. Unset `Pipeline.Checks` would run alternatives uncapped; a second meter would keep a second ledger. T4.4 sets both to the server's `*spend.Meter`.
+- **Outside owns (minimal):** `internal/server/checks.go`. `Handler()` calls `checkCapWiring`; `startCheck` calls `admit` after the cache miss and runs the job through `admission.wrap`, releasing the hold if the job does not start; `work` takes the pipeline to run as a parameter instead of reading `s.Pipeline`, so a visitor check runs on its own copy; the `Checks` doc comment. T4.1's seam had no other way in.
+- A check interrupted by a restart keeps its hold until `spend.DefaultReservationTTL` lapses, then the slot returns; it is never booked.
 
 ---
 
