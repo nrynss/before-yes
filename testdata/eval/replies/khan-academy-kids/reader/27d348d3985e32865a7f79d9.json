@@ -1,8 +1,0 @@
-{
-  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D521]\",\n      \"area\": \"data\",\n      \"claim\": \"A parent reports that Google Classroom may collect student data from some of the Classroom tools, such as YouTube, if they're enabled.\",\n      \"stance\": \"risk\",\n      \"quote\": \"Google Classroom does invite some risks, including data tracking, potential contact with strangers, and even cyberbullying. While Google has stricter privacy practices for its educational apps, it can collect student data from some of the Classroom tools, such as YouTube, if they're enabled.\"\n    },\n    {\n      \"ref\": \"[D521]\",\n      \"area\": \"contact\",\n      \"claim\": \"A parent reports that Google Classroom allows students to see other students' work within the platform, and kids can potentially see other students' work within the platform, too.\",\n      \"stance\": \"risk\",\n      \"quote\": \"Kids can potentially see other students' work within the platform, too.\"\n    },\n    {\n      \"ref\": \"[D521]\",\n      \"area\": \"content\",\n      \"claim\": \"A parent reports that kids can interact with other students and even teachers by text and video using Hangouts or the chat function in Meet.\",\n      \"stance\": \"risk\",\n      \"quote\": \"Kids can interact with other students and even teachers by text and video using Hangouts or the chat function in Meet.\"\n    }\n  ]\n}",
-  "input_tokens": 4543,
-  "output_tokens": 315,
-  "price_nano": 348180,
-  "measured": true,
-  "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B"
-}

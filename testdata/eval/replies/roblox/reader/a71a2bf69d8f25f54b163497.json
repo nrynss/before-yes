@@ -1,8 +1,8 @@
 {
-  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D502]\",\n      \"area\": \"money\",\n      \"claim\": \"Roblox may change the price of Robux or Paid Services at any time.\",\n      \"stance\": \"risk\",\n      \"quote\": \"Roblox may change the price of Robux or of Paid Services as set out in Section 6.6.\"\n    },\n    {\n      \"ref\": \"[D502]\",\n      \"area\": \"money\",\n      \"claim\": \"Paid Access purchases made with Robux are final and non-refundable.\",\n      \"stance\": \"risk\",\n      \"quote\": \"Paid Access paid for in Robux is final and non-refundable and non-transferable, unless otherwise permitted by Roblox or as required by applicable law.\"\n    },\n    {\n      \"ref\": \"[D502]\",\n      \"area\": \"money\",\n      \"claim\": \"A parent must create a payment account for a minor and is responsible for all transactions.\",\n      \"stance\": \"mitigation\",\n      \"quote\": \"If you are under the legal age of majority in your jurisdiction or state of residence, your parent or legal guardian must create the associated account with our Third-Party Payment Processor, including consenting to any additional terms as outlined by them.\"\n    },\n    {\n      \"ref\": \"[D502]\",\n      \"area\": \"money\",\n      \"claim\": \"Third-party payment processors handle transactions and may collect taxes.\",\n      \"stance\": \"neutral\",\n      \"quote\": \"All transactions on the Creator Store are processed by a Third-Party Payment Processor.\"\n    }\n  ]\n}",
+  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D502]\",\n      \"area\": \"money\",\n      \"claim\": \"Roblox may change the price of Robux or paid services at any time.\",\n      \"stance\": \"risk\",\n      \"quote\": \"Roblox may modify, suspend or discontinue the Services, or parts of the Services, including features that involve Robux. For example and without limitation, Roblox may (i) add or remove features, (ii) offer new content or services, (iii) discontinue services or (iv) change the price of Robux or of Paid Services as set out in Section 6.6.\"\n    }\n  ]\n}",
   "input_tokens": 3870,
-  "output_tokens": 347,
-  "price_nano": 315480,
+  "output_tokens": 148,
+  "price_nano": 267720,
   "measured": true,
   "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B"
 }

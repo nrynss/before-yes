@@ -1,8 +1,8 @@
 {
-  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D528]\",\n      \"area\": \"data\",\n      \"claim\": \"A parent reports that the app collects full names, driver’s license numbers, and identity numbers from government-issued documents, and that this data can be shared with third parties and is not automatically deletable.\",\n      \"stance\": \"risk\",\n      \"quote\": \"full names, driver’s license numbers, and identity numbers from other government-issued documents including passports as compromised\"\n    }\n  ]\n}",
+  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D528]\",\n      \"area\": \"data\",\n      \"claim\": \"A parent reports that the app collects full names, driver’s license numbers, and identity numbers from government-issued documents.\",\n      \"stance\": \"risk\",\n      \"quote\": \"full names, driver’s license numbers, and identity numbers from other government-issued documents including passports as compromised\"\n    }\n  ]\n}",
   "input_tokens": 3573,
-  "output_tokens": 114,
-  "price_nano": 241740,
+  "output_tokens": 97,
+  "price_nano": 237660,
   "measured": true,
   "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B"
 }

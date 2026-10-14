@@ -1,8 +1,0 @@
-{
-  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D523]\",\n      \"area\": \"data\",\n      \"claim\": \"The FTC says the Weight Watchers diet app collected data on kids as young as 8.\",\n      \"stance\": \"risk\",\n      \"quote\": \"Weight Watchers diet app collected data on kids as young as 8, FTC says\"\n    }\n  ]\n}",
-  "input_tokens": 3498,
-  "output_tokens": 89,
-  "price_nano": 231240,
-  "measured": true,
-  "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B"
-}

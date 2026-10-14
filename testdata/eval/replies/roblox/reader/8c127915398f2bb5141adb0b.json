@@ -1,8 +1,8 @@
 {
-  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D502]\",\n      \"area\": \"contact\",\n      \"claim\": \"A parent reports that strangers can message or voice chat with your child, and it is on by default.\",\n      \"stance\": \"risk\",\n      \"quote\": \"been unable to resolve the Dispute, either party may commence an arbitration (or litigation, if the claim falls within an exception to the Arbitration Agreement (as defined below)). However, if the parties have not engaged in the MIDR process as set forth in this section, the DisputeDispute may not be submitted to arbitration, nor may a claim be filed in court, until the MIDR process occurs.\"\n    }\n  ]\n}",
+  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D502]\",\n      \"area\": \"contact\",\n      \"claim\": \"A parent reports that strangers can message or voice chat with your child, and it is on by default.\",\n      \"stance\": \"risk\",\n      \"quote\": \"strangers can message or voice chat with your child, and it is on by default\"\n    }\n  ]\n}",
   "input_tokens": 3809,
-  "output_tokens": 154,
-  "price_nano": 265500,
+  "output_tokens": 89,
+  "price_nano": 249900,
   "measured": true,
   "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B"
 }

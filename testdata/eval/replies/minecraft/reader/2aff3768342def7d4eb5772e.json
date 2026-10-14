@@ -1,8 +1,8 @@
 {
-  "text": "{\n  \"findings\": []\n}",
+  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D532]\",\n      \"area\": \"contact\",\n      \"claim\": \"A parent reports that strangers can message or voice chat with your child, and it is on by default.\",\n      \"stance\": \"risk\",\n      \"quote\": \"Play with your friends on your own personal server.\"\n    },\n    {\n      \"ref\": \"[D532]\",\n      \"area\": \"money\",\n      \"claim\": \"A parent reports that the app pushes in-app purchases and subscription traps.\",\n      \"stance\": \"risk\",\n      \"quote\": \"Upgrade your experience with new content every month for one low price.\"\n    },\n    {\n      \"ref\": \"[D532]\",\n      \"area\": \"data\",\n      \"claim\": \"A parent reports that the app collects data for ads and shares it with third parties, and the data can be deleted.\",\n      \"stance\": \"neutral\",\n      \"quote\": \"Upgrade your experience with new content every month for one low price.\"\n    },\n    {\n      \"ref\": \"[D532]\",\n      \"area\": \"age_gating\",\n      \"claim\": \"A parent reports that the age gate does not work in practice.\",\n      \"stance\": \"risk\",\n      \"quote\": \"Play with your friends on your own personal server.\"\n    },\n    {\n      \"ref\": \"[D532]\",\n      \"area\": \"content\",\n      \"claim\": \"A parent reports that the app contains violence and monsters.\",\n      \"stance\": \"neutral\",\n      \"quote\": \"Explore your own unique world, survive the night, and create anything you can imagine.\"\n    },\n    {\n      \"ref\": \"[D532]\",\n      \"area\": \"developer_record\",\n      \"claim\": \"A parent reports that the developer has had fines, breaches, lawsuits or regulatory actions.\",\n      \"stance\": \"neutral\",\n      \"quote\": \"Explore your own unique world, survive the night, and create anything you can imagine.\"\n    }\n  ]\n}",
   "input_tokens": 4813,
-  "output_tokens": 9,
-  "price_nano": 290940,
+  "output_tokens": 432,
+  "price_nano": 392460,
   "measured": true,
   "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B"
 }

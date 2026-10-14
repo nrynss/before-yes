@@ -1,8 +1,8 @@
 {
-  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D525]\",\n      \"area\": \"developer_record\",\n      \"claim\": \"A Dutch foundation has brought a claim on behalf of Dutch players alleging Fortnite was designed to be addictive for children.\",\n      \"stance\": \"risk\",\n      \"quote\": \"the claim is brought by Stichting Massaschade \u0026 Consument (SMC), which says it will go to court if talks with Epic fail.\"\n    }\n  ]\n}",
+  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D525]\",\n      \"area\": \"contact\",\n      \"claim\": \"A parent reports that voice chat can be turned off by default.\",\n      \"stance\": \"mitigation\",\n      \"quote\": \"voice chat is off by default and can be turned on in settings\"\n    }\n  ]\n}",
   "input_tokens": 4740,
-  "output_tokens": 108,
-  "price_nano": 310320,
+  "output_tokens": 78,
+  "price_nano": 303120,
   "measured": true,
   "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B"
 }

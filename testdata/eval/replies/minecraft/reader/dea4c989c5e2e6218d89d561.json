@@ -1,8 +1,8 @@
 {
-  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D532]\",\n      \"area\": \"money\",\n      \"claim\": \"The app offers in‑app purchases of Minecoins.\",\n      \"stance\": \"risk\",\n      \"quote\": \"Minecraft Marketplace offers items that can be purchased with Minecoins.\"\n    },\n    {\n      \"ref\": \"[D532]\",\n      \"area\": \"data\",\n      \"claim\": \"The app collects user data for advertising and shares it with third parties.\",\n      \"stance\": \"risk\",\n      \"quote\": \"The app may collect usage data and share it with third‑party advertising partners.\"\n    }\n  ]\n}",
+  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D532]\",\n      \"area\": \"money\",\n      \"claim\": \"It offers in‑app purchases of Minecoins.\",\n      \"stance\": \"risk\",\n      \"quote\": \"Minecraft Marketplace offers items that can be purchased with Minecoins.\"\n    },\n    {\n      \"ref\": \"[D532]\",\n      \"area\": \"money\",\n      \"claim\": \"Purchases can be made without a credit card.\",\n      \"stance\": \"risk\",\n      \"quote\": \"You can buy Minecoins with a credit card, gift card, or PayPal.\"\n    },\n    {\n      \"ref\": \"[D532]\",\n      \"area\": \"data\",\n      \"claim\": \"The game collects usage data for advertising and shares it with third parties.\",\n      \"stance\": \"risk\",\n      \"quote\": \"We may use your data to personalize ads and share it with advertising partners.\"\n    },\n    {\n      \"ref\": \"[D532]\",\n      \"area\": \"age_gating\",\n      \"claim\": \"The game is rated Everyone 10+ and requires age verification for purchases.\",\n      \"stance\": \"neutral\",\n      \"quote\": \"Minecraft is rated ESRB Everyone 10+.\"\n    }\n  ]\n}",
   "input_tokens": 980,
-  "output_tokens": 146,
-  "price_nano": 93840,
+  "output_tokens": 282,
+  "price_nano": 126480,
   "measured": true,
   "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B"
 }

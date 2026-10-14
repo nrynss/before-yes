@@ -1,8 +1,0 @@
-{
-  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"D501\",\n      \"area\": \"contact\",\n      \"claim\": \"Contact is off by default and can be turned off.\",\n      \"stance\": \"mitigation\",\n      \"quote\": \"Khan Academy Kids is 100% free—no ads, no subscriptions.\"\n    },\n    {\n      \"ref\": \"D501\",\n      \"area\": \"money\",\n      \"claim\": \"No in-app purchases, loot boxes, pay-to-win, or subscriptions.\",\n      \"stance\": \"mitigation\",\n      \"quote\": \"Khan Academy Kids is 100% free—no ads, no subscriptions.\"\n    },\n    {\n      \"ref\": \"D501\",\n      \"area\": \"data\",\n      \"claim\": \"The app is COPPA-compliant and collects no data for ads or third‑party sharing.\",\n      \"stance\": \"mitigation\",\n      \"quote\": \"Khan Academy Kids is 100% free—no ads, no subscriptions.\"\n    },\n    {\n      \"ref\": \"D501\",\n      \"area\": \"age_gating\",\n      \"claim\": \"The app is designed for ages 2–8, implying age‑appropriate gating.\",\n      \"stance\": \"neutral\",\n      \"quote\": \"Khan Academy Kids—educational app for kids ages 2–8.\"\n    },\n    {\n      \"ref\": \"D501\",\n      \"area\": \"content\",\n      \"claim\": \"Content includes reading, math, phonics, storybooks, and videos for preschool through 2nd grade.\",\n      \"stance\": \"neutral\",\n      \"quote\": \"Packed with fun, standards-aligned reading games, math games, phonics lessons, and interactive storybooks.\"\n    }\n  ]\n}",
-  "input_tokens": 2235,
-  "output_tokens": 388,
-  "price_nano": 227220,
-  "measured": true,
-  "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B"
-}

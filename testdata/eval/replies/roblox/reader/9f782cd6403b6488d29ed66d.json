@@ -1,8 +1,8 @@
 {
-  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D522]\",\n      \"area\": \"age_gating\",\n      \"claim\": \"The age gate is not enforced in practice; teens can access the app without verification.\",\n      \"stance\": \"risk\",\n      \"quote\": \"Snapchat is a fast-moving, image-based app where most messages disappear. Teens love it for casual, low-pressure communication—but that disappearing design can also make it harder to track bullying, risky content, and harmful behavior.\"\n    }\n  ]\n}",
+  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D522]\",\n      \"area\": \"age_gating\",\n      \"claim\": \"The app is intended for users 13 and older.\",\n      \"stance\": \"neutral\",\n      \"quote\": \"Snapchat is a social app built around quick, disappearing messages called \\\"snaps\\\" that teens send directly to friends. It feels more private and casual than traditional social media, encouraging in-the-moment sharing without public likes or comments.\"\n    }\n  ]\n}",
   "input_tokens": 4464,
-  "output_tokens": 115,
-  "price_nano": 295440,
+  "output_tokens": 111,
+  "price_nano": 294480,
   "measured": true,
   "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B"
 }

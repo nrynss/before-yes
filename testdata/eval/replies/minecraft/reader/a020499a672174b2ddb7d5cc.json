@@ -1,8 +1,8 @@
 {
-  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D525]\",\n      \"area\": \"money\",\n      \"claim\": \"A parent reports that Fortnite's countdown timers create fake urgency in the Item Shop.\",\n      \"stance\": \"risk\",\n      \"quote\": \"alleging the countdown timers created fake urgency.\"\n    }\n  ]\n}",
+  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D525]\",\n      \"area\": \"money\",\n      \"claim\": \"A parent reports that Fortnite's item shop timers create fake urgency.\",\n      \"stance\": \"risk\",\n      \"quote\": \"the countdown timers created fake urgency\"\n    }\n  ]\n}",
   "input_tokens": 940,
-  "output_tokens": 82,
-  "price_nano": 76080,
+  "output_tokens": 75,
+  "price_nano": 74400,
   "measured": true,
   "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B"
 }
