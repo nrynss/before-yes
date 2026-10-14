@@ -56,7 +56,7 @@ A `200` with a card id goes straight to the card. A `202` goes to the progress v
 requires:   T5.1
 fixture-ok: yes
 size:       M · mid
-owns:       web/src/routes/check/, web/src/lib/progress/, web/playwright.config.ts (module browser test discovery), web/package.json and web/pnpm-lock.yaml (Chaaya 0.4.2 adoption only)
+owns:       web/src/routes/check/, web/src/lib/progress/, web/playwright.config.ts (module browser test discovery), web/package.json and web/pnpm-lock.yaml (Chaaya 0.4.2 adoption only), web/pnpm-workspace.yaml (exact-version Chaaya 0.4.2 release-age exception)
 status:     in-review
 ```
 Chaaya's `JobStream` follows `GET /api/checks/{id}/events` and catches up from `GET /api/checks/{id}` after a reconnect. Show the three stages, gather, read and judge, with the server's message ("reading 312 reviews…") and a count when the stage counts.
