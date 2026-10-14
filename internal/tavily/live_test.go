@@ -1,9 +1,10 @@
 //go:build live
 
 // This file is the T2.2b live probe. It calls the real Tavily API, spends
-// real credits and never runs in the gate or in CI. Run it through
-// /tmp/opencode/run-live-t22b.sh, which sources TAVILY_KEY from the main
-// checkout's .env; the key is read from the environment and never printed.
+// real credits and never runs in the gate or in CI. Export TAVILY_KEY from
+// the main checkout's .env and run `go test -tags live -run TestLive
+// ./internal/tavily` (see "Secrets and spend" in dev-diary/ORCHESTRATOR.md for
+// the wrapper); the key is read from the environment and never printed.
 //
 // The probe makes one basic search without raw content, the same search with
 // it, and one basic extract of three public URLs. It records whether
@@ -50,7 +51,7 @@ const (
 // extract, run in order, with a running credit total.
 func TestLiveTavilySearchAndExtract(t *testing.T) {
 	if strings.TrimSpace(os.Getenv("TAVILY_KEY")) == "" {
-		t.Skip("TAVILY_KEY is not set; run through /tmp/opencode/run-live-t22b.sh, which sources it from .env")
+		t.Skip("TAVILY_KEY is not set; export it from .env and run go test -tags live -run TestLive ./internal/tavily")
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
 	defer cancel()

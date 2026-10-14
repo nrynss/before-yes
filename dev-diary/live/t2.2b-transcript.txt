@@ -1,0 +1,50 @@
+=== RUN   TestLiveTavilySearchAndExtract
+    live_test.go:83: live Tavily probe (T2.2b) against https://api.tavily.com; cap 5 credits; pace 90 calls/minute
+    live_test.go:84: price list for comparison: basic search 1, advanced 2, extract 1 per 5 successful URLs
+    live_test.go:89: before search 1 (no raw content): spent 0, price-list estimate 1, cap 5
+    live_test.go:99: call 1: search query="Minecraft privacy policy" depth=basic (Tavily's default) max_results=5 include_raw_content=false
+    live_test.go:99:   latency: 2.187s
+    live_test.go:99:   credits: 1 (usage.credits reported by Tavily) (price list for this search: 1)
+    live_test.go:99:   hits: 5; raw_content non-empty on 0 (0 bytes)
+    live_test.go:99:   top hit: https://about.foundationcraft.com/privacy-policy ("Privacy Policy | Foundation Craft")
+    live_test.go:100:   wire 1: POST https://api.tavily.com/search -> 200 in 2.186s
+    live_test.go:100:   wire 1 header Content-Length: 7592
+    live_test.go:100:   wire 1 header Content-Security-Policy: default-src 'none'; script-src 'self'; connect-src 'self'; img-src 'self'; style-src 'self';base-uri 'self';form-action 'self'; require-trusted-types-for 'script'; upgrade-insecure-requests;
+    live_test.go:100:   wire 1 header Content-Type: application/json
+    live_test.go:100:   wire 1 header Date: Wed, 14 Oct 2026 04:43:01 GMT
+    live_test.go:101:   running total: 1 of 5 credits
+    live_test.go:107: before search 2 (raw content): spent 1, price-list estimate 1, cap 5
+    live_test.go:114: call 2: search query="Minecraft privacy policy" depth=basic (Tavily's default) max_results=5 include_raw_content=true
+    live_test.go:114:   latency: 1.972s
+    live_test.go:114:   credits: 1 (usage.credits reported by Tavily) (price list for this search: 1)
+    live_test.go:114:   hits: 5; raw_content non-empty on 5 (111745 bytes)
+    live_test.go:114:   top hit: https://about.foundationcraft.com/privacy-policy ("Privacy Policy | Foundation Craft")
+    live_test.go:115:   wire 1: POST https://api.tavily.com/search -> 200 in 1.549s
+    live_test.go:115:   wire 1 header Content-Length: 120811
+    live_test.go:115:   wire 1 header Content-Security-Policy: default-src 'none'; script-src 'self'; connect-src 'self'; img-src 'self'; style-src 'self';base-uri 'self';form-action 'self'; require-trusted-types-for 'script'; upgrade-insecure-requests;
+    live_test.go:115:   wire 1 header Content-Type: application/json
+    live_test.go:115:   wire 1 header Date: Wed, 14 Oct 2026 04:43:02 GMT
+    live_test.go:116:   running total: 2 of 5 credits
+    live_test.go:117: include_raw_content: off reported 1 (usage.credits reported by Tavily), on reported 1 (usage.credits reported by Tavily); difference 0
+    live_test.go:123: before extract: spent 2, price-list estimate 1, cap 5
+    live_test.go:130: call 3: extract depth=basic format=text urls=3
+    live_test.go:132:   asked for: https://www.minecraft.net/en-us/usage-guidelines
+    live_test.go:132:   asked for: https://www.reddit.com/r/Minecraft/comments/1k7lbl8/help_a_tech_challenged_parent
+    live_test.go:132:   asked for: https://before-yes-probe.invalid/
+    live_test.go:134:   latency: 543ms
+    live_test.go:135:   credits: 0 (usage.credits reported by Tavily) (price list for 1 successful URL(s): 1)
+    live_test.go:138:   page: https://www.minecraft.net/en-us/usage-guidelines ("Minecraft Usage Guidelines for Fans and Creators | Minecraft | Minecraft"), 26704 bytes of text
+    live_test.go:141:   failed: https://before-yes-probe.invalid/: Failed to fetch url
+    live_test.go:141:   failed: https://www.reddit.com/r/Minecraft/comments/1k7lbl8/help_a_tech_challenged_parent: Failed to fetch url
+    live_test.go:143:   wire 1: POST https://api.tavily.com/extract -> 200 in 542ms
+    live_test.go:143:   wire 1 header Content-Length: 27391
+    live_test.go:143:   wire 1 header Content-Security-Policy: default-src 'none'; script-src 'self'; connect-src 'self'; img-src 'self'; style-src 'self';base-uri 'self';form-action 'self'; require-trusted-types-for 'script'; upgrade-insecure-requests;
+    live_test.go:143:   wire 1 header Content-Type: application/json
+    live_test.go:143:   wire 1 header Date: Wed, 14 Oct 2026 04:43:03 GMT
+    live_test.go:144:   running total: 2 of 5 credits
+    live_test.go:160: promise held: 2 failed URL(s) left out of 1 page(s), and the call returned no error
+    live_test.go:75: summary: 3 HTTP exchange(s) [200, 200, 200] for 3 calls, 4.702s wall time, 2 of 5 credits spent
+    live_test.go:77: rate limits: no rate-limit headers in any reply, so the API reported no window or remaining allowance
+--- PASS: TestLiveTavilySearchAndExtract (4.70s)
+PASS
+ok  	github.com/nrynss/before-yes/internal/tavily	4.707s

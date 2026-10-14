@@ -89,11 +89,17 @@ requires:   T2.2, T0.3
 fixture-ok: no
 size:       XS · mid
 owns:       internal/tavily/live_test.go
-status:     in-review
+status:     done
 ```
 One search and one extract against the live API. Record whether `usage.credits` comes back, and whether `include_raw_content` on search costs extra.
 
 **Done when:** The probe is committed and the transcript is in the handoff log.
+
+**Measured** ([transcript](live/t2.2b-transcript.txt); reproduced by the round-1 reviewer):
+- `usage.credits` came back on 3 of 3 calls: search 1, search with raw content 1, and a basic extract 0 (1 page read, 2 failed).
+- `include_raw_content` on a basic search costs nothing extra. It adds about 110 KB for 5 hits (Content-Length 7,592 against 120,811).
+- **Rate limit: not measured.** Three calls in five seconds saw no 429, and Tavily sends no rate-limit, quota or retry headers. Tavily documents 100 requests a minute for a development key, which is unverified here. The client paces at 90 a minute. Finding the real limit means a burst of about 100 paid calls, so it stays open until the deployed host shows a 429. The retry-storm question from T2.2's round-1 review (Keel gives a rate slot only to a call's first attempt) is also open.
+- Spend: 2 Tavily credits, plus 2 for the reviewer's re-run.
 
 ---
 
