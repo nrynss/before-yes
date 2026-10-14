@@ -355,7 +355,7 @@ Whether the YouTube Data API's made-for-kids status adds anything is an open que
 - **Detection** (`kind.go`, `DetectKind`):
   - An App Store match, by the store search or by a policy hit, makes a title `ios`.
   - Otherwise the rating search runs straight after the policy search, and their hits are scored. A YouTube channel URL (`/@`, `/channel/`, `/c/`, `/user/`) scores for `youtube`, a `play.google.*` URL for `android`, and an `esrb.org` or `pegi.info` page for `console_pc`, along with mentions in hit text (YouTuber, subscribers; Android, Google Play; PlayStation, Xbox, Nintendo Switch, Steam, PC game, console). The most signals wins.
-  - A title with no signal is taken as `console_pc`, since the console plan's rating-board search is the one that can still find something.
+  - A title with no signal is `unknown` (user decision below).
 - **Plan** (`PlanFor(kind, title, host)`; `Plan` is the iOS plan, unchanged):
   - **android:** every unnarrowed search excludes `play.google.com`, and Play hits are dropped, so no Play Store page is read. The policy and rating searches run before the kind is known, so they cannot exclude Play; their Play hits are dropped afterwards.
   - **console_pc:** adds a `rating-boards` search narrowed to `esrb.org` and `pegi.info`.
@@ -382,6 +382,12 @@ Whether the YouTube Data API's made-for-kids status adds anything is an open que
   3. It says nothing about whether content suits a given age. "Not made for kids" covers general-audience content, and "made for kids" is no safety rating (YouTube Help 9528076).
   4. It needs a Google API key and quota: a new service and a new key, outside the fixture-only scope.
 - **If adopted later (P4 or P6):** show it as small print beside the kind, for example "YouTube marks this channel as made for kids: comments and personalised ads are off on its videos". Do not grade it.
+
+
+**User decision (T3.7): an explicit unknown kind.** A title that no signal places is now `unknown` (`KindUnknown`), not `console_pc`. Its plan is the general one: Plan's news, forum, Reddit and rating searches (`generalKinds`). It has no ESRB/PEGI board-narrowed search, and no policy or terms search, because no store or official site placed it, so those kinds are not missing. The shared rating search still names the boards as words, because it runs for every kind to detect the kind. The card shows `kind_label` "kind unknown". `GatherVersion` loops over `allKinds`, which now includes `unknown`, so a change to the general plan changes the cache key. `TestGatherNoHostFollowsNoLinks` now gathers an unknown-kind title, so it checks that no third-party policy is read and that policy is not missing. `pageLinks` keeps its host checks.
+- Contract: `Card.kind_label` is new and additive (the five card examples and `api/get-card.json` gain one line each). The new example `card-unknown-kind.json` shows `"kind": "unknown"`.
+- Outside owns, kept minimal: `types.go` (the `KindUnknown` value, `KindLabel` and the `Card.KindLabel` field), `pipeline.go` (`Decide` sets the label; `GatherVersion` uses `allKinds`), `types_test.go` (a per-spec kind and the new example), `gather_test.go` (the test above) and `testdata/contracts`. The card and contract live there.
+- Tests: `TestUnplaceableTitleIsUnknown` (no hits, an unplaceable YouTube channel, an unplaceable Android app), `TestUnknownPlanIsGeneral`, `TestGatherVersionCoversEveryKind` (now also the general plan), `TestDetectKind`, and the contract round trip.
 
 ---
 
@@ -431,7 +437,7 @@ T3.1 calls this when the review feed returns nothing. The card's small print say
 **Implementation notes (T3.8).**
 - `ParseStorePage` (storepage.go) reads the section between "Ratings & Reviews" and "What's New". It works in three passes. First, a "Developer Response <date>" or "Editors' Choice" label is dropped with the line after it, and each labelled response body is remembered. Second, every remaining line equal to a remembered response body is dropped; that is the unlabelled first copy. Third, title and body pairs are kept once each, by content, and numbered from 1 after the dedupe. Rating, date and reviewer name are never set.
 - Each review becomes one `Doc`: kind `review`, `Source.URL` the store page URL, `Source.Index` its page position, `Source.Title` its title, and text "title\nbody", the same shape as a feed review.
-- The fallback is in `storeDocs`. It runs only when the feed answers with no error and no reviews. It makes one basic extract of `App.StoreURL`, metered under the check's ref. A feed error stays a failed call (`review_feed`) and does not fall back. An unreadable page adds the failure `store_page`. A page with no review section makes `review` missing and is not a failure.
+- The fallback is in `storeDocs`. It runs when the feed answers with no reviews or errors (user decision below). It makes one basic extract of `App.StoreURL`, metered under the check's ref. A feed error is still recorded as a failed call (`review_feed`). An unreadable page adds the failure `store_page`. A page with no review section makes `review` missing and is not a failure.
 - `Gathered.ReviewSource` and the new `Stats.ReviewSource` (`review_source`: "feed", "page" or "") give the source; `Stats.Reviews` already gives the count. `PlanVersion` is now `plan-4`.
 - **Outside `owns`, kept minimal:** one line in pipeline.go's `Collect`, which builds `Stats`, copies `ReviewSource` across. In `types_test.go`, the contract example generator sets `ReviewSource` to "feed" when an example has reviews. The six contract examples in `testdata/contracts/` (including `api/get-card.json`) each gain `"review_source"`; the change is additive.
 - **Tests:** `TestParseStorePageFixtures` (all four T3.8a pages: Roblox 4 reviews, Minecraft 3, Khan 3, Toca 3, titles in order, bodies verbatim lines of the page); `TestParseStorePageDropsResponses`; `TestParseStorePageEdges`; `TestGatherFallsBackToStorePage` (documents, sources, and a finding passing `finding.Verify`); `TestStorePageOnlyWhenFeedEmpty`; `TestStorePageWithoutReviewsIsMissing`.
@@ -444,6 +450,9 @@ T3.1 calls this when the review feed returns nothing. The card's small print say
 | M1 | A response label is the exact line "Developer Response <date>" (numeric or month-name date). It counts only where it appears in a repeat and not in the first copy; its unlabelled first copy is the matching tail of the first copy. A review titled "Developer Response is slow" survives. | `TestParseStorePageStructure` ("review titled like a label", "response dated by month") |
 
 The parser now relies on the doubling. A page that showed each review only once would yield no reviews, so the review source would be missing rather than misread. No capture shows such a page.
+
+
+**User decision (T3.8): fall back on a feed error.** A review feed that errors now falls back to the store page, as an empty feed does. `stats.review_source` still says where the reviews came from (`page` here). The feed error stays in `Failures` (`review_feed`), so that evidence is not cached and the next check tries the feed again. When the page also has no reviews, `review` is missing and the reason names both. No version bump is needed, because evidence with a failure is never cached. Tests: `TestStorePageFallbackOnEmptyOrError`, `TestFeedErrorAndEmptyPageIsMissing`.
 
 ---
 
