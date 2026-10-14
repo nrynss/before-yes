@@ -122,6 +122,8 @@ status:     drafted
 
 `cmd/before-yes` is the entry point: `serve`, `check` for one check from the terminal, and `config` to print the settings plan.
 
+It builds the pipeline the way `tools/eval` does. Set `Judge.Entail` to the reader's Nano client (T3.10). Left nil, the entailment check never runs, and unearned flags and unsupported reasons reach the card. Set `Pipeline.Checks` to the server's `*spend.Meter` (T4.5). A test pins that `serve` and `check` both build a judge with `Entail` set.
+
 The built Chaaya app is served from a directory, and unknown paths fall back to `index.html` so `/card/{id}` loads in a fresh tab.
 
 **Done when:** Tests cover every route, and a deep link to a card path returns the app shell.

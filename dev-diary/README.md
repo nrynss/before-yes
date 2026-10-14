@@ -182,7 +182,7 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 | P1 | 4 / 4 | Done. The `job.Failure` exit criterion waits on T4.1. The main-checkout pins and `.env` leak check, waived at landing, ran at the P1–P2 integration and passed. |
 | P2 | 12 / 12 | Done. All six exit criteria are met. Measured model cost is $0.0309 per check. Tavily is 7–8 credits per check, from fixtures, not a live run. |
 | P3 | 13 / 13 | Done. Every standing flag and setting now meets its area's own definition, enforced by a per-grade entailment check (T3.10). Verdicts: Roblox **no** (four earned flags), Minecraft **yes_with_settings** (matches T0.5, with a recorded caveat on two settings), Khan Academy Kids **unclear**. Re-pick is the user's call. |
-| P4 | 2 / 5 | T4.1 and T4.2 are done: check jobs, the progress stream, card routes, the card store and both caches. Wire ids are `c_` / `j_` + a 32-hex Keel id. T4.3 and T4.5 can start; T4.4 is drafted. |
+| P4 | 2 / 5 | T4.1 and T4.2 are done: check jobs, the progress stream, card routes, the card store and both caches. Wire ids are `c_` / `j_` + a 32-hex Keel id. T4.3 and T4.5 can start; T4.4 is drafted and must wire `Judge.Entail` (T3.10). |
 | P5 | 3 / 7 | T5.1, T5.2 and T5.4 are done: the shell, the Ask form with free examples, and the evidence-linked card. T5.3 is blocked on an upstream Chaaya fix (terminal snapshot recovery), in progress. T5.5 can start; T5.6 waits on T5.3, T5.7 on T4.5. |
 | P6 | 0 / 6 | Not started. |
 
