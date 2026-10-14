@@ -28,7 +28,7 @@ status:     done
 
 Commit the brief, the licence and `dev-diary/` as the first commit. Ignore `scratch/`, `.env*` except `.env.example`, `data/`, `*.db`, `web/build/`, `node_modules/` and `before-yes.toml`. Before committing, check that `git status` lists neither `scratch/` nor `.env`.
 
-Then move `scratch/go.mod` and `scratch/go.sum` into the worktree, following [the scratch rule](README.md#starting-from-the-scratch-draft), and commit them. Keel stays pinned to v0.7.0 or later, never v0.6.0. The bump to v0.7.1 belongs to the first Keel task (README, "Keel v0.7.1").
+Then move `scratch/go.mod` and `scratch/go.sum` into the worktree, following [the scratch rule](README.md#starting-from-the-scratch-draft), and commit them. Keel was later bumped to v0.7.3 on `main` (README, "Keel v0.7.3").
 
 **Done when:** `git log` shows the first commits, a fresh clone holds the brief, the licence, the dev-diary and `go.mod`, `git status` is clean, `git ls-files` shows nothing from `scratch/` and no `.env`, and the handoff log records the move.
 

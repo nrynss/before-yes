@@ -8,7 +8,7 @@ Read these in the dev-diary README. Do not copy them.
 
 - [Task pattern](dev-diary/README.md#task-pattern): task fields, status values, classes.
 - [Developer guidelines](dev-diary/README.md#developer-guidelines): claim first, stay in `owns`, quote checks, the meter, handoffs.
-- [Keel v0.7.1](dev-diary/README.md#keel-v071): the bump rule for tasks that import Keel.
+- [Keel v0.7.3](dev-diary/README.md#keel-v073): the Keel version and the two fixes this project relies on.
 - [Starting from the scratch draft](dev-diary/README.md#starting-from-the-scratch-draft): move, never copy.
 - [Scope](dev-diary/README.md#scope): a blocked task becomes a finding, not a cut.
 - [Swarm coordination rule](dev-diary/README.md#swarm-coordination-rule): task dependencies are binding.

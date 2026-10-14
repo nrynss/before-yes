@@ -14,13 +14,15 @@ Each phase document gives an engineer starting cold the complete context for its
 
 ---
 
-## Keel v0.7.1
+## Keel v0.7.3
 
-Keel v0.7.1 fixes the two gaps this project found: [nrynss/keel#82](https://github.com/nrynss/keel/issues/82) (cost stores share one database file) and [nrynss/keel#83](https://github.com/nrynss/keel/issues/83) (a failed job carries its own error code). It will be the last Keel change for this project.
+Keel v0.7.3 is the version this project builds on, and the last Keel change for it. `go.mod` on `main` already requires it. No task bumps Keel again.
 
-**Every task that imports Keel works on v0.7.1.** The first such task to start checks `go.mod` on `main`. If it still names v0.7.0, the task bumps it to v0.7.1 (`go get github.com/nrynss/keel@v0.7.1`) as its own first commit, lands that commit on `main` before anything else, and records the bump in the handoff log. Every later task finds it done.
+It carries the fixes for the two gaps this project found, which landed in v0.7.1. v0.7.2 and v0.7.3 hardened them:
+- **[nrynss/keel#82](https://github.com/nrynss/keel/issues/82):** cost stores share one database file. `cost/sqlitestore` `Config.Namespace` now names the store's own tables. A name ending in `_owner` is refused with `ErrInvalid`.
+- **[nrynss/keel#83](https://github.com/nrynss/keel/issues/83):** a failed job names its own code. A work function returns `job.Failure{Code, Detail, Err}`, bare or wrapped. The Runner publishes `Code` and `Detail` in the error terminal. `Result.Code` and `Record.Code` keep the code across a restart. A chain without a `Failure` keeps `job_failed`.
 
-If the v0.7.1 tag does not exist yet when a Keel task starts, that task's status is `blocked: keel v0.7.1`. Work on parts that do not import Keel may continue. Do not build on v0.7.0 and do not reintroduce the workarounds.
+Do not build the old workarounds: one database file per cost pool, or error codes carried in a job's result data.
 
 Tasks that import Keel: T1.4, T2.1, T2.2, T2.4, T2.5, T3.1–T3.5, T3.7, T4.1–T4.5, T6.1.
 
@@ -190,6 +192,7 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 
 Newest first. One entry per closed task, finding, or split.
 
+- **Keel v0.7.3 adopted.** v0.7.1 landed the fixes for #82 and #83, and v0.7.2 and v0.7.3 hardened them. Keel #87, #88, #91 and #94 are closed. `go.mod` on `main` now requires v0.7.3, bumped in one commit before any Keel task started, so parallel tasks cannot race on it. The "Keel v0.7.3" section names the API.
 - **T0.4b closed; T0.4a closed; P0 done.** Review: [t0.4b-round1.md](adversarial-review/t0.4b-round1.md).
   - The advanced extract (7 credits) still returned no individual Common Sense reviews.
   - The Roblox and Minecraft review pages no longer exist. They redirect to parent guides, and Tavily reported the 404 text as a successful result.

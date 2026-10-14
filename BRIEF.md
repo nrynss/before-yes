@@ -87,7 +87,7 @@ A check is a 20–60 second **job** started by a short request. The browser foll
 
 ### Stack
 
-**Backend: [Keel](https://github.com/nrynss/keel) v0.7.0 (Go), Apache-2.0, declared dependency.**
+**Backend: [Keel](https://github.com/nrynss/keel) v0.7.3 (Go), Apache-2.0, declared dependency.**
 
 | Before Yes needs | Keel package |
 |---|---|
@@ -208,7 +208,7 @@ Then a side-by-side with the safer alternative. Close on the cost of a check and
 ## Dependency status (checked 12 Oct)
 
 Everything the 7 Oct brief listed as "to check" has landed:
-- **Keel v0.7.0** (tagged 8 Oct) includes the cache (#23), provider-credit budgets (#33), the throttle pacer with retry-after (#68, PR #77), and the paid-call fixes #57–#60.
+- **Keel v0.7.3** carries the fixes for #82 (cost-store namespaces share one file) and #83 (a failed job names its code). It builds on v0.7.0, which includes the cache (#23), provider-credit budgets (#33), the throttle pacer with retry-after (#68, PR #77), and the paid-call fixes #57–#60.
 - **Chaaya 0.4.1** is tagged and on npm, with `priced`.
 
 ## From the Devpost FAQ (published 6 Oct, read 12 Oct)

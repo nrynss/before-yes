@@ -12,6 +12,8 @@ github.com/ncruces/go-strftime v1.0.0 h1:HMFp8mLCTPp341M/ZnA4qaf7ZlsbTc+miZjCLOF
 github.com/ncruces/go-strftime v1.0.0/go.mod h1:Fwc5htZGVVkseilnfgOVb9mKy6w1naJmn9CehxcKcls=
 github.com/nrynss/keel v0.7.0 h1:fcrcL5S8LxRO9BWRiWpOgReK3JI27SLe7Ngod+VzxjM=
 github.com/nrynss/keel v0.7.0/go.mod h1:Yh3g9h2nDEZzD3mQ/ueN2IRM0LmzWqddiTuEdb43KI8=
+github.com/nrynss/keel v0.7.3 h1:8z0MGF8A+XnWr4bfvcDpt6P2eaKK2pKxy/vPMnI+/9U=
+github.com/nrynss/keel v0.7.3/go.mod h1:Yh3g9h2nDEZzD3mQ/ueN2IRM0LmzWqddiTuEdb43KI8=
 github.com/pelletier/go-toml/v2 v2.4.3 h1:GTRvJQutkOSftxIFD5xw9aepkYNuPWmVJpffdDPYVpY=
 github.com/pelletier/go-toml/v2 v2.4.3/go.mod h1:2gIqNv+qfxSVS7cM2xJQKtLSTLUE9V8t9Stt+h56mCY=
 github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec h1:W09IVJc94icq4NjY3clb7Lk8O1qJ8BdBEF8z0ibU0rE=
