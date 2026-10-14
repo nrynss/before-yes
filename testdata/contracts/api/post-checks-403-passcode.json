@@ -1,0 +1,19 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/api/checks",
+    "body": {
+      "title": "Roblox",
+      "age": 9
+    }
+  },
+  "response": {
+    "status": 403,
+    "body": {
+      "error": {
+        "code": "passcode_required",
+        "message": "a shared passcode is required"
+      }
+    }
+  }
+}

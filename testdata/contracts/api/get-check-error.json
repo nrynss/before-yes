@@ -1,0 +1,18 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/api/checks/j_9Qm2Wd5Hn8Bx4Kv7Ts1Ra"
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "id": "j_9Qm2Wd5Hn8Bx4Kv7Ts1Ra",
+      "status": "error",
+      "code": "budget_exhausted",
+      "message": "the Token Factory budget is spent",
+      "detail": {
+        "pool": "token_factory"
+      }
+    }
+  }
+}

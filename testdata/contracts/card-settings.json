@@ -1,0 +1,148 @@
+{
+  "id": "c_Mn8cRf4tZq1xHw6pLs3kVb",
+  "title": "Minecraft",
+  "kind": "ios",
+  "age": 9,
+  "checklist_version": "v7",
+  "checked_at": "2026-10-13T18:58:40Z",
+  "collected_at": "2026-10-13T18:58:00Z",
+  "verdict": "yes_with_settings",
+  "grades": [
+    {
+      "area": "contact",
+      "level": "ok_with_setting",
+      "setting": "Child account: multiplayer friends-only, chat hidden",
+      "findings": [
+        "f_44498c9fcb7ad9dd"
+      ],
+      "reason": "Multiplayer chat exists; family settings limit it."
+    },
+    {
+      "area": "money",
+      "level": "ok",
+      "findings": [
+        "f_dbb6842fb6fb8102"
+      ],
+      "reason": "Paid up front; reviewers report no ads."
+    },
+    {
+      "area": "data",
+      "level": "unknown",
+      "findings": [],
+      "reason": "No policy text could be read."
+    },
+    {
+      "area": "age_gating",
+      "level": "ok",
+      "findings": [
+        "f_cf2b2d04ce80ea50"
+      ],
+      "reason": "Child accounts start with multiplayer off."
+    },
+    {
+      "area": "content",
+      "level": "ok",
+      "findings": [
+        "f_a06d417a35f02348"
+      ],
+      "reason": "Mild cartoon violence only; reviewers report bugs, not content."
+    },
+    {
+      "area": "developer_record",
+      "level": "unknown",
+      "findings": [],
+      "reason": "No developer record found."
+    }
+  ],
+  "settings": [
+    "Child account: multiplayer friends-only, chat hidden"
+  ],
+  "findings": [
+    {
+      "id": "f_44498c9fcb7ad9dd",
+      "area": "contact",
+      "claim": "Child accounts let parents manage multiplayer access and chat",
+      "stance": "mitigation",
+      "quote": "offer child accounts that empower parents to manage and monitor gameplay, multiplayer access, chat settings, and friend requests",
+      "source": {
+        "url": "https://www.esrb.org/blog/what-parents-need-to-know-about-minecraft",
+        "kind": "rating",
+        "title": "What Parents Need to Know About Minecraft",
+        "fetched_at": "2026-10-13T18:57:30Z"
+      }
+    },
+    {
+      "id": "f_dbb6842fb6fb8102",
+      "area": "money",
+      "claim": "A player reports no ads",
+      "stance": "neutral",
+      "quote": "there is no ads to interrupt me and I can get friends",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "index": 127,
+        "fetched_at": "2026-10-13T18:57:30Z"
+      }
+    },
+    {
+      "id": "f_a06d417a35f02348",
+      "area": "content",
+      "claim": "The official parents' guide describes mild, cartoony violence",
+      "stance": "neutral",
+      "quote": "Because combat is part of the game, there are some elements of mild violence.",
+      "source": {
+        "url": "https://www.minecraft.net/en-us/article/parents--guide-minecraft",
+        "kind": "rating",
+        "title": "Minecraft Parents’ Guide  | Minecraft",
+        "fetched_at": "2026-10-13T18:57:30Z"
+      }
+    },
+    {
+      "id": "f_cf2b2d04ce80ea50",
+      "area": "age_gating",
+      "claim": "On a child account, multiplayer starts off",
+      "stance": "mitigation",
+      "quote": "On a child account, multiplayer starts off",
+      "source": {
+        "url": "https://virtual-addiction.com/online-safety/minecraft",
+        "kind": "article",
+        "title": "Minecraft Age Rating - Is Minecraft Safe for Kids?",
+        "fetched_at": "2026-10-13T18:57:30Z"
+      }
+    }
+  ],
+  "alternatives": [],
+  "app": {
+    "track_id": 479516143,
+    "name": "Minecraft: Play with Friends!",
+    "seller": "Mojang AB",
+    "seller_url": "",
+    "store_url": "https://apps.apple.com/us/app/minecraft-play-with-friends/id479516143?uo=4",
+    "content_rating": "9+",
+    "price": "$6.99",
+    "genre": "Games",
+    "description": "Dive into an open world of building, crafting and survival."
+  },
+  "stats": {
+    "sources": 9,
+    "reviews": 500,
+    "chunks": 31,
+    "failed_chunks": 1,
+    "drops": {
+      "bad_area": 1,
+      "bad_stance": 0,
+      "no_quote": 2,
+      "unquoted": 4,
+      "duplicates": 3
+    },
+    "conflicted_areas": [],
+    "missing_kinds": [
+      "policy"
+    ],
+    "tavily_credits": 8,
+    "read_cost_nano": 11800000,
+    "judge_cost_nano": 13600000,
+    "reader_model": "nvidia/nvidia-nemotron-3-nano-30b-a3b",
+    "judge_model": "nvidia/nemotron-3-super-120b-a12b"
+  }
+}

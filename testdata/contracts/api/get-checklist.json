@@ -1,0 +1,56 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/api/checklist"
+  },
+  "response": {
+    "body": {
+      "areas": [
+        {
+          "id": "contact",
+          "label": "Contact",
+          "question": "Can strangers message or voice chat with your child, is it on by default, and can it be turned off?"
+        },
+        {
+          "id": "money",
+          "label": "Money",
+          "question": "Does it push in-app purchases, loot boxes, pay-to-win or subscription traps?"
+        },
+        {
+          "id": "data",
+          "label": "Data",
+          "question": "What does it collect, does it track for ads or share with third parties, and can the data be deleted?"
+        },
+        {
+          "id": "age_gating",
+          "label": "Age gating",
+          "question": "Does the age gate work in practice, going by what parents report?"
+        },
+        {
+          "id": "content",
+          "label": "Content",
+          "question": "What do reviewers actually report seeing?"
+        },
+        {
+          "id": "developer_record",
+          "label": "Developer record",
+          "question": "Has the developer had fines, breaches, lawsuits or regulatory actions?"
+        }
+      ],
+      "levels": [
+        "ok",
+        "ok_with_setting",
+        "flag",
+        "unknown"
+      ],
+      "verdicts": [
+        "yes",
+        "yes_with_settings",
+        "no",
+        "unclear"
+      ],
+      "version": "v7"
+    },
+    "status": 200
+  }
+}

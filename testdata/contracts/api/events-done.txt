@@ -1,0 +1,21 @@
+GET /api/checks/j_3Fh8sQ2mVx7Kp1Lz9RtWc/events
+Accept: text/event-stream
+
+200 text/event-stream
+
+event: progress
+id: 1
+data: {"job_id":"j_3Fh8sQ2mVx7Kp1Lz9RtWc","stage":"gather","detail":{"message":"searching for the privacy policy"}}
+
+event: progress
+id: 2
+data: {"job_id":"j_3Fh8sQ2mVx7Kp1Lz9RtWc","stage":"read","current":120,"total":500,"detail":{"message":"reading 500 reviews"}}
+
+event: progress
+id: 3
+data: {"job_id":"j_3Fh8sQ2mVx7Kp1Lz9RtWc","stage":"judge","detail":{"message":"grading 6 areas"}}
+
+event: done
+id: 4
+data: {"job_id":"j_3Fh8sQ2mVx7Kp1Lz9RtWc","status":"done"}
+

@@ -1,0 +1,22 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/api/checks",
+    "body": {
+      "title": "Roblox",
+      "age": 9
+    }
+  },
+  "response": {
+    "status": 429,
+    "body": {
+      "error": {
+        "code": "rate_limited",
+        "message": "the route rate limit was reached",
+        "detail": {
+          "retry_after_seconds": 30
+        }
+      }
+    }
+  }
+}

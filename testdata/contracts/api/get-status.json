@@ -1,0 +1,17 @@
+{
+  "request": {
+    "method": "GET",
+    "path": "/api/status"
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "live": true,
+      "budget": {
+        "token_factory_remaining_nano": 24310000000,
+        "tavily_credits_remaining": 914,
+        "fresh_checks_remaining_today": 37
+      }
+    }
+  }
+}

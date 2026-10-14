@@ -12,7 +12,7 @@ Where a phase document and the brief conflict, the brief wins. Record the discre
 
 Each phase document gives an engineer starting cold the complete context for its tasks.
 
-**Current status:** P0 is done. P1 and P2 can start. An earlier backend draft sits in `scratch/` at the repository root, uncommitted and unreviewed. Tasks it covers show `status: drafted`, which means there is code to start from, not that the task is done. See [Starting from the scratch draft](#starting-from-the-scratch-draft).
+**Current status:** P0 and P1 are done. P2, P3, P4 and P5 can start (each by its own `requires`). An earlier backend draft sits in `scratch/` at the repository root, uncommitted and unreviewed. Tasks it covers show `status: drafted`, which means there is code to start from, not that the task is done. See [Starting from the scratch draft](#starting-from-the-scratch-draft).
 
 ---
 
@@ -181,8 +181,8 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 | Phase | Tasks complete | Status |
 |---|---|---|
 | P0 | 9 / 9 | Done. Two exit criteria wait on later tasks: a live Nano call (T2.1b) and the config check (T4.4). CI is green. |
-| P1 | 0 / 4 | Not started. T1.1 and T1.2 drafted. |
-| P2 | 5 / 9 | T2.1, T2.1a, T2.2, T2.3, T2.4 done. T2.1b live probe running. T2.2b, T2.3b and T2.5 not started. |
+| P1 | 4 / 4 | Done. The `job.Failure` exit criterion waits on T4.1. The main-checkout pins and `.env` leak check, waived at landing, ran at the P1–P2 integration and passed. |
+| P2 | 5 / 9 | T2.1, T2.1a, T2.2, T2.3 and T2.4 are done. T2.1b (in review), T2.2b and T2.3b are implemented on OpenCode's branches, not yet reviewed or landed. T2.5 is not started. |
 | P3 | 0 / 8 | Not started. T3.1–T3.4 drafted. |
 | P4 | 0 / 5 | Not started. T4.1, T4.2 and T4.4 drafted. |
 | P5 | 0 / 7 | Not started. |
@@ -194,6 +194,11 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 
 Newest first. One entry per closed task, finding, or split.
 
+- **P1 and P2 integrated.** Phase 1 landed on GitHub from a remote session, through stacked PRs. Phase 2 landed on the local `main` from OpenCode and was never pushed. The two `main`s diverged: local was 25 commits ahead and 97 behind.
+  - The orchestrator merged `origin/main` into local `main`, without rewriting OpenCode's history. The only conflict was this README: the status board and the handoff log. Both sides were kept.
+  - The gate and the `.env` key-leak grep ran in the main checkout, which settles P1's waived landing checks.
+  - **Still on OpenCode's branches, unlanded:** `task-t2.1b-model-live` (in review), `task-t2.2b-tavily-live` and `task-t2.3b-appstore-live`. They are committed and clean, with no review yet. OpenCode was not running when this was found.
+  - **Stale and fully merged:** `task-t2.2-tavily`, which still has a worktree, and `task-t2.1a-extra`. Both are OpenCode's to remove.
 - **T2.1a closed.** Review: [t2.1a-round1.md](adversarial-review/t2.1a-round1.md), APPROVE, C 0 · H 0 · M 0 · L 2.
   - **The fix:** `New` and `Settings()` now deep-copy `Extra` through every nested `map[string]any` level, so a caller mutating the thinking-switch object after construction (or after reading `Settings()`) can no longer change a later request body. The T2.1 round-1 L1 hazard is closed on both paths; `Options.Extra` was already safe and stays marshalled per call. Public API unchanged.
   - **Orchestrator note:** the review's L1 (the copy comment claimed more than the code does) was reworded directly in `New`, `Settings` and `cloneExtra` on the branch, comment-only, and recorded in the review file.
@@ -226,6 +231,32 @@ Newest first. One entry per closed task, finding, or split.
   - **Consumer pin:** the reviewer compiled the scratch `pipeline.Store` interface verbatim against `*appstore.Client`, so T3.1's gather can consume this surface as drafted.
   - **Surprising:** no captured T0.4 page has `entry` as a bare object (all 40 are 50-element arrays), so the single-entry page is pinned by wrapping a real recorded entry; T2.3b confirms the live shape. Minecraft's `sellerUrl` is null and decodes to empty, which is one half of T3.1's missing-official-host problem.
   - **Ruling recorded:** the phase graph says P2 requires P1, but the user ruled that P1 is not needed for P2: each P2 task requires only T0.1, which is done, so P2 ran alone. The P2 tasks' own `requires` lines are the binding ones.
+- **T1.4 closed; P1 done.** Reviews: rounds 1–6, APPROVE in round 6. PR #4.
+  - `docs/api.md` covers seven routes, every code and every stream event, plus the order of answers for `POST /api/checks`: gate, validation, card cache (a fresh card wins over `live_checks_off`, `budget_exhausted` and `busy`), join a running check, refusals, new check. `testdata/contracts/api/` holds the examples.
+  - **`owns` widened** to include `internal/pipeline/api_examples_test.go`. That file generates the event streams with `wire.WriteEvent`, and generates `get-card`, `get-cards` and `get-checklist` from the contracts. Regenerate with `go test ./internal/pipeline -run TestAPIGenerate -update`.
+  - Surprise, also in feedback.md: Keel's `error` event nests the whole envelope, `"error":{"error":{code,...}}`.
+  - `GET /api/checks/{id}` exposes `detail`, from `Result.Detail`. `message` is the server's fixed sentence per code, never `Result.Err`.
+  - **Open, owned by T4.1:** proving the answer order and the `job.Failure` exit criterion.
+  - Noted: `go mod tidy -diff` is non-empty on `main`, because `modernc.org/sqlite` is not imported yet. Phase 1 did not introduce it.
+- **T1.3 closed.** Reviews: rounds 1–6, APPROVE in round 6. PR #3.
+  - `internal/pipeline/types.go` holds Evidence, Card, AppInfo, Stats and Alternative. `testdata/contracts/` holds `evidence.json`, `card-yes`, `card-settings`, `card-no` and `card-unclear`.
+  - **`owns` widened** to include `internal/pipeline/types_test.go`. T3.4 must not edit it.
+  - The examples are **generated** from the T0.4 fixtures through the real `Verify`, `Enforce` and `Decide`: `go test ./internal/pipeline -run TestGenerate -update`. Never hand-edit them. The test fails when they are stale, and a struct field missing from every example fails `TestExamplesCoverEveryField`.
+  - **The user accepted `card-yes` as an example only.** Its Khan contact quote is thin, and the Khan content risk in review 17 is left out. Khan's real verdict belongs to T3.6b.
+  - `card-no`'s deciding quote is review 355: in the captured feed, review 312 is not about contact. Source kinds: review, policy, terms, reddit, forum, article, news, rating, store.
+- **T1.2 closed.** Reviews: rounds 1–6, APPROVE in round 6. PR #2.
+  - `internal/finding/`: `Verify` matches quotes on word boundaries after `Normalize`. `Normalize` does NFC, case, whitespace, typographic quotes, every Unicode Pd dash plus U+2027, U+2043 and U+2212 folded to `-`, hyphen runs collapsed, Cf characters dropped, and the ellipsis character. An apostrophe or hyphen between word runes joins them. A risk reading wins a duplicate. Ids hash the URL, the review index, the area and the normalized quote. `Parse` also accepts prose around unfenced JSON. T3.2 can rely on that.
+  - **New dependency: `golang.org/x/text` v0.41.0**, for `unicode/norm` (NFC), which the standard library lacks. v0.41.0 is the newest version that changes no other requirement in the graph: it needs `golang.org/x/sync` v0.22.0 or older, which the graph already holds, and v0.42.0 needs sync v0.23.0. Checked against the proxy `.mod` files. The round-1 note gave a wrong reason, and round 2 corrected it.
+  - Surprise: the boundary rule took four review rounds (prefixes, apostrophes, hyphens, invisible characters, dash variants). `TestWordBoundaryTable` pins every case. Extend it, do not fork it.
+- **T1.1 closed.** Reviews: [round 1](adversarial-review/t1.1-round1.md) through [round 6](adversarial-review/t1.1-round6.md), APPROVE in round 6. PR #1.
+  - `internal/checklist/` was written fresh from the spec. The scratch draft was not reachable from the implementing session, so nothing moved out of `scratch/`. `scratch/internal/checklist/` is still there, unclaimed: delete it or compare it against the landed code.
+  - **The user decided:** `unclear` is kept, and that is final. **Also the user's:** an `ok` that cites only risk findings becomes `flag`.
+  - `checklist.Version` is `v7`. Each rule change in remediation bumped it, and nothing is cached yet. The final rules are in PHASE-1 T1.1, round 4 onward.
+  - **Process deviations, recorded:**
+    - The orchestrator session also implemented and remediated all four P1 tasks. No separate implementer agent was available. Reviews were independent.
+    - Each task went through a stacked PR on GitHub (the user's preference) rather than a local-only worktree.
+    - **Waived by the user:** the main-checkout pins (with `scratch/` and `.env` present), and the `.env` key-leak grep at landing. Neither could run from the remote box that landed P1. Run `./tools/check.sh` in `/home/nryn/work/before-yes` on the next pull.
+    - Lambo `lambo_record_action` and `lambo_derive` were not available, so the landing is recorded here only.
 - **Repository pushed.** `github.com/nrynss/before-yes` is private, and becomes public before submission (T6.5). Before the push, a scan of all 27 commits found none of the four `.env` values. The first CI run of `tools/check.sh` passed.
 - **Orchestrator protocol written.**
   - [ORCHESTRATOR.md](ORCHESTRATOR.md) sets out the loop and the four separate roles. The `AGENTS.md` review section now points to it.

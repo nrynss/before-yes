@@ -1,0 +1,161 @@
+{
+  "id": "c_Kh3nAc9dYm2sWq7vLp4tRx",
+  "title": "Khan Academy Kids",
+  "kind": "ios",
+  "age": 5,
+  "checklist_version": "v7",
+  "checked_at": "2026-10-13T18:58:40Z",
+  "collected_at": "2026-10-13T18:58:00Z",
+  "verdict": "yes",
+  "grades": [
+    {
+      "area": "contact",
+      "level": "ok",
+      "findings": [
+        "f_e5ac958064adaf6b"
+      ],
+      "reason": "A Kids-category app; no source describes chat or messaging."
+    },
+    {
+      "area": "money",
+      "level": "ok",
+      "findings": [
+        "f_3e6fc3bbe1b9632b"
+      ],
+      "reason": "Free, with no ads or subscriptions."
+    },
+    {
+      "area": "data",
+      "level": "ok",
+      "findings": [
+        "f_a02b449a48bf5752"
+      ],
+      "reason": "No ads and no third-party tracking."
+    },
+    {
+      "area": "age_gating",
+      "level": "ok",
+      "findings": [
+        "f_4abf8fa3820475b2"
+      ],
+      "reason": "Made for ages 2 to 8; nothing to gate."
+    },
+    {
+      "area": "content",
+      "level": "ok",
+      "findings": [
+        "f_c12fb41929a40a67"
+      ],
+      "reason": "Parents report calm, age-appropriate content."
+    },
+    {
+      "area": "developer_record",
+      "level": "unknown",
+      "findings": [],
+      "reason": "No developer record found."
+    }
+  ],
+  "settings": [],
+  "findings": [
+    {
+      "id": "f_3e6fc3bbe1b9632b",
+      "area": "money",
+      "claim": "The app is free with no ads or subscriptions",
+      "stance": "neutral",
+      "quote": "Yes — the mobile app is 100% free, with no ads or subscriptions.",
+      "source": {
+        "url": "https://www.khanacademy.org/kids",
+        "kind": "rating",
+        "title": "Free Learning App for Kids Ages 2-8 | Khan Academy Kids",
+        "fetched_at": "2026-10-13T18:57:30Z"
+      }
+    },
+    {
+      "id": "f_a02b449a48bf5752",
+      "area": "data",
+      "claim": "No ads and no third-party tracking",
+      "stance": "mitigation",
+      "quote": "We don't show ads in the app, and we don't let third parties track your child across other apps or websites.",
+      "source": {
+        "url": "https://www.khankids.org",
+        "kind": "policy",
+        "title": "Free Learning App for Kids Ages 2-8",
+        "fetched_at": "2026-10-13T18:57:30Z"
+      }
+    },
+    {
+      "id": "f_e5ac958064adaf6b",
+      "area": "contact",
+      "claim": "The App Store lists the app in its Kids category, made for ages 0–5",
+      "stance": "neutral",
+      "quote": "Made For Ages 0–5",
+      "source": {
+        "url": "https://apps.apple.com/mx/app/khan-academy-kids/id1378467217?l=en-GB",
+        "kind": "store",
+        "title": "‎Khan Academy Kids App - App Store",
+        "fetched_at": "2026-10-13T18:57:30Z"
+      }
+    },
+    {
+      "id": "f_4abf8fa3820475b2",
+      "area": "age_gating",
+      "claim": "The developer describes the app as made for ages 2–8",
+      "stance": "neutral",
+      "quote": "A free educational app for children ages 2–8",
+      "source": {
+        "url": "https://www.khanacademy.org/kids",
+        "kind": "rating",
+        "title": "Free Learning App for Kids Ages 2-8 | Khan Academy Kids",
+        "fetched_at": "2026-10-13T18:57:30Z"
+      }
+    },
+    {
+      "id": "f_c12fb41929a40a67",
+      "area": "content",
+      "claim": "A parent reports the app is calm and ad-free for a 4-year-old",
+      "stance": "neutral",
+      "quote": "My 4 year old loves this. It has everything and isn’t overstimulating AND it has no ads.",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/id=1378467217/sortby=mostrecent/json",
+        "kind": "review",
+        "index": 311,
+        "fetched_at": "2026-10-13T18:57:30Z"
+      }
+    }
+  ],
+  "alternatives": [],
+  "app": {
+    "track_id": 1378467217,
+    "name": "Khan Academy Kids",
+    "seller": "Khan Academy",
+    "seller_url": "http://khankids.org",
+    "store_url": "https://apps.apple.com/us/app/khan-academy-kids/id1378467217?uo=4",
+    "content_rating": "4+",
+    "price": "Free",
+    "genre": "Education",
+    "description": "Make screen time more meaningful with Khan Academy Kids—the award-winning, educational app for kids ages 2–8."
+  },
+  "stats": {
+    "sources": 9,
+    "reviews": 500,
+    "chunks": 31,
+    "failed_chunks": 1,
+    "drops": {
+      "bad_area": 1,
+      "bad_stance": 0,
+      "no_quote": 2,
+      "unquoted": 4,
+      "duplicates": 3
+    },
+    "conflicted_areas": [],
+    "missing_kinds": [
+      "terms",
+      "news"
+    ],
+    "tavily_credits": 8,
+    "read_cost_nano": 11800000,
+    "judge_cost_nano": 13600000,
+    "reader_model": "nvidia/nvidia-nemotron-3-nano-30b-a3b",
+    "judge_model": "nvidia/nemotron-3-super-120b-a12b"
+  }
+}

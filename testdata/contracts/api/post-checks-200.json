@@ -1,0 +1,16 @@
+{
+  "request": {
+    "method": "POST",
+    "path": "/api/checks",
+    "body": {
+      "title": "Roblox",
+      "age": 9
+    }
+  },
+  "response": {
+    "status": 200,
+    "body": {
+      "card_id": "c_7Hq2mXv9pK3wLr8sTn4bYe"
+    }
+  }
+}
