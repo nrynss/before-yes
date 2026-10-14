@@ -268,7 +268,7 @@ This is how prompt changes are judged from here on: by the eval, not by reading 
 
 The totals did not move. Every quote the stand-in reader matched already holds the whole decisive quote or most of it, so the stricter rule removed no hit, and the T3.1 changes did not change which documents the fixtures serve for these quotes. These are stand-in numbers only. T3.6b replaces them with recorded replies.
 
-**Round 2 (T3.6).** I re-ran the eval after the round-2 T3.1, T3.3 and T3.4 fixes and `main` were merged in. The baseline did not move: Roblox 4/6 grades and 3/6 quotes (36 chunks), Minecraft 0/6 and 2/5 (45), Khan 3/6 and 1/5 (22), for a total of 7/18 and 6/16. `TestStandinBaselinePinned` is unchanged. The new error-page rule changes no eval document: the eval fixtures serve no Common Sense 404 page to the gather step. No host changed, because Roblox and Minecraft have seller URLs and Khan's host comes from its seller URL.
+**Round 2 (T3.6).** I re-ran the eval after the round-2 T3.1, T3.3 and T3.4 fixes and `main` were merged in. The baseline did not move: Roblox 4/6 grades and 3/6 quotes (36 chunks), Minecraft 0/6 and 2/5 (45), Khan 3/6 and 1/5 (22), for a total of 7/18 and 6/16. `TestStandinBaselinePinned` is unchanged.
 
 ---
 
