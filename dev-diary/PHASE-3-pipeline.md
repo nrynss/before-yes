@@ -532,7 +532,7 @@ requires:   T3.6b
 fixture-ok: yes
 size:       M · frontier
 owns:       internal/pipeline/judge.go, internal/pipeline/judge_test.go, internal/pipeline/read.go, internal/pipeline/read_test.go, the reader and judge max_tokens lines in before-yes.toml.example
-status:     in-review
+status:     done
 ```
 Found by the orchestrator in T3.6b's live replies. All three demo titles came back **no**, but the judge's flags are mostly not backed by a verified quote: `found` is empty in most areas. Its reasons paraphrase loosely or invent details:
 - Khan Academy Kids: "strangers can message via the forum", though the app has no forum.
@@ -588,6 +588,36 @@ The verdict rule (any `flag` makes **no**) is unchanged. Only unsupported flags 
 Replay after round 2 is unchanged: all three titles unclear, grades 5/18, quotes 2/16, 0 misses.
 
 **Open item (L1, accepted):** a reason that pastes a verbatim run of a real quote next to an invented claim still stands; a string check cannot tell whether a claim follows from its quote. The cited finding is still verified, in its area, with a fitting stance, and its quote is shown beside the reason. The follow-up is a judge prompt that requires quoting, or a separate entailment check, with a live re-record.
+
+---
+
+### T3.9b: The judge cites findings by id ★
+```yaml
+requires:   T3.9
+fixture-ok: no
+size:       M · frontier
+owns:       internal/pipeline/judge.go, internal/pipeline/judge_test.go, tools/eval/live.go, testdata/eval/replies/, the reader and judge max_tokens lines in before-yes.toml.example, docs/budget.md (re-measured figures only)
+status:     not-started
+```
+T3.9 grounds each grade after the judge answers, by finding a verbatim run of a verified quote in the reason. With the prompt unchanged, Super paraphrases and never quotes, so no recorded flag or setting survives. All three demo titles replay as **unclear**, including Roblox's contact area, which a real quote backs ("a child predator might ask where you are"). The grades are now honest, but a demo of three unclear cards does not work.
+
+Make citation structural:
+- The judge's reply names, per area, the ids of the findings it relies on: the reader's unique review refs and source ids.
+- A grade of `flag` or `ok_with_setting` stands only if every cited id exists, passed `finding.Verify`, belongs to that area, and has a fitting stance: a risk for a flag, and a risk or mitigation for a setting.
+- A setting must still be named by a cited mitigation quote, as T3.9 does.
+- A grade with no valid citation falls to `unknown` and the area is `thin`, as now.
+- Keep T3.9's verbatim-run check as a second guard on the reason text, or drop it with a reason in the handoff.
+- This closes T3.9's accepted string-matching limits (L1 to L3) as far as structure can. Negation in a quote stays the reader's job.
+
+The prompt and the reply shape change, so the recorded judge replies no longer replay.
+- **Re-record live on Token Factory.** This needs `.env`, so it runs on the main machine. Re-record the judge for all three titles (about $0.05). Re-record the reader too at the raised `max_tokens` (8192), so the cap is measured, not assumed (about $0.10 in all).
+- Update `docs/budget.md` from the new per-check cost.
+
+**Done when:**
+- On the re-recorded replies, no grade stands without a valid cited id, and a test pins it.
+- The handoff log gives each title's verdict, grades agreed and quotes found, next to T3.6b and T3.9.
+- The reader's unquoted-drop rate and the replies at the cap are measured, before and after.
+- The demo titles' verdicts are reported to the user, who decides any re-pick.
 
 ---
 

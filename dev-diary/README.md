@@ -181,7 +181,7 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 | P0 | 9 / 9 | Done. Two exit criteria wait on later tasks: a live Nano call (T2.1b) and the config check (T4.4). CI is green. |
 | P1 | 4 / 4 | Done. The `job.Failure` exit criterion waits on T4.1. The main-checkout pins and `.env` leak check, waived at landing, ran at the P1–P2 integration and passed. |
 | P2 | 12 / 12 | Done. All six exit criteria are met. Measured model cost is $0.0309 per check. Tavily is 7–8 credits per check, from fixtures, not a live run. |
-| P3 | 10 / 11 | Everything but T3.9 is done. T3.9 makes every grade cite a verified quote, after T3.6b's live run put all three demo titles at **no** on mostly unquoted flags. T3.8, T3.7 and T3.5 are done, with their follow-ups (PRs #13–#15). The four open behaviours are decided (see the handoff log). |
+| P3 | 11 / 12 | Everything but T3.9b is done. T3.9 grounds every grade in a verified quote, and on the recorded replies all three demo titles now read **unclear**, because the judge paraphrases. T3.9b makes the judge cite finding ids and re-records live. |
 | P4 | 0 / 5 | Not started. T4.1, T4.2 and T4.4 drafted. |
 | P5 | 0 / 7 | Not started. |
 | P6 | 0 / 6 | Not started. |
@@ -192,6 +192,21 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 
 Newest first. One entry per closed task, finding, or split.
 
+- **T3.9 closed (PR #17); T3.9b filed.** Implemented by a remote orchestrator. Rounds 1 and 2 were REMEDIATE, and round 3 was APPROVE with zero residue and 3 Lows accepted.
+  - **What landed:**
+    - `ground` runs after `checklist.Enforce` and before `Decide`.
+      - A `flag` needs a named risk finding. An `ok_with_setting` needs a named risk or mitigation finding, and a cited mitigation quote that contains every content word of the setting.
+      - A reason "names" a finding when it carries a run of 4 consecutive words of the verified quote, at least 2 of them content words, NFC-normalised.
+      - A failing grade becomes `unknown`, and the area goes in the new additive card field `thin_areas`.
+    - The verdict rule is unchanged. The judge's prompt and request are unchanged, so the recordings replay with 0 misses.
+    - The reader's `max_tokens` example goes from 4096 to 8192. That is not measured yet.
+  - **Replay:** Roblox, Minecraft and Khan Academy Kids all read **unclear**, with grades 5/18 and quotes 2/16. Super paraphrases and never quotes, so no recorded flag or setting survives. This includes Roblox's contact area, which a real quote backs.
+  - **Outside owns, accepted:** `tools/eval/standin.go` (the stand-in judge now quotes), the `ruleJudge` test stub, and one line in `pipeline.go` copying `thin_areas` onto the card. The stand-in baseline is unchanged at 7/18 and 6/16.
+  - **Orchestrator verification:** gate rc 0 on the branch and after the merge into main, with `scratch/` and `.env` present. Replay was reproduced here. No key values found. No dates.
+  - **T3.9b filed:**
+    - The judge cites finding ids per area, and a grade stands only on valid, verified, in-area citations with a fitting stance.
+    - Then a live re-record on Token Factory (about $0.10 with the reader at 8192 tokens) and a budget update.
+    - The demo titles are re-picked only after that, by the user.
 - **T3.8, T3.7 and T3.5 follow-ups closed** (PRs #13, #14, #15, stacked, implemented by Grok). They carry out the user's four decisions. Final reviews: T3.8 follow-up APPROVE; T3.7 round 3 REMEDIATE, fixed; T3.5 rounds 6 and 7 REMEDIATE, fixed. #15 merged into `task-t3.7-kinds`, and #14 carried both into `main` after a merge with `main`. The full handoffs are in the PR descriptions.
   - **#13, T3.8:** a review feed that errors falls back to the store page. `review_source` says `page`. The feed error stays a failure, so that evidence is not cached.
   - **#14, T3.7:**
