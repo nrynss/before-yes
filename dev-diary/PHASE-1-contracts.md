@@ -239,6 +239,8 @@ Also added: every non-2xx example must be a strict wire envelope whose code appe
 | M1 | `get-cards.json` is now generated from the four card examples (id, title, age, verdict, checklist version, checked at) and carries `v3`. It lists four cards, `card-unclear` included. A test reads it and fails if any entry drifts from its card or from `checklist.Version`. | `TestAPICardsMatchContracts`, `TestAPIGenerate` |
 | inherited | `get-card.json` and `get-checklist.json` were regenerated after the T1.1, T1.2 and T1.3 round-2 fixes. | `TestAPICardMatchesContract`, `TestAPIChecklistMatches` |
 
+**Remediation, round 3** (inherited; T1.4's own round-3 review approved). `get-card.json`, `get-cards.json` and `get-checklist.json` were regenerated from the `v4` card examples and the `v4` checklist. `TestAPICardMatchesContract`, `TestAPICardsMatchContracts`, `TestAPIChecklistMatches` and `TestAPIGenerate` pass.
+
 Noted from the review, not this task's: `go mod tidy -diff` is non-empty on `main` too, because `modernc.org/sqlite` is not imported yet. Phase 1 did not introduce it.
 ---
 
