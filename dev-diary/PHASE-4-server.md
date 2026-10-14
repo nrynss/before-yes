@@ -190,13 +190,20 @@ requires:   T4.5
 fixture-ok: yes
 size:       S · mid
 owns:       internal/server/checks.go (startCheck and its join), internal/server/checks_test.go
-status:     not-started
+status:     in-review
 ```
 `docs/api.md` step 4: a running check for the same normalized title and age answers `202` with its `check_id`. Nothing implements it. A double click today starts two jobs, reserves two of the day's fresh checks and pays the judge twice; only the evidence collect is shared (T4.2's single flight). Found by the T4.3 reviewer.
 
 Join after the card cache and before the refusals (step 4 comes before `live_checks_off`, `budget_exhausted` and `busy`). A joined request reserves nothing. A visitor-key request never joins a check on our keys, and a check on visitor keys is never joined by anyone else, so one visitor's keys never pay for another request.
 
 **Done when:** Tests show two concurrent identical requests get one `check_id`, one job and one daily-cap reservation; a request after the check finishes gets the card; and the visitor-key cases above stay separate.
+
+**Implementation notes (T4.6).**
+- `Server` holds an in-memory `joinTable` (made in `Handler()`): running checks on our keys, keyed by `cards.TitleKey(title)` and age. `startCheck` takes its lock after the card cache and holds it through the lookup, `admit` (the daily-cap reservation), `StartKind` and the insert, so two concurrent identical requests cannot both start. A hit answers `202` with the running `check_id` and reserves nothing. The job removes its own entry when its work returns, after the card is stored, so a later request hits the card cache. The table is not persisted: after a restart the job is interrupted (T4.1) and nothing is joined.
+- The lock serializes check starts across all titles. A start is a cache read, a reservation and a job insert, so this was kept simple rather than per key.
+- Visitor-key requests never look the table up, and visitor-key checks are never entered, so neither side joins the other.
+- **Outside owns (minimal):** `internal/server/gate.go`. The live switch also lets through a request that would join a running check (`joinsRunning`), because step 4 comes before `live_checks_off`.
+- **Open: the evidence collect is still one single flight across visitor and our-key checks of the same title (T4.2).** So when a visitor check and one of ours collect the same uncached title together, whichever leads the flight pays Tavily and the reader, and the other rides on it. Each check still judges on its own keys. Keeping the two apart would mean a visitor-only flight key in `internal/server/cache.go` (T4.2's file), which this task does not own. Recorded for the user.
 
 ---
 

@@ -141,7 +141,7 @@ func (s *Server) liveSwitch(flags flag.Store, live flag.Bool, next http.Handler)
 			return
 		}
 		r.Body = io.NopCloser(bytes.NewReader(body))
-		if s.cachedOrInvalid(r.Context(), body) {
+		if s.cachedOrInvalid(r.Context(), body) || s.joinsRunning(r, body) {
 			next.ServeHTTP(w, r)
 			return
 		}
@@ -176,4 +176,18 @@ func (s *Server) cachedOrInvalid(ctx context.Context, body []byte) bool {
 	}
 	cid, ok, err := s.CardCache.Fresh(ctx, req.Title, req.Age)
 	return err == nil && ok && strings.TrimSpace(cid) != ""
+}
+
+// joinsRunning reports whether the check handler would join a running
+// check for this body (docs/api.md step 4, before live_checks_off; T4.6).
+func (s *Server) joinsRunning(r *http.Request, body []byte) bool {
+	var req pipeline.Request
+	if err := json.NewDecoder(bytes.NewReader(body)).Decode(&req); err != nil {
+		return false
+	}
+	req, err := req.Normalize()
+	if err != nil {
+		return false
+	}
+	return s.joinable(r, req.Title, req.Age)
 }

@@ -10,6 +10,8 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
+	"net/http/httputil"
+	"net/url"
 	"path/filepath"
 	"strings"
 	"sync"
@@ -17,6 +19,7 @@ import (
 	"time"
 
 	"github.com/nrynss/keel/cost"
+	"github.com/nrynss/keel/gate"
 	"github.com/nrynss/keel/id"
 	"github.com/nrynss/keel/job"
 	"github.com/nrynss/keel/sqlite"
@@ -27,6 +30,7 @@ import (
 	"github.com/nrynss/before-yes/internal/cards"
 	"github.com/nrynss/before-yes/internal/checklist"
 	"github.com/nrynss/before-yes/internal/pipeline"
+	"github.com/nrynss/before-yes/internal/spend"
 	"github.com/nrynss/before-yes/internal/tavily"
 )
 
@@ -991,5 +995,227 @@ func TestStartResponseJSON(t *testing.T) {
 	_ = enc.Encode(map[string]string{"check_id": "j_00000000000000000000000000000001"})
 	if !strings.Contains(buf.String(), `"check_id":"j_00000000000000000000000000000001"`) {
 		t.Errorf("check_id json: %s", buf.String())
+	}
+}
+
+// blockTavily puts a gate in front of the env's fake Tavily host: every
+// Tavily call, on our keys or a visitor's, waits until release is closed.
+// It returns release.
+func blockTavily(t *testing.T, e *byokEnv) chan struct{} {
+	t.Helper()
+	ownMeter(t, e)
+	orig := e.srv.Pipeline.Gatherer.Search.(*tavily.Client)
+	target, err := url.Parse(orig.BaseURL)
+	if err != nil {
+		t.Fatal(err)
+	}
+	release := make(chan struct{})
+	proxy := httputil.NewSingleHostReverseProxy(target)
+	ps := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		select {
+		case <-release:
+		case <-r.Context().Done():
+			return
+		}
+		proxy.ServeHTTP(w, r)
+	}))
+	t.Cleanup(ps.Close)
+	t.Cleanup(func() {
+		select {
+		case <-release:
+		default:
+			close(release)
+		}
+	})
+	gated := tavily.New(ps.URL, func() (string, error) { return ourTavilyKey, nil })
+	gated.Retry = orig.Retry
+	e.srv.Pipeline.Gatherer.Search = gated
+	return release
+}
+
+// ownMeter moves the env's daily cap onto a meter with its own database
+// file, the layout serve uses (see feedback.md: a meter sharing the app's
+// file loses bookings to SQLITE_BUSY under concurrent checks).
+func ownMeter(t *testing.T, e *byokEnv) {
+	t.Helper()
+	st, err := e.meter.Status(context.Background(), spend.PoolChecksDaily)
+	if err != nil {
+		t.Fatal(err)
+	}
+	m, err := spend.Open(context.Background(), spend.Config{
+		Path:  filepath.Join(t.TempDir(), "spend.db"),
+		Pools: map[spend.Pool]spend.PoolConfig{spend.PoolChecksDaily: {Limit: st.Limit}},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { _ = m.Close() })
+	e.meter, e.srv.Checks, e.srv.Pipeline.Checks = m, m, m
+}
+
+func checkIDOf(t *testing.T, b []byte) string {
+	t.Helper()
+	var s struct {
+		CheckID string `json:"check_id"`
+	}
+	_ = json.Unmarshal(b, &s)
+	return s.CheckID
+}
+
+func remainingToday(t *testing.T, e *byokEnv) cost.Price {
+	t.Helper()
+	st, err := e.meter.Status(context.Background(), spend.PoolChecksDaily)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return st.Remaining
+}
+
+// Concurrent identical requests (same normalized title and age) get one
+// check_id, run one job and hold one daily-cap reservation; once the check
+// is done, the next identical request gets the card.
+func TestDoubleClickJoinsRunningCheck(t *testing.T) {
+	e := newBYOKEnv(t, 5)
+	release := blockTavily(t, e)
+
+	titles := []string{"Roblox", "roblox", "  Roblox ", "ROBLOX", "Roblox"}
+	ids := make([]string, len(titles))
+	codes := make([]int, len(titles))
+	var wg sync.WaitGroup
+	for i, title := range titles {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			resp, b := byokPost(t, e.url, fmt.Sprintf(`{"title":%q,"age":9}`, title), nil)
+			codes[i], ids[i] = resp.StatusCode, checkIDOf(t, b)
+		}()
+	}
+	wg.Wait()
+	for i := range titles {
+		if codes[i] != http.StatusAccepted || ids[i] == "" || ids[i] != ids[0] {
+			t.Fatalf("responses %v ids %v, want all 202 with one check_id", codes, ids)
+		}
+	}
+	if got := remainingToday(t, e); got != 4 {
+		t.Errorf("remaining today %d while running, want 4 (one reservation)", got)
+	}
+	// A different age is a different check.
+	resp, b := byokPost(t, e.url, `{"title":"Roblox","age":12}`, nil)
+	if resp.StatusCode != http.StatusAccepted || checkIDOf(t, b) == ids[0] {
+		t.Errorf("other age: status %d id %s, want a new check", resp.StatusCode, checkIDOf(t, b))
+	}
+
+	close(release)
+	if st, body := waitCheck(t, e.url, ids[0]); st != "done" {
+		t.Fatalf("joined check: %s %s", st, body)
+	}
+	resp, b = byokPost(t, e.url, `{"title":"roblox","age":9}`, nil)
+	var hit struct {
+		CardID string `json:"card_id"`
+	}
+	_ = json.Unmarshal(b, &hit)
+	if resp.StatusCode != http.StatusOK || hit.CardID == "" {
+		t.Errorf("after done: status %d body %s, want 200 with the card", resp.StatusCode, b)
+	}
+	// Only the 9 and the 12 were booked: the joined requests reserved nothing.
+	waitCheck(t, e.url, checkIDOf(t, func() []byte { _, b := byokPost(t, e.url, `{"title":"Roblox","age":12}`, nil); return b }()))
+	if got := checksSpentToday(t, e.meter); got != 2 {
+		st, _ := e.meter.Status(context.Background(), spend.PoolChecksDaily)
+		t.Errorf("checks booked %d, want 2 (%+v)", got, st)
+	}
+}
+
+// A visitor-key request never joins a check on our keys: it starts its
+// own job and reserves nothing.
+func TestVisitorRequestNeverJoinsOurCheck(t *testing.T) {
+	e := newBYOKEnv(t, 5)
+	release := blockTavily(t, e)
+
+	_, b := byokPost(t, e.url, `{"title":"Roblox","age":9}`, nil)
+	ours := checkIDOf(t, b)
+	_, b = byokPost(t, e.url, `{"title":"Roblox","age":9}`, visitorHeaders())
+	visitor := checkIDOf(t, b)
+	if ours == "" || visitor == "" || ours == visitor {
+		t.Fatalf("ours %q visitor %q, want two separate checks", ours, visitor)
+	}
+	if got := remainingToday(t, e); got != 4 {
+		t.Errorf("remaining %d, want 4 (the visitor reserves nothing)", got)
+	}
+	close(release)
+	for _, id := range []string{ours, visitor} {
+		if st, body := waitCheck(t, e.url, id); st != "done" {
+			t.Errorf("%s: %s %s", id, st, body)
+		}
+	}
+	// Each check judged on its own keys. The evidence collect for the
+	// same title is one single flight across both (T4.2), so only one of
+	// them paid Tavily; see the T4.6 notes.
+	if e.tf.saw(visitorTF) == 0 || e.tf.saw(ourTFKey) == 0 {
+		t.Error("each check should have judged on its own Token Factory key")
+	}
+	if got := checksSpentToday(t, e.meter); got != 1 {
+		t.Errorf("checks booked %d, want 1", got)
+	}
+}
+
+// A check on a visitor's keys is never joined, by our-key requests or by
+// another visitor's.
+func TestVisitorCheckIsNeverJoined(t *testing.T) {
+	e := newBYOKEnv(t, 5)
+	release := blockTavily(t, e)
+
+	_, b := byokPost(t, e.url, `{"title":"Fortnite","age":11}`, visitorHeaders())
+	v1 := checkIDOf(t, b)
+	_, b = byokPost(t, e.url, `{"title":"Fortnite","age":11}`, visitorHeaders())
+	v2 := checkIDOf(t, b)
+	_, b = byokPost(t, e.url, `{"title":"Fortnite","age":11}`, nil)
+	ours := checkIDOf(t, b)
+	if v1 == "" || v2 == "" || ours == "" || v1 == v2 || v1 == ours || v2 == ours {
+		t.Fatalf("visitor %q, visitor %q, ours %q: want three separate checks", v1, v2, ours)
+	}
+	if got := remainingToday(t, e); got != 4 {
+		t.Errorf("remaining %d, want 4 (only our check holds one)", got)
+	}
+	close(release)
+	for _, id := range []string{v1, v2, ours} {
+		if st, body := waitCheck(t, e.url, id); st != "done" {
+			t.Errorf("%s: %s %s", id, st, body)
+		}
+	}
+	if got := checksSpentToday(t, e.meter); got != 1 {
+		t.Errorf("checks booked %d, want 1", got)
+	}
+}
+
+// Joining comes before live_checks_off (docs/api.md step 4 before step 5):
+// with the switch turned off while a check runs, the identical request
+// still joins it, and a new title is refused.
+func TestJoinBeforeLiveSwitch(t *testing.T) {
+	e := newGatedEnv(t, GateConfig{Rule: gate.Rule{
+		Name:      "checks",
+		PerClient: gate.Limit{Burst: 100, Every: time.Second},
+		Global:    gate.Limit{Burst: 100, Every: time.Second},
+	}})
+	block := make(chan struct{})
+	e.searcher.mu.Lock()
+	e.searcher.blockChan = block
+	e.searcher.mu.Unlock()
+	defer close(block)
+
+	resp, b := postCheck(t, e.url, `{"title":"Roblox","age":9}`, nil)
+	first := checkIDOf(t, b)
+	if resp.StatusCode != http.StatusAccepted || first == "" {
+		t.Fatalf("start: %d %s", resp.StatusCode, b)
+	}
+	if _, err := e.flags.SetBool(context.Background(), e.live, false); err != nil {
+		t.Fatal(err)
+	}
+	resp, b = postCheck(t, e.url, `{"title":"roblox","age":9}`, nil)
+	if resp.StatusCode != http.StatusAccepted || checkIDOf(t, b) != first {
+		t.Errorf("join with live off: %d %s, want 202 with %s", resp.StatusCode, b, first)
+	}
+	resp, b = postCheck(t, e.url, `{"title":"Fortnite","age":11}`, nil)
+	if c, _ := errCode(t, b); resp.StatusCode != http.StatusServiceUnavailable || c != CodeLiveChecksOff {
+		t.Errorf("new title with live off: %d %s, want 503 live_checks_off", resp.StatusCode, b)
 	}
 }

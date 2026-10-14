@@ -10,6 +10,7 @@ import (
 	"log/slog"
 	"net/http"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/nrynss/keel/cache"
@@ -58,6 +59,64 @@ type Server struct {
 	CardMaxAge    time.Duration
 	Log           *slog.Logger
 	Checks        Checks
+
+	// joins maps a running check on our keys to its job, so a second
+	// identical request joins it (docs/api.md step 4). Handler makes it.
+	joins *joinTable
+}
+
+// joinKey is a check's normalized title and age.
+type joinKey struct {
+	title string
+	age   int
+}
+
+// joinTable holds the running checks on our keys. Its lock is held from
+// the lookup through StartKind and the insert, so two concurrent identical
+// requests cannot both start a job; the job removes its own entry when it
+// ends. Visitor-key checks are never entered and never join.
+type joinTable struct {
+	mu      sync.Mutex
+	running map[joinKey]joinEntry
+}
+
+type joinEntry struct {
+	jid, ref string
+}
+
+// running reports the job id of a running check for key.
+func (t *joinTable) lookup(key joinKey) (string, bool) {
+	if t == nil {
+		return "", false
+	}
+	t.mu.Lock()
+	defer t.mu.Unlock()
+	e, ok := t.running[key]
+	return e.jid, ok
+}
+
+// done removes key's entry if it is still the check ref.
+func (t *joinTable) done(key joinKey, ref string) {
+	t.mu.Lock()
+	defer t.mu.Unlock()
+	if e, ok := t.running[key]; ok && e.ref == ref {
+		delete(t.running, key)
+	}
+}
+
+func checkKey(title string, age int) joinKey {
+	return joinKey{title: cards.TitleKey(title), age: age}
+}
+
+// joinable reports whether a request for title and age, on our keys,
+// would join a running check. The live switch lets such a request through
+// (step 4 comes before live_checks_off).
+func (s *Server) joinable(r *http.Request, title string, age int) bool {
+	if _, sent, _ := visitorKeysFrom(r); sent {
+		return false
+	}
+	_, ok := s.joins.lookup(checkKey(title, age))
+	return ok
 }
 
 // NewRunner creates a Keel job.Runner configured for check jobs.
@@ -124,6 +183,9 @@ func (s *Server) Handler() (http.Handler, error) {
 	if s.Log == nil {
 		s.Log = slog.New(slog.DiscardHandler)
 	}
+	if s.joins == nil {
+		s.joins = &joinTable{running: map[joinKey]joinEntry{}}
+	}
 	if err := s.checkCapWiring(); err != nil {
 		return nil, err
 	}
@@ -173,6 +235,21 @@ func (s *Server) startCheck(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	// Step 4: a running check on our keys for the same title and age is
+	// joined; the request reserves nothing. A visitor-key request never
+	// joins, and a visitor-key check is never entered, so one visitor's
+	// keys never pay for another request.
+	_, visitor, _ := visitorKeysFrom(r)
+	key := checkKey(req.Title, req.Age)
+	if !visitor && s.joins != nil {
+		s.joins.mu.Lock()
+		defer s.joins.mu.Unlock()
+		if e, ok := s.joins.running[key]; ok {
+			writeJSON(w, http.StatusAccepted, map[string]string{"check_id": "j_" + e.jid})
+			return
+		}
+	}
+
 	ref, err := id.New()
 	if err != nil {
 		s.log().Error("start check id", "err", err)
@@ -184,9 +261,19 @@ func (s *Server) startCheck(w http.ResponseWriter, r *http.Request) {
 	if !ok {
 		return
 	}
-	jid, err := s.Runner.StartKind(ctx, JobKind, adm.wrap(s.work(adm.p, req, ref)))
+	fn := adm.wrap(s.work(adm.p, req, ref))
+	if !visitor && s.joins != nil {
+		inner, t := fn, s.joins
+		fn = func(ctx context.Context, report func(job.Progress)) ([]byte, error) {
+			defer t.done(key, ref)
+			return inner(ctx, report)
+		}
+	}
+	jid, err := s.Runner.StartKind(ctx, JobKind, fn)
 	if err != nil {
 		adm.release()
+	} else if !visitor && s.joins != nil {
+		s.joins.running[key] = joinEntry{jid: jid, ref: ref}
 	}
 	if errors.Is(err, job.ErrLimit) {
 		w.Header().Set("Retry-After", "20")
