@@ -57,14 +57,10 @@ func TestDecideRules(t *testing.T) {
 		{"three unknowns is unclear", map[Area]Level{Money: Unknown, Data: Unknown, AgeGating: Unknown}, Unclear},
 		{"two unknowns elsewhere is still yes", map[Area]Level{Money: Unknown, DeveloperRecord: Unknown}, Yes},
 		{"two unknowns and a setting", map[Area]Level{Data: Unknown, AgeGating: Unknown, Money: OKWithSetting}, YesWithSettings},
-		{"unknown citing findings is unclear", nil, Unclear},
 		{"all unknown is unclear", map[Area]Level{Contact: Unknown, Money: Unknown, Data: Unknown, AgeGating: Unknown, Content: Unknown, DeveloperRecord: Unknown}, Unclear},
 	}
 	for _, c := range cases {
 		gs := set(c.over)
-		if c.name == "unknown citing findings is unclear" {
-			gs[1] = Grade{Area: Money, Level: Unknown, Findings: []string{"m-risk"}}
-		}
 		got, err := Decide(gs)
 		if err != nil || got != c.want {
 			t.Errorf("%s: got %q, %v; want %q", c.name, got, err, c.want)
@@ -163,16 +159,18 @@ func TestEnforce(t *testing.T) {
 			Content, Unknown, []string{}, []string{"content:ok_without_finding"}},
 		{"contact ok with mitigation stands", []Grade{{Area: Contact, Level: OK, Findings: []string{"c-mit"}}},
 			Contact, OK, []string{"c-mit"}, nil},
-		{"contact ok on risk only demoted", []Grade{{Area: Contact, Level: OK, Findings: []string{"c-risk"}}},
-			Contact, Unknown, []string{"c-risk"}, []string{"contact:ok_without_finding"}},
+		{"contact ok on risk only raised to flag", []Grade{{Area: Contact, Level: OK, Findings: []string{"c-risk"}}},
+			Contact, Flag, []string{"c-risk"}, []string{"contact:ok_on_risk_only"}},
 		{"contact ok on risk and mitigation stands", []Grade{{Area: Contact, Level: OK, Findings: []string{"c-risk", "c-mit"}}},
 			Contact, OK, []string{"c-risk", "c-mit"}, nil},
 		{"zero-width setting demoted", []Grade{{Area: Money, Level: OKWithSetting, Setting: "\u200b \u2060", Findings: []string{"m-mit"}}},
 			Money, Unknown, []string{"m-mit"}, []string{"money:setting_without_name"}},
 		{"other area ok without finding demoted", []Grade{{Area: Money, Level: OK}},
 			Money, Unknown, []string{}, []string{"money:ok_without_finding"}},
-		{"money ok on pay-to-win risk demoted", []Grade{{Area: Money, Level: OK, Findings: []string{"m-risk"}}},
-			Money, Unknown, []string{"m-risk"}, []string{"money:ok_without_finding"}},
+		{"money ok on pay-to-win risk raised to flag", []Grade{{Area: Money, Level: OK, Findings: []string{"m-risk"}}},
+			Money, Flag, []string{"m-risk"}, []string{"money:ok_on_risk_only"}},
+		{"ok on missing id is unknown", []Grade{{Area: Money, Level: OK, Findings: []string{"nope"}}},
+			Money, Unknown, []string{}, []string{"money:missing_finding", "money:ok_without_finding"}},
 		{"money ok with mitigation stands", []Grade{{Area: Money, Level: OK, Findings: []string{"m-mit"}}},
 			Money, OK, []string{"m-mit"}, nil},
 		{"blank setting demoted", []Grade{{Area: Money, Level: OKWithSetting, Setting: "   ", Findings: []string{"m-mit"}}},
@@ -241,54 +239,63 @@ func TestEvidenceFreeOKIsNotYes(t *testing.T) {
 	}
 }
 
-// T1.1 round 2 M1: ok resting only on risks is not a yes.
+// T1.1 round 2 M1: ok resting only on risks is not a yes (now: no).
 func TestRiskOnlyOKIsNotYes(t *testing.T) {
 	in := []Grade{{Area: Contact, Level: OK, Findings: []string{"c-risk"}}}
 	for _, s := range Areas()[1:] {
 		in = append(in, Grade{Area: s.ID, Level: OK})
 	}
 	out, _ := Enforce(in, ev)
-	if v, _ := Decide(out); v != Unclear {
-		t.Errorf("got %q, want unclear", v)
+	if v, _ := Decide(out); v != No {
+		t.Errorf("got %q, want no", v)
 	}
 }
 
-// T1.1 round 3 M1: in every area, ok on risks alone (or on nothing) is demoted.
+// User decision (round 4): in every area, ok citing only risks becomes flag,
+// so the verdict is no; ok citing nothing becomes unknown.
 func TestOKNeedsSupportEveryArea(t *testing.T) {
 	evAll := map[string]Cited{}
 	for _, s := range Areas() {
 		evAll["risk-"+string(s.ID)] = Cited{Area: s.ID, Risk: true}
 		evAll["ok-"+string(s.ID)] = Cited{Area: s.ID}
 	}
-	for _, target := range Areas() {
+	build := func(target Area, targetIDs []string) []Grade {
 		var in []Grade
 		for _, s := range Areas() {
-			id := "ok-" + string(s.ID)
-			if s.ID == target.ID {
-				id = "risk-" + string(s.ID)
+			ids := []string{"ok-" + string(s.ID)}
+			if s.ID == target {
+				ids = targetIDs
 			}
-			in = append(in, Grade{Area: s.ID, Level: OK, Findings: []string{id}})
+			in = append(in, Grade{Area: s.ID, Level: OK, Findings: ids})
 		}
-		out, dem := Enforce(in, evAll)
-		if g := one(t, out, target.ID); g.Level != Unknown || len(dem) != 1 || dem[0].Rule != RuleOKNoProof {
+		return in
+	}
+	for _, target := range Areas() {
+		out, dem := Enforce(build(target.ID, []string{"risk-" + string(target.ID)}), evAll)
+		if g := one(t, out, target.ID); g.Level != Flag || len(dem) != 1 || dem[0].Rule != RuleOKOnRisk {
 			t.Errorf("%s ok on risk only: %s %v", target.ID, g.Level, dem)
 		}
-		if v, _ := Decide(out); v == Yes {
-			t.Errorf("%s ok on risk only gave yes", target.ID)
+		if v, _ := Decide(out); v != No {
+			t.Errorf("%s ok on risk only: verdict %s, want no", target.ID, v)
+		}
+		out, _ = Enforce(build(target.ID, nil), evAll)
+		if g := one(t, out, target.ID); g.Level != Unknown {
+			t.Errorf("%s ok on nothing: %s, want unknown", target.ID, g.Level)
+		}
+		out, dem = Enforce(build(target.ID, []string{"risk-" + string(target.ID), "ok-" + string(target.ID)}), evAll)
+		if g := one(t, out, target.ID); g.Level != OK || len(dem) != 0 {
+			t.Errorf("%s ok on risk and support: %s %v", target.ID, g.Level, dem)
 		}
 	}
-	// The round 3 probe: money ok citing a pay-to-win risk, rest supported.
-	var in []Grade
-	for _, s := range Areas() {
-		id := "ok-" + string(s.ID)
-		if s.ID == Money {
-			id = "risk-money"
-		}
-		in = append(in, Grade{Area: s.ID, Level: OK, Findings: []string{id}})
+	// Money ok citing a pay-to-win risk, rest supported: no.
+	out, _ := Enforce(build(Money, []string{"risk-money"}), evAll)
+	if v, _ := Decide(out); v != No {
+		t.Errorf("money ok on pay-to-win: %s, want no", v)
 	}
-	out, _ := Enforce(in, evAll)
-	if v, _ := Decide(out); v != Unclear || one(t, out, Money).Level != Unknown {
-		t.Errorf("money ok on pay-to-win: %s, want unclear", v)
+	// An evidence-free unknown outside contact and content still allows yes.
+	out, _ = Enforce(build(Money, nil), evAll)
+	if v, _ := Decide(out); v != Yes {
+		t.Errorf("one evidence-free unknown in money: %s, want yes", v)
 	}
 }
 
