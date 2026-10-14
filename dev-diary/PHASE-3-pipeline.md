@@ -224,7 +224,7 @@ Alternatives multiply cost. They are bounded by count, run after the main card i
   - **Checking:** `CheckAlternatives` checks each candidate for the card's age through `Collect` (cached like any title) and `Decide`, under the ref `<ref>/alt<n>`. It keeps only a candidate whose verdict beats the original's (yes > yes_with_settings > no; `unclear` never beats). A kept candidate has `status: checked`, its verdict and its own `card_id`, and its card is returned to be stored.
   - **Refusals:** a `cost.ErrOverBudget` from any call stops the run, and the candidates not yet checked are marked `refused`. The daily cap refuses only fresh checks (user decision below). A candidate that fails another way is dropped.
   - `WithAlternatives` runs both steps after the main card is made and returns a copy of the card with the alternatives. On any error, a refused search included, the card comes back unchanged.
-- **The P4 hook** is `Pipeline.WithAlternatives`, or `FindAlternatives` followed by `CheckAlternatives` when the pending list should be shown first. pipeline.go is unchanged: `Run` still returns the main card alone.
+- **The P4 hook** is `Pipeline.WithAlternatives`, or `FindAlternatives`, `CheckAlternatives` and `AltResult.Apply` as two steps. The pending list is never shown: a pending name may then be refused by the cap, so a card shown before the checks finish carries no alternatives (round-6 remediation below). pipeline.go is unchanged: `Run` still returns the main card alone.
 - **Contract:** `Alternative.Status` (`status`: pending, checked, refused) is new and additive. `card-no.json` and `api/get-card.json` show `"status": "checked"`; the `types_test.go` generator line was updated to match.
 - **Fixtures:** the main card is the captured Roblox fixture (review 355 gives "no"). The alternatives search and the candidates' sources are fakes in `alternatives_test.go`: Calm Builder, which answers every area with a setting; Chatty World, which has a contact risk; and Blank Slate, which says nothing. No live call was made.
 - **Tests:** `TestNoTitleGetsABetterAlternative` (the Done-when: Calm Builder, yes_with_settings, its own card id; the list and self skipped; the count bounded; each candidate under its own ref; a second run reads nothing again, so the evidence is cached); `TestBudgetRefusalLeavesMainCard` (the Done-when: refused candidate checks are marked refused and the card is otherwise byte-identical; a refused search returns the card unchanged); `TestAlternativesOnlyForNoAndSettings`; `TestCandidateName`.
@@ -265,6 +265,16 @@ Trade-off: a list page's picks are only as many as the search's single-title hit
 
 **User decision (T3.5): refused names are hidden.** `Alternative.Status` stays internal in `AltResult`. A card from `WithAlternatives` shows only checked (or pending) alternatives, and when at least one was refused it gets `alternatives_note`: "More alternatives when today's checks reset". `Card.alternatives_note` is new, additive and omitted when empty. `card-no.json` and `api/get-card.json` show it, one line each. Tests: `TestBudgetRefusalLeavesMainCard` (no names, the note), `TestFreshAlternativeChecksCountAgainstCap` (no refused name in the card JSON), `TestNoNoteWithoutRefusal`.
 - Outside owns, kept minimal: `pipeline.go` (the `Checks` field on `Pipeline`), `types.go` (`Card.AlternativesNote`), `types_test.go` (the example's note) and `testdata/contracts`.
+
+**Round-6 remediation (T3.5 user decisions).**
+
+| Finding | Fix | Test |
+|---|---|---|
+| M1: refused names leaked on the two-step hook, where the pending list was shown first and `AltResult.Alternatives` carried refused entries | The filter `shown` now keeps only `checked` entries. `CheckAlternatives` returns those as `AltResult.Alternatives` with `AltResult.Note`; the full outcomes, refused ones included, stay unexported. `AltResult.Apply` puts them on a card, and both hooks use it. `Card.MarshalJSON` runs the same filter, so no card or API response carries a pending or refused name however the card was assembled. The pending-first hook is gone. The contract is unchanged in shape: `Alternative.status` documents that a card's alternative is always `checked`, and every example already shows only `checked` | `TestServerHookPathHidesRefused` (the two-step path, a pending list put on a card, and a card assembled from the internal outcomes), `TestFreshAlternativeChecksCountAgainstCap`, `TestNoNoteWithoutRefusal` |
+| L1: no test of a Tavily or model refusal in the middle of a fresh alternative's check with the cap on | The test below: the reserved check is released (`Fail`), nothing is booked, no hold stands, and the rest are refused | `TestMidCheckBudgetRefusalReleasesCheck` |
+| L2, L3 (accepted) | `cached` and `Collect` look up the cache separately, and a `Done` error drops a made card. Both are left as they are | — |
+
+- Outside owns, kept minimal: `types.go` (`Card.MarshalJSON` and the `Alternative.Status` comment).
 
 
 ---

@@ -7,6 +7,7 @@
 package pipeline
 
 import (
+	"encoding/json"
 	"time"
 
 	"github.com/nrynss/before-yes/internal/checklist"
@@ -100,7 +101,10 @@ type Alternative struct {
 	CardID  string            `json:"card_id"`
 	Verdict checklist.Verdict `json:"verdict"`
 	// Status is "pending" (found, not checked yet), "checked" (its verdict
-	// beats the card's), or "refused" (the meter refused its check).
+	// beats the card's), or "refused" (the meter or the daily cap refused
+	// its check). On a card, and so in every API response, it is always
+	// "checked": pending and refused entries are internal, and Card's JSON
+	// encoding drops them (a refused one sets alternatives_note).
 	Status string `json:"status"`
 }
 
@@ -128,4 +132,19 @@ type Card struct {
 	AlternativesNote string   `json:"alternatives_note,omitempty"`
 	App              *AppInfo `json:"app"`
 	Stats            Stats    `json:"stats"`
+}
+
+// MarshalJSON encodes a card with only its checked alternatives, so no
+// card or API response carries a refused or pending name, however the card
+// was assembled (T3.5 user decision). A refused entry sets
+// alternatives_note. Every other field encodes as declared.
+func (c Card) MarshalJSON() ([]byte, error) {
+	type plain Card
+	alts, note := shown(c.Alternatives)
+	if c.AlternativesNote != "" {
+		note = c.AlternativesNote
+	}
+	p := plain(c)
+	p.Alternatives, p.AlternativesNote = alts, note
+	return json.Marshal(p)
 }

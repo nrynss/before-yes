@@ -32,8 +32,9 @@ const MaxAlternatives = 3
 
 // Alternative statuses.
 const (
-	// AltPending: found, not checked yet. A card shown before its
-	// alternatives finish carries these.
+	// AltPending: found, not checked yet. Internal: a pending name is never
+	// put on a card, since the cap may refuse it; a card shown before its
+	// alternatives finish carries none.
 	AltPending = "pending"
 	// AltChecked: checked, with a verdict that beats the original's.
 	AltChecked = "checked"
@@ -311,9 +312,14 @@ func (p *Pipeline) FindAlternatives(ctx context.Context, card Card, ref string) 
 
 // AltResult is the outcome of checking a card's candidates.
 type AltResult struct {
-	// Alternatives are the candidates that beat the original (checked),
-	// then any the meter kept from being checked (refused).
+	// Alternatives are what a card may show: only the candidates checked
+	// to beat the original. A refused name is never here (user decision).
 	Alternatives []Alternative
+	// Note is MoreAlternativesNote when at least one candidate was refused.
+	Note string
+	// outcomes is every candidate's outcome, refused ones included, in
+	// order. It stays inside the package.
+	outcomes []Alternative
 	// Cards are the kept alternatives' own cards, to store beside the
 	// main card so each alternative links to its card.
 	Cards []Card
@@ -338,7 +344,7 @@ func (p *Pipeline) CheckAlternatives(ctx context.Context, card Card, pending []A
 	for i, alt := range pending {
 		if res.Refused && !capped {
 			alt.Status = AltRefused
-			res.Alternatives = append(res.Alternatives, alt)
+			res.outcomes = append(res.outcomes, alt)
 			continue
 		}
 		altRef := fmt.Sprintf("%s/alt%d", ref, i+1)
@@ -352,7 +358,7 @@ func (p *Pipeline) CheckAlternatives(ctx context.Context, card Card, pending []A
 				if capped || errors.Is(err, cost.ErrOverBudget) {
 					capped, res.Refused = true, true
 					alt.Status = AltRefused
-					res.Alternatives = append(res.Alternatives, alt)
+					res.outcomes = append(res.outcomes, alt)
 				}
 				continue
 			}
@@ -373,16 +379,17 @@ func (p *Pipeline) CheckAlternatives(ctx context.Context, card Card, pending []A
 			res.Refused = true
 			capped = false
 			alt.Status = AltRefused
-			res.Alternatives = append(res.Alternatives, alt)
+			res.outcomes = append(res.outcomes, alt)
 			continue
 		}
 		if err != nil || !beats(c.Verdict, card.Verdict) {
 			continue
 		}
 		alt.CardID, alt.Verdict, alt.Status = c.ID, c.Verdict, AltChecked
-		res.Alternatives = append(res.Alternatives, alt)
+		res.outcomes = append(res.outcomes, alt)
 		res.Cards = append(res.Cards, c)
 	}
+	res.Alternatives, res.Note = shown(res.outcomes)
 	return res
 }
 
@@ -400,20 +407,31 @@ func (p *Pipeline) cached(ctx context.Context, title string) bool {
 	return err == nil && ok
 }
 
-// shown is what a card exposes of its alternatives: the checked ones and
-// any still pending, never a refused name, and MoreAlternativesNote when
-// at least one was refused.
+// shown is what a card exposes of its alternatives: only the checked ones,
+// never a refused or pending name, and MoreAlternativesNote when at least
+// one was refused. Both hooks, and Card's JSON encoding, use it.
 func shown(alts []Alternative) ([]Alternative, string) {
 	out := []Alternative{}
 	note := ""
 	for _, a := range alts {
-		if a.Status == AltRefused {
+		switch a.Status {
+		case AltChecked:
+			out = append(out, a)
+		case AltRefused:
 			note = MoreAlternativesNote
-			continue
 		}
-		out = append(out, a)
 	}
 	return out, note
+}
+
+// Apply returns a copy of the card carrying the result's alternatives and
+// note. It is the second half of the two-step hook: FindAlternatives, then
+// CheckAlternatives, then Apply.
+func (r AltResult) Apply(card Card) Card {
+	out := card
+	out.Alternatives = append([]Alternative{}, r.Alternatives...)
+	out.AlternativesNote = r.Note
+	return out
 }
 
 // WithAlternatives finds and checks a card's alternatives and returns a
@@ -427,7 +445,5 @@ func (p *Pipeline) WithAlternatives(ctx context.Context, card Card, ref string) 
 		return card, nil, err
 	}
 	res := p.CheckAlternatives(ctx, card, pending, ref)
-	out := card
-	out.Alternatives, out.AlternativesNote = shown(res.Alternatives)
-	return out, res.Cards, nil
+	return res.Apply(card), res.Cards, nil
 }
