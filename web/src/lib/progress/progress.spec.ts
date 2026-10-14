@@ -1,0 +1,95 @@
+import { test, expect, type Page } from '@playwright/test';
+import { readFileSync } from 'node:fs';
+const id = 'j_3Fh8sQ2mVx7Kp1Lz9RtWc';
+const card = 'c_7Hq2mXv9pK3wLr8sTn4bYe';
+const fixture = (name:string) => JSON.parse(readFileSync(`../testdata/contracts/api/${name}.json`,'utf8')).response.body;
+const frames = readFileSync('../testdata/contracts/api/events-done.txt','utf8').split('200 text/event-stream\n\n')[1].trim().split('\n\n');
+async function mock(page: Page, state = fixture('get-check-running')) {
+ await page.addInitScript(({id,state}) => {
+  const native = window.fetch;
+  const harness = {state, requests:[] as {url:string,lastId:string|null}[], streams:[] as ReadableStreamDefaultController<Uint8Array>[], reads:0};
+  (window as unknown as {research:typeof harness}).research = harness;
+  window.fetch = async (input,init) => {
+   const url = String(input);
+   if (!url.includes(`/api/checks/${id}`)) return native(input,init);
+   harness.requests.push({url,lastId:new Headers(init?.headers).get('Last-Event-ID')});
+   if(url.endsWith('/events')) return new Response(new ReadableStream({start(controller){harness.streams.push(controller);}}),{headers:{'Content-Type':'text/event-stream'}});
+   harness.reads++;
+   return new Response(JSON.stringify(harness.state),{headers:{'Content-Type':'application/json'}});
+  };
+ },{id,state});
+}
+async function push(page: Page, frame:string, stream = 0) {
+ await page.evaluate(({frame,stream}) => (window as unknown as {research:{streams:ReadableStreamDefaultController<Uint8Array>[]}}).research.streams[stream].enqueue(new TextEncoder().encode(frame+'\n\n')),{frame,stream});
+}
+async function state(page: Page, state:unknown) {
+ await page.evaluate(state => {(window as unknown as {research:{state:unknown}}).research.state = state;},state);
+}
+async function opened(page: Page, count=1) {await expect.poll(() => page.evaluate(() => (window as unknown as {research:{streams:unknown[]}}).research.streams.length)).toBe(count);}
+test('exact fixture Gather Read Judge done, counts reset and card route', async ({page}) => {
+ await mock(page);await page.goto(`/check/${id}`);await opened(page);
+ await push(page,frames[0]);await expect(page.getByRole('status')).toContainText('searching for the privacy policy');
+ await push(page,frames[1]);await expect(page.getByRole('status')).toContainText('120 of 500');
+ await push(page,frames[2]);await expect(page.getByRole('status')).toContainText('grading 6 areas');await expect(page.getByRole('status')).not.toContainText('120');
+ await state(page,fixture('get-check-done'));await push(page,frames[3]);await expect(page).toHaveURL(`/card/${card}`);
+});
+test('dropped mid-read replays with Last-Event-ID and finishes', async ({page}) => {
+ await mock(page);await page.goto(`/check/${id}`);await opened(page);await push(page,frames[0]);await push(page,frames[1]);
+ await expect(page.getByRole('status')).toContainText('120 of 500');
+ await page.evaluate(() => (window as unknown as {research:{streams:ReadableStreamDefaultController<Uint8Array>[]}}).research.streams[0].close());
+ await opened(page,2);
+ expect(await page.evaluate(() => (window as unknown as {research:{requests:{lastId:string|null}[]}}).research.requests.filter(r=>r.lastId).at(-1)?.lastId)).toBe('2');
+ await push(page,frames[2],1);await state(page,fixture('get-check-done'));await push(page,frames[3],1);await expect(page).toHaveURL(`/card/${card}`);
+});
+for (const [code,text] of [['budget_exhausted','research budget'],['no_sources','more specific title'],['check_failed','research couldn’t finish'],['live_checks_off','Fresh checks are paused'],['busy','Other checks'],['rate_limited','several requests'],['passcode_required','shared passcode'],['not_found','couldn’t find'],['internal_error','couldn’t read'],['job_failed','couldn’t read'],['unknown','couldn’t read']]) {
+ test(`terminal generic stream rereads specific ${code} safely`,async({page})=>{
+  await mock(page);await page.goto(`/check/${id}`);await opened(page);
+  await state(page,{id,status:'error',code,message:'PRIVATE STACK TRACE',detail:{pool:'token_factory'}});
+  await push(page,`event: error\nid: 1\ndata: ${JSON.stringify({job_id:id,status:'error',error:{error:{code:'job_failed',message:'PRIVATE STACK TRACE'}}})}`);
+  await expect(page.getByRole('status')).toContainText(text);await expect(page.getByRole('status')).not.toContainText('PRIVATE');
+ });
+}
+test('saved done on initial load goes straight to card',async({page})=> {await mock(page,fixture('get-check-done'));await page.goto(`/check/${id}`);await expect(page).toHaveURL(`/card/${card}`);});
+for(const status of ['cancelled','interrupted']) test(`${status} tells parent to restart`,async({page})=>{await mock(page,{id,status});await page.goto(`/check/${id}`);await expect(page.getByRole('status')).toContainText('start it again');});
+test('malformed snapshot retry works with keyboard',async({page})=>{
+ await mock(page,{id,status:'done',card_id:'../../unsafe'});await page.goto(`/check/${id}`);await expect(page.getByRole('status')).toContainText('couldn’t read');await state(page,fixture('get-check-done'));await page.getByRole('button',{name:'Retry following'}).focus();await page.keyboard.press('Enter');await expect(page).toHaveURL(`/card/${card}`);
+});
+// Invoke explicitly with CHAAYA_UPSTREAM_PIN=1. Required recovery is blocked by the published dependency.
+for (const status of ['done','error']) test(`BLOCKED upstream: state-only ${status} after counted Read reconnect`,async({page})=>{
+ test.skip(process.env.CHAAYA_UPSTREAM_PIN !== '1','Chaaya terminal catch-up gap; explicit upstream regression pin');
+ await mock(page);await page.goto(`/check/${id}`);await opened(page);await push(page,frames[1]);await expect(page.getByRole('status')).toContainText('120 of 500');
+ await state(page,{id,status,card_id:card,code:'budget_exhausted',detail:{pool:'token_factory'}});
+ await page.evaluate(() => (window as unknown as {research:{streams:ReadableStreamDefaultController<Uint8Array>[]}}).research.streams[0].close());await opened(page,2);
+ if(status === 'done') await expect(page).toHaveURL(`/card/${card}`);else await expect(page.getByRole('status')).toContainText('research budget');
+});
+for(const mode of ['light','dark']) test(`active Read at 360px ${mode} passes Chaaya accessibility`,async({page})=>{
+ await mock(page);await page.addInitScript(mode=>localStorage.setItem('chaaya-theme',mode),mode);await page.goto(`/check/${id}`);await opened(page);await push(page,frames[1]);await expect(page.getByRole('status')).toContainText('120 of 500');
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+ const gate = readFileSync('node_modules/@nrynss/chaaya/dist/testing/a11y.js','utf8').replace('export async function','async function').replace('(await import("axe-core")).default','window.axe');
+ await page.addScriptTag({path:'node_modules/axe-core/axe.min.js'});await page.addScriptTag({content:gate+'\nwindow.runChaayaGate = () => a11yGate(document.body);'});await page.evaluate(()=>(window as unknown as {runChaayaGate:()=>Promise<void>}).runChaayaGate());await page.screenshot({path:`/tmp/before-yes-progress-${mode}.png`,fullPage:true});
+ await page.setViewportSize({width:1440,height:1000});await page.screenshot({path:`/tmp/before-yes-progress-desktop-${mode}.png`,fullPage:true});
+});
+test('alternatives is real state, omitted messages and counters do not leak',async({page})=>{
+ await mock(page);await page.goto(`/check/${id}`);await opened(page);await push(page,frames[1]);await expect(page.getByRole('status')).toContainText('120 of 500');await push(page,`event: progress\nid: 3\ndata: ${JSON.stringify({job_id:id,stage:'judge'})}`);await expect(page.getByRole('status')).not.toContainText('120');await expect(page.getByRole('status')).not.toContainText('reading 500');await push(page,`event: progress\nid: 4\ndata: ${JSON.stringify({job_id:id,stage:'alternatives',detail:{message:'checking two alternatives'}})}`);await expect(page.getByRole('status')).toContainText('checking two alternatives');await expect(page.locator('.complete')).toHaveCount(3);
+});
+test('route unmount closes stream and prevents further requests',async({page})=>{
+ await mock(page);await page.goto(`/check/${id}`);await opened(page);await push(page,frames[1]);await page.getByRole('link',{name:'Ask about a title'}).click();await expect(page).toHaveURL('/');
+ const count = await page.evaluate(()=>(window as unknown as {research:{requests:unknown[]}}).research.requests.length);
+ await page.waitForTimeout(1000);expect(await page.evaluate(()=>(window as unknown as {research:{requests:unknown[]}}).research.requests.length)).toBe(count);
+});
+for(const kind of ['404','network','malformed']) test(`${kind} load failure offers safe retry`,async({page})=>{
+ let retry=false;
+ await page.route(`**/api/checks/${id}`,async route=>{if(retry){await route.fulfill({json:fixture('get-check-done')});return;}if(kind==='network'){await route.abort();return;}await route.fulfill({status:kind==='404'?404:200,json:kind==='404'?fixture('get-check-404'):{id,status:'unknown',message:'PRIVATE'}});});
+ await page.goto(`/check/${id}`);await expect(page.getByRole('button',{name:'Retry following'})).toBeVisible();await expect(page.getByRole('status')).not.toContainText('PRIVATE');retry=true;await page.getByRole('button',{name:'Retry following'}).click();await expect(page).toHaveURL(`/card/${card}`);
+});
+test('leaving during a late saved result never navigates to its card',async({page})=>{
+ let release!:()=>void;const pending = new Promise<void>(resolve=>{release=resolve;});let reads=0;
+ await page.route(`**/api/checks/${id}`,async route=>{reads++;await pending;await route.fulfill({json:fixture('get-check-done')}).catch(()=>{});});
+ await page.goto(`/check/${id}`);await expect.poll(()=>reads).toBe(1);await page.getByRole('link',{name:'Ask about a title'}).click();await expect(page).toHaveURL('/');release();await page.waitForTimeout(200);await expect(page).toHaveURL('/');expect(reads).toBe(1);
+});
+test('initial stream refusal offers retry with saved state',async({page})=>{
+ let retry=false;
+ await page.route(`**/api/checks/${id}`,route=>route.fulfill({json:retry?fixture('get-check-done'):fixture('get-check-running')}));
+ await page.route(`**/api/checks/${id}/events`,route=>route.fulfill({status:503,json:{error:{code:'busy',message:'busy'}}}));
+ await page.goto(`/check/${id}`);await expect(page.getByRole('status')).toContainText('connection stopped');retry=true;await page.getByRole('button',{name:'Retry following'}).click();await expect(page).toHaveURL(`/card/${card}`);
+});
