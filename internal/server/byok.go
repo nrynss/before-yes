@@ -2,10 +2,12 @@ package server
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"log/slog"
 	"net/http"
+	"net/url"
 	"strings"
 	"sync"
 
@@ -242,8 +244,10 @@ func (a admission) release() {
 }
 
 // wrap ends the hold when the job ends, Done on a card and Fail on any
-// failure or panic, and scrubs visitor keys from a failure before the
-// runner stores or logs it.
+// failure or panic. A visitor job (secrets set) also never lets upstream
+// text out: its failure is rebuilt by visitorFailure, and a panic is
+// recovered into a generic check_failed, so the runner stores and logs
+// neither a host's reply nor a panic value.
 func (a admission) wrap(fn job.Func) job.Func {
 	return func(ctx context.Context, report func(job.Progress)) (data []byte, err error) {
 		ended := false
@@ -252,6 +256,14 @@ func (a admission) wrap(fn job.Func) job.Func {
 				_ = a.hold.Fail()
 			}
 		}()
+		if len(a.secrets) > 0 {
+			defer func() {
+				if v := recover(); v != nil {
+					a.log.Error("visitor check panicked", "err", redact(fmt.Sprint(v), a.secrets))
+					data, err = nil, job.Failure{Code: CodeCheckFailed, Err: errors.New(visitorPanicMessage)}
+				}
+			}()
+		}
 		data, err = fn(ctx, report)
 		if a.hold != nil {
 			ended = true
@@ -264,33 +276,120 @@ func (a admission) wrap(fn job.Func) job.Func {
 			}
 		}
 		if err != nil && len(a.secrets) > 0 {
-			err = scrub(err, a.secrets)
+			err = visitorFailure(err, a.secrets)
 		}
 		return data, err
 	}
 }
 
-// scrub rebuilds err with every secret replaced, keeping its job.Failure
-// code and detail. An upstream may echo the key it was sent in an error
-// body, and that body reaches the error text.
-func scrub(err error, secrets []string) error {
-	clean := func(s string) string {
-		for _, k := range secrets {
-			if k != "" {
-				s = strings.ReplaceAll(s, k, "[redacted]")
-			}
-		}
-		return s
-	}
+// visitorPanicMessage is the stored text of a visitor job that panicked.
+const visitorPanicMessage = "the check stopped on an internal fault"
+
+// visitorFailure rebuilds a visitor job's failure with no upstream reply
+// text: its code and detail, the host's HTTP status when one answered, and
+// a fixed sentence. The model and Tavily clients put the host's body in
+// their errors, and a host may echo the key in it whole, cut, escaped or
+// encoded; dropping the text closes every form at once. The sentence is
+// still passed through redact as a second line.
+func visitorFailure(err error, secrets []string) error {
+	code := CodeCheckFailed
+	var detail any
 	var f job.Failure
 	if errors.As(err, &f) {
-		msg := ""
-		if f.Err != nil {
-			msg = clean(f.Err.Error())
+		if f.Code != "" {
+			code = f.Code
 		}
-		return job.Failure{Code: f.Code, Detail: f.Detail, Err: errors.New(msg)}
+		detail = f.Detail
 	}
-	return errors.New(clean(err.Error()))
+	msg := "the check failed on the visitor's keys"
+	var me *model.Error
+	var te *tavily.Error
+	switch {
+	case errors.As(err, &me):
+		msg = fmt.Sprintf("Token Factory answered HTTP %d on the visitor's key", me.Status)
+	case errors.As(err, &te):
+		msg = fmt.Sprintf("Tavily answered HTTP %d on the visitor's key", te.Status)
+	case code == CodeNoSources:
+		msg = "nothing could be read about that title"
+	case code == CodeBudgetExhausted:
+		msg = "a spend pool refused"
+	}
+	return job.Failure{Code: code, Detail: detail, Err: errors.New(redact(msg, secrets))}
+}
+
+// minSecretRun is the shortest run of a key's characters redact removes.
+const minSecretRun = 8
+
+// redact replaces, in s, every run of at least minSecretRun characters
+// taken from a secret or from its JSON-escaped (including "\/" and
+// \u00XX) or URL-encoded forms. So a key cut short by a truncated reply,
+// or echoed escaped, is removed too.
+func redact(s string, secrets []string) string {
+	var forms []string
+	for _, k := range secrets {
+		if len(k) < minSecretRun {
+			continue
+		}
+		forms = append(forms, secretForms(k)...)
+	}
+	if len(forms) == 0 {
+		return s
+	}
+	var b strings.Builder
+	for i := 0; i < len(s); {
+		n := longestRun(s[i:], forms)
+		if n >= minSecretRun {
+			b.WriteString("[redacted]")
+			i += n
+			continue
+		}
+		b.WriteByte(s[i])
+		i++
+	}
+	return b.String()
+}
+
+// secretForms is a key as it may appear echoed: raw, JSON-escaped with and
+// without "\/", every byte as \u00XX, and query and path encoded.
+func secretForms(k string) []string {
+	j, _ := json.Marshal(k)
+	js := strings.Trim(string(j), `"`)
+	var u strings.Builder
+	for i := 0; i < len(k); i++ {
+		fmt.Fprintf(&u, `\u%04x`, k[i])
+	}
+	return []string{
+		k, js, strings.ReplaceAll(js, "/", `\/`), u.String(),
+		url.QueryEscape(k), url.PathEscape(k),
+		strings.ToLower(url.QueryEscape(k)), strings.ToLower(url.PathEscape(k)),
+	}
+}
+
+// longestRun is the length of the longest prefix of s that occurs inside
+// any form.
+func longestRun(s string, forms []string) int {
+	best := 0
+	for _, f := range forms {
+		hi := min(len(s), len(f))
+		for n := hi; n > best && n >= minSecretRun; n-- {
+			if strings.Contains(f, s[:n]) {
+				best = n
+				break
+			}
+		}
+	}
+	return best
+}
+
+// rejectBadVisitorKeys answers 400 for a half pair or unusable visitor
+// keys. startCheck calls it with the body's validation, before the card
+// cache, as docs/api.md orders validation.
+func rejectBadVisitorKeys(w http.ResponseWriter, r *http.Request) bool {
+	if _, _, err := visitorKeysFrom(r); err != nil {
+		wire.WriteError(w, http.StatusBadRequest, wire.CodeInvalidRequest, visitorKeysMessage, nil)
+		return true
+	}
+	return false
 }
 
 // checkCapWiring refuses a server whose pipeline would not share the

@@ -9,6 +9,7 @@ import (
 	"log/slog"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"os"
 	"path/filepath"
 	"strings"
@@ -20,7 +21,9 @@ import (
 	"github.com/nrynss/keel/job"
 	"github.com/nrynss/keel/stream"
 
+	"github.com/nrynss/before-yes/internal/appstore"
 	"github.com/nrynss/before-yes/internal/cards"
+	"github.com/nrynss/before-yes/internal/checklist"
 	"github.com/nrynss/before-yes/internal/model"
 	"github.com/nrynss/before-yes/internal/pipeline"
 	"github.com/nrynss/before-yes/internal/spend"
@@ -32,8 +35,8 @@ import (
 const (
 	ourTFKey     = "tf-ours-0000000000000000"
 	ourTavilyKey = "tvly-ours-000000000000000"
-	visitorTF    = "tf-visitor-SECRET-7f3a9c1e5b"
-	visitorTV    = "tvly-visitor-SECRET-2d8e4b6a0c"
+	visitorTF    = "tf-visitor/SECRET+7f3a9c1e5b"
+	visitorTV    = "tvly-visitor/SECRET+2d8e4b6a0c"
 )
 
 // syncBuffer is a log sink safe for the runner's goroutines.
@@ -61,6 +64,21 @@ type upstream struct {
 	mu    sync.Mutex
 	auths map[string]int
 	echo  bool
+	// mode shapes the echo: "" raw, "truncated" puts the key across the
+	// clients' 300-byte cut, "json" escapes "/" as "\/", "url" query-encodes.
+	mode string
+}
+
+func (u *upstream) echoBody(key string) string {
+	switch u.mode {
+	case "truncated":
+		return `{"error":"` + strings.Repeat("x", 280) + key + `"}`
+	case "json":
+		return `{"error":"invalid api key ` + strings.ReplaceAll(key, "/", `\/`) + `"}`
+	case "url":
+		return `{"error":"see https://host.example/keys?k=` + url.QueryEscape(key) + `"}`
+	}
+	return `{"error":"invalid api key ` + key + `"}`
 }
 
 func (u *upstream) saw(key string) int {
@@ -83,7 +101,7 @@ func (u *upstream) note(r *http.Request) (string, bool) {
 func (u *upstream) tokenFactory(w http.ResponseWriter, r *http.Request) {
 	key, echo := u.note(r)
 	if echo {
-		http.Error(w, `{"error":"invalid api key `+key+`"}`, http.StatusUnauthorized)
+		http.Error(w, u.echoBody(key), http.StatusUnauthorized)
 		return
 	}
 	var body struct {
@@ -103,7 +121,7 @@ func (u *upstream) tokenFactory(w http.ResponseWriter, r *http.Request) {
 func (u *upstream) tavily(w http.ResponseWriter, r *http.Request) {
 	key, echo := u.note(r)
 	if echo {
-		http.Error(w, `{"detail":{"error":"Unauthorized: invalid API key `+key+`"}}`, http.StatusUnauthorized)
+		http.Error(w, u.echoBody(key), http.StatusUnauthorized)
 		return
 	}
 	one := 1.0
@@ -270,7 +288,7 @@ func checksSpentToday(t *testing.T, m *spend.Meter) cost.Price {
 // WAL and shared-memory files, in the job store's record, or in the logs.
 func scanForKeys(t *testing.T, e *byokEnv, checkID string, extra ...[]byte) {
 	t.Helper()
-	keys := []string{visitorTF, visitorTV}
+	keys := keyWindows()
 	var scanned int
 	for _, suffix := range []string{"", "-wal", "-shm"} {
 		b, err := os.ReadFile(e.dbPath + suffix)
@@ -356,30 +374,6 @@ func TestVisitorKeysLeaveNoTrace(t *testing.T) {
 		t.Errorf("repeat status %d body %s, want 200 from the card cache", resp.StatusCode, b2)
 	}
 	scanForKeys(t, e, id, b, body, card, b2)
-}
-
-// A host that echoes the key in its error body cannot put it in the job
-// record, the check's error response or the logs.
-func TestVisitorKeyEchoedByHostIsScrubbed(t *testing.T) {
-	e := newBYOKEnv(t, 5)
-	e.tf.echo, e.tv.echo = true, true
-	resp, b := byokPost(t, e.url, `{"title":"Fortnite","age":11}`, visitorHeaders())
-	if resp.StatusCode != http.StatusAccepted {
-		t.Fatalf("status %d body %s, want 202", resp.StatusCode, b)
-	}
-	id := startID(t, b)
-	status, body := waitCheck(t, e.url, id)
-	if status != "error" {
-		t.Fatalf("status %s body %s, want error", status, body)
-	}
-	if e.tv.saw(visitorTV) == 0 {
-		t.Fatal("the host never saw the visitor key, so nothing was echoed")
-	}
-	res, err := e.runner.Result(context.Background(), strings.TrimPrefix(id, "j_"))
-	if err != nil || res.Err == nil || !strings.Contains(res.Err.Error(), "[redacted]") {
-		t.Errorf("job error %v, want the echoed key redacted", res.Err)
-	}
-	scanForKeys(t, e, id, body)
 }
 
 // The daily cap refuses a fresh check with 402 budget_exhausted
@@ -559,4 +553,142 @@ func byokErrCode(t *testing.T, b []byte) (string, map[string]any) {
 		t.Fatalf("decode error envelope %s: %v", b, err)
 	}
 	return env.Error.Code, env.Error.Detail
+}
+
+// keyWindows is every run of minSecretRun characters of each visitor key,
+// raw, JSON-escaped and URL-encoded: a scan for these finds a whole,
+// truncated or encoded key.
+func keyWindows() []string {
+	seen := map[string]bool{}
+	var out []string
+	for _, k := range []string{visitorTF, visitorTV} {
+		for _, f := range []string{k, strings.ReplaceAll(k, "/", `\/`), url.QueryEscape(k), url.PathEscape(k)} {
+			for i := 0; i+minSecretRun <= len(f); i++ {
+				w := f[i : i+minSecretRun]
+				if !seen[w] {
+					seen[w] = true
+					out = append(out, w)
+				}
+			}
+		}
+	}
+	return out
+}
+
+// A host that echoes the key cut at the clients' 300-byte limit, JSON
+// escaped or URL-encoded leaves no run of it in the database, the WAL, the
+// job record, the check's error or the logs; the stored failure carries
+// only the status and a fixed sentence.
+func TestVisitorKeyEchoFormsLeaveNoTrace(t *testing.T) {
+	for _, mode := range []string{"", "truncated", "json", "url"} {
+		t.Run("echo_"+mode, func(t *testing.T) {
+			e := newBYOKEnv(t, 5)
+			e.tf.echo, e.tv.echo = true, true
+			e.tf.mode, e.tv.mode = mode, mode
+			resp, b := byokPost(t, e.url, `{"title":"Fortnite","age":11}`, visitorHeaders())
+			if resp.StatusCode != http.StatusAccepted {
+				t.Fatalf("status %d body %s, want 202", resp.StatusCode, b)
+			}
+			id := startID(t, b)
+			status, body := waitCheck(t, e.url, id)
+			if status != "error" {
+				t.Fatalf("status %s body %s, want error", status, body)
+			}
+			if e.tv.saw(visitorTV) == 0 {
+				t.Fatal("the host never saw the visitor key")
+			}
+			res, err := e.runner.Result(context.Background(), strings.TrimPrefix(id, "j_"))
+			if err != nil || res.Err == nil {
+				t.Fatalf("result %v %v", res, err)
+			}
+			if got := res.Err.Error(); got != "Tavily answered HTTP 401 on the visitor's key" {
+				t.Errorf("stored error %q, want the status and a fixed sentence only", got)
+			}
+			if res.Code != CodeCheckFailed {
+				t.Errorf("code %q, want check_failed", res.Code)
+			}
+			scanForKeys(t, e, id, body)
+		})
+	}
+}
+
+// redact removes the whole key, a run of 8 or more of its characters (a
+// cut echo) and its escaped and encoded forms, and leaves other text.
+func TestRedactPartialAndEncodedForms(t *testing.T) {
+	keys := []string{visitorTV}
+	cases := map[string]string{
+		"whole":     "key " + visitorTV + " end",
+		"cut":       "key " + visitorTV[:10],
+		"tail":      visitorTV[len(visitorTV)-9:] + " end",
+		"json":      "key " + strings.ReplaceAll(visitorTV, "/", `\/`),
+		"unicode":   `key \u0074\u0076\u006c\u0079\u002d\u0076\u0069\u0073\u0069`,
+		"url query": "k=" + url.QueryEscape(visitorTV),
+		"url path":  "/" + url.PathEscape(visitorTV),
+	}
+	for name, in := range cases {
+		out := redact(in, keys)
+		if !strings.Contains(out, "[redacted]") {
+			t.Errorf("%s: %q not redacted", name, out)
+		}
+		for _, w := range keyWindows() {
+			if strings.Contains(out, w) && strings.Contains(visitorTV+url.QueryEscape(visitorTV), w) {
+				t.Errorf("%s: %q keeps %q", name, out, w)
+			}
+		}
+	}
+	if got := redact("Tavily answered HTTP 401", keys); got != "Tavily answered HTTP 401" {
+		t.Errorf("plain text changed: %q", got)
+	}
+}
+
+// panicStore panics inside a check with a value that holds the key.
+type panicStore struct{ configurableStore }
+
+func (*panicStore) Find(context.Context, string, int) ([]appstore.App, error) {
+	panic("store blew up holding " + visitorTV)
+}
+
+// A visitor job that panics is recovered into a generic check_failed; the
+// panic value reaches neither the job record nor the logs nor the DB.
+func TestVisitorPanicIsScrubbed(t *testing.T) {
+	e := newBYOKEnv(t, 5)
+	e.srv.Pipeline.Gatherer.Store = &panicStore{}
+	resp, b := byokPost(t, e.url, `{"title":"Fortnite","age":11}`, visitorHeaders())
+	if resp.StatusCode != http.StatusAccepted {
+		t.Fatalf("status %d body %s, want 202", resp.StatusCode, b)
+	}
+	id := startID(t, b)
+	status, body := waitCheck(t, e.url, id)
+	if status != "error" {
+		t.Fatalf("status %s body %s, want error", status, body)
+	}
+	res, err := e.runner.Result(context.Background(), strings.TrimPrefix(id, "j_"))
+	if err != nil || res.Err == nil || res.Err.Error() != visitorPanicMessage || res.Code != CodeCheckFailed {
+		t.Errorf("result code %q err %v, want check_failed %q", res.Code, res.Err, visitorPanicMessage)
+	}
+	if !strings.Contains(e.logs.String(), "visitor check panicked") {
+		t.Error("the panic was not logged (scrubbed)")
+	}
+	scanForKeys(t, e, id, body)
+}
+
+// Half a key pair is refused with 400 before the card cache, so even a
+// title with a fresh card gets 400 (docs/api.md: validation, then cache).
+func TestHalfPairRefusedBeforeCardCache(t *testing.T) {
+	e := newBYOKEnv(t, 5)
+	if _, err := e.srv.Cards.Put(context.Background(), pipeline.Card{
+		Title: "Minecraft", Age: 9, ChecklistVersion: checklist.Version,
+		CheckedAt: time.Now().UTC(), Verdict: checklist.YesWithSettings,
+	}); err != nil {
+		t.Fatal(err)
+	}
+	if resp, b := byokPost(t, e.url, `{"title":"Minecraft","age":9}`, nil); resp.StatusCode != http.StatusOK {
+		t.Fatalf("cached without keys: status %d body %s, want 200", resp.StatusCode, b)
+	}
+	for _, h := range []map[string]string{{HeaderTokenFactoryKey: visitorTF}, {HeaderTavilyKey: visitorTV}} {
+		resp, b := byokPost(t, e.url, `{"title":"Minecraft","age":9}`, h)
+		if resp.StatusCode != http.StatusBadRequest {
+			t.Errorf("cached title, half pair: status %d body %s, want 400", resp.StatusCode, b)
+		}
+	}
 }

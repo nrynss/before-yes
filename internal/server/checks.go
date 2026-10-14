@@ -157,6 +157,9 @@ func (s *Server) startCheck(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	req = normReq
+	if rejectBadVisitorKeys(w, r) {
+		return
+	}
 
 	ctx := r.Context()
 	if s.CardCache != nil {

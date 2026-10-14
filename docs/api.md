@@ -21,6 +21,7 @@ All bodies are JSON. Ids are Keel `id` values: a card id starts `c_`, a check id
 ### `POST /api/checks`
 
 - `title`: non-empty string, trimmed. `age`: integer from 3 to 17. Anything else is `400 invalid_request`.
+- Optional visitor keys, as request headers `X-Token-Factory-Key` and `X-Tavily-Key`: both or neither. With both, the check runs on the visitor's own accounts for this request only, the keys are never stored, and it does not count against the daily cap. Half a pair, or an unusable key, is `400 invalid_request` (validation, step 2 below).
 - "Fresh" means a card for the same normalized title, age and `checklist.Version`. The cache window is the server's setting (T4.2), not part of this contract.
 - A double-click joins the running check: the second request gets the same `check_id`.
 - **Order of answers.** The server checks in this order, and the first match answers:
