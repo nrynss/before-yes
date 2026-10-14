@@ -79,7 +79,7 @@ Do not wait for a whole phase to finish. If a task requires only `T1.2`, start i
 |---|---|---|---|---|
 | **P0** Ground | [PHASE-0-ground.md](PHASE-0-ground.md) | none | none | everything |
 | **P1** Contracts | [PHASE-1-contracts.md](PHASE-1-contracts.md) | T0.1 | none | P2–P5 |
-| **P2** Clients and meter | [PHASE-2-clients.md](PHASE-2-clients.md) | P1 | 4 / 4 | Done. The `job.Failure` exit criterion waits on T4.1. |
+| **P2** Clients and meter | [PHASE-2-clients.md](PHASE-2-clients.md) | P1 | P3, P4, P5 | P3 live runs, P4 |
 | **P3** Pipeline | [PHASE-3-pipeline.md](PHASE-3-pipeline.md) | P1, T0.4 | P2, P4, P5 | P4 jobs, P6 |
 | **P4** Server | [PHASE-4-server.md](PHASE-4-server.md) | T1.3, T1.4, T2.4 | P2, P3, P5 | P5 live wiring, P6 |
 | **P5** Frontend | [PHASE-5-frontend.md](PHASE-5-frontend.md) | T1.3, T1.4 | P2, P3, P4 | P6 |
@@ -181,7 +181,7 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 | Phase | Tasks complete | Status |
 |---|---|---|
 | P0 | 9 / 9 | Done. Two exit criteria wait on later tasks: a live Nano call (T2.1b) and the config check (T4.4). CI is green. |
-| P1 | 0 / 4 | Not started. T1.1 and T1.2 drafted. |
+| P1 | 4 / 4 | Done. The `job.Failure` exit criterion waits on T4.1, and the main-checkout pins and `.env` leak check were waived by the user. |
 | P2 | 0 / 8 | Not started. T2.1–T2.4 drafted. |
 | P3 | 0 / 8 | Not started. T3.1–T3.4 drafted. |
 | P4 | 0 / 5 | Not started. T4.1, T4.2 and T4.4 drafted. |
