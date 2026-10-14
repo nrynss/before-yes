@@ -36,7 +36,7 @@ func (s Stance) Valid() bool { return s == Risk || s == Mitigation || s == Neutr
 // Source names where a quote came from.
 type Source struct {
 	URL       string    `json:"url"`
-	Kind      string    `json:"kind"`            // review, policy, terms, reddit, forum, news, rating
+	Kind      string    `json:"kind"`            // review, policy, terms, reddit, forum, article, news, rating, store
 	Title     string    `json:"title,omitempty"` // page or review title
 	Index     int       `json:"index,omitempty"` // review index, 1-based; 0 for a document
 	FetchedAt time.Time `json:"fetched_at"`

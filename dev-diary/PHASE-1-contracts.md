@@ -103,7 +103,7 @@ The parser accepts a JSON object with a `findings` array, a bare array, or eithe
 requires:   T1.1, T1.2
 fixture-ok: yes
 size:       S · frontier
-owns:       internal/pipeline/types.go, testdata/contracts/evidence.json, testdata/contracts/card-*.json
+owns:       internal/pipeline/types.go, internal/pipeline/types_test.go, testdata/contracts/evidence.json, testdata/contracts/card-*.json
 status:     in-review
 ```
 **Evidence** is everything read about a title before any age applies: title, collected at, App Store info, verified findings, stats. It is cached by title and reused across ages.
@@ -123,6 +123,17 @@ Commit one example card per verdict (`card-yes.json`, `card-settings.json`, `car
 - `card-unclear.json` uses Toca Life World with reviews withheld, as a shape example only. It is not a prediction (the README expects yes with settings).
 - Tests: strict decode with unknown fields refused and re-encode compared as JSON (round trip); every JSON member path of `Card` and `Evidence` must appear in at least one example (adding a field fails); examples obey `Decide`, `Enforce`, `Settings`, `checklist.Version` and the finding id hash.
 - Money in nanodollars (`read_cost_nano`, `judge_cost_nano`). `app` is `null` when no App Store hit matched. Optional values are present-but-empty rather than omitted, except `grades[].setting` and `grades[].reason`.
+
+**Remediation, round 1** ([review](adversarial-review/t1.3-round1.md)). The examples were regenerated on top of the T1.1 and T1.2 fixes, under checklist `v2`.
+
+| Finding | Fix | Test |
+|---|---|---|
+| M1 | The orchestrator added `internal/pipeline/types_test.go` to T1.3's `owns` (above). It holds the contract tests and the example generator, and only T1.3 edits it. T3.4 keeps `pipeline_test.go` and must not touch this file. | `git diff --stat` shows only owned paths plus the merges from T1.1 and T1.2 |
+| M2 | Every example `ok` on contact or content now cites a real, verified finding. `card-yes`: contact cites the App Store listing's "Made For Ages 0–5" (Kids category); content cites review 311. `card-settings`: content cites the official Minecraft parents' guide ("some elements of mild violence"). The examples pass `Enforce` with zero demotions under the new `ok_without_finding` rule. | `TestExamplesObeyRules`, `TestGenerate` |
+| L1 | Handoff note: `card-no.json`'s deciding contact quote is review 355. The captured feed's review 312 is not about contact. BRIEF's "review 312" is an illustration, and T6.3 and T6.4 should cite whichever index the live run holds. | none (a note) |
+| L2 | The Common Sense Media parents' guide is now kind `article`, not `forum`. Source kinds are: `review`, `policy`, `terms`, `reddit`, `forum` (a discussion board), `article` (an editorial guide or explainer), `news`, `rating` (a rating board or official parents' guide), `store` (an app-store listing). T3.1 assigns them. The `finding.Source.Kind` comment lists them (a comment, not behaviour). | `card-no.json` |
+
+**Known gap in `card-yes`:** the Khan contact evidence is thin. The listing says only that the app is in Apple's Kids category, and no fixture says outright "no chat". The Khan fixtures also hold a content risk that the example leaves out: review 17 ("scary devil faces ... popped up"). The examples are contract shapes. Khan's real verdict belongs to T3.6b.
 ---
 
 ### T1.4: HTTP API and error codes ★
