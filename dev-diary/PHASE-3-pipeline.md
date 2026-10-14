@@ -107,6 +107,7 @@ Every grade then goes through `checklist.Enforce`, and the verdict comes from `c
 - The prompt lists unread source kinds and says their silence is not evidence, so the data area is not graded `ok` on a policy that was never read.
 - `parseGrades` tries every opening brace, so it copes with reasoning text and code fences in front of the answer.
 - The recorded Super replies are hand-written in judge_test.go, against real verified Roblox finding ids. The contact flag rests on review 355. The conflict pass runs only for contact. A money flag citing a made-up id is demoted to unknown.
+- **Stand-in replies, accepted by the user:** the recorded replies in judge_test.go are hand-written stand-ins, not real model output. T3.6b must replace them with real recordings from `testdata/eval/replies/`.
 
 ---
 
