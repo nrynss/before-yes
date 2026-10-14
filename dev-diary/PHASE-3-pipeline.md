@@ -84,7 +84,7 @@ requires:   T1.2, T3.1
 fixture-ok: yes
 size:       L · frontier
 owns:       internal/pipeline/doc.go, internal/pipeline/read.go, internal/pipeline/read_test.go
-status:     in-review
+status:     done
 ```
 **Chunking.** Token Factory serves Nano with a 32k context and 4k output tokens. Reviews share a chunk. A long document is split on paragraph or sentence boundaries, with a small overlap and rune-safe cuts, and every piece keeps its document's ref. Each segment is labelled `[R312]` for a review or `[D3]` for a document.
 
