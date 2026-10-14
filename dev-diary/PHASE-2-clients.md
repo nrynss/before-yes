@@ -91,7 +91,7 @@ requires:   T0.1
 fixture-ok: yes
 size:       S · mid
 owns:       internal/appstore/appstore.go, internal/appstore/appstore_test.go
-status:     in-review
+status:     done
 ```
 Apple's iTunes search API finds the app: id, name, seller, seller URL, store URL, age rating, description. The customer-review feed serves up to 10 pages of 50 recent reviews per storefront country. Each review gets a running index from 1, so a card can say "review 312".
 
