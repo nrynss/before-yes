@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"slices"
 	"strings"
+	"unicode"
 
 	"github.com/nrynss/keel/cost"
 
@@ -206,6 +207,9 @@ func (j *Judge) Judge(ctx context.Context, title string, age int, ref string, fs
 	}
 
 	out.Grades, out.Demotions = checklist.Enforce(grades, finding.Cited(fs))
+	var thin []checklist.Demotion
+	out.Grades, thin = ground(out.Grades, fs, title)
+	out.Demotions = append(out.Demotions, thin...)
 	out.Verdict, err = checklist.Decide(out.Grades)
 	if err != nil {
 		return out, fmt.Errorf("judge: %w", err)
@@ -244,6 +248,117 @@ func replace(first, second []checklist.Grade, areas []checklist.Area) []checklis
 	for _, a := range areas {
 		if ng, ok := answered[a]; ok && !seen[a] {
 			out = append(out, ng)
+		}
+	}
+	return out
+}
+
+// RuleThinEvidence is the demotion ground makes: a flag or ok_with_setting
+// whose reason names none of the verified findings it cites.
+const RuleThinEvidence = "reason_without_quote"
+
+// ThinReason is the card reason for a grade ground dropped to unknown.
+const ThinReason = "Changed to unknown: the evidence was thin. No verified quote backs the reason the judge gave."
+
+// minShared is how many content words a reason (and, for ok_with_setting,
+// its setting) must share with a cited finding's verified quote to name it.
+const minShared = 2
+
+// ground holds every flag and ok_with_setting to the findings its reason
+// names (T3.9). Enforce has already kept only verified citations in the
+// grade's own area. A cited finding is named when it has the right stance
+// (a risk for flag; a risk or mitigation for ok_with_setting) and its
+// verified quote shares at least minShared content words with the reason (the
+// claim is the reader's paraphrase, so it does not count). The
+// grade keeps only the findings its reason names. A grade whose reason names
+// none falls to unknown with ThinReason, so its flag no longer counts toward
+// the verdict. ok, unknown, and the verdict rule are untouched. The input is
+// not modified.
+func ground(grades []checklist.Grade, fs []finding.Finding, title string) ([]checklist.Grade, []checklist.Demotion) {
+	byID := make(map[string]finding.Finding, len(fs))
+	for _, f := range fs {
+		byID[f.ID] = f
+	}
+	skip := map[string]bool{}
+	for w := range contentWords(title, nil) {
+		skip[w] = true
+	}
+	var dem []checklist.Demotion
+	out := make([]checklist.Grade, len(grades))
+	for i, g := range grades {
+		g.Findings = slices.Clone(g.Findings)
+		out[i] = g
+		if g.Level != checklist.Flag && g.Level != checklist.OKWithSetting {
+			continue
+		}
+		said := contentWords(g.Reason+" "+g.Setting, skip)
+		var named []string
+		for _, id := range g.Findings {
+			f, ok := byID[id]
+			if !ok || f.Area != g.Area || !stanceFits(g.Level, f.Stance) {
+				continue
+			}
+			if shared(said, contentWords(f.Quote, skip)) >= minShared {
+				named = append(named, id)
+			}
+		}
+		if len(named) == 0 {
+			dem = append(dem, checklist.Demotion{Area: g.Area, Rule: RuleThinEvidence, Detail: string(g.Level)})
+			g.Level, g.Setting, g.Reason = checklist.Unknown, "", ThinReason
+			out[i] = g
+			continue
+		}
+		out[i].Findings = named
+	}
+	return out, dem
+}
+
+func stanceFits(l checklist.Level, s finding.Stance) bool {
+	if l == checklist.Flag {
+		return s == finding.Risk
+	}
+	return s == finding.Risk || s == finding.Mitigation
+}
+
+func shared(a, b map[string]bool) int {
+	n := 0
+	for w := range a {
+		if b[w] {
+			n++
+		}
+	}
+	return n
+}
+
+// stopWords are words too common in reasons and quotes to show that a
+// reason speaks to a quote.
+var stopWords = map[string]bool{}
+
+func init() {
+	for _, w := range strings.Fields(`about above after again against also although among another because been before being below between both cannot could does doing down during each even every from further have having here into itself just like many more most much must only other over same several should since some such than that their them then there these they this those through under until very were what when where which while with within without would your yours
+	parent parents child children kids users user people game games play playing player players report reports reported says said app apps make makes made allow allows allowed multiple there's isn't doesn't don't can't`) {
+		stopWords[w] = true
+	}
+}
+
+// contentWords returns the stems of the words in s that carry meaning: four
+// letters or more, not a stop word or in skip, cut to five letters so
+// "message" and "messages" meet.
+func contentWords(s string, skip map[string]bool) map[string]bool {
+	out := map[string]bool{}
+	for _, w := range strings.FieldsFunc(strings.ToLower(s), func(r rune) bool {
+		return !unicode.IsLetter(r) && !unicode.IsDigit(r) && r != '\''
+	}) {
+		w = strings.Trim(w, "'")
+		r := []rune(w)
+		if len(r) < 4 || stopWords[w] {
+			continue
+		}
+		if len(r) > 5 {
+			r = r[:5]
+		}
+		if st := string(r); !skip[st] {
+			out[st] = true
 		}
 	}
 	return out

@@ -2,12 +2,19 @@ package pipeline
 
 import (
 	"context"
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
+	"fmt"
+	"os"
+	"path/filepath"
 	"reflect"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"testing"
+	"time"
 
 	"github.com/nrynss/keel/cost"
 
@@ -101,7 +108,7 @@ func TestJudgeConflictPassFlagsContact(t *testing.T) {
 	)
 	second := "<think>Contact: {weighing} the parent's first-hand report against the terms.</think>\n```json\n" +
 		gradesJSON(t,
-			checklist.Grade{Area: checklist.Contact, Level: checklist.Flag, Findings: []string{decisive.ID, mit.ID}, Reason: "A parent reports a predator."},
+			checklist.Grade{Area: checklist.Contact, Level: checklist.Flag, Findings: []string{decisive.ID, mit.ID}, Reason: "A parent reports a child predator might ask where the child is."},
 			// Not asked: the second pass answers only the conflicted areas.
 			checklist.Grade{Area: checklist.Money, Level: checklist.OK, Findings: []string{money.ID}},
 		) + "\n```"
@@ -171,7 +178,7 @@ func TestJudgeConflictPassFlagsContact(t *testing.T) {
 func TestJudgeConflictPassFailureKeepsFirst(t *testing.T) {
 	decisive, mit, _, fs := robloxFindings(t)
 	first := gradesJSON(t,
-		checklist.Grade{Area: checklist.Contact, Level: checklist.Flag, Findings: []string{decisive.ID, mit.ID}, Reason: "A parent reports a predator."},
+		checklist.Grade{Area: checklist.Contact, Level: checklist.Flag, Findings: []string{decisive.ID, mit.ID}, Reason: "A parent reports a child predator might ask where the child is."},
 	)
 	for _, second := range []any{errors.New("overloaded"), "I cannot decide."} {
 		rec := &superRecorder{replies: []any{first, second}, price: 10}
@@ -256,7 +263,7 @@ func TestParseGradesTakesTheLastBlock(t *testing.T) {
 // counts as failed: the first grades stand and the record says why.
 func TestConflictPassAnsweringNothingFails(t *testing.T) {
 	decisive, mit, money, fs := robloxFindings(t)
-	first := gradesJSON(t, checklist.Grade{Area: checklist.Contact, Level: checklist.Flag, Findings: []string{decisive.ID, mit.ID}})
+	first := gradesJSON(t, checklist.Grade{Area: checklist.Contact, Level: checklist.Flag, Findings: []string{decisive.ID, mit.ID}, Reason: "A child predator might ask where the child is."})
 	second := gradesJSON(t, checklist.Grade{Area: checklist.Money, Level: checklist.Flag, Findings: []string{money.ID}})
 	rec := &superRecorder{replies: []any{first, second}}
 	got, err := (&Judge{Model: rec, Meter: openTestMeter(t)}).Judge(context.Background(), "Roblox", 9, "c", fs, nil)
@@ -288,5 +295,186 @@ func TestParseGradesTruncatedFinalFails(t *testing.T) {
 	}
 	if _, err := parseGrades(`{"grades":[{"area":"contact","level":"flag","findings":[]}]} done`); err != nil {
 		t.Errorf("a whole final block failed: %v", err)
+	}
+}
+
+// recordedReplies answers from T3.6b's recorded Token Factory replies under
+// testdata/eval/replies/<slug>/<role>/. The file name is the key tools/eval
+// computes (ReplyKey in tools/eval/replay.go): the first 24 hex digits of a
+// SHA-256 over the role, the messages and the options. A call with no
+// recording fails, and the test counts it as a miss.
+type recordedReplies struct {
+	dir, role string
+	misses    atomic.Int64
+}
+
+func (r *recordedReplies) load(msgs []model.Message, o model.Options) (model.Reply, error) {
+	h := sha256.New()
+	_, _ = fmt.Fprintf(h, "%s\x00", r.role)
+	for _, m := range msgs {
+		_, _ = fmt.Fprintf(h, "%s\x00%s\x00", m.Role, m.Content)
+	}
+	b, _ := json.Marshal(o)
+	h.Write(b)
+	raw, err := os.ReadFile(filepath.Join(r.dir, r.role, hex.EncodeToString(h.Sum(nil))[:24]+".json"))
+	if err != nil {
+		return model.Reply{}, errors.New("no recorded reply")
+	}
+	var rec struct {
+		Text         string     `json:"text"`
+		InputTokens  int        `json:"input_tokens"`
+		OutputTokens int        `json:"output_tokens"`
+		PriceNano    cost.Price `json:"price_nano"`
+		Measured     bool       `json:"measured"`
+	}
+	if err := json.Unmarshal(raw, &rec); err != nil {
+		return model.Reply{}, err
+	}
+	return model.Reply{Text: rec.Text, InputTokens: rec.InputTokens, OutputTokens: rec.OutputTokens, Price: rec.PriceNano, Measured: rec.Measured}, nil
+}
+
+func (r *recordedReplies) Chat(_ context.Context, msgs []model.Message, o model.Options) (model.Reply, error) {
+	rep, err := r.load(msgs, o)
+	if err != nil {
+		r.misses.Add(1)
+	}
+	return rep, err
+}
+func (r *recordedReplies) Estimate(msgs []model.Message, o model.Options) cost.Price {
+	rep, _ := r.load(msgs, o)
+	return rep.Price
+}
+func (r *recordedReplies) Settings() model.Settings {
+	return model.Settings{Provider: "replay", Model: "recorded-" + r.role}
+}
+
+// TestRecordedRepliesGradesRestOnVerifiedQuotes is T3.9's pin. It replays
+// T3.6b's recorded Token Factory replies for the three demo titles through
+// Collect and Decide, with the judge switches the recordings were made with,
+// and checks that every flag and ok_with_setting on the card cites at least
+// one verified finding in its area, of a fitting stance, whose quote shares
+// content words with the reason; that every grade the rule dropped reads
+// ThinReason; and that the verdicts are the ones T3.9 measured.
+func TestRecordedRepliesGradesRestOnVerifiedQuotes(t *testing.T) {
+	cases := []struct {
+		d       demo
+		age     int
+		verdict checklist.Verdict
+		thin    []checklist.Area
+	}{
+		{demos[0], 9, checklist.No, nil},
+		{demos[1], 9, checklist.Unclear, []checklist.Area{"contact", "money", "data", "age_gating", "content", "developer_record"}},
+		{demos[2], 5, checklist.No, []checklist.Area{"contact"}},
+	}
+	tokenFactory := func(on bool) map[string]any {
+		return map[string]any{"chat_template_kwargs": map[string]any{"enable_thinking": on}}
+	}
+	for _, c := range cases {
+		t.Run(c.d.slug, func(t *testing.T) {
+			dir := filepath.Join("..", "..", "testdata", "eval", "replies", c.d.slug)
+			reader := &recordedReplies{dir: dir, role: "reader"}
+			judge := &recordedReplies{dir: dir, role: "judge"}
+			_, srv := newFixture(t, c.d)
+			store, tc := fixtureClients(t, srv)
+			m := openTestMeter(t)
+			now := func() time.Time { return time.Date(2026, 10, 13, 19, 0, 0, 0, time.UTC) }
+			p := &Pipeline{
+				Gatherer: &Gatherer{Store: store, Search: tc, Meter: m, Now: now},
+				Reader:   &Reader{Model: reader, Meter: m},
+				Judge:    &Judge{Model: judge, Meter: m, Fast: tokenFactory(false), Think: tokenFactory(true)},
+				Now:      now,
+			}
+			ctx := context.Background()
+			ev, _, err := p.Collect(ctx, c.d.title, "eval-"+c.d.slug)
+			if err != nil {
+				t.Fatal(err)
+			}
+			card, err := p.Decide(ctx, ev, c.age, "eval-"+c.d.slug)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if n := reader.misses.Load() + judge.misses.Load(); n > 0 {
+				t.Fatalf("%d calls had no recording: the replay no longer matches T3.6b's requests", n)
+			}
+			byID := map[string]finding.Finding{}
+			for _, f := range ev.Findings {
+				byID[f.ID] = f
+			}
+			skip := contentWords(c.d.title, nil)
+			var thin []checklist.Area
+			for _, g := range card.Grades {
+				if g.Reason == ThinReason {
+					thin = append(thin, g.Area)
+					if g.Level != checklist.Unknown {
+						t.Errorf("%s: thin reason on a %s grade", g.Area, g.Level)
+					}
+				}
+				if g.Level != checklist.Flag && g.Level != checklist.OKWithSetting {
+					continue
+				}
+				if len(g.Findings) == 0 {
+					t.Errorf("%s %s stands with no citation", g.Area, g.Level)
+				}
+				said := contentWords(g.Reason+" "+g.Setting, skip)
+				for _, id := range g.Findings {
+					f, ok := byID[id]
+					switch {
+					case !ok:
+						t.Errorf("%s cites %s, which is not a verified finding", g.Area, id)
+					case f.Area != g.Area || !stanceFits(g.Level, f.Stance):
+						t.Errorf("%s %s cites %s (%s, %s)", g.Area, g.Level, id, f.Area, f.Stance)
+					case shared(said, contentWords(f.Quote, skip)) < minShared:
+						t.Errorf("%s: reason %q does not name %s's quote %q", g.Area, g.Reason, id, f.Quote)
+					}
+				}
+			}
+			if card.Verdict != c.verdict {
+				t.Errorf("verdict %s, want %s", card.Verdict, c.verdict)
+			}
+			if !reflect.DeepEqual(thin, c.thin) {
+				t.Errorf("thin areas %v, want %v", thin, c.thin)
+			}
+		})
+	}
+}
+
+// TestGroundDropsReasonsNoQuoteBacks pins ground on hand-made findings: a
+// flag whose reason speaks to a cited risk quote stands and keeps only that
+// citation; a flag whose reason no cited quote backs falls to unknown with
+// ThinReason; an ok_with_setting backed only by a neutral finding falls too;
+// ok is left alone; and the input is not modified.
+func TestGroundDropsReasonsNoQuoteBacks(t *testing.T) {
+	fs := []finding.Finding{
+		{ID: "r1", Area: "contact", Stance: finding.Risk, Quote: "a stranger sent my daughter private messages in chat"},
+		{ID: "r2", Area: "contact", Stance: finding.Risk, Quote: "the water splash sound is the same"},
+		{ID: "r3", Area: "data", Stance: finding.Risk, Quote: "we love the colourful characters"},
+		{ID: "n1", Area: "money", Stance: finding.Neutral, Quote: "purchases need a password under Ask to Buy"},
+		{ID: "m1", Area: "content", Stance: finding.Mitigation, Quote: "everything is curated by teachers"},
+	}
+	in := []checklist.Grade{
+		{Area: "contact", Level: checklist.Flag, Reason: "Strangers send private messages to children in chat.", Findings: []string{"r2", "r1"}},
+		{Area: "data", Level: checklist.Flag, Reason: "Data cannot be deleted.", Findings: []string{"r3"}},
+		{Area: "money", Level: checklist.OKWithSetting, Setting: "Ask to Buy", Reason: "Purchases need a password.", Findings: []string{"n1"}},
+		{Area: "content", Level: checklist.OK, Reason: "Fine.", Findings: []string{"m1"}},
+	}
+	orig := fmt.Sprint(in)
+	got, dem := ground(in, fs, "Example Title")
+	if fmt.Sprint(in) != orig {
+		t.Fatal("ground modified its input")
+	}
+	if g := got[0]; g.Level != checklist.Flag || !reflect.DeepEqual(g.Findings, []string{"r1"}) {
+		t.Errorf("contact: %+v, want a flag citing only r1", g)
+	}
+	for _, i := range []int{1, 2} {
+		if g := got[i]; g.Level != checklist.Unknown || g.Reason != ThinReason || g.Setting != "" {
+			t.Errorf("%s: %+v, want unknown with the thin reason", g.Area, g)
+		}
+	}
+	if !reflect.DeepEqual(got[3], in[3]) {
+		t.Errorf("ok grade changed: %+v", got[3])
+	}
+	want := []checklist.Demotion{{Area: "data", Rule: RuleThinEvidence, Detail: "flag"}, {Area: "money", Rule: RuleThinEvidence, Detail: "ok_with_setting"}}
+	if !reflect.DeepEqual(dem, want) {
+		t.Errorf("demotions %+v, want %+v", dem, want)
 	}
 }
