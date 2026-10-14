@@ -456,7 +456,7 @@ func ground(grades []checklist.Grade, fs []finding.Finding) (out []checklist.Gra
 // before a live re-record.
 func entailSystem() string {
 	return `You check one grade of a parent checklist against the findings its grade cites, for one child. You are given the area's flag definition, the child's age, the grade, and each cited finding with its verbatim quote. Answer two questions and nothing else:
-(a) meets_definition: do the cited findings, taken together, show what the area's flag definition requires for a child of this age? For an "ok_with_setting", meet the definition instead by showing a cited mitigation actually answers the concern the cited risks raise.
+(a) meets_definition: do the cited findings, taken together, show what the area's flag definition requires for a child of this age? For an "ok_with_setting", meet the definition instead by showing a cited mitigation actually answers the concern the cited risks raise. Hold the definition to its words: when it lists the harms it means, the quotes must show one of them, not only that a reviewer disliked, disagreed with or was startled by something. A quote that shows less than the definition asks does not meet it.
 (b) reason_supported: does the reason say only what the cited quotes support, with nothing added and nothing stronger?
 Judge from the quotes, not the claims: a quote is the source's own words, a claim is the reader's reading of them. Use only the findings given. Reply with one JSON object: {"meets_definition": true, "reason_supported": true}, with false where the answer is no.`
 }

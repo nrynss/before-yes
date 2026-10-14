@@ -1,0 +1,8 @@
+{
+  "text": "\n\n{\n  \"grades\": [\n    {\n      \"area\": \"contact\",\n      \"level\": \"ok_with_setting\",\n      \"reason\": \"Strangers can message or voice chat with your child by default, but you can set chat to friends only or turn it off.\",\n      \"setting\": \"friends only\",\n      \"findings\": [\n        \"f_14ad19cd96f10974\",\n        \"f_d3937e99a98f8280\"\n      ]\n    },\n    {\n      \"area\": \"money\",\n      \"level\": \"ok_with_setting\",\n      \"reason\": \"Parents report being scammed after purchases, but you can control spending.\",\n      \"setting\": \"Control Spending\",\n      \"findings\": [\n        \"f_6721f2cc2e961a3d\",\n        \"f_6b222f7ec75ab54a\"\n      ]\n    },\n    {\n      \"area\": \"age_gating\",\n      \"level\": \"ok_with_setting\",\n      \"reason\": \"Some parents say the age gate doesn't work, but you can keep multiplayer off by default for child accounts.\",\n      \"setting\": \"multiplayer starts off\",\n      \"findings\": [\n        \"f_4b74610e6a867581\",\n        \"f_ce2d5a847567a4cc\"\n      ]\n    },\n    {\n      \"area\": \"content\",\n      \"level\": \"ok_with_setting\",\n      \"reason\": \"A parent saw satanic themes in the game, but playing in single-player mode keeps scary monsters away.\",\n      \"setting\": \"single player\",\n      \"findings\": [\n        \"f_fd053a071f7b28c0\",\n        \"f_6724e94b1c6db22f\"\n      ]\n    }\n  ]\n}",
+  "input_tokens": 18352,
+  "output_tokens": 8896,
+  "price_nano": 13512000,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}
