@@ -181,7 +181,7 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 | P0 | 9 / 9 | Done. Two exit criteria wait on later tasks: a live Nano call (T2.1b) and the config check (T4.4). CI is green. |
 | P1 | 4 / 4 | Done. The `job.Failure` exit criterion waits on T4.1. The main-checkout pins and `.env` leak check, waived at landing, ran at the P1–P2 integration and passed. |
 | P2 | 11 / 12 | T2.1, T2.1a, T2.1b, T2.1c, T2.1d, T2.2, T2.2b, T2.3, T2.3b, T2.4 and T2.4b are done. T2.5 is landed but blocked on T3.6b, the live quality pass, for the measured cost per check. |
-| P3 | 6 / 10 | T3.1, T3.2, T3.3, T3.4, T3.6 and T3.8a are done. The offline pipeline runs end to end on fixtures: review 355 decides the Roblox card, and a second age on cached evidence calls only the judge. Next: T3.6b (record real replies to replace the stand-ins), T3.5, T3.7 and T3.8. |
+| P3 | 7 / 11 | T3.1, T3.2, T3.3, T3.4, T3.6, T3.6b and T3.8a are done. T3.6b's live run put all three demo titles at **no**, mostly on judge flags with no verified quote, so T3.9 makes every grade cite one. T3.8, then T3.7, then T3.5 are with Grok. |
 | P4 | 0 / 5 | Not started. T4.1, T4.2 and T4.4 drafted. |
 | P5 | 0 / 7 | Not started. |
 | P6 | 0 / 6 | Not started. |
@@ -192,6 +192,35 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 
 Newest first. One entry per closed task, finding, or split.
 
+- **T3.6b closed; finding T3.9 filed.** Haiku implemented it, and the orchestrator validated it with no review loop.
+  - **What landed:**
+    - `go run ./tools/eval -models live` runs every reader and judge call on a real host. It has a spend cap, a ledger outside the repository, and a dry run. It never runs in the gate.
+    - Token Factory replies are recorded in `testdata/eval/replies/<slug>/`, and the OpenRouter stand-in replies in `testdata/eval/replies/openrouter-free/<slug>/`. Replay reproduces the live numbers exactly.
+    - `go run ./tools/eval` now replays the Token Factory recordings by default.
+    - A small hook in `tools/eval/main.go`, outside owns, was accepted at landing: the judge's thinking switches are passed in, so replay keys match production.
+  - **Results:**
+
+    | Title | Token Factory | OpenRouter free | T0.5 expected |
+    |---|---|---|---|
+    | Roblox, 9 | no; grades 3/6, quotes 1/6 | no; 1/6, 3/6 | no |
+    | Minecraft, 9 | no; 0/6, 1/5 | no; 3/6, 1/5 | yes with settings |
+    | Khan Academy Kids, 5 | no; 2/6, 0/5 | no; 0/6, 0/5 | yes |
+    | Total | 5/18, 2/16 | 4/18, 4/16 | |
+
+    The stand-in baseline was 7/18 and 6/16.
+  - **Measured cost:** $0.0926 in all on Token Factory, of a $1.50 cap. No live Tavily credits were spent; the runs read fixtures.
+    - Per check: reader about 129.7k tokens in and 27.8k out; judge about 27.7k in and 9.0k out, with one conflict pass.
+    - That is **$0.0309 of model spend per check**, against `docs/budget.md`'s estimate of $0.0255.
+    - Fixture captures put Tavily at 7–8 credits per title.
+  - **Orchestrator finding:** replaying the recordings shows the **no** verdicts are not evidence-backed.
+    - Most areas' grades cite no verified quote.
+    - The reasons invent details, such as a forum Khan Academy Kids does not have, and Minecraft data "cannot be deleted" with no quote.
+    - Many findings were dropped as unquoted (Khan 34, Minecraft 70, Roblox 60), and 15 replies hit the 4,096-token cap.
+    - So the demo titles are **not** re-picked yet. T3.9 makes every grade rest on a verified finding, then re-runs the replay.
+  - **Validation:**
+    - The diff stays inside owns plus the accepted `main.go` hook.
+    - Live code runs only under `-models live`.
+    - Gate rc 0 in the worktree after the rebase, and on main. No key values found. No dates.
 - **P3 landing verified on this machine.** After the remote close-out, the orchestrator ran the checks the remote box could not.
   - **Pins:**
     - The gate passes in the main checkout with `scratch/` and `.env` present (rc 0).

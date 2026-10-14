@@ -277,8 +277,8 @@ The totals did not move. Every quote the stand-in reader matched already holds t
 requires:   T3.6, T2.1b
 fixture-ok: no
 size:       M · frontier
-owns:       tools/eval/live.go, testdata/eval/replies/
-status:     in-review
+owns:       tools/eval/live.go, testdata/eval/replies/, plus its hook in tools/eval/main.go (accepted at landing)
+status:     done
 ```
 Run the eval with real Nano and Super on Token Factory, then with the free stand-ins, and record both. This answers the brief's open question about real Nano quality against the stand-in.
 
@@ -388,6 +388,36 @@ T3.1 calls this when the review feed returns nothing. The card's small print say
 - Count positions after dropping duplicates.
 
 **Done when:** Against the T3.8a fixtures, each title yields its page's reviews as separate documents with verbatim text. A finding quoted from one passes `finding.Verify`. A page with no reviews yields no documents and is recorded as a missing source.
+
+---
+
+### T3.9: Grades rest on verified quotes ★
+```yaml
+requires:   T3.6b
+fixture-ok: yes
+size:       M · frontier
+owns:       internal/pipeline/judge.go, internal/pipeline/judge_test.go, internal/pipeline/read.go, internal/pipeline/read_test.go, the reader and judge max_tokens lines in before-yes.toml.example
+status:     not-started
+```
+Found by the orchestrator in T3.6b's live replies. All three demo titles came back **no**, but the judge's flags are mostly not backed by a verified quote: `found` is empty in most areas. Its reasons paraphrase loosely or invent details:
+- Khan Academy Kids: "strangers can message via the forum", though the app has no forum.
+- Khan Academy Kids: age gating flagged because the app "only goes up to 2nd grade".
+- Minecraft: data flagged as "collects data for ads, cannot be deleted", with no quote.
+
+The reader also dropped many findings as unquoted: 34 for Khan, 70 for Minecraft, 60 for Roblox. Fifteen replies hit the 4,096-token cap.
+
+The product's promise is that every verdict rests on a quote someone can check. Make that rule hold in code:
+- A grade of `flag` or `ok_with_setting` must cite at least one finding that passed `finding.Verify`. A grade that cites none falls to `unknown`, and the card says the evidence was thin.
+- The judge's reason must name the cited finding. No reason may stand without one.
+- Raise the reader's `max_tokens`, or split chunks further, so a reply is not cut. Measure the unquoted-drop rate before and after on the recorded replies.
+
+The verdict rule (any `flag` makes **no**) is unchanged. Only unsupported flags stop counting.
+
+**Done when:**
+- Replaying T3.6b's recorded Token Factory replies, no area's grade stands without a verified citation.
+- A test pins that rule.
+- The re-run eval's verdicts, grades-agree and quotes-found are in the handoff log next to T3.6b's.
+- The demo titles' verdicts are reported to the user. Only then does any title get re-picked.
 
 ---
 
