@@ -12,7 +12,7 @@ Where a phase document and the brief conflict, the brief wins. Record the discre
 
 Each phase document gives an engineer starting cold the complete context for its tasks.
 
-**Current status:** P0 and P1 are done. P2 is 11 of 12. P3 is 6 of 10: the offline pipeline (gather, read, judge, pipeline and eval) is on `main`. P2, P3, P4 and P5 can start (each by its own `requires`). An earlier backend draft sits in `scratch/` at the repository root, uncommitted and unreviewed. Tasks it covers show `status: drafted`, which means there is code to start from, not that the task is done. See [Starting from the scratch draft](#starting-from-the-scratch-draft).
+**Current status:** P0, P1 and P2 are done. P3 is 10 of 11: everything but T3.9 is on `main`, including T3.8, T3.7 and T3.5 with their user-decision follow-ups (PRs #13–#15). P2, P3, P4 and P5 can start (each by its own `requires`). An earlier backend draft sits in `scratch/` at the repository root, uncommitted and unreviewed. Tasks it covers show `status: drafted`, which means there is code to start from, not that the task is done. See [Starting from the scratch draft](#starting-from-the-scratch-draft).
 
 ---
 
@@ -181,7 +181,7 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 | P0 | 9 / 9 | Done. Two exit criteria wait on later tasks: a live Nano call (T2.1b) and the config check (T4.4). CI is green. |
 | P1 | 4 / 4 | Done. The `job.Failure` exit criterion waits on T4.1. The main-checkout pins and `.env` leak check, waived at landing, ran at the P1–P2 integration and passed. |
 | P2 | 12 / 12 | Done. All six exit criteria are met. Measured model cost is $0.0309 per check. Tavily is 7–8 credits per check, from fixtures, not a live run. |
-| P3 | 10 / 11 | Everything but T3.9 is done. T3.9 makes every grade cite a verified quote, after T3.6b's live run put all three demo titles at **no** on mostly unquoted flags. Four behaviours from T3.5, T3.7 and T3.8 await the user's decision (see the handoff log). |
+| P3 | 10 / 11 | Everything but T3.9 is done. T3.9 makes every grade cite a verified quote, after T3.6b's live run put all three demo titles at **no** on mostly unquoted flags. T3.8, T3.7 and T3.5 are done, with their follow-ups (PRs #13–#15). The four open behaviours are decided (see the handoff log). |
 | P4 | 0 / 5 | Not started. T4.1, T4.2 and T4.4 drafted. |
 | P5 | 0 / 7 | Not started. |
 | P6 | 0 / 6 | Not started. |
@@ -192,6 +192,17 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 
 Newest first. One entry per closed task, finding, or split.
 
+- **T3.8, T3.7 and T3.5 follow-ups closed** (PRs #13, #14, #15, stacked, implemented by Grok). They carry out the user's four decisions. Final reviews: T3.8 follow-up APPROVE; T3.7 round 3 REMEDIATE, fixed; T3.5 rounds 6 and 7 REMEDIATE, fixed. #15 merged into `task-t3.7-kinds`, and #14 carried both into `main` after a merge with `main`. The full handoffs are in the PR descriptions.
+  - **#13, T3.8:** a review feed that errors falls back to the store page. `review_source` says `page`. The feed error stays a failure, so that evidence is not cached.
+  - **#14, T3.7:**
+    - An explicit `unknown` kind with a general plan: news, forums and the shared rating search, with no ESRB/PEGI search and no policy or terms search.
+    - `Card.kind_label` ("kind unknown") is new and additive, with a new example, `card-unknown-kind.json`. `GatherVersion` covers every kind.
+    - The policy search still runs, and is paid for, before the kind is known.
+  - **#15, T3.5:**
+    - Each fresh alternative check reserves one `checks_daily` check through `Pipeline.Checks`, with `Done` or `Fail`. Cached ones run free. A cap refusal marks the candidate `refused`.
+    - A card carries only checked alternatives, plus `alternatives_note` when any was refused. An `Alternatives` slice type filters the JSON, so pending and refused names never reach a card or an API response.
+  - **Outside owns, accepted:** `types.go` (the kind label, the note and the `Alternatives` type), `pipeline.go` (the `Checks` field and the kind label in `Decide`), and the contract fixtures, all additive.
+  - **For P4:** T4.5 sets `Pipeline.Checks` to the server's `*spend.Meter` and reserves only the main check (PHASE-4 T4.5, feedback.md).
 - **T3.8, T3.7 and T3.5 closed** (PRs #10, #11, #12, stacked, implemented by Grok). Final reviews: T3.8 round 2 APPROVE, T3.7 round 2 APPROVE, T3.5 round 5 APPROVE. The full handoffs are in the PR descriptions.
   - **What landed:**
     - **T3.8:** App Store page reviews as documents, deduplicated, with editorial blurbs and developer responses dropped. They are used only when the feed comes back empty. `review_source` (`feed`, `page` or empty) is on Evidence and Card, added to the contract fixtures.
@@ -202,11 +213,11 @@ Newest first. One entry per closed task, finding, or split.
     - Merged locally in order. Gate rc 0 after each merge, with `scratch/` and `.env` present. No key values found. No dates.
     - Edits outside owns were accepted as hooks: `pipeline.go` passes `ReviewSource` (T3.8), and carries the kind and a kind-aware `GatherVersion` (T3.7).
     - One conflict in `feedback.md`, where both sides only added entries, was resolved by keeping both.
-  - **Open for the user.** Each keeps its current behaviour until decided:
-    1. A feed *error* does not fall back to the store page. Only an empty feed does.
-    2. A title the detector cannot place defaults to `console_pc`.
-    3. Whether alternatives count toward `checks_daily` is left to P4. Each uncached candidate is a full check: about $0.03 and 7–8 Tavily credits.
-    4. Candidates refused by the budget are still shown, marked `refused`.
+  - **Decided by the user** (landed in PRs #13–#15; see the entry above):
+    1. A feed error falls back to the store page, as an empty feed does.
+    2. A title the detector cannot place gets an explicit `unknown` kind, not `console_pc`.
+    3. Fresh alternatives count toward `checks_daily`, and cached ones run free.
+    4. Refused alternatives are hidden. The card shows one line instead: "More alternatives when today's checks reset".
 - **T2.5 closed; P2 done.** Haiku implemented it, and the orchestrator validated it with no review loop.
   - **What changed:** `docs/budget.md` uses T3.6b's measured figures. Model cost per check is $0.030861, the mean of Roblox $0.031991, Minecraft $0.040029 and Khan $0.020564, re-summed from the 109 recorded replies.
     - The $20 ceiling covers 648 checks, and the $5 reserve covers 162.

@@ -79,8 +79,8 @@ The single page a parent acts on, in this order:
 1. **Verdict**: yes, yes with these settings, or no, with the title, the age, and when it was checked.
 2. **Settings to turn on**, when there are any, as a checklist the parent can follow.
 3. **The six areas**, each with its grade and one plain sentence. A flagged area shows its quote inline, with the source: "review 312", "privacy policy", or a forum thread. The quote links to its source.
-4. **Safer alternatives**, each with its verdict and a link to its own card and to the side-by-side.
-5. **Small print**: sources read, reviews read, quotes dropped as unverifiable, the checklist version, the models used, and what the check cost.
+4. **Safer alternatives**, each with its verdict and a link to its own card and to the side-by-side. A card carries only checked alternatives. When the daily cap refused any, it carries `alternatives_note` ("More alternatives when today's checks reset") instead of their names; show that one line.
+5. **Small print**: the kind (`kind_label`, for example "kind unknown"), sources read, reviews read, quotes dropped as unverifiable, the checklist version, the models used, and what the check cost.
 
 The review 312 moment must read at a glance. The quote that decided the card is the most visible thing on it after the verdict.
 
