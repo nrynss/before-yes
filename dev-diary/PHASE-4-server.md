@@ -103,7 +103,7 @@ From the brief's guardrails for judging: demo titles are precomputed, fresh chec
 
 A check run on visitor keys uses clients built for that job alone and a meter that records but does not draw on our pools. The keys never reach a log line, a job record, a stored card, the evidence cache key, or an error message. Cards made on visitor keys are stored like any other card.
 
-The daily cap follows T2.5's decision.
+The daily cap follows T2.5's decision: 5 fresh checks per UTC day, `[budget] daily_fresh_checks`. Enforce it with `spend.Meter.BeginCheck` and then `Done` or `Fail` (T2.4b). Call `BeginCheck` only on a cache miss, before the check's first paid call. End every check with `Done` or `Fail`. A visitor-key check does not count against the cap. As T3.4 notes, a cache hit books nothing new. Show its judge cost as new spend and its collect cost as already paid. No pipeline code calls `BeginCheck` yet.
 
 **Done when:** A test runs a check on visitor keys and then scans the database file, the job store and the captured logs for the key and finds nothing. The cap refuses with `budget_exhausted` once spent.
 

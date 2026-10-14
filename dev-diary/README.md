@@ -180,7 +180,7 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 |---|---|---|
 | P0 | 9 / 9 | Done. Two exit criteria wait on later tasks: a live Nano call (T2.1b) and the config check (T4.4). CI is green. |
 | P1 | 4 / 4 | Done. The `job.Failure` exit criterion waits on T4.1. The main-checkout pins and `.env` leak check, waived at landing, ran at the P1–P2 integration and passed. |
-| P2 | 11 / 12 | T2.1, T2.1a, T2.1b, T2.1c, T2.1d, T2.2, T2.2b, T2.3, T2.3b, T2.4 and T2.4b are done. T2.5 is landed but blocked on T3.6 for the measured cost per check. |
+| P2 | 11 / 12 | T2.1, T2.1a, T2.1b, T2.1c, T2.1d, T2.2, T2.2b, T2.3, T2.3b, T2.4 and T2.4b are done. T2.5 is landed but blocked on T3.6b, the live quality pass, for the measured cost per check. |
 | P3 | 6 / 10 | T3.1, T3.2, T3.3, T3.4, T3.6 and T3.8a are done. The offline pipeline runs end to end on fixtures: review 355 decides the Roblox card, and a second age on cached evidence calls only the judge. Next: T3.6b (record real replies to replace the stand-ins), T3.5, T3.7 and T3.8. |
 | P4 | 0 / 5 | Not started. T4.1, T4.2 and T4.4 drafted. |
 | P5 | 0 / 7 | Not started. |
@@ -192,6 +192,17 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 
 Newest first. One entry per closed task, finding, or split.
 
+- **P3 landing verified on this machine.** After the remote close-out, the orchestrator ran the checks the remote box could not.
+  - **Pins:**
+    - The gate passes in the main checkout with `scratch/` and `.env` present (rc 0).
+    - The leak check found 0 tracked and 0 working-tree files containing any `.env` value.
+    - All five round-3 reviews read APPROVE.
+    - No dates in the dev-diary.
+  - **Integration with work that landed meanwhile:** T3.8a's `-only storepage` capture survives in `tools/capture`. The pipeline's model calls go through `Meter.Spend`, so a timed-out call books at its estimate (T2.4b).
+  - **Docs corrected:**
+    - T2.5 is blocked on T3.6b, not T3.6. The measured cost per check comes from the live quality pass, as T3.6b's block says. `docs/budget.md` now says so too.
+    - T4.5 now says how to wire the daily cap: `BeginCheck` on a cache miss, before the first paid call. No pipeline code calls it yet.
+  - **Remote branches:** `task-t3.1-gather` to `task-t3.6-eval` all point at `main`'s tip and can be deleted.
 - **T3.1, T3.2, T3.3, T3.4 and T3.6 closed** (PRs #5–#9, stacked). Three review rounds: round 1 and round 2 were remediated, and round 3 approved all five.
   - **What landed in `internal/pipeline`:**
     - Gather: a 7-search plan; the official host from the App Store seller URL or a policy hit, using the public suffix list, with shared platforms refused; policy and terms extraction that follows homepage links only on the official host; a not-found page rule pinned to the captured Common Sense 404s; `Gathered.Failures` separates failed calls from absent sources.

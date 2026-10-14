@@ -7,7 +7,7 @@ Two pools are metered (`internal/spend`):
 - **model**: Token Factory spend, in USD nanodollars. Lifetime ceiling.
 - **tavily**: Tavily credits, in thousandths of a credit. Monthly ceiling.
 
-Figures marked **estimate** come from the brief's arithmetic and the per-call figures measured so far. They are pending T3.6, the quality pass on real titles. Figures marked **measured** come from a transcript or a fixture manifest.
+Figures marked **estimate** come from the brief's arithmetic and the per-call figures measured so far. They are pending T3.6b, the live quality pass on Token Factory. Figures marked **measured** come from a transcript or a fixture manifest.
 
 ## Summary
 
@@ -16,7 +16,7 @@ Figures marked **estimate** come from the brief's arithmetic and the per-call fi
 | Model lifetime ceiling | **$20** of the $25 credit | `model`, lifetime (`cost.None`) | Leaves $5 (20%) for the T3.6b live eval, demo pre-computation and estimate error. |
 | Tavily monthly ceiling | **900 credits** of the 1,000 free | `tavily`, monthly UTC (`cost.MonthlyUTC`) | 100 credits (10%) kept for measured variance in Tavily's per-call credits. |
 | Daily cap on fresh checks, judging | **5 checks per UTC day** | new counter, daily UTC (see the daily cap section) | Holds the 15-day judging window inside the Tavily month even at 12 credits per check. |
-| Cost per fresh check | **about $0.026 and 8 Tavily credits** (estimate, pending T3.6) | not a ceiling | Input to every ceiling above. |
+| Cost per fresh check | **about $0.026 and 8 Tavily credits** (estimate, pending T3.6b) | not a ceiling | Input to every ceiling above. |
 | Checks covered | **about 780** by the model pool; **about 112 a month** by Tavily at 8 credits, so Tavily binds | derived | Tavily is the tighter limit, as the brief said. |
 
 ## Model pool: lifetime ceiling and reserve
@@ -47,7 +47,7 @@ The margin absorbs a per-check cost above the 8-credit plan without touching the
 
 **Spent so far.** 46 credits recorded across the fixture captures and T2.2b (22 + 13 + 7 + 4, measured). These are development credits; the monthly pool resets, so they do not reduce the judging month.
 
-## Cost of one fresh check (estimate, pending T3.6)
+## Cost of one fresh check (estimate, pending T3.6b)
 
 A fresh check is one run of the pipeline on a title and age with no cache hit. A cache hit costs nothing and does not count against the daily cap.
 
@@ -87,7 +87,7 @@ Measured: **T3.6b**. Use Tavily's reported `usage.credits`, not the price list (
 
 The brief rounds the model figure to "about 3 cents". Its $25 "covers about 800 checks" uses that rounded figure.
 
-**Sensitivity, which the reserve has to absorb until T3.6 measures it:**
+**Sensitivity, which the reserve has to absorb until T3.6b measures it:**
 - every 10,000 Nano output tokens adds $0.0024 per check;
 - the conflict pass adds a judge call, and the only measured figure for one is the T2.1b probe: 46 input and 179 output tokens, $0.0001749 (`dev-diary/live/t2.1b-transcript.txt`, line 33). That prompt is far smaller than a real judge prompt, so it is a floor per call, not a per-check figure.
 
