@@ -775,3 +775,28 @@ func TestGatherFailuresVsAbsent(t *testing.T) {
 		}
 	}
 }
+
+// An unread candidate counts as a failure only when its kind is then
+// missing. On the fixtures, Roblox's unread terms candidate cost nothing
+// (another terms page was kept); Minecraft's unread terms pages and Khan's
+// unread homepage did.
+func TestGatherFailuresOnFixtures(t *testing.T) {
+	want := map[string]string{
+		"Roblox":            "",
+		"Minecraft":         "extract https://www.minecraft.net/en-us/eula,extract https://www.minecraft.net/en-us/article/minecraft-eula-and-commercial-usage-guidelines-updates",
+		"Khan Academy Kids": "extract https://www.khankids.org",
+		"Toca Life World":   "",
+	}
+	for _, d := range demos {
+		_, srv := newFixture(t, d)
+		store, tc := fixtureClients(t, srv)
+		g := &Gatherer{Store: store, Search: tc, Meter: openTestMeter(t), Now: func() time.Time { return fixedNow }}
+		got, err := g.Gather(context.Background(), d.title, "c")
+		if err != nil {
+			t.Fatal(err)
+		}
+		if f := strings.Join(got.Failures, ","); f != want[d.title] {
+			t.Errorf("%s: failures %q, want %q", d.title, f, want[d.title])
+		}
+	}
+}
