@@ -174,6 +174,15 @@ Commit one example card per verdict (`card-yes.json`, `card-settings.json`, `car
 | M1 | **User decision: `card-yes.json` is accepted as it is.** It is a contract example, not evidence about Khan Academy Kids. Its thin contact quote ("Made For Ages 0–5") and the content risk it leaves out (review 17) are known and accepted. Neither T3.3's prompt nor P5 should treat it as a model of good evidence. Khan's real verdict belongs to T3.6b. The card still passes `Enforce` under `v3`: its contact finding is neutral, so it counts as support. | `TestExamplesObeyRules` |
 | L1 | The `Source.Kind` comment edit now lands in T1.2 (`task-t1.2-finding`), which owns `internal/finding/`. After the merge, T1.3's diff against T1.2 touches nothing under `internal/finding/`. | `git diff task-t1.2-finding -- internal/finding` is empty |
 | inherited | The examples were regenerated after T1.1 round 2 M1 (`v3`, supporting finding needed) and T1.2 round 2 H1 and L1 (stricter word boundaries). Every quote still verifies, and every card passes `Enforce` with zero demotions. | `TestGenerate`, `TestExamplesObeyRules` |
+
+**Remediation, round 3** (inherited from T1.1 and T1.2 round 3; T1.3's own round-3 review approved). The examples were regenerated under checklist `v4`.
+
+| Change | Why | Test |
+|---|---|---|
+| `card-yes`: age gating `ok` now cites "A free educational app for children ages 2–8" (khanacademy.org/kids, neutral). | v4: every `ok` needs a supporting finding | `TestExamplesObeyRules` (zero demotions), `TestGenerate` |
+| `card-settings`: age gating `ok` cites "On a child account, multiplayer starts off" (virtual-addiction.com, mitigation). Developer record is now `unknown`, because no fixture quote supports it, which makes two unknowns. The verdict is still `yes_with_settings`. | same | same |
+| `card-unclear`: developer record is now `unknown` (no supporting quote). The verdict is still `unclear`. | same | same |
+| All quotes re-verified under T1.2's round-3 boundary rule. | T1.2 H1 and M1 | `TestGenerate` |
 ---
 
 ### T1.4: HTTP API and error codes ★
