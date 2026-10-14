@@ -101,8 +101,8 @@ const MinQuote = 12
 // Normalize folds what the check forgives: case, runs of whitespace,
 // typographic quotes and dashes, and the ellipsis character (as "...").
 // Text is first put in Unicode NFC, so a composed and a decomposed accent
-// match. Invisible format characters (Unicode Cf) are dropped, every hyphen
-// and dash form folds to "-", and a run of hyphens becomes one. It changes no
+// match. Invisible format characters (Unicode Cf) are dropped, every dash
+// (Unicode Pd, plus U+2027, U+2043 and the minus sign) folds to "-", and a run of hyphens becomes one. It changes no
 // word.
 func Normalize(s string) string {
 	s = norm.NFC.String(s)
@@ -115,7 +115,7 @@ func Normalize(s string) string {
 		case '\u201C', '\u201D', '\u201E', '\u201F', '\u2033', '\u00AB', '\u00BB':
 			r = '"'
 		case '\u2010', '\u2011', '\u2012', '\u2013', '\u2014', '\u2015', '\u2212',
-			'\u2043', '\uFE58', '\uFE63', '\uFF0D', '\u2E3A', '\u2E3B':
+			'\u2043', '\uFE58', '\uFE63', '\uFF0D', '\u2E3A', '\u2E3B', '\u2027':
 			r = '-'
 		case '\u2026':
 			if space {
@@ -124,6 +124,9 @@ func Normalize(s string) string {
 			}
 			b.WriteString("...")
 			continue
+		}
+		if unicode.Is(unicode.Pd, r) {
+			r = '-' // every dash punctuation character (Unicode Pd)
 		}
 		if unicode.Is(unicode.Cf, r) {
 			// Invisible format characters (soft hyphen, zero-width space and
