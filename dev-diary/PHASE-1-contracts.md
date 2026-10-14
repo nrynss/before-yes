@@ -20,7 +20,7 @@ requires:   T0.1
 fixture-ok: yes
 size:       M · frontier
 owns:       internal/checklist/
-status:     in-review
+status:     done
 ```
 The brief says it plainly: the checklist is the product. It is fixed, versioned, and the same for every title.
 
