@@ -321,6 +321,14 @@ Whether the YouTube Data API's made-for-kids status adds anything is an open que
 - **Fixtures:** the four captured titles are all iOS (Toca by its policy hit). The Android, console and YouTube fixtures are canned search hits in `kind_test.go`, not captures; no live call was made.
 - **Tests:** `TestKindsGatherTheirPlan` (one fixture per kind; the exact searches each sends, Play excluded and never read, the rating-board domains, YouTube policy and terms not missing); `TestDetectKind`; `TestCardShowsKind`; `TestFixtureTitlesAreIOS`.
 
+**Round 1 remediation (T3.7).**
+
+| ID | Fix | Test |
+|---|---|---|
+| M1 | `DetectKind` scores structured signals. A direct listing or channel page (`play.google.com/store/apps`, `youtube.com/@`, `/channel/`, `/c/`, `/user/`, `store.steampowered.com/app/`, `store.playstation.com`, xbox.com and nintendo.com store paths) weighs 5. A rating board (esrb.org, pegi.info) weighs 3. A whole-word mention (`\bsteam\b`, not "livestream") weighs 1, once per hit per kind. A store listing therefore outweighs a review page that lists every platform. | `TestDetectKindStructured` (the reviewer's Play-listing-vs-platform-list case; "livestream", "mainstream", "streamers"; Steam, Nintendo and PlayStation listings) |
+| L1 | `youtube.com/watch`, `/shorts/`, `/playlist`, `youtu.be` and a "- YouTube" page title each weigh 3 for YouTube. | `TestDetectKindStructured` ("MrBeast" with one `/watch` hit; a "- YouTube" title) |
+| L2 | `GatherVersion` hashes `PlanFor` for all four kinds, with and without a host, so a change to any kind's plan moves the evidence key. This edits `GatherVersion` in pipeline.go, outside T3.7's `owns`; the plan change needs it. | `TestGatherVersionCoversEveryKind` |
+
 **The brief's open question: does the YouTube Data API's made-for-kids status add anything?** The answer is yes, but only a narrow signal, and it is not adopted in T3.7. It is answered from documentation only; no API call was made.
 - **What it is.** `channels.list` returns `status.madeForKids` (boolean) on a channel resource, and `videos.list` returns the same field for a video. `selfDeclaredMadeForKids` is returned only to the owner (YouTube Data API docs, Channel resource). Creators set the audience at the channel or video level, and a video's setting overrides the channel's. YouTube may override it in cases of error or abuse (YouTube Help 9527654).
 - **What it adds.** On content set as made for kids, YouTube turns off comments, live chat, the notification bell, personalised advertising, channel memberships, Super Chat and Super Stickers, merchandise, and cards and end screens (YouTube Help 9527654). That bears on the contact, money and data areas.
