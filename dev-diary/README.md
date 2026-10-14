@@ -180,7 +180,7 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 |---|---|---|
 | P0 | 9 / 9 | Done. Two exit criteria wait on later tasks: a live Nano call (T2.1b) and the config check (T4.4). CI is green. |
 | P1 | 4 / 4 | Done. The `job.Failure` exit criterion waits on T4.1. The main-checkout pins and `.env` leak check, waived at landing, ran at the P1–P2 integration and passed. |
-| P2 | 9 / 11 | T2.1, T2.1a, T2.1b, T2.1c, T2.2, T2.2b, T2.3, T2.3b and T2.4 are done. T2.5 is landed but blocked on T3.6 for the measured cost per check. T2.4b (the daily cap, and booking timed-out calls) is not started. |
+| P2 | 9 / 12 | T2.1, T2.1a, T2.1b, T2.1c, T2.2, T2.2b, T2.3, T2.3b and T2.4 are done. T2.5 is landed but blocked on T3.6 for the measured cost per check. T2.4b (the daily cap, and booking timed-out calls) and T2.1d (the live probe's deadline) are in progress. |
 | P3 | 1 / 10 | T3.8a is done: App Store page fixtures for all four titles. T3.1–T3.4 are drafted on `draft/scratch`. |
 | P4 | 0 / 5 | Not started. T4.1, T4.2 and T4.4 drafted. |
 | P5 | 0 / 7 | Not started. |

@@ -102,6 +102,22 @@ Make the per-call deadline scale with the call's `max_tokens`, or make it a sett
 
 ---
 
+### T2.1d: Live probe uses the scaled deadline
+```yaml
+requires:   T2.1c
+fixture-ok: yes
+size:       XS · light
+owns:       internal/model/live_test.go
+status:     not-started
+```
+Split from T2.1c. The live probe builds its own client with `http.Client{Timeout: 3 * time.Minute}`. Today's probe asks for at most 512 tokens, so the fixed timeout is harmless. A probe of a 16,000-token thinking call would be cut, though, while the production client would let it finish.
+
+Drop the fixed client timeout. Give each probe request the deadline that `model.DefaultTimeouts.For` gives for that request's `max_tokens`, so the probe and the client share one rule. Keep the probe's overall 8-minute context.
+
+**Done when:** `live_test.go` sets no fixed client timeout, and every request it sends carries a deadline from `DefaultTimeouts.For`. `go vet -tags live ./internal/model` and `go build -tags live ./...` pass, and the gate passes. No live run is needed.
+
+---
+
 ### T2.2: Tavily client ★
 ```yaml
 requires:   T0.1
