@@ -183,7 +183,7 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 | P2 | 12 / 12 | Done. All six exit criteria are met. Measured model cost is $0.0309 per check. Tavily is 7–8 credits per check, from fixtures, not a live run. |
 | P3 | 12 / 13 | Every standing grade cites verified, in-area findings by id (T3.9b). All three demo titles read **no**. Roblox's flags are earned. Minecraft's and Khan Academy Kids' are not. T3.10 calibrates the judge: flag definitions, off-product pages and invented reasons. |
 | P4 | 2 / 5 | T4.1 and T4.2 are done: check jobs, the progress stream, card routes, the card store and both caches. Wire ids are `c_` / `j_` + a 32-hex Keel id. T4.3 and T4.5 can start; T4.4 is drafted. |
-| P5 | 2 / 7 | T5.1 and T5.2 are done. T5.3 is blocked on an upstream Chaaya fix (terminal snapshot recovery), in progress. T5.4 is held: its card-id check accepts only the fixtures' 22-character shape, not the server's `c_` + 32 hex. |
+| P5 | 3 / 7 | T5.1, T5.2 and T5.4 are done: the shell, the Ask form with free examples, and the evidence-linked card. T5.3 is blocked on an upstream Chaaya fix (terminal snapshot recovery), in progress. T5.5 can start; T5.6 waits on T5.3, T5.7 on T4.5. |
 | P6 | 0 / 6 | Not started. |
 
 ---
@@ -192,6 +192,11 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 
 Newest first. One entry per closed task, finding, or split.
 
+- **T5.4 closed (PR #23).** The frontend orchestrator implemented it; round 1 found one low, round 2 approved, and the orchestrator then held it on card ids. Round 3 approved with zero residue.
+  - **What landed:** `web/src/lib/card/` and `/card/[id]`: the verdict, six areas with their lead quotes, sources you can follow, checked alternatives, and sharing below the evidence. `contract.ts` parses a card strictly and accepts only `c_` + 32 lowercase hex, the server's shape. A malformed id shows "Card not found" with no request.
+  - **Contract ids re-minted:** every `c_` / `j_` id in `testdata/contracts/` is now real-shaped (`c_0000…0001`), with the Go and web tests that quote them. The 22-character ids remain only in rejection tests. This closes the contract-id gap from the T4.1/T4.2 entry.
+  - **Pins:** the gate passed on main after the merge (64 Playwright tests). The reviewer served a fixture card under a real-shaped id at 360px and saw the legacy id refused without a request.
+  - **Leftover for the frontend:** T5.2's example list still accepts age 2; harmless now that no card can carry it.
 - **T4.1 and T4.2 closed (PRs #22 and #20).** A remote orchestrator implemented both; fresh reviewers approved T4.2 in round 3 and T4.1 in round 1. The gate passed on main after each merge.
   - **T4.2:** `internal/cards` stores cards under 32-hex Keel ids, with `Put`, `PutWithAlternatives`, `Get`, `Latest` and `Recent`, migrations in namespace `beforeyes_cards`. `internal/server/cache.go` has the evidence cache (single flight over `pipeline.EvidenceKey`; thin or failed evidence is never stored) and the card cache.
     - Round 1 found thin evidence written over an expired row (High), fixed and pinned with a direct sqlite read.

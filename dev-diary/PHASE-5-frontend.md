@@ -73,7 +73,7 @@ requires:   T5.1
 fixture-ok: yes
 size:       L · frontier
 owns:       web/src/routes/card/, web/src/lib/card/, web/playwright.config.ts and web/shell.spec.ts (card test discovery and fixture-backed shell smoke pins); ID-only updates to testdata/contracts/card-*.json, testdata/contracts/api/*, internal/pipeline/types_test.go, internal/pipeline/api_examples_test.go, internal/server/checks_test.go, web/src/lib/ask/ask.spec.ts
-status:     in-review
+status:     done
 ```
 The single page a parent acts on, in this order:
 1. **Verdict**: yes, yes with these settings, or no, with the title, the age, and when it was checked.
