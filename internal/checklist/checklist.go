@@ -16,7 +16,7 @@ import (
 // Version names the checklist and rules a card was judged under. Bump it when
 // an area's wording or a rule in Decide or Enforce changes, because cached
 // cards record the version they were judged under.
-const Version = "v3"
+const Version = "v4"
 
 // Area is one checklist area id. The ids are stable wire values.
 type Area string
@@ -124,14 +124,17 @@ var ErrGrades = errors.New("checklist: invalid grade set")
 //  3. Contact or content unknown: unclear. Those two areas are what a parent
 //     most needs answered, and silence on them is not a yes.
 //  4. UnclearUnknowns or more areas unknown: unclear.
-//  5. Any area graded ok_with_setting: yes_with_settings.
-//  6. Otherwise: yes.
+//  5. Any unknown area that still cites findings: unclear. Its evidence exists
+//     but did not support the judge's grade (Enforce demoted it, for example
+//     money ok citing only a pay-to-win risk), so the answer is not a yes.
+//  6. Any area graded ok_with_setting: yes_with_settings.
+//  7. Otherwise: yes.
 func Decide(grades []Grade) (Verdict, error) {
 	if err := validate(grades); err != nil {
 		return "", err
 	}
 	by := map[Area]Level{}
-	unknown, settings := 0, false
+	unknown, settings, contested := 0, false, false
 	flagged := false
 	for _, g := range grades {
 		by[g.Area] = g.Level
@@ -140,6 +143,7 @@ func Decide(grades []Grade) (Verdict, error) {
 			flagged = true
 		case Unknown:
 			unknown++
+			contested = contested || len(g.Findings) > 0
 		case OKWithSetting:
 			settings = true
 		}
@@ -149,7 +153,7 @@ func Decide(grades []Grade) (Verdict, error) {
 		return No, nil
 	case by[Contact] == Unknown || by[Content] == Unknown:
 		return Unclear, nil
-	case unknown >= UnclearUnknowns:
+	case unknown >= UnclearUnknowns, contested:
 		return Unclear, nil
 	case settings:
 		return YesWithSettings, nil
@@ -191,6 +195,12 @@ func blank(s string) bool {
 	return true
 }
 
+// trimSetting strips whitespace and invisible format characters from both
+// ends of a setting, so "\u200bAsk to Buy " and "Ask to Buy" are one setting.
+func trimSetting(s string) string {
+	return strings.TrimFunc(s, func(r rune) bool { return unicode.IsSpace(r) || unicode.Is(unicode.Cf, r) })
+}
+
 // Cited is what Enforce needs to know about one verified finding.
 type Cited struct {
 	Area Area
@@ -212,7 +222,7 @@ const (
 	RuleFlagNoRisk     = "flag_without_risk"
 	RuleSettingNoName  = "setting_without_name"
 	RuleSettingNoProof = "setting_without_finding"
-	RuleOKNoProof      = "ok_without_finding" // contact or content ok with no verified mitigation or neutral finding
+	RuleOKNoProof      = "ok_without_finding" // ok with no verified mitigation or neutral finding
 	RuleSkipped        = "skipped_area"
 	RuleDuplicate      = "duplicate_grade"
 	RuleBadGrade       = "invalid_grade" // unknown area or level from the judge
@@ -226,10 +236,10 @@ const (
 //   - a flag left with no verified risk finding becomes unknown;
 //   - an ok_with_setting with no setting named (blank counts as none), or no
 //     remaining finding, becomes unknown;
-//   - contact or content graded ok with no remaining mitigation or neutral
-//     finding becomes unknown (risk findings alone cannot support ok),
-//     so silence on the two areas a parent most needs answered never reads as
-//     ok (and so never yields yes; Decide makes it unclear);
+//   - an area graded ok with no remaining mitigation or neutral finding
+//     becomes unknown: every ok rests on a verified quote, and risk findings
+//     alone cannot support it (on contact or content, Decide then makes the
+//     verdict unclear);
 //   - a finding id cited twice in one grade is kept once;
 //   - an area the judge skipped is added as unknown;
 //   - a grade for an unknown area, or with an unknown level, is discarded
@@ -249,7 +259,7 @@ func Enforce(grades []Grade, evidence map[string]Cited) ([]Grade, []Demotion) {
 			continue
 		}
 		g := in
-		g.Setting = strings.TrimSpace(in.Setting)
+		g.Setting = trimSetting(in.Setting)
 		g.Findings = []string{}
 		risk, support := false, false
 		cited := map[string]bool{}
@@ -278,7 +288,7 @@ func Enforce(grades []Grade, evidence map[string]Cited) ([]Grade, []Demotion) {
 				g.Level = Unknown
 			}
 		case OK:
-			if (g.Area == Contact || g.Area == Content) && !support {
+			if !support {
 				dem = append(dem, Demotion{Area: g.Area, Rule: RuleOKNoProof})
 				g.Level = Unknown
 			}
