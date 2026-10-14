@@ -8,10 +8,14 @@
 //	go run ./tools/capture -slug roblox -title "Roblox" -id 431946152 -out testdata/titles/roblox
 //	go run ./tools/capture -all
 //	go run ./tools/capture -all -only csm,reddit
+//	go run ./tools/capture -all -only storepage -depth auto
 //
-// -only runs just the named kinds: csm and reddit (T0.4a), or advanced (T0.4b),
-// which runs alone. It never calls the App Store or the first Tavily kinds, and
-// it adds to the T0.4 MANIFEST.md.
+// -only runs just the named kinds: csm and reddit (T0.4a), advanced (T0.4b), or
+// storepage (T3.8a), which each run alone. Only storepage runs with no App Store
+// call: it reads each title's trackViewUrl from the saved appstore-search.json.
+// It never calls the App Store or the first Tavily kinds, and it adds to the
+// T0.4 MANIFEST.md. -depth sets the storepage extract: auto (basic, then
+// advanced when the basic answer shows no review text), basic or advanced.
 //
 // The Tavily key is read from TAVILY_KEY and sent only in the Authorization
 // header. It is never written to a file, printed, or put in a URL.
@@ -66,10 +70,15 @@ func main() {
 	all := flag.Bool("all", false, "capture the four demo titles into <dir>/<slug>")
 	dir := flag.String("dir", "testdata/titles", "root directory for -all")
 	pause := flag.Duration("pause", 500*time.Millisecond, "wait between App Store requests")
-	only := flag.String("only", "", "run only these kinds, comma-separated: csm, reddit (T0.4a) or advanced (T0.4b, alone)")
+	only := flag.String("only", "", "run only these kinds, comma-separated: csm, reddit (T0.4a), advanced (T0.4b) or storepage (T3.8a); advanced and storepage run alone")
+	depth := flag.String("depth", depthAuto, "for -only storepage: auto (basic, then advanced if no review text), basic or advanced")
 	flag.Parse()
 
 	kinds, err := parseOnly(*only)
+	if err != nil {
+		fail(err.Error())
+	}
+	storeDepth, err := parseDepth(*depth)
 	if err != nil {
 		fail(err.Error())
 	}
@@ -95,12 +104,13 @@ func main() {
 		fail(keyEnv + " is not set; load the .env file first (see the usage note)")
 	}
 	c := &capturer{
-		itunes: itunesBase,
-		tavily: tavilyBase,
-		key:    key,
-		client: &http.Client{Timeout: 60 * time.Second},
-		pause:  *pause,
-		now:    time.Now,
+		itunes:     itunesBase,
+		tavily:     tavilyBase,
+		key:        key,
+		client:     &http.Client{Timeout: 60 * time.Second},
+		pause:      *pause,
+		now:        time.Now,
+		storeDepth: storeDepth,
 	}
 	for _, j := range jobs {
 		if kinds != nil {
@@ -131,6 +141,8 @@ type capturer struct {
 	client *http.Client
 	pause  time.Duration
 	now    func() time.Time
+	// storeDepth is the -depth flag for -only storepage; "" means auto.
+	storeDepth string
 }
 
 // capture writes one title's fixtures and MANIFEST.md. The manifest is written
