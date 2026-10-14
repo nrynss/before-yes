@@ -259,9 +259,9 @@ Decide and document the ceilings, from the brief's arithmetic and T3.6's measure
 
 ## Exit Criteria
 
-- [ ] All three clients pass offline tests against recorded responses.
-- [ ] Live probes committed for every client, with transcripts in the handoff log.
-- [ ] Confirmed Token Factory model ids and thinking switches in the example settings.
-- [ ] The meter refuses before a call, releases on failure, and books to a durable ledger.
-- [ ] Budget ceilings documented with measured cost per check.
-- [ ] Both pools share the application database through cost-store namespaces (Keel v0.7.3, nrynss/keel#82).
+- [x] All three clients pass offline tests against recorded responses.
+- [x] Live probes committed for every client, with transcripts in the handoff log (T2.1b, T2.2b, T2.3b).
+- [x] Confirmed Token Factory model ids and thinking switches in the example settings (T2.1b).
+- [x] The meter refuses before a call, releases on failure, and books to a durable ledger (T2.4). It also caps fresh checks per day and books a timed-out call at its estimate (T2.4b).
+- [ ] Budget ceilings documented with measured cost per check. The ceilings are in `docs/budget.md` (T2.5). The cost per check is still an estimate until T3.6 measures it.
+- [x] The pools share the application database through cost-store namespaces (Keel v0.7.3, nrynss/keel#82): `cost_model`, `cost_tavily` and `cost_checks_daily`.

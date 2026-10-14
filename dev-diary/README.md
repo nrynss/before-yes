@@ -181,7 +181,7 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 | P0 | 9 / 9 | Done. Two exit criteria wait on later tasks: a live Nano call (T2.1b) and the config check (T4.4). CI is green. |
 | P1 | 4 / 4 | Done. The `job.Failure` exit criterion waits on T4.1. The main-checkout pins and `.env` leak check, waived at landing, ran at the P1–P2 integration and passed. |
 | P2 | 11 / 12 | T2.1, T2.1a, T2.1b, T2.1c, T2.1d, T2.2, T2.2b, T2.3, T2.3b, T2.4 and T2.4b are done. T2.5 is landed but blocked on T3.6 for the measured cost per check. |
-| P3 | 1 / 10 | T3.8a is done: App Store page fixtures for all four titles. T3.1–T3.4 are drafted on `draft/scratch`. |
+| P3 | 1 / 10 | T3.8a is done: App Store page fixtures for all four titles. T3.1–T3.4 and T3.6 are in progress remotely, on stacked branches `task-t3.1-gather` → `task-t3.2-reader` → `task-t3.3-judge` → `task-t3.4-pipeline` → `task-t3.6-eval`. Each has had a round-1 review and remediation. Their scratch files are claimed on `draft/scratch`. The branches predate T2.1c, T2.4b and T3.8a on `main` and need a rebase before landing. |
 | P4 | 0 / 5 | Not started. T4.1, T4.2 and T4.4 drafted. |
 | P5 | 0 / 7 | Not started. |
 | P6 | 0 / 6 | Not started. |
@@ -192,6 +192,13 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 
 Newest first. One entry per closed task, finding, or split.
 
+- **P2 exit criteria checked; branches and worktrees cleaned up.**
+  - **P2:** five of six exit criteria are met and ticked in `PHASE-2-clients.md`. The sixth, the measured cost per check, waits on T3.6, which T2.5 is blocked on.
+  - **Removed at the user's request:**
+    - OpenCode's four P2 worktrees and branches (`task-t2.1b-model-live`, `task-t2.2-tavily`, `task-t2.2b-tavily-live`, `task-t2.3b-appstore-live`). Each was clean, and `git cherry` showed no commit missing from `main`. Every file difference was newer work on `main`.
+    - The local branch `task-t2.1a-extra`, which `main` already contains.
+    - The P1 branches on GitHub (`task-t1.1-checklist` to `task-t1.4-api`), which `main` already contains.
+  - **Left alone:** `draft/scratch`, and the five P3 branches on GitHub (T3.1–T3.4 and T3.6), which are active remote work.
 - **T2.4b closed.** Haiku implemented it, and the orchestrator validated it with no review loop. It went back once.
   - **What landed in `internal/spend`:**
     - A `checks_daily` pool (unit `check`, `cost.DailyUTC`), with `BeginCheck(ctx, ref)` and then `Done` or `Fail`. A cache hit never calls it.
