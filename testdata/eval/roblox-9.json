@@ -1,0 +1,32 @@
+{
+  "title": "Roblox",
+  "slug": "roblox",
+  "age": 9,
+  "verdict": "no",
+  "areas": [
+    {"area": "contact", "level": "flag",
+     "note": "First-hand reports that predators reach children outweigh the advice to set chat to friends only.",
+     "decisive": [
+       {"source": "R355", "quote": "if your kid plays Roblox high chance a child predator might ask where you are"},
+       {"source": "R242", "quote": "they can’t stop the child predators and E-Daters"}
+     ],
+     "supporting": [
+       {"source": "https://www.commonsensemedia.org/articles/parents-ultimate-guide-to-roblox", "quote": "consider setting chat to \"friends only\" or turning it off completely"}
+     ]},
+    {"area": "money", "level": "flag",
+     "note": "Children buy Robux with real money, and a purchase dispute shows the pressure.",
+     "decisive": [{"source": "R1", "quote": "I got Robux and I got only 246 Robux instead of 1800"}]},
+    {"area": "data", "level": "unknown",
+     "note": "No privacy policy was read. A lawsuit alleges tracking without consent, but an allegation does not settle the area.",
+     "decisive": []},
+    {"area": "age_gating", "level": "flag",
+     "note": "The age check misplaces children.",
+     "decisive": [{"source": "R147", "quote": "Im 14 but it said 9-12 on the age check"}]},
+    {"area": "content", "level": "flag",
+     "note": "Reviewers report horror and inappropriate games a 9-year-old can reach.",
+     "decisive": [{"source": "R491", "quote": "It’s also a very inappropriate game with all the horror games"}]},
+    {"area": "developer_record", "level": "flag",
+     "note": "A nationwide class action alleges Roblox tracked children's data without parental consent.",
+     "decisive": [{"source": "https://www.securitymagazine.com/articles/101628-lawsuit-alleges-roblox-tracks-childrens-data-without-parental-consent", "quote": "This lawsuit alleges that Roblox has violated the privacy of its users by tracking data without consent."}]}
+  ]
+}

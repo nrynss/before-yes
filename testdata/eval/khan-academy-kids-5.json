@@ -1,0 +1,26 @@
+{
+  "title": "Khan Academy Kids",
+  "slug": "khan-academy-kids",
+  "age": 5,
+  "verdict": "yes",
+  "areas": [
+    {"area": "contact", "level": "ok",
+     "note": "A Kids-category app made for young children; no source describes chat or messaging.",
+     "decisive": [{"source": "https://apps.apple.com/mx/app/khan-academy-kids/id1378467217?l=en-GB", "quote": "Made For Ages 0–5"}]},
+    {"area": "money", "level": "ok",
+     "note": "Free, with no ads or subscriptions.",
+     "decisive": [{"source": "https://apps.apple.com/mx/app/khan-academy-kids/id1378467217?l=en-GB", "quote": "Always 100% free, no ads, no subscriptions—just safe, joyful learning kids and parents love."}]},
+    {"area": "data", "level": "ok",
+     "note": "No ads and no third-party tracking, in the developer's own words; the policy itself was not read.",
+     "decisive": [{"source": "https://www.khanacademy.org/kids", "quote": "We don't show ads in the app, and we don't let third parties track your child across other apps or websites."}]},
+    {"area": "age_gating", "level": "ok",
+     "note": "Made for ages 2 to 8; nothing to gate for a 5-year-old.",
+     "decisive": [{"source": "https://www.khanacademy.org/kids", "quote": "A free educational app for children ages 2–8, with games, books, and lessons"}]},
+    {"area": "content", "level": "ok",
+     "note": "Parents report calm, age-appropriate content.",
+     "decisive": [{"source": "R311", "quote": "My 4 year old loves this. It has everything and isn’t overstimulating AND it has no ads."}]},
+    {"area": "developer_record", "level": "unknown",
+     "note": "No developer record found; the one news hit is unrelated.",
+     "decisive": []}
+  ]
+}

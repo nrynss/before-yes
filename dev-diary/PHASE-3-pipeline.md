@@ -162,7 +162,7 @@ requires:   T3.4, T0.5
 fixture-ok: yes
 size:       M · frontier
 owns:       tools/eval/, testdata/eval/
-status:     not-started
+status:     in-review
 ```
 For each demo title and age, write down by hand what a careful parent reading the same material would conclude: area by area, with the quotes that matter. Store it in `testdata/eval/`.
 
@@ -171,6 +171,18 @@ For each demo title and age, write down by hand what a careful parent reading th
 This is how prompt changes are judged from here on: by the eval, not by reading one output.
 
 **Done when:** `tools/eval` runs offline and prints the comparison for all three titles, and the handoff log records the baseline.
+
+**Implementation notes (T3.6).**
+- `testdata/eval/<slug>-<age>.json` holds hand-written expectations for Roblox at 9 (no), Minecraft at 9 (yes_with_settings) and Khan Academy Kids at 5 (yes). Each gives every area's level, a note, and the decisive quotes with their review number or URL. A test checks that every decisive quote appears in the text the gatherer collects from the fixtures, so the expectations are reachable.
+- `go run ./tools/eval` runs Collect and Decide offline for each expectation. The fixtures are served to the real App Store and Tavily clients, and a real spend meter runs on a temp file. Per area it reports grade agreement and the decisive quotes found or missed. Per title it reports the drop rate by reason, chunks, missing sources, Tavily credits and read and judge cost. `-json` gives machine-readable output.
+- Models:
+  - `-models replay` replays `testdata/eval/replies/<slug>/<reader|judge>/<ReplyKey>.json` (`Recording`: text, tokens, price_nano, measured). ReplyKey hashes the role, the messages and the options. This is the format T3.6b records into. A missing recording fails the call; it never falls back.
+  - With no recordings, `auto` uses deterministic stand-ins: a keyword reader and a judge that only reads stances. They are not Nano or Super. They give a floor for the harness, and their cost is projected at Token Factory rates.
+- Stand-in baseline, before any real replies (credits and grades are from the fixtures):
+  - Roblox at 9: verdict no (agrees). Grades agree 4/6. Decisive quotes found 3/6. 8 credits.
+  - Minecraft at 9: verdict no (want yes_with_settings). Grades agree 0/6. Decisive quotes found 2/5. 7 credits.
+  - Khan Academy Kids at 5: verdict no (want yes). Grades agree 3/6. Decisive quotes found 1/5. 7 credits.
+  - Total: grades agree 7/18. Decisive quotes found 6/16.
 
 ---
 

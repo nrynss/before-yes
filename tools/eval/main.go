@@ -1,0 +1,344 @@
+// Command eval runs the pipeline over the demo titles' fixtures and compares
+// each card with a hand-written expectation under testdata/eval: per area,
+// whether the grade agrees and whether the decisive quotes were found, and
+// per title, the quote drop rate and the cost. It is offline: the App Store
+// and Tavily are served from testdata/titles, and the models are either
+// recorded replies (testdata/eval/replies, from T3.6b) or deterministic
+// stand-ins.
+//
+// Usage, from the repository root:
+//
+//	go run ./tools/eval                  # replay where recorded, else stand-ins
+//	go run ./tools/eval -models standin  # stand-ins only
+//	go run ./tools/eval -models replay   # recorded replies only
+//	go run ./tools/eval -json            # machine-readable
+//
+// The stand-ins are a keyword reader and a judge that reads stances. They
+// are a floor for the harness, not a measure of Nano or Super.
+package main
+
+import (
+	"context"
+	"encoding/json"
+	"flag"
+	"fmt"
+	"io"
+	"os"
+	"path/filepath"
+	"sort"
+	"strings"
+	"text/tabwriter"
+	"time"
+
+	"github.com/nrynss/before-yes/internal/appstore"
+	"github.com/nrynss/before-yes/internal/checklist"
+	"github.com/nrynss/before-yes/internal/finding"
+	"github.com/nrynss/before-yes/internal/pipeline"
+	"github.com/nrynss/before-yes/internal/spend"
+	"github.com/nrynss/before-yes/internal/tavily"
+)
+
+// Quote is one quote that matters, from a review ("R355") or a URL.
+type Quote struct {
+	Source string `json:"source"`
+	Quote  string `json:"quote"`
+}
+
+// AreaWant is a careful parent's reading of one area.
+type AreaWant struct {
+	Area       checklist.Area  `json:"area"`
+	Level      checklist.Level `json:"level"`
+	Setting    string          `json:"setting,omitempty"`
+	Note       string          `json:"note"`
+	Decisive   []Quote         `json:"decisive"`
+	Supporting []Quote         `json:"supporting,omitempty"`
+}
+
+// Expectation is one title and age, written by hand.
+type Expectation struct {
+	Title   string            `json:"title"`
+	Slug    string            `json:"slug"`
+	Age     int               `json:"age"`
+	Verdict checklist.Verdict `json:"verdict"`
+	Areas   []AreaWant        `json:"areas"`
+}
+
+// AreaResult compares one area.
+type AreaResult struct {
+	Area    checklist.Area  `json:"area"`
+	Want    checklist.Level `json:"want"`
+	Got     checklist.Level `json:"got"`
+	Agree   bool            `json:"agree"`
+	Found   []Quote         `json:"found"`
+	Missed  []Quote         `json:"missed"`
+	GotNote string          `json:"got_reason,omitempty"`
+}
+
+// Result compares one title and age.
+type Result struct {
+	Title        string            `json:"title"`
+	Age          int               `json:"age"`
+	Models       string            `json:"models"`
+	WantVerdict  checklist.Verdict `json:"want_verdict"`
+	GotVerdict   checklist.Verdict `json:"got_verdict"`
+	Areas        []AreaResult      `json:"areas"`
+	Agreed       int               `json:"agreed"`
+	DecisiveHit  int               `json:"decisive_found"`
+	DecisiveAll  int               `json:"decisive_total"`
+	Findings     int               `json:"findings"`
+	Drops        finding.Drops     `json:"drops"`
+	DropRate     float64           `json:"drop_rate"`
+	Chunks       int               `json:"chunks"`
+	FailedChunks int               `json:"failed_chunks"`
+	Missing      []string          `json:"missing_kinds"`
+	Credits      int               `json:"tavily_credits"`
+	ReadNano     int64             `json:"read_cost_nano"`
+	JudgeNano    int64             `json:"judge_cost_nano"`
+	Err          string            `json:"error,omitempty"`
+}
+
+func main() {
+	root := flag.String("root", ".", "repository root")
+	models := flag.String("models", "auto", "auto, standin or replay")
+	asJSON := flag.Bool("json", false, "print JSON instead of tables")
+	flag.Parse()
+	results, err := evaluate(*root, *models)
+	if err != nil {
+		fmt.Fprintln(os.Stderr, "eval:", err)
+		os.Exit(1)
+	}
+	if *asJSON {
+		enc := json.NewEncoder(os.Stdout)
+		enc.SetIndent("", "  ")
+		_ = enc.Encode(results)
+	} else {
+		report(os.Stdout, results)
+	}
+	for _, r := range results {
+		if r.Err != "" {
+			os.Exit(1)
+		}
+	}
+}
+
+func loadExpectations(dir string) ([]Expectation, error) {
+	names, err := filepath.Glob(filepath.Join(dir, "*.json"))
+	if err != nil {
+		return nil, err
+	}
+	sort.Strings(names)
+	var out []Expectation
+	for _, n := range names {
+		b, err := os.ReadFile(n)
+		if err != nil {
+			return nil, err
+		}
+		var e Expectation
+		dec := json.NewDecoder(strings.NewReader(string(b)))
+		dec.DisallowUnknownFields()
+		if err := dec.Decode(&e); err != nil {
+			return nil, fmt.Errorf("%s: %w", n, err)
+		}
+		out = append(out, e)
+	}
+	if len(out) == 0 {
+		return nil, fmt.Errorf("no expectations in %s", dir)
+	}
+	return out, nil
+}
+
+func evaluate(root, models string) ([]Result, error) {
+	exps, err := loadExpectations(filepath.Join(root, "testdata", "eval"))
+	if err != nil {
+		return nil, err
+	}
+	var out []Result
+	for _, e := range exps {
+		out = append(out, runOne(root, models, e))
+	}
+	return out, nil
+}
+
+var evalNow = time.Date(2026, 10, 13, 19, 0, 0, 0, time.UTC)
+
+func runOne(root, models string, e Expectation) Result {
+	res := Result{Title: e.Title, Age: e.Age, WantVerdict: e.Verdict}
+	ctx := context.Background()
+	f, srv := serveFixture(filepath.Join(root, "testdata", "titles", e.Slug), e.Title)
+	defer srv.Close()
+
+	tmp, err := os.MkdirTemp("", "before-yes-eval-")
+	if err != nil {
+		res.Err = err.Error()
+		return res
+	}
+	defer os.RemoveAll(tmp)
+	meter, err := spend.Open(ctx, spend.Config{Path: filepath.Join(tmp, "spend.db"), Pools: map[spend.Pool]spend.PoolConfig{
+		spend.PoolModel: {Limit: 1_000_000_000_000}, spend.PoolTavily: {Limit: 1_000_000},
+	}})
+	if err != nil {
+		res.Err = err.Error()
+		return res
+	}
+	defer meter.Close()
+
+	tc := tavily.New(srv.URL, func() (string, error) { return "offline", nil })
+	tc.Retry.PerMinute = 0
+	tc.Retry.Name = ""
+	tc.Retry.Backoff = time.Millisecond
+	tc.Retry.Max = time.Millisecond
+	tc.Retry.Sleep = func(context.Context, time.Duration) error { return nil }
+
+	reader, judge := chatters(root, models, e.Slug)
+	res.Models = reader.Settings().Model + " + " + judge.Settings().Model
+	now := func() time.Time { return evalNow }
+	p := &pipeline.Pipeline{
+		Gatherer: &pipeline.Gatherer{Store: publicFeed{appstore.New(srv.URL, "us"), appstore.New("", "us")}, Search: tc, Meter: meter, Now: now},
+		Reader:   &pipeline.Reader{Model: reader, Meter: meter},
+		Judge:    &pipeline.Judge{Model: judge, Meter: meter},
+		Now:      now,
+	}
+	ev, _, err := p.Collect(ctx, e.Title, "eval-"+e.Slug)
+	if err != nil {
+		res.Err = err.Error()
+		return res
+	}
+	card, err := p.Decide(ctx, ev, e.Age, "eval-"+e.Slug)
+	if err != nil {
+		res.Err = err.Error()
+		return res
+	}
+	if len(f.errs) > 0 {
+		res.Err = "fixture server: " + strings.Join(f.errs, "; ")
+		return res
+	}
+	compare(&res, e, card, ev)
+	return res
+}
+
+// publicFeed keeps review sources on Apple's public host, as a live check
+// cites them, while the reads go to the fixture server.
+type publicFeed struct {
+	*appstore.Client
+	public *appstore.Client
+}
+
+func (s publicFeed) FeedURL(id int64, page int) string { return s.public.FeedURL(id, page) }
+
+func chatters(root, models, slug string) (pipeline.Chatter, pipeline.Chatter) {
+	dir := filepath.Join(root, "testdata", "eval", "replies", slug)
+	recorded := false
+	if st, err := os.Stat(dir); err == nil && st.IsDir() {
+		recorded = true
+	}
+	if models == "replay" || (models == "auto" && recorded) {
+		return &replayer{dir: dir, role: "reader", model: "recorded-reader"}, &replayer{dir: dir, role: "judge", model: "recorded-judge"}
+	}
+	return keywordReader{}, stanceJudge{}
+}
+
+// compare fills res from the card and the evidence. A decisive quote counts
+// as found when a verified finding in its area, from the same review or
+// URL, quotes it or a stretch of it, after normalizing both. The evidence is
+// searched, not only the card, so a quote the reader found but the judge did
+// not cite still counts as found by the reader.
+func compare(res *Result, e Expectation, card pipeline.Card, ev pipeline.Evidence) {
+	res.GotVerdict = card.Verdict
+	got := map[checklist.Area]checklist.Grade{}
+	for _, g := range card.Grades {
+		got[g.Area] = g
+	}
+	for _, w := range e.Areas {
+		g := got[w.Area]
+		ar := AreaResult{Area: w.Area, Want: w.Level, Got: g.Level, Agree: g.Level == w.Level, GotNote: g.Reason, Found: []Quote{}, Missed: []Quote{}}
+		for _, q := range w.Decisive {
+			if foundQuote(ev.Findings, w.Area, q) {
+				ar.Found = append(ar.Found, q)
+			} else {
+				ar.Missed = append(ar.Missed, q)
+			}
+		}
+		if ar.Agree {
+			res.Agreed++
+		}
+		res.DecisiveAll += len(w.Decisive)
+		res.DecisiveHit += len(ar.Found)
+		res.Areas = append(res.Areas, ar)
+	}
+	st := ev.Stats
+	res.Findings = len(ev.Findings)
+	res.Drops = st.Drops
+	dropped := st.Drops.BadArea + st.Drops.BadStance + st.Drops.NoQuote + st.Drops.Unquoted + st.Drops.Duplicates
+	if total := dropped + res.Findings; total > 0 {
+		res.DropRate = float64(dropped) / float64(total)
+	}
+	res.Chunks, res.FailedChunks = st.Chunks, st.FailedChunks
+	res.Missing = st.MissingKinds
+	res.Credits = card.Stats.TavilyCredits
+	res.ReadNano, res.JudgeNano = card.Stats.ReadCostNano, card.Stats.JudgeCostNano
+}
+
+func sameSource(src finding.Source, want string) bool {
+	if strings.HasPrefix(want, "R") && src.Kind == pipeline.KindReview {
+		return fmt.Sprintf("R%d", src.Index) == want
+	}
+	return src.URL == want
+}
+
+func foundQuote(fs []finding.Finding, area checklist.Area, q Quote) bool {
+	want := finding.Normalize(q.Quote)
+	for _, f := range fs {
+		if f.Area != area || !sameSource(f.Source, q.Source) {
+			continue
+		}
+		got := finding.Normalize(f.Quote)
+		if strings.Contains(got, want) || (len(got) >= finding.MinQuote && strings.Contains(want, got)) {
+			return true
+		}
+	}
+	return false
+}
+
+func report(w io.Writer, rs []Result) {
+	tw := tabwriter.NewWriter(w, 0, 0, 2, ' ', 0)
+	totalAgree, totalAreas, totalHit, totalDec := 0, 0, 0, 0
+	for _, r := range rs {
+		fmt.Fprintf(tw, "\n%s, age %d (%s)\n", r.Title, r.Age, r.Models)
+		if r.Err != "" {
+			fmt.Fprintf(tw, "  ERROR: %s\n", r.Err)
+			continue
+		}
+		fmt.Fprintf(tw, "  verdict\twant %s\tgot %s\t%s\n", r.WantVerdict, r.GotVerdict, mark(r.WantVerdict == r.GotVerdict))
+		fmt.Fprintln(tw, "  area\twant\tgot\tagree\tdecisive found\tmissed")
+		for _, a := range r.Areas {
+			fmt.Fprintf(tw, "  %s\t%s\t%s\t%s\t%d/%d\t%s\n", a.Area, a.Want, a.Got, mark(a.Agree), len(a.Found), len(a.Found)+len(a.Missed), missedList(a.Missed))
+		}
+		fmt.Fprintf(tw, "  grades agree %d/%d; decisive quotes found %d/%d\n", r.Agreed, len(r.Areas), r.DecisiveHit, r.DecisiveAll)
+		fmt.Fprintf(tw, "  findings %d; dropped %d (rate %.1f%%: bad_area %d, bad_stance %d, no_quote %d, unquoted %d, duplicates %d)\n",
+			r.Findings, r.Drops.BadArea+r.Drops.BadStance+r.Drops.NoQuote+r.Drops.Unquoted+r.Drops.Duplicates, 100*r.DropRate,
+			r.Drops.BadArea, r.Drops.BadStance, r.Drops.NoQuote, r.Drops.Unquoted, r.Drops.Duplicates)
+		fmt.Fprintf(tw, "  chunks %d (failed %d); missing sources %v\n", r.Chunks, r.FailedChunks, r.Missing)
+		fmt.Fprintf(tw, "  cost: Tavily %d credits; read $%.6f; judge $%.6f\n", r.Credits, float64(r.ReadNano)/1e9, float64(r.JudgeNano)/1e9)
+		totalAgree += r.Agreed
+		totalAreas += len(r.Areas)
+		totalHit += r.DecisiveHit
+		totalDec += r.DecisiveAll
+	}
+	fmt.Fprintf(tw, "\nTOTAL grades agree %d/%d; decisive quotes found %d/%d\n", totalAgree, totalAreas, totalHit, totalDec)
+	_ = tw.Flush()
+}
+
+func mark(ok bool) string {
+	if ok {
+		return "yes"
+	}
+	return "NO"
+}
+
+func missedList(qs []Quote) string {
+	var s []string
+	for _, q := range qs {
+		s = append(s, q.Source)
+	}
+	return strings.Join(s, ", ")
+}

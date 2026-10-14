@@ -1,0 +1,30 @@
+{
+  "title": "Minecraft",
+  "slug": "minecraft",
+  "age": 9,
+  "verdict": "yes_with_settings",
+  "areas": [
+    {"area": "contact", "level": "ok_with_setting",
+     "setting": "Child account: multiplayer off or friends only, chat limited",
+     "note": "Multiplayer chat exists; a child account starts with multiplayer off and lets a parent choose who can talk to the child.",
+     "decisive": [
+       {"source": "https://www.esrb.org/blog/what-parents-need-to-know-about-minecraft", "quote": "offer child accounts that empower parents to manage and monitor gameplay, multiplayer access, chat settings, and friend requests"},
+       {"source": "https://virtual-addiction.com/online-safety/minecraft", "quote": "On a child account, multiplayer starts off, and you choose whether others can communicate with your child"}
+     ]},
+    {"area": "money", "level": "ok",
+     "note": "Paid up front; reviewers report no ads.",
+     "decisive": [{"source": "R127", "quote": "there is no ads to interrupt me and I can get friends"}]},
+    {"area": "data", "level": "unknown",
+     "note": "No privacy policy text was read.",
+     "decisive": []},
+    {"area": "age_gating", "level": "ok",
+     "note": "Child accounts start with multiplayer off.",
+     "decisive": [{"source": "https://virtual-addiction.com/online-safety/minecraft", "quote": "On a child account, multiplayer starts off, and you choose whether others can communicate with your child"}]},
+    {"area": "content", "level": "ok",
+     "note": "Mild, cartoon combat only.",
+     "decisive": [{"source": "https://www.minecraft.net/en-us/article/parents--guide-minecraft", "quote": "Because combat is part of the game, there are some elements of mild violence."}]},
+    {"area": "developer_record", "level": "unknown",
+     "note": "The news hits are about Epic Games, not Mojang or Microsoft.",
+     "decisive": []}
+  ]
+}
