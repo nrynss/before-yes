@@ -89,7 +89,7 @@ requires:   T2.2, T0.3
 fixture-ok: no
 size:       XS · mid
 owns:       internal/tavily/live_test.go
-status:     claimed:impl-t2.2b
+status:     in-review
 ```
 One search and one extract against the live API. Record whether `usage.credits` comes back, and whether `include_raw_content` on search costs extra.
 
