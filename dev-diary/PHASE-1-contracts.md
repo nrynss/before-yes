@@ -160,6 +160,12 @@ The parser accepts a JSON object with a `findings` array, a bare array, or eithe
 |---|---|---|
 | M1 | `Normalize` drops every invisible format character (Unicode Cf: soft hyphen U+00AD, U+200B–U+200D, U+2060, BOM U+FEFF and the rest of the category) on both sides. "safe for young kids" no longer verifies in "un\u00adsafe" or "un\u200bsafe", and quoting "unsafe" now matches a source that hides a soft hyphen inside the word. | `TestWordBoundaryTable` (round-4 rows), `TestNormalizeRound4` |
 | L1 | More dash forms fold to `-`: U+2043, U+FE58, U+FE63, U+FF0D, U+2E3A and U+2E3B, beside the existing U+2010–U+2015 and U+2212. A run of hyphens collapses to one, so "un--safe" joins like "un-safe". A spaced "--" between words is still a boundary. | same |
+
+**Remediation, round 5** ([review](adversarial-review/t1.2-round5.md)).
+
+| Finding | Fix | Test |
+|---|---|---|
+| L | Every character in Unicode's Pd (dash punctuation) category now folds to `-`. That covers U+058A, U+1806, U+2E17, U+30A0, U+FE31, U+FE32, U+2E40 and the rest. The hyphenation point U+2027 (category Po) is added explicitly, beside U+2043 and the minus sign. | `TestNormalizeAllDashes` (every Pd rune), `TestWordBoundaryTable` rows |
 ---
 
 ### T1.3: Evidence and card payloads ★
