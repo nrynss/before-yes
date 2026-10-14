@@ -244,7 +244,7 @@ requires:   T2.4
 fixture-ok: yes
 size:       S · frontier
 owns:       docs/budget.md
-status:     in-review
+status:     done
 ```
 Note: every ceiling is decided in `docs/budget.md`. The model cost per check is measured from T3.6b's live run; the Tavily figure (7 to 8 credits) is fixture-measured, not live.
 Decide and document the ceilings, from the brief's arithmetic and T3.6b's measured cost per title:

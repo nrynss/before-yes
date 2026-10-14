@@ -180,7 +180,7 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 |---|---|---|
 | P0 | 9 / 9 | Done. Two exit criteria wait on later tasks: a live Nano call (T2.1b) and the config check (T4.4). CI is green. |
 | P1 | 4 / 4 | Done. The `job.Failure` exit criterion waits on T4.1. The main-checkout pins and `.env` leak check, waived at landing, ran at the P1–P2 integration and passed. |
-| P2 | 11 / 12 | T2.1, T2.1a, T2.1b, T2.1c, T2.1d, T2.2, T2.2b, T2.3, T2.3b, T2.4 and T2.4b are done. T2.5 is landed but blocked on T3.6b, the live quality pass, for the measured cost per check. |
+| P2 | 12 / 12 | Done. All six exit criteria are met. Measured model cost is $0.0309 per check. Tavily is 7–8 credits per check, from fixtures, not a live run. |
 | P3 | 7 / 11 | T3.1, T3.2, T3.3, T3.4, T3.6, T3.6b and T3.8a are done. T3.6b's live run put all three demo titles at **no**, mostly on judge flags with no verified quote, so T3.9 makes every grade cite one. T3.8, then T3.7, then T3.5 are with Grok. |
 | P4 | 0 / 5 | Not started. T4.1, T4.2 and T4.4 drafted. |
 | P5 | 0 / 7 | Not started. |
@@ -192,6 +192,15 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 
 Newest first. One entry per closed task, finding, or split.
 
+- **T2.5 closed; P2 done.** Haiku implemented it, and the orchestrator validated it with no review loop.
+  - **What changed:** `docs/budget.md` uses T3.6b's measured figures. Model cost per check is $0.030861, the mean of Roblox $0.031991, Minecraft $0.040029 and Khan $0.020564, re-summed from the 109 recorded replies.
+    - The $20 ceiling covers 648 checks, and the $5 reserve covers 162.
+    - Tavily's 900 credits cover 112–128 checks a month, at 7–8 credits each. That figure is the pipeline's plan replayed on fixtures, not a live run.
+  - **No ceiling changed:** $20, 900 Tavily credits a month, and 5 fresh checks per UTC day. 5 × 15 × 8 = 600, within 900. At Minecraft's cost ($0.040) the model covers 499 checks.
+  - **Corrected:** the judge's totals already include the conflict pass, so the formula no longer adds it twice. T3.9's re-measure formula is in the doc.
+  - **Validation:**
+    - The arithmetic was re-checked.
+    - The diff stays inside owns. Gate rc 0 in the worktree and on main. No key values found. No dates.
 - **T3.6b closed; finding T3.9 filed.** Haiku implemented it, and the orchestrator validated it with no review loop.
   - **What landed:**
     - `go run ./tools/eval -models live` runs every reader and judge call on a real host. It has a spend cap, a ledger outside the repository, and a dry run. It never runs in the gate.
