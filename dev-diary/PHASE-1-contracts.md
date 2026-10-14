@@ -52,7 +52,7 @@ requires:   T1.1
 fixture-ok: yes
 size:       M · frontier
 owns:       internal/finding/
-status:     drafted
+status:     in-review
 ```
 A finding is one claim: `area`, `claim`, `stance` (`risk`, `mitigation`, `neutral`), a verbatim `quote`, and a `source` (url, kind, title, review index, fetched at). It gets a stable id: a hash of source URL, area and normalized quote, so the same quote keeps its id across runs and duplicates collapse.
 
@@ -66,6 +66,13 @@ The parser accepts a JSON object with a `findings` array, a bare array, or eithe
 
 **Done when:** Tests prove a faithful quote with curly apostrophes verifies, a quote with one word changed does not, an invented quote is counted as unquoted, and the same quote from the same source gets the same id.
 
+
+**Implementation notes (in review).** Written fresh; the scratch draft was not reachable.
+- `Verify(raws, segments)` keys segments by ref (`R312`, `D3`) and matches the normalized quote against the segment's whole text. A ref that names no segment counts as `unquoted`.
+- Drops: `bad_area`, `bad_stance`, `no_quote` (empty or under 12 normalized runes), `unquoted`. Duplicates are counted separately in `Drops.Duplicates`, not as drops.
+- **Id choice:** every App Store review shares one feed URL, so the id key is the URL plus `#<review index>` when the index is set. Without that, the same sentence in two reviews would collapse into one finding. Ids are `f_` plus 16 hex characters of SHA-256.
+- Normalization maps the ellipsis character to `...`, typographic single and double quotes to ASCII, the dash family to `-`, collapses whitespace and lowercases. Nothing else.
+- `Cited(findings)` gives `checklist.Enforce` its evidence map.
 ---
 
 ### T1.3: Evidence and card payloads ★
