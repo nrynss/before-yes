@@ -539,6 +539,81 @@ func TestOffProductClassifier(t *testing.T) {
 	}
 }
 
+// cannedSearch answers each plan query from a fixed hit list, so a test can
+// shape one kind's results without a capture. Everything the gatherer asks
+// to extract comes back unread.
+type cannedSearch struct {
+	title   string
+	results map[string][]tavily.Result
+}
+
+func (c *cannedSearch) Search(_ context.Context, s tavily.Search) ([]tavily.Result, tavily.Credits, error) {
+	for _, q := range Plan(c.title, "") {
+		if q.Search.Query == s.Query {
+			return c.results[q.Name], tavily.Credits{Used: 1, Reported: true}, nil
+		}
+	}
+	return nil, tavily.Credits{}, nil
+}
+
+func (c *cannedSearch) ExtractWithFailures(_ context.Context, urls []string) (tavily.Extracted, error) {
+	failed := make([]tavily.Failed, len(urls))
+	for i, u := range urls {
+		failed[i] = tavily.Failed{URL: u, Error: "not served"}
+	}
+	return tavily.Extracted{Failed: failed}, nil
+}
+
+// TestOffProductDroppedKindGoesMissing pins the branch that turns a kind
+// whose every page was a sibling's into a missing source (T3.10, fault 2;
+// round-1 review L2). The Khan capture's App Store search supplies the
+// sibling, a canned search answers the two Reddit queries and the forum
+// query with sibling-only hits, and after the drop both kinds are missing
+// with the note, the hits counted in OffProduct.
+func TestOffProductDroppedKindGoesMissing(t *testing.T) {
+	d := demos[2] // Khan Academy Kids, whose sibling Khan Academy shares the seller
+	f, srv := newFixture(t, d)
+	store, _ := fixtureClients(t, srv)
+	m := openTestMeter(t)
+	search := &cannedSearch{
+		title: d.title,
+		results: map[string][]tavily.Result{
+			"reddit-parents": {{
+				URL:     "https://www.reddit.com/r/videos/comments/got5ih/khan_academy_is_struggling_with_rising_demand",
+				Title:   "Khan Academy is struggling with rising demand",
+				Content: "Khan Academy is struggling to keep up with the rising demand for its free courses.",
+			}},
+			"forum": {{
+				URL:     "https://www.internetmatters.org/advice/apps-and-platforms/skills-building/khan-academy",
+				Title:   "What is Khan Academy? Safety guide for parents",
+				Content: "Khan Academy offers free online lessons for learners of every age.",
+			}},
+		},
+	}
+	_ = f
+	g := &Gatherer{Store: store, Search: search, Meter: m, Now: func() time.Time { return fixedNow }}
+	got, err := g.Gather(context.Background(), d.title, "check-khan-canned")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got.OffProduct != 2 {
+		t.Errorf("OffProduct = %d, want 2 (one reddit hit, one forum hit)", got.OffProduct)
+	}
+	kinds := countKinds(got.Docs)
+	if kinds[KindReddit] != 0 || kinds[KindForum] != 0 {
+		t.Errorf("sibling-only kinds kept docs: reddit %d, forum %d", kinds[KindReddit], kinds[KindForum])
+	}
+	for _, kind := range []string{KindReddit, KindForum} {
+		if !contains(got.Missing, kind) {
+			t.Errorf("%s is not missing: %v", kind, got.Missing)
+		}
+		want := "every " + kind + " page was about another product of the same developer"
+		if !contains(got.Notes, want) {
+			t.Errorf("note %q not recorded: %v", want, got.Notes)
+		}
+	}
+}
+
 // TestGatherReviewSource checks a review document carries its index and its
 // feed page on Apple's public host.
 func TestGatherReviewSource(t *testing.T) {

@@ -792,7 +792,15 @@ func namesProduct(subject, product []string, rawURL, host string) bool {
 // its store page are never dropped, and nothing is dropped for a title with
 // no matched listing or no sibling beside it: for Roblox the brand is the
 // product, so any page naming the brand names the product and the filter
-// drops nothing. The input is not modified.
+// drops nothing.
+//
+// Limitation (T3.10 round-1 review, L1): a sibling whose name extends the
+// product's, "Minecraft Education" beside "Minecraft", can never be dropped.
+// Any subject naming the sibling also names the product's word run, and
+// namesProduct is checked first, so the page is kept before the sibling rule
+// runs. The sibling rule catches sibling-named pages only when the product's
+// name is absent from them ("Khan Academy" pages beside "Khan Academy
+// Kids"). The input is not modified.
 func offProduct(apps []appstore.App, picked *appstore.App, host string, docs []Doc) ([]Doc, int) {
 	if picked == nil || strings.TrimSpace(picked.Seller) == "" {
 		return docs, 0
