@@ -485,33 +485,74 @@ func TestAboutIgnoresQuery(t *testing.T) {
 }
 
 func TestErrorPage(t *testing.T) {
-	cases := map[string]bool{
-		"": true,
-		"Oops! Looks like that page doesn't exist. Go home.": true,
-		"404 Not Found":                       true,
-		"Page not found\nTry the search box.": true,
-		"Privacy Policy\nWe collect your name and email to run the service.":                                                                                false,
-		"Privacy Policy\nWe keep your data safe. If a page does not exist we show a notice, and nothing about you is logged when that happens on our site.": false,
-		"My kid tried to open the store and the page does not exist anymore, so we stopped buying things in the game.":                                      false,
-		"Privacy Policy\n" + strings.Repeat("We keep data safe. ", 400) + "page not found":                                                                  false,
+	type page struct{ title, text string }
+	cases := map[page]bool{
+		{"", ""}: true,
+		{"", "Oops! Looks like that page doesn't exist. Go home."}: true,
+		{"", "404 Not Found"}:                                                 true,
+		{"", "Page not found\nTry the search box."}:                           true,
+		{"Page Not Found | Common Sense Media", "Skip to main content\nMenu"}: true,
+		{"", strings.Repeat("Menu item\n", 300) + "Oops! Looks like that page doesn’t exist.\nLet's help you find it."}:                                           true,
+		{"Privacy Policy", "Privacy Policy\nWe collect your name and email to run the service."}:                                                                  false,
+		{"", "Privacy Policy\nWe keep your data safe. If a page does not exist we show a notice, and nothing about you is logged when that happens on our site."}: false,
+		{"", "My kid tried to open the store and the page does not exist anymore, so we stopped buying things in the game."}:                                      false,
+		{"", "I got page not found when I clicked the link"}:                                                                                                      false,
+		{"Privacy Policy", "Privacy Policy\n" + strings.Repeat("We keep data safe. ", 400) + "page not found"}:                                                    false,
+		{"Why I get 404 error pages - Reddit", "Our site shows a 404 error when you log out."}:                                                                    false,
 	}
 	for in, want := range cases {
-		if got := errorPage(in); got != want {
-			t.Errorf("errorPage(%.40q) = %v, want %v", in, got, want)
+		if got := errorPage(in.title, in.text); got != want {
+			t.Errorf("errorPage(%q, %.40q) = %v, want %v", in.title, in.text, got, want)
 		}
+	}
+}
+
+// The T0.4b captures: four Common Sense not-found pages Tavily read as
+// successes, each opening with ~2400 characters of navigation. Every one
+// must be caught, by its title and by its text alone.
+func TestErrorPageOnCapturedNotFound(t *testing.T) {
+	n := 0
+	for _, slug := range []string{"roblox", "minecraft"} {
+		b, err := os.ReadFile(filepath.Join("..", "..", "testdata", "titles", slug, "tavily-extract-csm-advanced.json"))
+		if err != nil {
+			t.Fatal(err)
+		}
+		var ex struct {
+			Results []tavily.Page `json:"results"`
+		}
+		if err := json.Unmarshal(b, &ex); err != nil {
+			t.Fatal(err)
+		}
+		for _, p := range ex.Results {
+			n++
+			if len(p.RawContent) < 5000 || !strings.Contains(p.RawContent, "Looks like that page doesn't exist") {
+				t.Fatalf("%s: not the captured 404 shape", p.URL)
+			}
+			if !errorPage(p.Title, p.RawContent) || !errorPage("", p.RawContent) {
+				t.Errorf("captured 404 read as a document: %s (%d chars)", p.URL, len(p.RawContent))
+			}
+		}
+	}
+	if n != 4 {
+		t.Errorf("%d captured pages, want 4", n)
 	}
 }
 
 // stubSearch serves one homepage hit per policy and terms search, and an
 // extract that reads the homepage and the links named on it.
 type stubSearch struct {
+	home     string // the policy and terms searches' one hit; khankids.org when empty
 	pages    map[string]string
 	extracts [][]string
 }
 
 func (s *stubSearch) Search(_ context.Context, q tavily.Search) ([]tavily.Result, tavily.Credits, error) {
 	if strings.HasSuffix(q.Query, "privacy policy") || strings.HasSuffix(q.Query, "terms of service") {
-		return []tavily.Result{{URL: "https://www.khankids.org", Title: "Khan Academy Kids"}}, tavily.Credits{Used: 1, Reported: true}, nil
+		home := s.home
+		if home == "" {
+			home = "https://www.khankids.org"
+		}
+		return []tavily.Result{{URL: home, Title: "Khan Academy Kids"}}, tavily.Credits{Used: 1, Reported: true}, nil
 	}
 	return nil, tavily.Credits{Used: 1, Reported: true}, nil
 }
@@ -612,5 +653,78 @@ func TestPlanCredits(t *testing.T) {
 func TestGatherNeedsMeter(t *testing.T) {
 	if _, err := (&Gatherer{}).Gather(context.Background(), "Roblox", "x"); err == nil {
 		t.Error("Gather without a meter did not fail")
+	}
+}
+
+// With no official host, a homepage the policy search turns up belongs to
+// whoever runs it. Common Sense's homepage links its own privacy policy,
+// which must never be read as Khan Academy Kids'.
+func TestGatherNoHostFollowsNoLinks(t *testing.T) {
+	s := &stubSearch{home: "https://www.commonsensemedia.org", pages: map[string]string{
+		"https://www.commonsensemedia.org":                                     "Common Sense Media\nPrivacy: https://www.commonsensemedia.org/about-us/our-mission/privacy-policy",
+		"https://www.commonsensemedia.org/about-us/our-mission/privacy-policy": "Privacy Policy\nCommon Sense collects your email.",
+	}}
+	g := &Gatherer{Store: stubStore{}, Search: s, Meter: openTestMeter(t)}
+	got, err := g.Gather(context.Background(), "Khan Academy Kids", "c")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got.Host != "" {
+		t.Fatalf("host = %q", got.Host)
+	}
+	if len(s.extracts) != 0 {
+		t.Errorf("extracts = %v, want none", s.extracts)
+	}
+	if u := docURLs(got.Docs, KindPolicy); len(u) != 0 {
+		t.Errorf("a third party's policy was read as the title's: %v", u)
+	}
+	if !contains(got.Missing, KindPolicy) || !strings.Contains(strings.Join(got.Notes, "\n"), "no official host known") {
+		t.Errorf("missing %v notes %q", got.Missing, got.Notes)
+	}
+	if l := pageLinks("https://www.commonsensemedia.org/privacy-policy", "", KindPolicy); l != nil {
+		t.Errorf("pageLinks with no host = %v", l)
+	}
+	if l := pageLinks("https://www.khankids.org/privacy https://evil.example/privacy https://help.khankids.org/privacy", "khankids.org", KindPolicy); len(l) != 2 {
+		t.Errorf("pageLinks on host = %v", l)
+	}
+}
+
+// A developer named for only the title's first word is not the title's.
+func TestHostFromHitsNeedsMoreThanFirstWord(t *testing.T) {
+	hits := []tavily.Result{{URL: "https://toca.xyz/privacy"}}
+	apps := []appstore.App{{Name: "Toca Fake Hair", Seller: "Toca Ltd", SellerURL: "https://toca.xyz"}}
+	if h, a := hostFromHits(hits, apps, nil, "Toca Boca World"); h != "" || a != nil {
+		t.Errorf("toca.xyz accepted: %q %v", h, a)
+	}
+	// The full title, or the developer's full name, still passes.
+	apps[0].Name = "Toca Boca World"
+	apps[0].Seller = "Toca AB"
+	if h, _ := hostFromHits(hits, apps, nil, "Toca Boca World"); h != "toca.xyz" {
+		t.Errorf("full title match refused: %q", h)
+	}
+}
+
+// The public suffix list decides the registrable domain, and a shared
+// platform is never an official host.
+func TestOfficialDomain(t *testing.T) {
+	for in, want := range map[string][2]string{
+		"https://www.tocaboca.com.au/x":        {"tocaboca.com.au", "tocaboca.com.au"},
+		"https://help.minecraft.net/privacy":   {"minecraft.net", "minecraft.net"},
+		"https://www.bbc.co.uk/":               {"bbc.co.uk", "bbc.co.uk"},
+		"https://foo.github.io/privacy":        {"foo.github.io", ""},
+		"https://www.facebook.com/tocaboca":    {"facebook.com", ""},
+		"https://apps.apple.com/us/app/id1":    {"apple.com", ""},
+		"https://someone.blogspot.com/":        {"someone.blogspot.com", ""},
+		"https://sites.google.com/view/a-game": {"google.com", ""},
+		"not a url":                            {"", ""},
+	} {
+		if r, o := registrable(in), officialDomain(in); r != want[0] || o != want[1] {
+			t.Errorf("%s: registrable %q official %q, want %q %q", in, r, o, want[0], want[1])
+		}
+	}
+	hits := []tavily.Result{{URL: "https://foo.github.io/privacy"}}
+	apps := []appstore.App{{Name: "Foo", Seller: "Foo", SellerURL: "https://foo.github.io"}}
+	if h, _ := hostFromHits(hits, apps, nil, "Foo"); h != "" {
+		t.Errorf("a github.io page was taken as official: %q", h)
 	}
 }

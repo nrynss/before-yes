@@ -51,6 +51,43 @@ type Settings struct {
 	Extra map[string]any `toml:"extra"`
 }
 
+// Timeouts sets how long one call may wait for its reply. The deadline is
+// scaled to the call's max tokens, because a thinking call that writes 16,000
+// tokens runs far longer than a short label. For a call with n max tokens:
+//
+//	deadline = clamp(Slack + n / MinTokensPerSecond, Floor, Ceiling)
+//
+// MinTokensPerSecond is a rate below the slowest measured output rate of any
+// host, so a call at its cap is not cut while the host is still writing it.
+// Slack covers queueing and the prompt. Floor keeps a short call from getting
+// a deadline that a slow first byte could miss. Ceiling bounds a call whose
+// max tokens are set very high.
+type Timeouts struct {
+	Floor              time.Duration
+	Ceiling            time.Duration
+	Slack              time.Duration
+	MinTokensPerSecond float64
+}
+
+// DefaultTimeouts are the production bounds. The slowest measured rate is 35
+// tokens a second (OpenRouter's free judge, T2.1b), so 30 leaves margin. The
+// measurements are in dev-diary/PHASE-2-clients.md under T2.1c.
+var DefaultTimeouts = Timeouts{
+	Floor:              90 * time.Second,
+	Ceiling:            15 * time.Minute,
+	Slack:              60 * time.Second,
+	MinTokensPerSecond: 30,
+}
+
+// For returns the deadline for a call that may write maxTokens tokens.
+func (t Timeouts) For(maxTokens int) time.Duration {
+	if maxTokens < 0 {
+		maxTokens = 0
+	}
+	d := t.Slack + time.Duration(float64(maxTokens)/t.MinTokensPerSecond*float64(time.Second))
+	return min(max(d, t.Floor), t.Ceiling)
+}
+
 // Client calls one model.
 type Client struct {
 	s    Settings
@@ -58,7 +95,14 @@ type Client struct {
 	http *http.Client
 	// Retry tunes the attempts. Tests shorten it.
 	Retry throttle.Config
+	// Timeouts sets the per-call deadline. Tests shorten it.
+	Timeouts Timeouts
 }
+
+// errTimeout marks a call that got no reply before its deadline. The host may
+// have billed the tokens it wrote before the deadline, so Chat prices such a
+// call at the estimate and never at zero.
+var errTimeout = errors.New("model: no reply before the call's deadline")
 
 // New returns a client for s. key is read on every call, so a rotated secret
 // takes effect without a restart. A nil key reads as no key at all.
@@ -79,9 +123,12 @@ func New(s Settings, key func() (string, error)) (*Client, error) {
 		key = func() (string, error) { return "", nil }
 	}
 	return &Client{
-		s:    s,
-		key:  key,
-		http: &http.Client{Timeout: 3 * time.Minute},
+		s:   s,
+		key: key,
+		// No client-wide timeout: each attempt gets the deadline its call's
+		// max tokens earn, set in post.
+		http:     &http.Client{},
+		Timeouts: DefaultTimeouts,
 		Retry: throttle.Config{
 			// A rate-limit refusal is usually free, so it gets the larger
 			// budget. A 5xx may have been billed already, so it gets the
@@ -211,6 +258,12 @@ func retryAfter(err error) (time.Duration, bool) {
 var errPermanent = errors.New("model: permanent")
 
 // Chat sends msgs and returns the reply.
+//
+// The call's wait is bounded by Timeouts.For(max tokens). A call that gets no
+// reply before that deadline returns errTimeout (it matches
+// context.DeadlineExceeded) with an unmeasured Reply priced at the estimate.
+// The host may have billed the tokens it wrote, so a caller that settles on
+// error must book that price, not zero.
 func (c *Client) Chat(ctx context.Context, msgs []Message, o Options) (Reply, error) {
 	body := map[string]any{
 		"model":       c.s.Model,
@@ -238,12 +291,17 @@ func (c *Client) Chat(ctx context.Context, msgs []Message, o Options) (Reply, er
 		return Reply{}, err
 	}
 	estimate := c.Estimate(msgs, o)
+	maxTokens := c.s.MaxTokens
+	if o.MaxTokens > 0 {
+		maxTokens = o.MaxTokens
+	}
+	deadline := c.Timeouts.For(maxTokens)
 	cfg := c.Retry
 	cfg.Transient = transient
 	cfg.RetryAfter = retryAfter
 	var reply Reply
 	err = throttle.Retry(ctx, cfg, Retryable, func() error {
-		r, err := c.post(ctx, payload)
+		r, err := c.post(ctx, payload, deadline)
 		if err != nil {
 			return err
 		}
@@ -257,6 +315,14 @@ func (c *Client) Chat(ctx context.Context, msgs []Message, o Options) (Reply, er
 		return nil
 	})
 	if err != nil {
+		if errors.Is(err, errTimeout) {
+			// No reply came back, so there is no usage to price. The host
+			// may still have billed the tokens it wrote before the
+			// deadline, so the call is settled at the estimate it was
+			// reserved at, unmeasured, and the error still reports the
+			// timeout. A caller that settles on error must book this price.
+			return Reply{Price: estimate}, err
+		}
 		// Annotate a rate limit that spent its budget, so a log can tell
 		// it from one that was never retried. A host fault drew on the
 		// smaller budget, which Note does not know about, so it is
@@ -298,12 +364,16 @@ func nanosPerToken(perM float64) int64 {
 	return int64(math.Round(perM * 1e3))
 }
 
-func (c *Client) post(ctx context.Context, payload []byte) (Reply, error) {
+// post makes one attempt. The attempt's deadline is d, and it ends early if
+// ctx does.
+func (c *Client) post(ctx context.Context, payload []byte, d time.Duration) (Reply, error) {
 	key, err := c.key()
 	if err != nil {
 		return Reply{}, fmt.Errorf("%w: key: %v", errPermanent, err)
 	}
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost,
+	call, cancel := context.WithTimeout(ctx, d)
+	defer cancel()
+	req, err := http.NewRequestWithContext(call, http.MethodPost,
 		strings.TrimRight(c.s.BaseURL, "/")+"/chat/completions", bytes.NewReader(payload))
 	if err != nil {
 		return Reply{}, fmt.Errorf("%w: %v", errPermanent, err)
@@ -314,12 +384,12 @@ func (c *Client) post(ctx context.Context, payload []byte) (Reply, error) {
 	}
 	resp, err := c.http.Do(req)
 	if err != nil {
-		return Reply{}, err
+		return Reply{}, deadlined(ctx, call, d, err)
 	}
 	defer resp.Body.Close()
 	raw, err := io.ReadAll(io.LimitReader(resp.Body, 8<<20))
 	if err != nil {
-		return Reply{}, err
+		return Reply{}, deadlined(ctx, call, d, err)
 	}
 	if resp.StatusCode/100 != 2 {
 		return Reply{}, &Error{
@@ -388,6 +458,18 @@ type usage struct {
 func (u *usage) usable() bool {
 	return u != nil && u.PromptTokens >= 0 && u.CompletionTokens >= 0 &&
 		(u.PromptTokens > 0 || u.CompletionTokens > 0)
+}
+
+// deadlined reports a failure caused by the attempt's own deadline as
+// errTimeout. It wraps context.DeadlineExceeded too, so Retryable does not
+// retry it: the host may still be writing the reply, and a second call would
+// bill twice. A failure from the caller's own context, or from anywhere else,
+// is returned as it came.
+func deadlined(ctx, call context.Context, d time.Duration, err error) error {
+	if ctx.Err() == nil && errors.Is(call.Err(), context.DeadlineExceeded) {
+		return fmt.Errorf("%w after %v: %w", errTimeout, d, context.DeadlineExceeded)
+	}
+	return err
 }
 
 func parseRetryAfter(v string) time.Duration {

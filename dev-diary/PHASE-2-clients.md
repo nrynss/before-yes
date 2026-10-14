@@ -81,13 +81,42 @@ requires:   T2.1
 fixture-ok: yes
 size:       S · mid
 owns:       internal/model/model.go, internal/model/model_test.go
-status:     not-started
+status:     done
 ```
 Split from T2.1b's round-1 review (M3). The client's HTTP timeout is a fixed 3 minutes. Measured output rates vary between runs: about 65 to 90 tokens a second for Token Factory Nano, about 150 for Token Factory Super, and about 35 to 43 for OpenRouter's free judge (T2.1b, both review rounds). So a 16,000-token thinking call takes about 180 s to 245 s on Nano, which is at or past the timeout, and about 375 s to 450 s on OpenRouter, which is past it. Re-measure before choosing the floor and ceiling. The judge's conflict pass (T3.3) asks for 16,000 tokens with thinking on.
 
 Make the per-call deadline scale with the call's `max_tokens`, or make it a setting per role, with a floor and a ceiling. A timed-out call must still never book at $0, keeping T2.1's unmeasured-reply rule.
 
-**Done when:** A test shows a large `max_tokens` call is not cut at 3 minutes and a small one keeps a short deadline. The setting, if there is one, is in `before-yes.toml.example`.
+**Chosen design:** the deadline is derived from the call's `max_tokens`, with no new setting. `deadline = clamp(60 s + max_tokens / 30 tokens-a-second, 90 s, 15 min)`. The per-role `max_tokens` already says how long a call may run, so a second setting would only drift from it. The 30 tokens a second sits below the slowest rate measured, 35.
+
+**Measured:** a live run at T2.1c, four calls with `max_tokens` 4000 and thinking on, 16,000 tokens in all, about $0.006 spent. Rate is output tokens over wall-clock seconds.
+- Token Factory Nano, two calls: 4000 tokens in 59.0 s and 59.1 s, about 68 tokens a second.
+- Token Factory Super, one call: 4000 tokens in 25.7 s, about 156 tokens a second.
+- OpenRouter free judge, one call: 4000 tokens in 43.8 s, about 91 tokens a second. This is faster than the 35 to 43 that T2.1b measured, so the rate moves about 2.5 times between runs.
+
+**Arithmetic:** a 16,000-token call on Nano at 68 tokens a second takes about 236 s, which the old 180 s cut. Its new deadline is 60 + 16,000 / 30 = 593 s. On the slowest measured judge rate, 35 tokens a second, it takes about 457 s, still inside 593 s. A 100-token call gets 60 + 3 = 63 s, which the 90 s floor raises to 90 s. A 4096-token call gets 60 + 137 = 197 s. Calls at or above 25,200 tokens hit the 15-minute ceiling.
+
+**Timed-out calls:** a call that gets no reply before its deadline returns an error that matches `context.DeadlineExceeded`, is not retried, and returns an unmeasured `Reply` priced at the estimate it was reserved at. The meter in `internal/spend` books nothing on a work error, so the caller must book that price.
+
+**Done when:** A test shows a large `max_tokens` call is not cut at 3 minutes and a small one keeps a short deadline. The setting, if there is one, is in `before-yes.toml.example`. Met: `TestDeadlineScalesWithMaxTokens` and `TestLargeCallIsNotCutWhileSmallOneIs` in `internal/model/model_test.go`, and no setting was added, so `before-yes.toml.example` is unchanged. A timed-out call is covered by `TestTimedOutCallIsPricedAtEstimateNotZero`.
+
+---
+
+### T2.1d: Live probe uses the scaled deadline
+```yaml
+requires:   T2.1c
+fixture-ok: yes
+size:       XS · light
+owns:       internal/model/live_test.go
+status:     done
+```
+Split from T2.1c. The live probe builds its own client with `http.Client{Timeout: 3 * time.Minute}`. Today's probe asks for at most 512 tokens, so the fixed timeout is harmless. A probe of a 16,000-token thinking call would be cut, though, while the production client would let it finish.
+
+Drop the fixed client timeout. Give each probe request the deadline that `model.DefaultTimeouts.For` gives for that request's `max_tokens`, so the probe and the client share one rule. Keep the probe's overall 8-minute context.
+
+**Done when:** `live_test.go` sets no fixed client timeout, and every request it sends carries a deadline from `DefaultTimeouts.For`. `go vet -tags live ./internal/model` and `go build -tags live ./...` pass, and the gate passes. No live run is needed.
+
+**Result:** the probe's fixed client timeout is gone. Chat calls get their deadline from `Client.Chat`, and raw requests get `DefaultTimeouts.For(maxTokens)` in `liveProbe.raw`, inside the 8-minute context. Vet, build and gate pass; no live run.
 
 ---
 
@@ -151,11 +180,17 @@ requires:   T2.3
 fixture-ok: no
 size:       XS · light
 owns:       internal/appstore/live_test.go
-status:     claimed:impl-t2.3b
+status:     done
 ```
 Search and read all pages for one title in `us` and one other storefront. Record how many reviews each storefront serves. This answers the brief's open question about which countries to read.
 
 **Done when:** The probe is committed and the transcript is in the handoff log.
+
+**Result (round-1 remediation).** Transcript: [dev-diary/live/t2.3b-transcript.txt](live/t2.3b-transcript.txt) (run once, keyless; the search half works: us 3 hits, gb 5).
+- **Reviews each storefront serves now: 0 everywhere.** `us` 0 in 1 page, `gb` 0 in 1 page, HTTP 200 with no `entry`. The orchestrator confirmed it is not the probe or throttling: Apple's customer-review feed returned HTTP 200 with no `entry` for every app tried, with Facebook (284882215) as a control, in `us`, `gb` and `in`, in the json, xml and no-sort variants. Two probes from this machine and one from a separate Hetzner host. The feed went dark. T0.4 captured 500 reviews per title earlier, so it worked then. The fallback is the App Store web page through Tavily (T3.8a, T3.8).
+- **The brief's countries question is moot while the feed is dark.** The probe cannot say which countries to read. Re-run it if the feed returns.
+- **Unconfirmable while the feed is dark:** the single-entry bare-object shape, whether a live first page leads with an app entry, and whether a populated page accepts Go's default User-Agent. The offline tests still pin those shapes from the recorded T0.4 data.
+- **The probe now fails on an empty feed.** Each storefront reports "feed empty: 0 entries on page 1" and the run fails. I chose fail over skip because a skip reads as "not applicable" and a dark feed is the thing the probe exists to catch; the raw-body check, the field audit and the shape checks state they had nothing to compare. The transcript is a FAIL for that reason.
 
 ---
 
@@ -179,14 +214,39 @@ With Keel v0.7.3 ([nrynss/keel#82](https://github.com/nrynss/keel/issues/82)), e
 
 ---
 
+### T2.4b: Daily cap on fresh checks, and timed-out calls booked
+```yaml
+requires:   T2.4, T2.5
+fixture-ok: yes
+size:       S · mid
+owns:       internal/spend/
+status:     done
+```
+Split from T2.5. [`docs/budget.md`](../docs/budget.md) sets a cap of 5 fresh checks per UTC day while judging runs. The meter cannot enforce it today. `Open` knows only the model and tavily pools, and `Spend` reserves against one pool per call. A daily model-dollar pool would be the wrong unit: five checks spend about $0.13, so it would never trip.
+
+- Add a checks-per-day pool with `cost.DailyUTC`, a one-unit denomination named `check`, and namespace `cost_checks_daily`. Its limit comes from `[budget] daily_fresh_checks`.
+- Reserve one check for each fresh check, before the first paid call. A failed check releases it. A cache hit does not count.
+- Pin the tavily pool to `cost.MonthlyUTC` inside `Open`, so a caller cannot open it as a lifetime ceiling.
+- **Book a timed-out call (from T2.1c).** `Spend` releases the hold and books nothing whenever `work` returns an error. A model call that hits its deadline returns `context.DeadlineExceeded`, plus an unmeasured reply priced at the estimate, because the host may have billed the tokens it wrote. Today that call books $0, which breaks T2.1's unmeasured-reply rule. On a deadline error, `Spend` must settle at the estimate and still return the error. A caller's own cancel keeps releasing.
+
+**Done when:**
+- Tests show the sixth check in a UTC day refused before any call, the count reset at the next UTC day, a failed check releasing its count, and the ledger read back through a fresh SQLite connection.
+- A test shows a `work` that returns `context.DeadlineExceeded` booked at the estimate in the ledger, and a cancelled one released.
+- `daily_fresh_checks` is uncommented in `before-yes.toml.example`.
+
+**Result.** Checks are reserved with `Meter.BeginCheck(ctx, ref)`, which returns a `*Check`; the caller ends it with `Done()` (books one check) or `Fail()` (releases). A cache hit never calls `BeginCheck`. Chosen over a `Spend`-shaped call because one check runs several paid calls, so it cannot be one `work` closure. `Open` pins `tavily` to `cost.MonthlyUTC` and `checks_daily` to `cost.DailyUTC` whatever the caller passes. `Spend` books a `work` that returns `context.DeadlineExceeded` at the estimate while the caller's context is live, and releases on a caller cancel or caller deadline. Tests: `internal/spend/checks_test.go` and the existing spend tests, `-race`. Keel's `sqlitestore` takes a clock (`Now`), so the day reset is tested by moving the clock, not by sleeping.
+
+---
+
 ### T2.5: Budget settings
 ```yaml
 requires:   T2.4
 fixture-ok: yes
 size:       S · frontier
 owns:       docs/budget.md
-status:     not-started
+status:     blocked: T3.6
 ```
+Note: every ceiling is decided in `docs/budget.md`; only the measured cost per check is pending T3.6b, and the doc gives the formula to plug it into.
 Decide and document the ceilings, from the brief's arithmetic and T3.6's measured cost per title:
 - the model pool's lifetime ceiling, and how much of the $25 stays in reserve;
 - a daily cap on fresh checks while judging runs (needs a daily-period model pool or a separate counter);
@@ -199,9 +259,9 @@ Decide and document the ceilings, from the brief's arithmetic and T3.6's measure
 
 ## Exit Criteria
 
-- [ ] All three clients pass offline tests against recorded responses.
-- [ ] Live probes committed for every client, with transcripts in the handoff log.
-- [ ] Confirmed Token Factory model ids and thinking switches in the example settings.
-- [ ] The meter refuses before a call, releases on failure, and books to a durable ledger.
-- [ ] Budget ceilings documented with measured cost per check.
-- [ ] Both pools share the application database through cost-store namespaces (Keel v0.7.3, nrynss/keel#82).
+- [x] All three clients pass offline tests against recorded responses.
+- [x] Live probes committed for every client, with transcripts in the handoff log (T2.1b, T2.2b, T2.3b).
+- [x] Confirmed Token Factory model ids and thinking switches in the example settings (T2.1b).
+- [x] The meter refuses before a call, releases on failure, and books to a durable ledger (T2.4). It also caps fresh checks per day and books a timed-out call at its estimate (T2.4b).
+- [ ] Budget ceilings documented with measured cost per check. The ceilings are in `docs/budget.md` (T2.5). The cost per check is still an estimate until T3.6 measures it.
+- [x] The pools share the application database through cost-store namespaces (Keel v0.7.3, nrynss/keel#82): `cost_model`, `cost_tavily` and `cost_checks_daily`.

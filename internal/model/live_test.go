@@ -202,8 +202,9 @@ func TestLiveHosts(t *testing.T) {
 			// killed by it.
 			ctx, cancel := context.WithTimeout(context.Background(), 8*time.Minute)
 			defer cancel()
-			p := &liveProbe{t: t, host: h, key: key,
-				http: &http.Client{Timeout: 3 * time.Minute}}
+			// No client-wide timeout: raw gives each request the deadline
+			// its max tokens earn, as the production client does.
+			p := &liveProbe{t: t, host: h, key: key, http: &http.Client{}}
 			p.listModels(ctx)
 			p.refusedIDs(ctx)
 			p.roleCompletion(ctx, h.role("reader"))
@@ -253,7 +254,7 @@ func (p *liveProbe) client(r liveRole) *Client {
 // the example settings file carries are among them.
 func (p *liveProbe) listModels(ctx context.Context) {
 	p.t.Helper()
-	raw, status, err := p.raw(ctx, http.MethodGet, "/models", nil)
+	raw, status, err := p.raw(ctx, 0, http.MethodGet, "/models", nil)
 	if err != nil {
 		p.t.Fatalf("GET /v1/models: %v", err)
 	}
@@ -307,7 +308,7 @@ func (p *liveProbe) refusedIDs(ctx context.Context) {
 		if err != nil {
 			p.t.Fatalf("encode: %v", err)
 		}
-		_, status, err := p.raw(ctx, http.MethodPost, "/chat/completions", payload)
+		_, status, err := p.raw(ctx, 8, http.MethodPost, "/chat/completions", payload)
 		if err != nil {
 			p.t.Fatalf("refused id %q: %s", id, scrubErr(err))
 		}
@@ -417,7 +418,7 @@ func (p *liveProbe) rateLimits(ctx context.Context) {
 		if err != nil {
 			p.t.Fatalf("encode: %v", err)
 		}
-		raw, status, err := p.raw(ctx, http.MethodPost, "/chat/completions", payload)
+		raw, status, err := p.raw(ctx, o.MaxTokens, http.MethodPost, "/chat/completions", payload)
 		if err != nil {
 			p.t.Fatalf("%s rate limits: %s", r.name, scrubErr(err))
 		}
@@ -518,11 +519,17 @@ func (p *liveProbe) spend() {
 	}
 }
 
-// raw sends one request straight to the host. The headers are kept, because
+// raw sends one request straight to the host. This is the only place the probe
+// sends a request itself; chat goes through Client.Chat, which sets the same
+// deadline in post. The request's deadline is DefaultTimeouts.For(maxTokens),
+// with maxTokens 0 for a request that has none, such as a model list, and it
+// sits inside ctx, the probe's overall timeout. The headers are kept, because
 // the client does not expose them, and the body is returned for the caller to
 // read.
-func (p *liveProbe) raw(ctx context.Context, method, path string, body []byte) ([]byte, int, error) {
+func (p *liveProbe) raw(ctx context.Context, maxTokens int, method, path string, body []byte) ([]byte, int, error) {
 	p.t.Helper()
+	ctx, cancel := context.WithTimeout(ctx, DefaultTimeouts.For(maxTokens))
+	defer cancel()
 	var rdr io.Reader
 	if body != nil {
 		rdr = bytes.NewReader(body)
