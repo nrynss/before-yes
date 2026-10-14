@@ -177,6 +177,7 @@
           "unquoted": 4,
           "duplicates": 3
         },
+        "off_product": 0,
         "conflicted_areas": [
           "contact"
         ],

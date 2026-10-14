@@ -17,6 +17,22 @@ import (
 	"github.com/nrynss/before-yes/internal/model"
 )
 
+// areaDefs is each area's own flag definition, written from the brief's
+// checklist table and the area questions: what a flag in that area takes, and
+// what a setting must answer. The judge is told them (judgeSystem) and the
+// entailment check reads the same text (entailUser), so the two steps cannot
+// drift apart. internal/checklist is frozen and is not edited; the definitions
+// live here (T3.10). The entailment prompt hashes them, so they are final
+// before a live re-record.
+var areaDefs = map[checklist.Area]string{
+	checklist.Contact:         "strangers can reach this child by message, chat or voice, and no control a parent can set shuts that door. A comments-and-questions feature aimed at parents, or a support email address, is not strangers reaching the child. A setting answers it when a cited control actually closes the door (chat off, friends-only messaging).",
+	checklist.Money:           "the title pushes purchases at children: loot boxes, pay-to-win pressure, subscription traps, or purchases a child can complete without a parent. A price on its own, or a plan a school pays for, is not purchase pressure on this child. A setting answers it when a cited control gates what a child can buy (Ask to Buy, a spending PIN).",
+	checklist.Data:            "children's data is collected and used in ways a parent cannot control: ad tracking aimed at children, third-party sharing or selling, or no way to delete what was collected. A parent's email asked for when the account is set up is not a data flag. A setting answers it when a cited control actually stops the collection or sharing it gates.",
+	checklist.AgeGating:       "the age gate fails in practice: a first-hand report that a child ended up on the wrong side of it, a child far under the stated age getting in, a check that accepts any birth date, or a check that places a child at the wrong age. What the listing or the policy claims about the rating is a claim, not proof the gate works; one credible first-hand report that it failed outweighs it. A setting answers it when a cited control locks the account to the right age band.",
+	checklist.Content:         "parents or reviewers report children actually meeting unsuitable material on this title: sexual content, realistic violence, horror, harassment or self-harm. One odd or off-topic review among many, a report about another product, or material this age cannot reach is not children meeting it. A setting answers it when a cited control keeps such material away from the child.",
+	checklist.DeveloperRecord: "this title's developer has a record of enforcement over how it treats children or their data: fines, data breaches, lawsuits or regulatory actions naming this developer. Another company's enforcement, or the developer's own marketing about its values, is not a record. A setting cannot answer a record.",
+}
+
 func judgeSystem() string {
 	var b strings.Builder
 	b.WriteString(`You grade an app, game or channel for one child against a fixed parent checklist, using only the findings you are given. Every finding has an id, a stance, and a verbatim quote from a named source.
@@ -27,14 +43,22 @@ Areas:
 		fmt.Fprintf(&b, "- %s: %s\n", a.ID, a.Question)
 	}
 	b.WriteString(`
+What each area's "flag" means. Grade "flag" only when the findings you cite show the area's own definition for a child of this age:
+`)
+	for _, a := range checklist.Areas() {
+		fmt.Fprintf(&b, "- %s: %s\n", a.ID, areaDefs[a.ID])
+	}
+	b.WriteString(`
+Proportion. A flag is a serious concern a parent of this age should act on, not whatever can be cited. A feature that merely sits in the area, a price, an email field, another product of the same developer or another company's story meets no flag definition: grade "ok", "ok_with_setting" or "unknown" instead. Grade "ok" when the findings show the area is fine for this age. Grade "ok_with_setting" when the definition's concern is real and the quote of a cited "mitigation" finding names the control that answers it.
+
 For each area give one level:
-- "ok": nothing in the findings is a concern for a child of this age.
-- "ok_with_setting": a concern exists, and a specific setting or control answers it. Name the setting exactly as the quote of a cited "mitigation" finding names it ("Parental Controls > Chat > Off", "Ask to Buy"). Cite the "risk" finding that shows the concern and the "mitigation" finding that names the setting.
-- "flag": a concern for this age that no setting answers. Cite only "risk" findings.
+- "ok": nothing in the findings meets the area's flag definition for a child of this age.
+- "ok_with_setting": a concern the area's definition names exists, and a specific setting or control answers it. Name the setting exactly as the quote of a cited "mitigation" finding names it ("Parental Controls > Chat > Off", "Ask to Buy"). Cite the "risk" finding that shows the concern and the "mitigation" finding that names the setting.
+- "flag": the findings meet the area's flag definition, and no setting answers it. Cite only "risk" findings.
 - "unknown": the findings are too thin to say.
 
 How to weigh evidence:
-- First-hand reports of what actually happened outweigh what a policy or a store listing claims. One credible report that a filter or an age gate failed for a young child can decide an area.
+- First-hand reports of what actually happened outweigh what a policy or a store listing claims. One credible report that a filter or an age gate failed for a young child can decide an area; but that report must be about this title and this age, not about a sibling product of the same developer and not another company's story.
 - Grade against the child's age. What is fine at 13 may be a flag at 7.
 - A source listed as unread was not read. Its silence is not evidence: do not grade an area "ok" because a policy that could not be read said nothing.
 
@@ -136,6 +160,13 @@ func conflicted(fs []finding.Finding) []checklist.Area {
 type Judge struct {
 	Model Chatter
 	Meter Meter
+	// Entail is the reader's model client (Nano), used one call per standing
+	// flag or ok_with_setting grade to check the cited findings against the
+	// area's flag definition and the reason against the quotes (T3.10, fault
+	// 3). Nil skips the step, so tests that do not wire it keep compiling and
+	// passing. Production wiring (the server's reader client) is T4's; the
+	// eval wires it in tools/eval/main.go.
+	Entail Chatter
 	// Fast and Think are merged into the first pass and the conflict pass:
 	// the host's thinking switch off and on (judge_fast and judge_think in
 	// the settings file).
@@ -154,10 +185,16 @@ type Judgement struct {
 	// ConflictErr says why that pass did not count, when it did not.
 	Conflicted  []checklist.Area
 	ConflictErr error
+	// EntailErr says why an entailment call did not count, when one failed
+	// (a call error or an unparseable reply). Like ConflictErr it keeps the
+	// grades as they are: an entailment failure must not sink a grade
+	// (T3.10).
+	EntailErr error
 	// Thin lists the areas dropped to unknown because a cited id did not
-	// check out or no cited mitigation quote named the setting (T3.9,
-	// T3.9b). The card carries it
-	// as ThinAreas.
+	// check out, no cited mitigation quote named the setting (T3.9, T3.9b),
+	// or the entailment check found the cited findings do not meet the
+	// area's flag definition or the reason goes beyond the quotes (T3.10).
+	// The card carries it as ThinAreas.
 	Thin []checklist.Area
 	Cost cost.Price
 }
@@ -220,13 +257,29 @@ func (j *Judge) Judge(ctx context.Context, title string, age int, ref string, fs
 	// Citations are checked on the judge's own list, before Enforce drops
 	// the ids it cannot use: one bad id voids a flag or a setting (T3.9b).
 	var cited, grounded []checklist.Demotion
-	var thinCited, thinGround []checklist.Area
+	var thinCited, thinGround, thinEntail []checklist.Area
 	grades, cited, thinCited = checkCitations(grades, fs)
 	out.Grades, out.Demotions = checklist.Enforce(grades, finding.Cited(fs))
 	out.Demotions = append(cited, out.Demotions...)
 	out.Grades, grounded, thinGround = ground(out.Grades, fs)
 	out.Demotions = append(out.Demotions, grounded...)
-	out.Thin = thinAreas(out.Grades, thinCited, thinGround)
+	// The entailment check (T3.10, fault 3): one call per standing flag or
+	// ok_with_setting, asking whether the cited findings meet the area's
+	// flag definition for this age and whether the reason says only what
+	// the quotes support. A failed or unparseable call keeps the grade and
+	// is recorded in EntailErr, as a failed conflict pass keeps the first
+	// grades in ConflictErr.
+	var entDem []checklist.Demotion
+	if j.Entail != nil {
+		var entCost cost.Price
+		out.Grades, entDem, thinEntail, out.EntailErr, entCost = j.entail(ctx, title, age, ref, out.Grades, fs)
+		out.Cost += entCost
+		if err := ctx.Err(); err != nil {
+			return out, err
+		}
+	}
+	out.Demotions = append(out.Demotions, entDem...)
+	out.Thin = thinAreas(out.Grades, thinCited, thinGround, thinEntail)
 	out.Verdict, err = checklist.Decide(out.Grades)
 	if err != nil {
 		return out, fmt.Errorf("judge: %w", err)
@@ -280,6 +333,15 @@ const (
 	// RuleSettingUnbacked: an ok_with_setting whose setting appears in no
 	// cited verified mitigation quote.
 	RuleSettingUnbacked = "setting_without_quote"
+	// RuleNotEarned: a standing flag or ok_with_setting whose cited
+	// findings, judged by the entailment model against the area's flag
+	// definition for this age, do not meet the definition itself (for a
+	// setting: no cited mitigation actually answers the cited concern). The
+	// definition rule of T3.10, fault 1, enforced through fault 3.
+	RuleNotEarned = "flag_not_earned"
+	// RuleReasonUnsupported: a standing grade whose reason says something
+	// the cited quotes do not support (T3.10, fault 3; T3.9's L1).
+	RuleReasonUnsupported = "reason_unsupported"
 )
 
 // ThinReason is the card reason for a grade checkCitations dropped
@@ -289,6 +351,14 @@ const ThinReason = "Changed to unknown: the evidence was thin. No verified quote
 
 // SettingThinReason is the card reason when only the setting was unbacked.
 const SettingThinReason = "Changed to unknown: the evidence was thin. No verified quote names the setting."
+
+// NotEarnedReason is the card reason when the entailment check found the
+// cited findings do not meet the area's flag definition (T3.10).
+const NotEarnedReason = "Changed to unknown: the cited quotes do not meet this area's flag definition."
+
+// UnsupportedReason is the card reason when the entailment check found the
+// reason says more than the cited quotes support (T3.10).
+const UnsupportedReason = "Changed to unknown: the reason says more than the cited quotes support."
 
 // checkCitations holds every flag and ok_with_setting to the findings it
 // cites (T3.9b). It reads the judge's own citation list, before
@@ -379,6 +449,126 @@ func ground(grades []checklist.Grade, fs []finding.Finding) (out []checklist.Gra
 		out[i] = g
 	}
 	return out, dem, thin
+}
+
+// entailSystem is the entailment check's fixed instruction. The replies are
+// recorded and replayed keyed on the exact messages, so this text is final
+// before a live re-record.
+func entailSystem() string {
+	return `You check one grade of a parent checklist against the findings its grade cites, for one child. You are given the area's flag definition, the child's age, the grade, and each cited finding with its verbatim quote. Answer two questions and nothing else:
+(a) meets_definition: do the cited findings, taken together, show what the area's flag definition requires for a child of this age? For an "ok_with_setting", meet the definition instead by showing a cited mitigation actually answers the concern the cited risks raise.
+(b) reason_supported: does the reason say only what the cited quotes support, with nothing added and nothing stronger?
+Judge from the quotes, not the claims: a quote is the source's own words, a claim is the reader's reading of them. Use only the findings given. Reply with one JSON object: {"meets_definition": true, "reason_supported": true}, with false where the answer is no.`
+}
+
+// entailUser shows one grade and the findings it cites. It mirrors judgeUser's
+// finding lines so the two prompts stay recognizable to the same reader model.
+func entailUser(title string, age int, g checklist.Grade, fs []finding.Finding) string {
+	var b strings.Builder
+	fmt.Fprintf(&b, "Title: %s\nChild's age: %d\nArea: %s\nFlag definition: %s\nLevel: %s\n", title, age, g.Area, areaDefs[g.Area], g.Level)
+	if g.Setting != "" {
+		fmt.Fprintf(&b, "Setting: %s\n", g.Setting)
+	}
+	reason := g.Reason
+	if strings.TrimSpace(reason) == "" {
+		reason = "(no reason given)"
+	}
+	fmt.Fprintf(&b, "Reason: %s\nCited findings:\n", reason)
+	byID := make(map[string]finding.Finding, len(fs))
+	for _, f := range fs {
+		byID[f.ID] = f
+	}
+	for _, id := range g.Findings {
+		f, ok := byID[id]
+		if !ok {
+			continue
+		}
+		src := f.Source.Kind
+		if f.Source.Kind == KindReview {
+			src = fmt.Sprintf("review %d", f.Source.Index)
+		}
+		fmt.Fprintf(&b, "- stance=%s source=%s\n  claim: %s\n  quote: %q\n", f.Stance, src, f.Claim, f.Quote)
+	}
+	return b.String()
+}
+
+// entailVerdict is one entailment reply.
+type entailVerdict struct {
+	Meets  bool
+	Reason bool
+}
+
+// parseEntail finds the verdict in a reply, trying opening braces from the
+// end as parseGrades does. Both answers must be present; a missing one makes
+// the call unparseable, which keeps the grade rather than failing it.
+func parseEntail(reply string) (entailVerdict, error) {
+	for i := len(reply) - 1; i >= 0; i-- {
+		if reply[i] != '{' {
+			continue
+		}
+		var out struct {
+			Meets  *bool `json:"meets_definition"`
+			Reason *bool `json:"reason_supported"`
+		}
+		dec := json.NewDecoder(strings.NewReader(reply[i:]))
+		if err := dec.Decode(&out); err != nil || out.Meets == nil || out.Reason == nil {
+			continue
+		}
+		return entailVerdict{Meets: *out.Meets, Reason: *out.Reason}, nil
+	}
+	return entailVerdict{}, errors.New("judge: no entailment verdict in the reply")
+}
+
+// entail holds every standing flag and ok_with_setting grade to its area's
+// flag definition and its own reason, one call per grade through the reader's
+// model (Entail), metered like any other call (T3.10, fault 3). Either false
+// drops the grade to unknown with no setting and no citations, a demotion
+// (RuleNotEarned or RuleReasonUnsupported) and its area in thin. A failed or
+// unparseable call keeps the grade: the reason is returned as entailErr and
+// never sinks a standing grade, so a rate limit or a bad reply cannot turn
+// earned flags into unclear cards. The calls' price is returned for the
+// judgement's cost. The input is not modified.
+func (j *Judge) entail(ctx context.Context, title string, age int, ref string, grades []checklist.Grade, fs []finding.Finding) (out []checklist.Grade, dem []checklist.Demotion, thin []checklist.Area, entailErr error, price cost.Price) {
+	byID := make(map[string]finding.Finding, len(fs))
+	for _, f := range fs {
+		byID[f.ID] = f
+	}
+	out = make([]checklist.Grade, len(grades))
+	for i, g := range grades {
+		g.Findings = slices.Clone(g.Findings)
+		out[i] = g
+		if (g.Level != checklist.Flag && g.Level != checklist.OKWithSetting) || !g.Area.Valid() || len(g.Findings) == 0 {
+			continue
+		}
+		reply, p, err := chat(ctx, j.Meter, j.Entail, "entail", ref, []model.Message{
+			{Role: "system", Content: entailSystem()},
+			{Role: "user", Content: entailUser(title, age, g, fs)},
+		}, model.Options{JSON: true})
+		price += p
+		if err == nil {
+			var v entailVerdict
+			if v, err = parseEntail(reply.Text); err == nil {
+				switch {
+				case v.Meets && v.Reason:
+					// The grade stands.
+				case !v.Meets:
+					dem = append(dem, checklist.Demotion{Area: g.Area, Rule: RuleNotEarned, Detail: string(g.Level) + ": " + string(g.Area)})
+					thin = append(thin, g.Area)
+					g.Level, g.Setting, g.Reason, g.Findings = checklist.Unknown, "", NotEarnedReason, []string{}
+				default:
+					dem = append(dem, checklist.Demotion{Area: g.Area, Rule: RuleReasonUnsupported, Detail: string(g.Level) + ": " + string(g.Area)})
+					thin = append(thin, g.Area)
+					g.Level, g.Setting, g.Reason, g.Findings = checklist.Unknown, "", UnsupportedReason, []string{}
+				}
+				out[i] = g
+				continue
+			}
+		}
+		if entailErr == nil {
+			entailErr = fmt.Errorf("judge: entailment for %s: %w", g.Area, err)
+		}
+	}
+	return out, dem, thin, entailErr, price
 }
 
 // thinAreas merges the areas each step dropped, once each, in card order,

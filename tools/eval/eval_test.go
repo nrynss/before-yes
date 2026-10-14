@@ -161,7 +161,10 @@ func TestReplayMissesReported(t *testing.T) {
 
 // The stand-in baseline, pinned. A change to the gatherer, reader,
 // judge, scoring or fixtures that moves it must update this table and the
-// T3.6 notes together.
+// T3.6 notes together. T3.10 moved only Khan's chunks (22 to 19): the
+// off-product filter drops its ten sibling pages, and the entailment check,
+// answered by the stand-in reader with {"findings": []}, keeps every grade
+// (an unparseable entailment reply never demotes).
 func TestStandinBaselinePinned(t *testing.T) {
 	rs, err := evaluate(root, "standin")
 	if err != nil {
@@ -170,7 +173,7 @@ func TestStandinBaselinePinned(t *testing.T) {
 	want := map[string][4]int{ // agreed/6, decisive found/total, chunks
 		"Roblox":            {4, 3, 6, 36},
 		"Minecraft":         {0, 2, 5, 45},
-		"Khan Academy Kids": {3, 1, 5, 22},
+		"Khan Academy Kids": {3, 1, 5, 19},
 	}
 	agreed, found, total := 0, 0, 0
 	for _, r := range rs {

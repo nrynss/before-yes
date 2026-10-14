@@ -69,6 +69,9 @@ type Stats struct {
 	// FailedChunks is how many reader calls returned nothing usable.
 	FailedChunks int           `json:"failed_chunks"`
 	Drops        finding.Drops `json:"drops"`
+	// OffProduct counts the documents dropped before reading because their
+	// subject was a different product of the same developer (T3.10).
+	OffProduct int `json:"off_product"`
 	// ConflictedAreas are the areas the judge re-graded with thinking on.
 	ConflictedAreas []checklist.Area `json:"conflicted_areas"`
 	// MissingKinds are the source kinds that came back empty, such as "policy".

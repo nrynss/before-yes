@@ -349,15 +349,17 @@ func (r *recordedReplies) Settings() model.Settings {
 	return model.Settings{Provider: "replay", Model: "recorded-" + r.role}
 }
 
-// TestRecordedRepliesGradesRestOnVerifiedQuotes is T3.9b's pin. It replays
-// the Token Factory replies recorded under T3.9b for the three demo titles
-// through Collect and Decide, with the judge switches the recordings were
-// made with, and checks that no flag or ok_with_setting stands on the card
+// TestRecordedRepliesGradesRestOnVerifiedQuotes is T3.9b's pin, carried to
+// T3.10. It replays the Token Factory replies recorded under T3.10 for the
+// three demo titles through Collect and Decide, with the judge switches the
+// recordings were made with and the entailment check wired to the recorded
+// reader, and checks that no flag or ok_with_setting stands on the card
 // without a valid citation: at least one cited id, every one a verified
 // finding in the grade's area with a fitting stance, and for a setting, a
 // cited mitigation quote that names it. It checks that every area in
 // Card.ThinAreas is unknown, and pins each title's grade levels, thin areas
-// and verdict. The judge's reasons are not checked against the quotes.
+// and verdict. The entailment replays cover the definition rule: a standing
+// grade also survives the area's flag definition and its own reason.
 func TestRecordedRepliesGradesRestOnVerifiedQuotes(t *testing.T) {
 	L := func(ls ...checklist.Level) []checklist.Level { return ls }
 	const (
@@ -389,7 +391,7 @@ func TestRecordedRepliesGradesRestOnVerifiedQuotes(t *testing.T) {
 			p := &Pipeline{
 				Gatherer: &Gatherer{Store: store, Search: tc, Meter: m, Now: now},
 				Reader:   &Reader{Model: reader, Meter: m},
-				Judge:    &Judge{Model: judge, Meter: m, Fast: tokenFactory(false), Think: tokenFactory(true)},
+				Judge:    &Judge{Model: judge, Meter: m, Fast: tokenFactory(false), Think: tokenFactory(true), Entail: reader},
 				Now:      now,
 			}
 			ctx := context.Background()
@@ -648,5 +650,174 @@ func TestMatcherAppliesNFC(t *testing.T) {
 	reason := normWords("A parent says strangers message the cafe\u0301 chat.")
 	if !carries(reason, quote, 4, 2) {
 		t.Errorf("NFC: %q does not carry %q", reason, quote)
+	}
+}
+
+// T3.10, fault 1: the judge's prompt gives each area its own flag definition,
+// the proportion rule, and the weighting rule bounded to this title and this
+// age. The entailment prompt carries the same definitions.
+func TestJudgeSystemAreaDefinitions(t *testing.T) {
+	s := judgeSystem()
+	for _, w := range []string{
+		"What each area's \"flag\" means",
+		"Proportion. A flag is a serious concern",
+		"another product of the same developer",
+		"not about a sibling product of the same developer and not another company's story",
+		"A price on its own, or a plan a school pays for, is not purchase pressure on this child",
+		"A parent's email asked for when the account is set up is not a data flag",
+		"or the developer's own marketing about its values, is not a record",
+	} {
+		if !strings.Contains(s, w) {
+			t.Errorf("judge prompt misses %q", w)
+		}
+	}
+	for _, a := range checklist.Areas() {
+		if !strings.Contains(s, areaDefs[a.ID]) {
+			t.Errorf("judge prompt misses %s's definition", a.ID)
+		}
+		if areaDefs[a.ID] == "" {
+			t.Errorf("no definition written for %s", a.ID)
+		}
+	}
+	e := entailUser("X", 9, checklist.Grade{Area: checklist.Contact, Level: checklist.Flag, Findings: []string{"f_1"}}, nil)
+	if !strings.Contains(e, areaDefs[checklist.Contact]) || !strings.Contains(e, "Child's age: 9") {
+		t.Errorf("entail prompt misses the definition or the age:\n%s", e)
+	}
+}
+
+// T3.10, fault 3, and the definition rule of fault 1: a standing grade whose
+// cited findings do not meet its area's flag definition falls to unknown
+// (meets_definition=false), and a standing grade whose reason goes beyond the
+// cited quotes falls too (reason_supported=false). A grade that passes both
+// stands, its setting and citations intact.
+func TestEntailmentFallsToUnknown(t *testing.T) {
+	fs := []finding.Finding{
+		{ID: "f_contact", Area: checklist.Contact, Stance: finding.Risk, Quote: "a child predator might ask where you are",
+			Claim: "A parent reports a predator asked where the child is", Source: finding.Source{Kind: KindReview, Index: 355}},
+		{ID: "f_money", Area: checklist.Money, Stance: finding.Risk, Quote: "I got Robux and I got only 246 Robux instead of 1800",
+			Claim: "A child reports a purchase that did not arrive in full", Source: finding.Source{Kind: KindReview, Index: 1}},
+		{ID: "f_mit", Area: checklist.Money, Stance: finding.Mitigation, Quote: "Parents can turn on Ask to Buy so every purchase needs approval",
+			Claim: "Purchases can be gated", Source: finding.Source{Kind: KindStore}},
+		{ID: "f_content", Area: checklist.Content, Stance: finding.Risk, Quote: "It's also a very inappropriate game with all the horror games",
+			Claim: "A reviewer reports inappropriate horror games", Source: finding.Source{Kind: KindReview, Index: 491}},
+	}
+	reply := gradesJSON(t,
+		checklist.Grade{Area: checklist.Contact, Level: checklist.Flag, Findings: []string{"f_contact"}, Reason: "Strangers can reach the child."},
+		checklist.Grade{Area: checklist.Money, Level: checklist.OKWithSetting, Setting: "Ask to Buy", Findings: []string{"f_money", "f_mit"}, Reason: "Ask to Buy gates purchases."},
+		checklist.Grade{Area: checklist.Content, Level: checklist.Flag, Findings: []string{"f_content"}, Reason: "Reviewers report inappropriate games."},
+	)
+	entail := &superRecorder{replies: []any{
+		`{"meets_definition": false, "reason_supported": true}`, // contact: not earned
+		`{"meets_definition": true, "reason_supported": false}`, // money: reason beyond the quotes
+		`{"meets_definition": true, "reason_supported": true}`,  // content: stands
+	}, price: 7}
+	m := openTestMeter(t)
+	rec := &superRecorder{replies: []any{reply}, price: 40}
+	j := &Judge{Model: rec, Meter: m, Entail: entail}
+	got, err := j.Judge(context.Background(), "Roblox", 9, "check-entail", fs, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(entail.users) != 3 {
+		t.Fatalf("%d entail calls, want one per standing grade (3)", len(entail.users))
+	}
+	by := map[checklist.Area]checklist.Grade{}
+	for _, g := range got.Grades {
+		by[g.Area] = g
+	}
+	if g := by[checklist.Contact]; g.Level != checklist.Unknown || g.Reason != NotEarnedReason || len(g.Findings) != 0 {
+		t.Errorf("contact = %+v, want unknown with the not-earned reason", g)
+	}
+	if g := by[checklist.Money]; g.Level != checklist.Unknown || g.Setting != "" || g.Reason != UnsupportedReason || len(g.Findings) != 0 {
+		t.Errorf("money = %+v, want unknown, setting cleared, unsupported reason", g)
+	}
+	if g := by[checklist.Content]; g.Level != checklist.Flag || len(g.Findings) != 1 || g.Findings[0] != "f_content" {
+		t.Errorf("content = %+v, want the flag to stand on its citation", g)
+	}
+	if want := []checklist.Area{checklist.Contact, checklist.Money}; !reflect.DeepEqual(got.Thin, want) {
+		t.Errorf("thin %v, want %v", got.Thin, want)
+	}
+	rules := map[checklist.Area]string{}
+	for _, d := range got.Demotions {
+		rules[d.Area] = d.Rule
+	}
+	if rules[checklist.Contact] != RuleNotEarned || rules[checklist.Money] != RuleReasonUnsupported {
+		t.Errorf("demotion rules %v", rules)
+	}
+	if got.EntailErr != nil {
+		t.Errorf("EntailErr = %v, want nil", got.EntailErr)
+	}
+	if got.Verdict != checklist.No {
+		t.Errorf("verdict %s, want no on the standing content flag", got.Verdict)
+	}
+	// The entailment calls are metered with the judge's, under the check ref.
+	spent, _ := m.Spent(context.Background(), spend.PoolModel, "check-entail")
+	if spent != got.Cost || got.Cost != 40+3*7 {
+		t.Errorf("cost %d, meter %d, want %d", got.Cost, spent, 40+3*7)
+	}
+	// The prompt shows the grade, the definition and the cited findings.
+	if !strings.Contains(entail.users[0], "Flag definition: "+areaDefs[checklist.Contact]) ||
+		!strings.Contains(entail.users[0], `quote: "a child predator might ask where you are"`) ||
+		!strings.Contains(entail.users[0], "source=review 355") || !strings.Contains(entail.users[0], "Reason: Strangers can reach the child.") {
+		t.Errorf("entail prompt:\n%s", entail.users[0])
+	}
+	if !strings.Contains(entail.users[1], "Setting: Ask to Buy") {
+		t.Errorf("entail prompt misses the setting:\n%s", entail.users[1])
+	}
+}
+
+// T3.10's failure policy: a failed or unparseable entailment call keeps the
+// grade and records the reason in EntailErr, so an entailment failure can
+// neither sink earned flags nor turn a budget refusal into unclear cards. A
+// stand-in reader that answers {"findings": []} is such a failure.
+func TestEntailmentFailureKeepsGrade(t *testing.T) {
+	fs := []finding.Finding{
+		{ID: "f_contact", Area: checklist.Contact, Stance: finding.Risk, Quote: "a child predator might ask where you are",
+			Claim: "A parent reports a predator asked where the child is", Source: finding.Source{Kind: KindReview, Index: 355}},
+	}
+	reply := gradesJSON(t, checklist.Grade{Area: checklist.Contact, Level: checklist.Flag, Findings: []string{"f_contact"}, Reason: "Strangers can reach the child."})
+	for _, bad := range []any{
+		errors.New("rate limited"),
+		`{"findings": []}`,           // the stand-in reader's answer
+		`I cannot say.`,              // no JSON
+		`{"meets_definition": true}`, // one answer missing
+	} {
+		entail := &superRecorder{replies: []any{bad}, price: 1}
+		got, err := (&Judge{Model: &superRecorder{replies: []any{reply}, price: 10}, Meter: openTestMeter(t), Entail: entail}).
+			Judge(context.Background(), "Roblox", 9, "c", fs, nil)
+		if err != nil {
+			t.Fatalf("%v: %v", bad, err)
+		}
+		if got.EntailErr == nil {
+			t.Errorf("%v: the failed entailment call is not reported", bad)
+		}
+		if g := got.Grades[0]; g.Area != checklist.Contact || g.Level != checklist.Flag || len(g.Findings) != 1 {
+			t.Errorf("%v: the grade did not stand: %+v", bad, g)
+		}
+		if len(got.Thin) != 0 || got.Verdict != checklist.No {
+			t.Errorf("%v: thin %v, verdict %s; the grade must stand unchanged", bad, got.Thin, got.Verdict)
+		}
+	}
+}
+
+// A judge with no Entail wired skips the step: one call, grades unchanged.
+// Tests that do not wire it keep compiling and passing.
+func TestEntailNilSkips(t *testing.T) {
+	decisive, _, money, _ := robloxFindings(t)
+	fs := []finding.Finding{decisive, money} // no mitigation, so no conflict pass
+	reply := gradesJSON(t,
+		checklist.Grade{Area: checklist.Contact, Level: checklist.Flag, Findings: []string{decisive.ID}, Reason: "A parent reports a predator."},
+		checklist.Grade{Area: checklist.Money, Level: checklist.Flag, Findings: []string{money.ID}},
+	)
+	rec := &superRecorder{replies: []any{reply}}
+	got, err := (&Judge{Model: rec, Meter: openTestMeter(t)}).Judge(context.Background(), "Roblox", 9, "c", fs, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(rec.users) != 1 {
+		t.Errorf("%d judge calls, want 1: nothing else may be called without an entailment model", len(rec.users))
+	}
+	if got.Grades[0].Level != checklist.Flag || got.EntailErr != nil {
+		t.Errorf("grades changed without an entailment model: %+v, %v", got.Grades[0], got.EntailErr)
 	}
 }

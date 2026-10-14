@@ -17,6 +17,7 @@ import (
 	"time"
 
 	"github.com/nrynss/before-yes/internal/appstore"
+	"github.com/nrynss/before-yes/internal/finding"
 	"github.com/nrynss/before-yes/internal/spend"
 	"github.com/nrynss/before-yes/internal/tavily"
 )
@@ -295,7 +296,11 @@ func TestGatherFixtures(t *testing.T) {
 		},
 		"khan-academy-kids": {
 			host: "khankids.org", from: "seller_url", app: 1378467217,
-			kinds: map[string]int{KindReview: 500, KindStore: 1, KindReddit: 16, KindForum: 5, KindNews: 1, KindRating: 6},
+			// T3.10's off-product filter drops 10 sibling pages (see
+			// TestOffProductFilterFixtures): 8 reddit threads and the
+			// internetmatters and Common Sense pages about Khan Academy, the
+			// website, not the Kids app.
+			kinds: map[string]int{KindReview: 500, KindStore: 1, KindReddit: 8, KindForum: 4, KindNews: 1, KindRating: 5},
 			// Both searches return only the homepage, which is skipped, so
 			// no extract call is made.
 			missing: []string{KindPolicy, KindTerms},
@@ -397,6 +402,140 @@ func TestGatherFixtures(t *testing.T) {
 				}
 			}
 		})
+	}
+}
+
+// TestOffProductFilterFixtures pins T3.10's product-identity filter on the
+// demo captures: Khan Academy Kids drops the sibling Khan Academy pages and
+// counts them in OffProduct, keeps its own pages (the org's kids page, its
+// helpdesk host, its stores, its named reviews of the app), and never drops a
+// review or the store description. Roblox and Minecraft drop nothing: their
+// brand is a single word, so any page naming the brand names the product.
+func TestOffProductFilterFixtures(t *testing.T) {
+	khan := demos[2]
+	got, _, _ := gatherFixture(t, khan)
+	if got.OffProduct != 10 {
+		t.Errorf("OffProduct = %d, want 10 (8 reddit, 1 forum, 1 rating sibling pages)", got.OffProduct)
+	}
+	dropped := []string{
+		// The Khan Academy website, not the Kids app.
+		"https://www.internetmatters.org/advice/apps-and-platforms/skills-building/khan-academy",
+		"https://www.commonsensemedia.org/website-reviews/khan-academy",
+		// Reddit threads about Khan Academy in general.
+		"https://www.reddit.com/r/videos/comments/got5ih/khan_academy_is_struggling_with_rising_demand",
+		"https://www.reddit.com/r/HomeschoolRecovery/comments/18o02u5/how_to_set_up_khan_academy",
+		"https://www.reddit.com/r/Brighterly/comments/1tb8os5/abcmouse_vs_khan_academy_vs_brighterly_what",
+		"https://www.reddit.com/r/NoStupidQuestions/comments/wi1f3z/how_did_khan_academy_go_so_quickly_from_beloved",
+		"https://www.reddit.com/r/learnmath/comments/u18fbs/is_khan_academy_good_or_not",
+		"https://www.reddit.com/r/personalfinance/comments/5n4xhp/reminder_khan_academy_still_has_basic",
+		"https://www.reddit.com/r/math/comments/1de3z2q/i_feel_like_khan_academy_is_garbage_for_learning",
+		"https://www.reddit.com/r/learnmath/comments/1jbq4dk/why_does_my_math_teacher_hate_khan_academy",
+	}
+	for _, u := range dropped {
+		if d, ok := docByURL(got.Docs, u); ok {
+			t.Errorf("sibling page kept: %s (%s)", u, d.Source.Title)
+		}
+	}
+	kept := []string{
+		// The product's own page on the org's domain, its helpdesk (the host
+		// names the product though the title says only "Khan Academy"), its
+		// store pages and its named app review.
+		"https://www.khanacademy.org/kids",
+		"https://khankids.zendesk.com/hc/en-us/articles/360047566151-How-do-I-access-parental-controls",
+		"https://apps.apple.com/mx/app/khan-academy-kids/id1378467217?l=en-GB",
+		"https://play.google.com/store/apps/details?id=org.khankids.android&hl=en_US",
+		"https://www.modulo.app/all-resources/khan-academy-kids",
+		"https://www.commonsensemedia.org/app-reviews/khan-academy-kids",
+		"https://www.reddit.com/r/homeschool/comments/1irs0ld/want_to_try_khan_academy_kids_for_our_little_ones",
+		// Threads about other developers' products name neither the product
+		// nor its sibling, so they are noise, not off-product drops: the
+		// Roblox fixtures keep other developers' news the same way.
+		"https://www.reddit.com/r/Teachers/comments/1tb6n5r/i_hate_iready_so_much",
+	}
+	for _, u := range kept {
+		if _, ok := docByURL(got.Docs, u); !ok {
+			t.Errorf("the Kids app's own page was dropped: %s", u)
+		}
+	}
+	if n := countKinds(got.Docs)[KindReview]; n != 500 {
+		t.Errorf("reviews = %d, want all 500: the filter never drops a review", n)
+	}
+	if _, ok := docByURL(got.Docs, "https://apps.apple.com/us/app/khan-academy-kids/id1378467217?uo=4"); !ok {
+		t.Error("the store description was dropped")
+	}
+	if strings.Join(got.Missing, ",") != "policy,terms" {
+		t.Errorf("missing = %v: no kind lost every document", got.Missing)
+	}
+
+	for _, d := range []demo{demos[0], demos[1], demos[3]} {
+		got, _, _ := gatherFixture(t, d)
+		if got.OffProduct != 0 {
+			t.Errorf("%s: OffProduct = %d, want 0 (brand and product are one word)", d.slug, got.OffProduct)
+		}
+	}
+}
+
+func docByURL(docs []Doc, u string) (Doc, bool) {
+	for _, d := range docs {
+		if d.Source.URL == u {
+			return d, true
+		}
+	}
+	return Doc{}, false
+}
+
+// TestOffProductClassifier pins the filter's rule on hand-made documents: a
+// sibling's name run drops, the product's name run keeps (in the title, the
+// URL path, or a sibling-titled page on the product's own helpdesk host), a
+// page on the official host keeps, and a review or store doc never drops.
+func TestOffProductClassifier(t *testing.T) {
+	kids := &appstore.App{Name: "Khan Academy Kids", Seller: "Khan Academy"}
+	apps := []appstore.App{
+		{Name: "Khan Academy Kids", Seller: "Khan Academy"},
+		{Name: "Khan Academy", Seller: "Khan Academy"},
+		{Name: "PBS KIDS Games", Seller: "PBS Kids"},
+	}
+	const host = "khankids.org"
+	docs := []Doc{
+		{Source: finding.Source{Kind: KindRating, Title: "What is Khan Academy? Safety guide for parents", URL: "https://www.internetmatters.org/advice/skills-building/khan-academy"}},
+		{Source: finding.Source{Kind: KindReddit, Title: "Khan academy is struggling with rising demand", URL: "https://www.reddit.com/r/videos/comments/got5ih/khan_academy_is_struggling"}},
+		{Source: finding.Source{Kind: KindRating, Title: "Free Learning App for Kids Ages 2-8 | Khan Academy Kids", URL: "https://www.khanacademy.org/kids"}},
+		{Source: finding.Source{Kind: KindRating, Title: "How do I access parental controls? - Khan Academy - Zendesk", URL: "https://khankids.zendesk.com/hc/en-us/articles/360047566151"}},
+		{Source: finding.Source{Kind: KindRating, Title: "‎Khan Academy Kids App - App Store", URL: "https://apps.apple.com/mx/app/khan-academy-kids/id1378467217?l=en-GB"}},
+		{Source: finding.Source{Kind: KindReddit, Title: "Want to try Khan Academy Kids", URL: "https://www.reddit.com/r/homeschool/comments/1irs0ld/want_to_try_khan_academy_kids"}},
+		{Source: finding.Source{Kind: KindPolicy, Title: "Privacy Policy", URL: "https://www.khankids.org/privacy"}}, // official host
+		{Source: finding.Source{Kind: KindReview, Title: "Khan Academy the website is better", URL: "https://itunes.apple.com/us/rss/customerreviews/page=1/id=1378467217/sortby=mostrecent/json", Index: 2}},
+		{Source: finding.Source{Kind: KindStore, Title: "Khan Academy on the App Store", URL: "https://apps.apple.com/us/app/khan-academy-kids/id1378467217?uo=4"}},
+		{Source: finding.Source{Kind: KindNews, Title: "A Khan Academy school page on the sibling's own host", URL: "https://khanacademy.org/teachers"}},
+	}
+	kept, dropped := offProduct(apps, kids, host, docs)
+	if dropped != 3 {
+		t.Errorf("dropped = %d, want 3", dropped)
+	}
+	for _, i := range []int{0, 1, 9} {
+		if _, ok := docByURL(kept, docs[i].Source.URL); ok {
+			t.Errorf("doc %d (%s) kept, want dropped", i, docs[i].Source.URL)
+		}
+	}
+	for i, d := range docs {
+		if i == 0 || i == 1 || i == 9 {
+			continue
+		}
+		if _, ok := docByURL(kept, d.Source.URL); !ok {
+			t.Errorf("doc %d (%s) dropped, want kept", i, d.Source.URL)
+		}
+	}
+
+	// No sibling beside the product: nothing drops, whatever the subject.
+	solo := []appstore.App{{Name: "Roblox", Seller: "Roblox Corporation"}, {Name: "Block Blast", Seller: "ARETIS LIMITED"}}
+	rbx := []Doc{{Source: finding.Source{Kind: KindNews, Title: "Epic Games to pay record $520 million fine", URL: "https://gameworldobserver.com/x"}, Text: "text"}}
+	if kept, dropped := offProduct(solo, &appstore.App{Name: "Roblox", Seller: "Roblox Corporation"}, "roblox.com", rbx); dropped != 0 || len(kept) != 1 {
+		t.Errorf("Roblox: dropped %d, want 0", dropped)
+	}
+
+	// No matched app: no product identity, nothing drops.
+	if _, dropped := offProduct(nil, nil, "", docs); dropped != 0 {
+		t.Errorf("no app: dropped %d, want 0", dropped)
 	}
 }
 

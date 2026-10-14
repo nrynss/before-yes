@@ -4,15 +4,16 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"golang.org/x/net/publicsuffix"
 	"math"
 	"net/url"
 	"regexp"
+	"slices"
 	"strings"
 	"time"
 	"unicode"
 
 	"github.com/nrynss/keel/cost"
+	"golang.org/x/net/publicsuffix"
 
 	"github.com/nrynss/before-yes/internal/appstore"
 	"github.com/nrynss/before-yes/internal/finding"
@@ -158,6 +159,11 @@ type Gathered struct {
 	// ReviewsFromPage when the feed returned nothing and the App Store web
 	// page stood in (T3.8), or empty when there are none.
 	ReviewSource string
+	// OffProduct counts the documents dropped before reading because their
+	// subject was a different product of the same developer (T3.10): a
+	// sibling App Store listing's pages, not this title's. The card's small
+	// print carries it as Stats.OffProduct.
+	OffProduct int
 }
 
 // Gatherer runs the source plan for one title.
@@ -321,6 +327,36 @@ func (g *Gatherer) Gather(ctx context.Context, title, ref string) (Gathered, err
 	for _, q := range plan {
 		if !q.Extract && found[q.Kind] == 0 {
 			miss(q.Kind, "")
+		}
+	}
+
+	// 5. Product identity (T3.10, fault 2). Before reading, drop the
+	// documents whose subject is a different product of the same developer,
+	// so a sibling's prices and features cannot decide this title's card. The
+	// title's own reviews and its store page are never dropped.
+	had := map[string]bool{}
+	for _, d := range out.Docs {
+		had[d.Source.Kind] = true
+	}
+	var dropped int
+	out.Docs, dropped = offProduct(apps, out.App, out.Host, out.Docs)
+	if dropped > 0 {
+		out.OffProduct = dropped
+		out.Notes = append(out.Notes, fmt.Sprintf("%d pages about another product of the same developer were not read", dropped))
+		for _, q := range plan {
+			if !had[q.Kind] || missing[q.Kind] {
+				continue
+			}
+			gone := true
+			for _, d := range out.Docs {
+				if d.Source.Kind == q.Kind {
+					gone = false
+					break
+				}
+			}
+			if gone {
+				miss(q.Kind, "every "+q.Kind+" page was about another product of the same developer")
+			}
 		}
 	}
 	return out, nil
@@ -686,6 +722,136 @@ func appName(s string) string {
 		s, _, _ = strings.Cut(s, sep)
 	}
 	return developer(s)
+}
+
+// nameTokens is a product or sibling name as word tokens, without its store
+// subtitle: "Minecraft: Play with Friends!" is [minecraft], "Khan Academy
+// Kids" is [khan academy kids].
+func nameTokens(name string) []string {
+	for _, sep := range []string{":", " - ", " – ", " — "} {
+		name, _, _ = strings.Cut(name, sep)
+	}
+	return normWords(name)
+}
+
+// runIn reports whether span appears in words as a consecutive run.
+func runIn(words, span []string) bool {
+	if len(span) == 0 || len(words) < len(span) {
+		return false
+	}
+	for i := 0; i+len(span) <= len(words); i++ {
+		if slices.Equal(words[i:i+len(span)], span) {
+			return true
+		}
+	}
+	return false
+}
+
+// subjectWords is a document's subject as word tokens: its title and its
+// URL's host and path, the places a page names what it is about.
+func subjectWords(d Doc) []string {
+	host, path := "", ""
+	if u, err := url.Parse(d.Source.URL); err == nil {
+		host = strings.TrimSuffix(strings.ToLower(u.Hostname()), ".")
+		path = u.Path
+	}
+	return normWords(d.Source.Title + " " + host + " " + path)
+}
+
+// namesProduct reports whether a document's subject names the title's
+// product: the page sits on the official host, the product's name appears in
+// the subject as a word run, or the page's host carries the official host's
+// own label as a part (khankids.zendesk.com is the Kids app's helpdesk even
+// though its title says only "Khan Academy").
+func namesProduct(subject, product []string, rawURL, host string) bool {
+	if host != "" && registrable(rawURL) == host {
+		return true
+	}
+	if runIn(subject, product) {
+		return true
+	}
+	if host == "" {
+		return false
+	}
+	if u, err := url.Parse(rawURL); err == nil {
+		for _, part := range strings.Split(strings.TrimSuffix(strings.ToLower(u.Hostname()), "."), ".") {
+			if part != "" && part == label(host) {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+// offProduct drops the documents whose subject is a different product of the
+// same developer (T3.10, fault 2). A sibling is another App Store hit by the
+// same seller whose name differs from the matched app's (Khan Academy beside
+// Khan Academy Kids, Minecraft Education beside Minecraft): a document is
+// dropped when its subject names a sibling, by name run or by the sibling's
+// own host, without naming the product itself. The title's own reviews and
+// its store page are never dropped, and nothing is dropped for a title with
+// no matched listing or no sibling beside it: for Roblox the brand is the
+// product, so any page naming the brand names the product and the filter
+// drops nothing. The input is not modified.
+func offProduct(apps []appstore.App, picked *appstore.App, host string, docs []Doc) ([]Doc, int) {
+	if picked == nil || strings.TrimSpace(picked.Seller) == "" {
+		return docs, 0
+	}
+	product := nameTokens(picked.Name)
+	var siblings [][]string
+	sibHosts := map[string]bool{}
+	for i := range apps {
+		a := &apps[i]
+		if strings.TrimSpace(a.Seller) == "" || !strings.EqualFold(strings.TrimSpace(a.Seller), strings.TrimSpace(picked.Seller)) {
+			continue
+		}
+		if appName(a.Name) == "" || appName(a.Name) == appName(picked.Name) {
+			continue
+		}
+		if ts := nameTokens(a.Name); len(ts) > 0 {
+			siblings = append(siblings, ts)
+			sibHosts[strings.Join(ts, "")] = true
+		}
+	}
+	if len(siblings) == 0 {
+		return docs, 0
+	}
+	kept := make([]Doc, 0, len(docs))
+	dropped := 0
+	for _, d := range docs {
+		if d.Source.Kind == KindReview || d.Source.Kind == KindStore {
+			kept = append(kept, d)
+			continue
+		}
+		subject := subjectWords(d)
+		if namesProduct(subject, product, d.Source.URL, host) {
+			kept = append(kept, d)
+			continue
+		}
+		off := false
+		for _, sib := range siblings {
+			if runIn(subject, sib) {
+				off = true
+				break
+			}
+		}
+		if !off {
+			if u, err := url.Parse(d.Source.URL); err == nil {
+				for _, part := range strings.Split(strings.TrimSuffix(strings.ToLower(u.Hostname()), "."), ".") {
+					if sibHosts[part] {
+						off = true
+						break
+					}
+				}
+			}
+		}
+		if off {
+			dropped++
+			continue
+		}
+		kept = append(kept, d)
+	}
+	return kept, dropped
 }
 
 // developer is a seller name reduced to letters and digits, without a

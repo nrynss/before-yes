@@ -222,8 +222,11 @@ func runOne(root, models string, e Expectation) Result {
 	p := &pipeline.Pipeline{
 		Gatherer: &pipeline.Gatherer{Store: publicFeed{appstore.New(srv.URL, "us"), appstore.New("", "us")}, Search: tc, Meter: meter, Now: now},
 		Reader:   &pipeline.Reader{Model: reader, Meter: meter},
-		Judge:    &pipeline.Judge{Model: judge, Meter: meter, Fast: fast, Think: think},
-		Now:      now,
+		// Entail runs the T3.10 entailment check on the reader's model
+		// (Nano), the client production will wire; the server's wiring is
+		// T4's.
+		Judge: &pipeline.Judge{Model: judge, Meter: meter, Fast: fast, Think: think, Entail: reader},
+		Now:   now,
 	}
 	ev, _, err := p.Collect(ctx, e.Title, "eval-"+e.Slug)
 	if err != nil {
