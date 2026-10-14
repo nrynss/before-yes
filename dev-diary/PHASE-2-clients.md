@@ -21,7 +21,7 @@ requires:   T0.1
 fixture-ok: yes
 size:       M · mid
 owns:       internal/model/model.go, internal/model/model_test.go
-status:     claimed:impl-t2.1
+status:     in-review
 ```
 One client for the OpenAI-style chat API that Token Factory, OpenRouter and NVIDIA's API all speak. Base URL, model name, prices per million tokens, max tokens, a per-minute pace, and an `extra` map merged into every request body all come from config. Moving a role from a free host to Token Factory is two settings.
 
