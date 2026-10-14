@@ -23,41 +23,56 @@ evidence_max_age_hours = 168
 
 # Judge thinking switches, merged into the judge's request bodies. Top-level
 # keys must stay above the first table header. The main pass turns thinking
-# off, and the conflict pass turns it on. UNCONFIRMED: the switch name comes
-# from the model test. Confirm it against Token Factory at T2.1b.
+# off, and the conflict pass turns it on. Confirmed against Token Factory at
+# T2.1b on both roles: the same prompt reported 4 output tokens with
+# enable_thinking false and about 180 with it true. reasoning.enabled did
+# nothing on that host. OpenRouter and build.nvidia.com each take a different
+# switch.
 judge_fast  = { chat_template_kwargs = { enable_thinking = false } }
 judge_think = { chat_template_kwargs = { enable_thinking = true } }
 
 # Reader: Nemotron 3 Nano on Token Factory. Reads review chunks and sources.
-# Prices are dollars per million tokens.
+# Prices are dollars per million tokens. Thinking is on by default on this
+# host and is billed as output: at T2.1b the same prompt reported 4 output
+# tokens with chat_template_kwargs enable_thinking false against about 180
+# with no switch at all. Nothing in this table turns it off, so the switch has
+# to reach the reader's calls another way, as a per-call extra or a new key.
 [reader]
 provider   = "tokenfactory"
 base_url   = "https://api.tokenfactory.nebius.com/v1"
-# UNCONFIRMED: check this model id against GET /v1/models at T2.1b before relying on it.
-model      = "nvidia/nvidia-nemotron-3-nano-30b-a3b"
+# Confirmed at T2.1b against GET /v1/models. The capitals are load-bearing:
+# the all-lowercase spelling answers HTTP 404.
+model      = "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B"
 input_per_m  = 0.06
 output_per_m = 0.24
 max_tokens   = 4096
-# Placeholder pacing. Confirm the Token Factory rate limit at T2.1b.
-per_minute   = 60
+# Confirmed at T2.1b: x-ratelimit-limit-requests reports 100 for this model,
+# counted per model rather than per account. The host scales it with load.
+per_minute   = 100
 
 # Judge: Nemotron 3 Super on Token Factory. Grades the areas on each card.
 [judge]
 provider   = "tokenfactory"
 base_url   = "https://api.tokenfactory.nebius.com/v1"
-# UNCONFIRMED: check this model id against GET /v1/models at T2.1b before relying on it.
+# Confirmed at T2.1b against GET /v1/models.
 model      = "nvidia/nemotron-3-super-120b-a12b"
 input_per_m  = 0.30
 output_per_m = 0.90
 max_tokens   = 4096
-# Placeholder pacing. Confirm the Token Factory rate limit at T2.1b.
-per_minute   = 60
+# Confirmed at T2.1b: x-ratelimit-limit-requests reports 300 for this model,
+# counted per model rather than per account. The host scales it with load.
+per_minute   = 300
 
 # Development alternative: free OpenRouter stand-ins. Uncomment to replace the
 # [reader] and [judge] tables above while developing. Do not use in the demo.
 # The reader stand-in is NOT Nano. It is a different model.
 # Replace the tables, do not add a second copy. Also point [secrets.reader] and
 # [secrets.judge] below at var = "OPENROUTER_KEY", or the stand-ins get no key.
+# Both ids are confirmed at T2.1b. This host ignores chat_template_kwargs and
+# turns thinking on by default; its switch is reasoning.enabled false, and
+# without it the reader's reply is all reasoning and no content (measured: 512
+# output tokens, empty text). Enabling these tables needs
+# extra = { reasoning = { enabled = false } } on each.
 #
 # [reader]
 # provider   = "openrouter"
