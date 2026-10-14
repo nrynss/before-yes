@@ -54,7 +54,7 @@ requires:   T2.1, T0.2, T0.3
 fixture-ok: no
 size:       S · mid
 owns:       internal/model/live_test.go, before-yes.toml.example
-status:     claimed:impl-t2.1b
+status:     in-review
 ```
 Behind `//go:build live`. For each host (Token Factory, OpenRouter, build.nvidia.com):
 - list `GET /v1/models` and record the exact Nemotron 3 Nano and Super ids;
