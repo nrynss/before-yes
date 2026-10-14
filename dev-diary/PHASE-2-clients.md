@@ -81,13 +81,24 @@ requires:   T2.1
 fixture-ok: yes
 size:       S · mid
 owns:       internal/model/model.go, internal/model/model_test.go
-status:     not-started
+status:     in-review
 ```
 Split from T2.1b's round-1 review (M3). The client's HTTP timeout is a fixed 3 minutes. Measured output rates vary between runs: about 65 to 90 tokens a second for Token Factory Nano, about 150 for Token Factory Super, and about 35 to 43 for OpenRouter's free judge (T2.1b, both review rounds). So a 16,000-token thinking call takes about 180 s to 245 s on Nano, which is at or past the timeout, and about 375 s to 450 s on OpenRouter, which is past it. Re-measure before choosing the floor and ceiling. The judge's conflict pass (T3.3) asks for 16,000 tokens with thinking on.
 
 Make the per-call deadline scale with the call's `max_tokens`, or make it a setting per role, with a floor and a ceiling. A timed-out call must still never book at $0, keeping T2.1's unmeasured-reply rule.
 
-**Done when:** A test shows a large `max_tokens` call is not cut at 3 minutes and a small one keeps a short deadline. The setting, if there is one, is in `before-yes.toml.example`.
+**Chosen design:** the deadline is derived from the call's `max_tokens`, with no new setting. `deadline = clamp(60 s + max_tokens / 30 tokens-a-second, 90 s, 15 min)`. The per-role `max_tokens` already says how long a call may run, so a second setting would only drift from it. The 30 tokens a second sits below the slowest rate measured, 35.
+
+**Measured:** a live run at T2.1c, four calls with `max_tokens` 4000 and thinking on, 16,000 tokens in all, about $0.006 spent. Rate is output tokens over wall-clock seconds.
+- Token Factory Nano, two calls: 4000 tokens in 59.0 s and 59.1 s, about 68 tokens a second.
+- Token Factory Super, one call: 4000 tokens in 25.7 s, about 156 tokens a second.
+- OpenRouter free judge, one call: 4000 tokens in 43.8 s, about 91 tokens a second. This is faster than the 35 to 43 that T2.1b measured, so the rate moves about 2.5 times between runs.
+
+**Arithmetic:** a 16,000-token call on Nano at 68 tokens a second takes about 236 s, which the old 180 s cut. Its new deadline is 60 + 16,000 / 30 = 593 s. On the slowest measured judge rate, 35 tokens a second, it takes about 457 s, still inside 593 s. A 100-token call gets 60 + 3 = 63 s, which the 90 s floor raises to 90 s. A 4096-token call gets 60 + 137 = 197 s. Calls at or above 25,200 tokens hit the 15-minute ceiling.
+
+**Timed-out calls:** a call that gets no reply before its deadline returns an error that matches `context.DeadlineExceeded`, is not retried, and returns an unmeasured `Reply` priced at the estimate it was reserved at. The meter in `internal/spend` books nothing on a work error, so the caller must book that price.
+
+**Done when:** A test shows a large `max_tokens` call is not cut at 3 minutes and a small one keeps a short deadline. The setting, if there is one, is in `before-yes.toml.example`. Met: `TestDeadlineScalesWithMaxTokens` and `TestLargeCallIsNotCutWhileSmallOneIs` in `internal/model/model_test.go`, and no setting was added, so `before-yes.toml.example` is unchanged. A timed-out call is covered by `TestTimedOutCallIsPricedAtEstimateNotZero`.
 
 ---
 

@@ -719,6 +719,143 @@ func TestStartsArePacedUnderThePerMinuteCap(t *testing.T) {
 	}
 }
 
+// The deadline grows with max tokens, so a call that may write 16,000 tokens
+// is not cut at the three minutes a fixed deadline gave every call.
+func TestDeadlineScalesWithMaxTokens(t *testing.T) {
+	const threeMinutes = 3 * time.Minute
+	if got := DefaultTimeouts.For(16000); got <= threeMinutes {
+		t.Errorf("16000 max tokens: deadline %v, want past three minutes", got)
+	}
+	// 16,000 at the 30 tokens-a-second floor is 533 s, plus 60 s of slack.
+	if got := DefaultTimeouts.For(16000); got < 590*time.Second || got > 600*time.Second {
+		t.Errorf("16000 max tokens: deadline %v, want about 593 s", got)
+	}
+	// A short call keeps the floor, well inside three minutes.
+	if got := DefaultTimeouts.For(100); got != 90*time.Second {
+		t.Errorf("100 max tokens: deadline %v, want the 90 s floor", got)
+	}
+	// The default 4096 cap gets 60 s plus 137 s.
+	if got := DefaultTimeouts.For(4096); got < 190*time.Second || got > 200*time.Second {
+		t.Errorf("4096 max tokens: deadline %v, want about 197 s", got)
+	}
+	// A very large cap is held at the ceiling.
+	if got := DefaultTimeouts.For(1 << 30); got != 15*time.Minute {
+		t.Errorf("huge max tokens: deadline %v, want the 15 min ceiling", got)
+	}
+	prev := time.Duration(0)
+	for n := 0; n <= 32000; n += 500 {
+		got := DefaultTimeouts.For(n)
+		if got < prev {
+			t.Fatalf("deadline fell from %v to %v at %d tokens", prev, got, n)
+		}
+		prev = got
+	}
+}
+
+// A scaled-down clock makes the test about the deadline rule and not the wall
+// clock. The small call's deadline is the floor and cuts a 200 ms reply; the
+// large call's deadline is well past it and lets the same reply through.
+func TestLargeCallIsNotCutWhileSmallOneIs(t *testing.T) {
+	var n atomic.Int32
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		n.Add(1)
+		time.Sleep(200 * time.Millisecond)
+		io.WriteString(w, `{"choices":[{"message":{"content":"hi"}}],`+
+			`"usage":{"prompt_tokens":10,"completion_tokens":10}}`)
+	}))
+	defer srv.Close()
+
+	c, err := New(Settings{BaseURL: srv.URL, Model: "m", InputPerM: nanoInPerM, OutputPerM: nanoOutPerM}, keyFunc("k"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	fast(c)
+	// 100 tokens at 10,000 a second is 10 ms, under the 50 ms floor; 4000 is 400 ms.
+	c.Timeouts = Timeouts{Floor: 50 * time.Millisecond, Ceiling: 10 * time.Second, Slack: 0, MinTokensPerSecond: 10000}
+	msgs := []Message{{Role: "user", Content: "hello"}}
+
+	if _, err := c.Chat(context.Background(), msgs, Options{MaxTokens: 100}); !errors.Is(err, errTimeout) {
+		t.Fatalf("small call: err %v, want a timeout at the floor", err)
+	}
+	if got := n.Load(); got != 1 {
+		t.Fatalf("small call sent %d requests, want 1 (a timeout is not retried)", got)
+	}
+
+	// 4000 tokens at 10,000 a second is 400 ms, past the 200 ms reply.
+	r, err := c.Chat(context.Background(), msgs, Options{MaxTokens: 4000})
+	if err != nil {
+		t.Fatalf("large call cut at %v: %v", c.Timeouts.For(4000), err)
+	}
+	if r.Text != "hi" || !r.Measured {
+		t.Errorf("large call reply %+v, want the measured reply", r)
+	}
+}
+
+// A call that gets no reply before its deadline may have been billed for the
+// tokens written before it, so it is priced at the estimate it was reserved
+// at, never at zero, and the timeout is reported.
+func TestTimedOutCallIsPricedAtEstimateNotZero(t *testing.T) {
+	var n atomic.Int32
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		n.Add(1)
+		select {
+		case <-r.Context().Done():
+		case <-time.After(300 * time.Millisecond):
+		}
+	}))
+	defer srv.Close()
+
+	c, err := New(Settings{BaseURL: srv.URL, Model: "m", InputPerM: nanoInPerM, OutputPerM: nanoOutPerM}, keyFunc("k"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	fast(c)
+	c.Timeouts = Timeouts{Floor: 20 * time.Millisecond, Ceiling: time.Second, Slack: 0, MinTokensPerSecond: 10000}
+	msgs := []Message{{Role: "user", Content: "hello there, this message has some length to it"}}
+	o := Options{MaxTokens: 100}
+
+	r, err := c.Chat(context.Background(), msgs, o)
+	if !errors.Is(err, errTimeout) || !errors.Is(err, context.DeadlineExceeded) {
+		t.Fatalf("err %v, want a timeout that matches context.DeadlineExceeded", err)
+	}
+	if got := n.Load(); got != 1 {
+		t.Errorf("sent %d requests, want 1 (a timeout is not retried)", got)
+	}
+	if r.Measured {
+		t.Error("a call with no reply is unmeasured")
+	}
+	if want := c.Estimate(msgs, o); r.Price != want || r.Price <= 0 {
+		t.Errorf("timed-out price %v, want the estimate %v, never zero", r.Price, want)
+	}
+}
+
+// The caller's own cancellation is not a model timeout, so it does not take
+// the estimate path.
+func TestCallerCancelIsNotATimeout(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		select {
+		case <-r.Context().Done():
+		case <-time.After(300 * time.Millisecond):
+		}
+	}))
+	defer srv.Close()
+
+	c, err := New(Settings{BaseURL: srv.URL, Model: "m", InputPerM: nanoInPerM, OutputPerM: nanoOutPerM}, keyFunc("k"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	fast(c)
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Millisecond)
+	defer cancel()
+	r, err := c.Chat(ctx, []Message{{Role: "user", Content: "hi"}}, Options{})
+	if err == nil || errors.Is(err, errTimeout) {
+		t.Fatalf("err %v, want the caller's cancellation and not a model timeout", err)
+	}
+	if r.Price != 0 {
+		t.Errorf("caller cancel priced %v, want 0: no reply and no estimate", r.Price)
+	}
+}
+
 func TestNewRequiresBaseURLAndModel(t *testing.T) {
 	cases := map[string]Settings{
 		"no base URL": {Model: "m"},
