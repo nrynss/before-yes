@@ -44,6 +44,8 @@ func (e uncacheableEvidenceError) Error() string {
 type flightState struct {
 	leaderToken uint64
 	pCollectHit bool
+	putCalled   bool
+	putPayload  []byte
 }
 
 // EvidenceCacheConfig configures NewEvidenceCache.
@@ -110,6 +112,13 @@ func NewEvidenceCache(cfg EvidenceCacheConfig) (*EvidenceCache, error) {
 	}, nil
 }
 
+// activeFlightsCount returns the number of active singleflight deduplication entries.
+func (c *EvidenceCache) activeFlightsCount() int {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	return len(c.activeFlights)
+}
+
 // Get returns the stored evidence under key. It satisfies pipeline.EvidenceCache.
 // Only live entries with content-type "application/json" are returned.
 // ErrNotFound and expired entries return (Evidence{}, false, nil). A store fault
@@ -139,12 +148,23 @@ func (c *EvidenceCache) Get(ctx context.Context, key string) (pipeline.Evidence,
 }
 
 // Put stores ev under key with content-type "application/json" and the current
-// timestamp. It satisfies pipeline.EvidenceCache.
+// timestamp. It satisfies pipeline.EvidenceCache. If key is actively being
+// collected in an in-process flight, Put stages the payload for the flight maker
+// to hand to Keel's storeResult, avoiding a redundant double-write.
 func (c *EvidenceCache) Put(ctx context.Context, key string, ev pipeline.Evidence) error {
 	b, err := json.Marshal(ev)
 	if err != nil {
 		return fmt.Errorf("server: marshal evidence: %w", err)
 	}
+	c.mu.Lock()
+	if st, ok := c.activeFlights[key]; ok {
+		st.putCalled = true
+		st.putPayload = b
+		c.mu.Unlock()
+		return nil
+	}
+	c.mu.Unlock()
+
 	entry := cache.Entry{
 		Payload:     b,
 		ContentType: "application/json",
@@ -186,6 +206,14 @@ func (c *EvidenceCache) Collect(ctx context.Context, p *pipeline.Pipeline, title
 
 	myToken := atomic.AddUint64(&c.seq, 1)
 
+	defer func() {
+		c.mu.Lock()
+		if st := c.activeFlights[key]; st != nil && st.leaderToken == myToken {
+			delete(c.activeFlights, key)
+		}
+		c.mu.Unlock()
+	}()
+
 	maker := func(ctx context.Context) (cache.Result, error) {
 		st := &flightState{leaderToken: myToken}
 		c.mu.Lock()
@@ -196,25 +224,23 @@ func (c *EvidenceCache) Collect(ctx context.Context, p *pipeline.Pipeline, title
 		if err != nil {
 			return cache.Result{}, err
 		}
+
+		c.mu.Lock()
 		st.pCollectHit = pHit
+		putCalled := st.putCalled
+		payload := st.putPayload
+		c.mu.Unlock()
 
 		// Check whether p.Collect cached the evidence. If p.Collect deemed the
 		// evidence thin (e.g. failed chunks or transient source failures), it did not
-		// call Put. We must not let Keel's GetOrMake store it either.
-		_, getErr := c.store.Get(ctx, key)
-		if errors.Is(getErr, cache.ErrNotFound) {
+		// call Put. Returning uncacheableEvidenceError ensures Keel's GetOrMake does
+		// not store it, and any expired row in SQLite remains untouched.
+		if !putCalled {
 			return cache.Result{}, uncacheableEvidenceError{ev: ev, hit: pHit}
 		}
-		if getErr != nil {
-			return cache.Result{}, getErr
-		}
 
-		b, err := json.Marshal(ev)
-		if err != nil {
-			return cache.Result{}, err
-		}
 		return cache.Result{
-			Payload:     b,
+			Payload:     payload,
 			ContentType: "application/json",
 			ChargeRef:   ref,
 		}, nil
@@ -226,12 +252,11 @@ func (c *EvidenceCache) Collect(ctx context.Context, p *pipeline.Pipeline, title
 		if errors.As(err, &ue) {
 			c.mu.Lock()
 			st := c.activeFlights[key]
-			c.mu.Unlock()
-
 			hit := true
 			if st != nil && st.leaderToken == myToken && !ue.hit {
 				hit = false
 			}
+			c.mu.Unlock()
 			return ue.ev, hit, nil
 		}
 		return pipeline.Evidence{}, false, err
@@ -245,12 +270,12 @@ func (c *EvidenceCache) Collect(ctx context.Context, p *pipeline.Pipeline, title
 
 	c.mu.Lock()
 	st := c.activeFlights[key]
-	c.mu.Unlock()
-
 	hit := true
 	if st != nil && st.leaderToken == myToken && !st.pCollectHit {
 		hit = false
 	}
+	c.mu.Unlock()
+
 	return ev, hit, nil
 }
 

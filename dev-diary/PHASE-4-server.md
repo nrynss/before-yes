@@ -64,6 +64,8 @@ A failed make is never cached.
   - `EvidenceCache` implements `pipeline.EvidenceCache` over `cache.Store` and wraps Keel `cache.Cache` for single-flight deduplication via `Collect(ctx, p, title, ref)`.
   - Reuses `pipeline.EvidenceKey` verbatim.
   - Thin / uncacheable evidence produces a private error in the maker so Keel's `GetOrMake` never stores it, while callers sharing the flight unwrap and receive the evidence.
+  - `Put` stages the payload in active flight state during `Collect`, letting Keel's `storeResult` perform the sole persistent write on miss, preventing redundant double-writes and detecting thin collects without querying expired store rows.
+  - Active flights are cleaned up on `Collect` return via defer matching leader tokens, preventing in-memory map leaks.
   - `CardCache` checks `cards.Latest` within `MaxAge`. Failed makes never write to the card store.
 - Contract notes:
   - Keel IDs are bare 32-hex characters; the `c_` prefixes in `docs/api.md` are illustrative.

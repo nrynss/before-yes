@@ -267,6 +267,9 @@ func TestConcurrentIdenticalChecksCollectOnce(t *testing.T) {
 	if hitCount != n-1 {
 		t.Errorf("hitCount = %d; want %d joiners with hit=true", hitCount, n-1)
 	}
+	if n := ec.activeFlightsCount(); n != 0 {
+		t.Errorf("activeFlights count after concurrent collect = %d; want 0", n)
+	}
 }
 
 // TestCardFoundAgainByTitleAndAge tests the card-level cache:
@@ -804,5 +807,186 @@ func TestCorruptEvidenceRecollects(t *testing.T) {
 	}
 	if recovered.Title != "Roblox" {
 		t.Errorf("recovered.Title = %q; want Roblox", recovered.Title)
+	}
+}
+
+// TestExpiredEntryNotOverwrittenByThinEvidence pins H1:
+//  1. Populate EvidenceCache with a valid, cacheable collect for "Roblox".
+//  2. Advance test clock past MaxAge, confirming ec.Get returns ok=false.
+//  3. Collect again with failExtract = true (producing Gathered.Failures, which p.Collect skips caching).
+//  4. Assert that the store row is NOT updated (its CreatedAt remains the old timestamp),
+//     and subsequent ec.Get remains ok=false (thin evidence was NOT stored).
+func TestExpiredEntryNotOverwrittenByThinEvidence(t *testing.T) {
+	db := openTestDB(t, filepath.Join(t.TempDir(), "h1.db"))
+	store := openEvidenceStore(t, db, "evidence")
+
+	now := time.Date(2026, 10, 14, 12, 0, 0, 0, time.UTC)
+	clock := func() time.Time { return now }
+
+	ec, err := NewEvidenceCache(EvidenceCacheConfig{
+		Store:  store,
+		MaxAge: 24 * time.Hour,
+		Now:    clock,
+	})
+	if err != nil {
+		t.Fatalf("NewEvidenceCache: %v", err)
+	}
+
+	searcher := &fakeSearcher{}
+	chatter := &fakeChatter{}
+	p := &pipeline.Pipeline{
+		Gatherer: &pipeline.Gatherer{
+			Store:  fakeStorefronter{country: "us"},
+			Search: searcher,
+			Meter:  fakeMeter{},
+		},
+		Reader: &pipeline.Reader{Model: chatter, Meter: fakeMeter{}},
+		Cache:  ec,
+		Now:    clock,
+	}
+
+	// 1. Valid collect for Roblox.
+	ev1, hit, err := ec.Collect(context.Background(), p, "Roblox", "ref-1")
+	if err != nil || hit {
+		t.Fatalf("initial Collect: hit=%v, err=%v; want hit=false, nil", hit, err)
+	}
+	if ev1.Title != "Roblox" {
+		t.Fatalf("ev1.Title = %q; want Roblox", ev1.Title)
+	}
+
+	key := pipeline.EvidenceKey("Roblox", "us", "nano")
+	origEntry, err := store.Get(context.Background(), key)
+	if err != nil {
+		t.Fatalf("store.Get after initial collect: %v", err)
+	}
+
+	// 2. Advance clock past 24h MaxAge. ec.Get must report expired (ok=false).
+	now = now.Add(25 * time.Hour)
+	if _, ok, err := ec.Get(context.Background(), key); err != nil || ok {
+		t.Fatalf("ec.Get after 25h: ok=%v, err=%v; want ok=false, nil", ok, err)
+	}
+
+	// 3. Collect again with failExtract = true -> generates Gathered.Failures so p.Collect skips p.Cache.Put.
+	searcher.failExtract = true
+	evThin, hit, err := ec.Collect(context.Background(), p, "Roblox", "ref-thin")
+	if err != nil {
+		t.Fatalf("Collect with failExtract: %v", err)
+	}
+	if hit {
+		t.Errorf("thin Collect reported hit=true; want hit=false")
+	}
+	if len(evThin.Stats.MissingKinds) == 0 && searcher.extractCalls < 2 {
+		t.Errorf("expected extract to be called for thin collect; extractCalls=%d", searcher.extractCalls)
+	}
+
+	// 4. Verify store row was NOT updated.
+	entryAfter, err := store.Get(context.Background(), key)
+	if err != nil {
+		t.Fatalf("store.Get after thin collect: %v", err)
+	}
+	if !entryAfter.CreatedAt.Equal(origEntry.CreatedAt) {
+		t.Errorf("store entry CreatedAt was updated: before=%v, after=%v; want unchanged", origEntry.CreatedAt, entryAfter.CreatedAt)
+	}
+
+	// ec.Get must STILL report ok=false (thin evidence was not cached).
+	if _, ok, err := ec.Get(context.Background(), key); err != nil || ok {
+		t.Errorf("ec.Get after thin collect returned ok=%v, err=%v; want ok=false (thin evidence must not be cached)", ok, err)
+	}
+}
+
+// TestActiveFlightsDoesNotLeak pins M1:
+// Verifies that keys are deleted from activeFlights upon completion of Collect,
+// avoiding unbounded in-memory map growth.
+func TestActiveFlightsDoesNotLeak(t *testing.T) {
+	db := openTestDB(t, filepath.Join(t.TempDir(), "m1.db"))
+	store := openEvidenceStore(t, db, "evidence")
+
+	ec, err := NewEvidenceCache(EvidenceCacheConfig{Store: store})
+	if err != nil {
+		t.Fatalf("NewEvidenceCache: %v", err)
+	}
+
+	searcher := &fakeSearcher{}
+	chatter := &fakeChatter{}
+	p := &pipeline.Pipeline{
+		Gatherer: &pipeline.Gatherer{
+			Store:  fakeStorefronter{country: "us"},
+			Search: searcher,
+			Meter:  fakeMeter{},
+		},
+		Reader: &pipeline.Reader{Model: chatter, Meter: fakeMeter{}},
+		Cache:  ec,
+	}
+
+	// 1. Sequential collects across 100 distinct titles.
+	for i := 0; i < 100; i++ {
+		title := fmt.Sprintf("Title-%d", i)
+		_, _, err := ec.Collect(context.Background(), p, title, fmt.Sprintf("ref-%d", i))
+		if err != nil {
+			t.Fatalf("Collect(%s): %v", title, err)
+		}
+		if n := ec.activeFlightsCount(); n != 0 {
+			t.Fatalf("activeFlights count after Collect(%s) = %d; want 0", title, n)
+		}
+	}
+
+	// 2. Error collect must also clean up activeFlights.
+	searcher.failSearch = true
+	_, _, err = ec.Collect(context.Background(), p, "FailTitle", "ref-err")
+	if err == nil {
+		t.Fatal("expected search failure error")
+	}
+	if n := ec.activeFlightsCount(); n != 0 {
+		t.Fatalf("activeFlights count after failed Collect = %d; want 0", n)
+	}
+	searcher.failSearch = false
+
+	// 3. Thin/uncacheable evidence collect must also clean up activeFlights.
+	searcher.failExtract = true
+	_, _, err = ec.Collect(context.Background(), p, "ThinTitle", "ref-thin")
+	if err != nil {
+		t.Fatalf("thin Collect: %v", err)
+	}
+	if n := ec.activeFlightsCount(); n != 0 {
+		t.Fatalf("activeFlights count after thin Collect = %d; want 0", n)
+	}
+}
+
+// TestCacheMissSingleStorePut pins L1:
+// Verifies that a cache miss on cold evidence results in exactly ONE store.Put invocation
+// (staging in Put, single write via Keel's storeResult), rather than a redundant double-write.
+func TestCacheMissSingleStorePut(t *testing.T) {
+	db := openTestDB(t, filepath.Join(t.TempDir(), "l1.db"))
+	baseStore := openEvidenceStore(t, db, "evidence")
+	recStore := &recordingStore{Store: baseStore}
+
+	ec, err := NewEvidenceCache(EvidenceCacheConfig{Store: recStore})
+	if err != nil {
+		t.Fatalf("NewEvidenceCache: %v", err)
+	}
+
+	searcher := &fakeSearcher{}
+	chatter := &fakeChatter{}
+	p := &pipeline.Pipeline{
+		Gatherer: &pipeline.Gatherer{
+			Store:  fakeStorefronter{country: "us"},
+			Search: searcher,
+			Meter:  fakeMeter{},
+		},
+		Reader: &pipeline.Reader{Model: chatter, Meter: fakeMeter{}},
+		Cache:  ec,
+	}
+
+	_, hit, err := ec.Collect(context.Background(), p, "Roblox", "ref-1")
+	if err != nil || hit {
+		t.Fatalf("Collect: hit=%v, err=%v; want hit=false, nil", hit, err)
+	}
+
+	recStore.mu.Lock()
+	putCalls := len(recStore.keys)
+	recStore.mu.Unlock()
+
+	if putCalls != 1 {
+		t.Errorf("store.Put called %d times on cache miss; want exactly 1", putCalls)
 	}
 }
