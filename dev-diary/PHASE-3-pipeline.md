@@ -647,7 +647,7 @@ requires:   T3.9b
 fixture-ok: no
 size:       M · frontier
 owns:       internal/pipeline/judge.go, internal/pipeline/judge_test.go, internal/pipeline/read.go, internal/pipeline/read_test.go, internal/pipeline/gather.go (the product-identity filter only), tools/eval/live.go, testdata/eval/replies/, docs/budget.md (re-measured figures only)
-status:     in-review
+status:     done
 ```
 After T3.9b every standing grade cites verified, in-area findings, but all three demo titles read **no**. Roblox's flags are earned. Minecraft's and Khan Academy Kids' are not: the judge flags whatever it can cite, with no proportion. Three faults remain:
 
@@ -702,6 +702,6 @@ Expected by T0.5: Roblox no, Minecraft yes with settings, Khan yes. Minecraft no
 - [x] No finding reaches a card without a verified quote. (`finding.Verify` in the reader; the invented R356 quote never reaches the card in `TestReview355DecidesTheCard`.)
 - [x] A second age on cached evidence makes no Tavily or reader call. (`TestReview355DecidesTheCard`: the second age books only the judge.)
 - [ ] Alternatives found with Tavily and checked the same way.
-- [ ] Offline eval baseline and live Token Factory results recorded.
-- [ ] All four kinds of title handled.
-- [ ] App Store page reviews stand in when the review feed is empty (T3.8).
+- [x] Offline eval baseline and live Token Factory results recorded. (T3.6b recorded the first live run; T3.9b and T3.10 re-recorded after each prompt change, and every replay pins the numbers.)
+- [x] All four kinds of title handled. (T3.7: ios, android, console_pc and youtube, plus the user-decided unknown kind; one fixture per kind pins each plan.)
+- [x] App Store page reviews stand in when the review feed is empty (T3.8). (Pinned on all four captured pages; a feed error falls back too, by user decision.)
