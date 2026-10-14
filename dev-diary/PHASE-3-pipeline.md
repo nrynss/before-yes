@@ -555,13 +555,26 @@ The verdict rule (any `flag` makes **no**) is unchanged. Only unsupported flags 
 - The demo titles' verdicts are reported to the user. Only then does any title get re-picked.
 
 
-**Implementation notes:**
-- `ground` in `judge.go` runs after `checklist.Enforce`. A `flag` keeps only cited verified risk findings whose quote shares at least two content words with its reason; an `ok_with_setting` the same, with risk or mitigation findings, against its reason and setting. Only the verified quote counts, not the reader's claim, and the title's own words do not count. A grade whose reason names none becomes `unknown` with the reason "Changed to unknown: the evidence was thin. No verified quote backs the reason the judge gave." and a `reason_without_quote` demotion. The judge's request is unchanged, so the recordings replay.
-- Pins: `TestRecordedRepliesGradesRestOnVerifiedQuotes` (replays T3.6b's Token Factory recordings) and `TestGroundDropsReasonsNoQuoteBacks`.
-- Replay, after: Roblox **no** (grades 3/6, quotes 1/6); Minecraft **unclear** (2/6, 1/5; all six areas thin); Khan Academy Kids **no** (2/6, 0/5; contact thin). Total 7/18, 2/16, against T3.6b's 5/18, 2/16. The stand-in baseline is unchanged.
-- No prompt or `max_tokens` change, so no re-record is needed. Khan's remaining flags (age gating on the 2nd-grade ceiling, content) rest on real quotes; correcting the age-gating misjudgement would need a judge prompt change and a live re-record.
-- **User-approved exceptions to owns:** `tools/eval/standin.go` (the stand-in judge's reasons quote the findings they cite) and the `ruleJudge` stub in `internal/pipeline/pipeline_test.go` (same). Without them the rule demotes the stand-ins' generic reasons and the gate fails.
-- **Open item:** the word-overlap test is loose. Roblox `data` (ok_with_setting) stands on a tracking quote sharing "data" and "collect", though no quote backs the deletion setting it names. Roblox `developer_record` (flag) stands on a forum quote about new safety protections, not on a fine or lawsuit.
+**Implementation notes (after round 1):**
+- `ground` in `judge.go` runs after `checklist.Enforce`. A cited finding is named by a reason only when the reason carries a verbatim run of four consecutive words of its verified quote, at least two of them content words, after normalising case and punctuation (the whole quote if it is shorter). The reader's claim never counts. A `flag` needs a named risk finding; an `ok_with_setting` needs a named risk or mitigation finding **and**, separately, its setting inside a cited mitigation quote (a run of three words, or the whole setting if shorter). A grade that fails becomes `unknown`, its setting is cleared, a `reason_without_quote` or `setting_without_quote` demotion is recorded, and its area goes into `Judgement.Thin` and the additive `Card.thin_areas` field (`card-unclear.json` shows one). The judge's request is unchanged, so the recordings replay.
+- Pins: `TestRecordedRepliesGradesRestOnVerifiedQuotes`, `TestGroundRequiresVerbatimRuns` (holds the round-1 attack case and the unbacked "Turn on Delete My Account" setting), `TestThinAreasReachTheCard`.
+- Replay, after round 1: Roblox **unclear** (grades 1/6, quotes 1/6; all six areas thin); Minecraft **unclear** (2/6, 1/5; all six thin); Khan Academy Kids **unclear** (2/6, 0/5; contact, age gating and content thin). Total 5/18, 2/16, against T3.6b's 5/18, 2/16. The Super judge paraphrases and never quotes, so with an unchanged prompt no recorded flag or setting survives. The stand-in baseline is unchanged.
+- The two Roblox open-item cases from the first version now fall to unknown: `data` (no quote names its deletion setting) and `developer_record` (its reason carries no run of the safety-protections quote).
+- **User-approved exceptions to owns:** `tools/eval/standin.go` (the stand-in judge's reasons quote the findings they cite) and the `ruleJudge` stub in `internal/pipeline/pipeline_test.go` (its reasons quote, and its setting names a quoted mitigation). `internal/pipeline/pipeline.go` gains one line copying `Judgement.Thin` onto the card, for M1.
+
+**Reader max_tokens, descoped by the user to a prepared change (step 3 of the brief):**
+- Baseline on replay, unquoted drops over raw findings: Roblox 60/219 (27.4%), Minecraft 70/310 (22.6%), Khan Academy Kids 34/176 (19.3%); total 164/705 (23.3%). Reader replies at the 4,096 cap: Roblox 1 of 36, Minecraft 2 of 45, Khan 1 of 22 (4 in all; the "fifteen" above counted more than reader replies).
+- Done: `before-yes.toml.example` `[reader] max_tokens = 8192` (was 4096). The cap is a client setting, not part of a request's options, so it is not in the replay key and the recordings still replay.
+- Not done, for the local orchestrator: the eval's live reader is pinned at `MaxTokens: 4096` in `tools/eval/live.go` (`liveSets["tokenfactory"].reader`), outside this task. To measure, change that to 8192, delete `testdata/eval/replies/<slug>/` for the three titles, and run `go run ./tools/eval -models live -live-ledger <file outside the repo>` with the keys exported (about $0.10). Then compare the unquoted rate with the baseline above. A judge prompt change for Khan would re-record the same way, `-live-only khan-academy-kids`.
+
+**Round 1 remediation:**
+
+| Finding | Fix | Pin |
+|---|---|---|
+| H1 two-word overlap is gameable | Verbatim run of 4 words (2 content) of a cited quote | `TestGroundRequiresVerbatimRuns` (attack case falls to unknown); `TestRecordedRepliesGradesRestOnVerifiedQuotes` |
+| H2 setting never checked | Setting must sit in a cited mitigation quote on its own | `TestGroundRequiresVerbatimRuns` ("Turn on Delete My Account" falls to unknown) |
+| M1 thin signal only in prose | `Card.thin_areas` (additive), from `Judgement.Thin`; `card-unclear.json` updated | `TestThinAreasReachTheCard`; `TestExamplesCoverEveryField`; `TestExamplesObeyRules` |
+| M2 max_tokens bullet open | toml.example reader cap 8192; live measurement descoped by the user, exact re-record recorded above; baseline unquoted rate measured | replay still 0 misses |
 
 ---
 

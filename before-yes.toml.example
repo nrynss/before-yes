@@ -48,7 +48,10 @@ base_url   = "https://api.tokenfactory.nebius.com/v1"
 model      = "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B"
 input_per_m  = 0.06
 output_per_m = 0.24
-max_tokens   = 4096
+# Raised from 4096 at T3.9: some reader replies hit 4096 and were cut. The
+# cap is not part of a recorded request, so replays are unaffected; billing
+# is by tokens actually used.
+max_tokens   = 8192
 # Confirmed at T2.1b: x-ratelimit-limit-requests reports 100 for this model,
 # counted per model rather than per account. The host scales it with load.
 per_minute   = 100
