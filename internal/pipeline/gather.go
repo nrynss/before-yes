@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"golang.org/x/net/publicsuffix"
 	"math"
 	"net/url"
 	"regexp"
@@ -187,7 +188,7 @@ func (g *Gatherer) Gather(ctx context.Context, title, ref string) (Gathered, err
 	}
 	out.App = pickApp(apps, title)
 	if out.App != nil {
-		if h := registrable(out.App.SellerURL); h != "" {
+		if h := officialDomain(out.App.SellerURL); h != "" {
 			out.Host, out.HostFrom = h, "seller_url"
 		}
 	}
@@ -297,7 +298,7 @@ func (g *Gatherer) policyPages(ctx context.Context, ref string, plan []Query, hi
 		urls = append(urls, c...)
 		if len(c) == 0 {
 			for _, h := range hits[q.Name] {
-				if homepage(h.URL) && (host == "" || registrable(h.URL) == host) {
+				if host != "" && homepage(h.URL) && registrable(h.URL) == host {
 					homes[q.Kind] = append(homes[q.Kind], h.URL)
 					if !contains(urls, h.URL) {
 						urls = append(urls, h.URL)
@@ -305,7 +306,9 @@ func (g *Gatherer) policyPages(ctx context.Context, ref string, plan []Query, hi
 					break
 				}
 			}
-			if len(homes[q.Kind]) == 0 {
+			if len(homes[q.Kind]) == 0 && host == "" {
+				notes = append(notes, fmt.Sprintf("no official host known, so no homepage is followed for a %s page", q.Kind))
+			} else if len(homes[q.Kind]) == 0 {
 				notes = append(notes, fmt.Sprintf("no %s page on the official host to read", q.Kind))
 			}
 		}
@@ -335,7 +338,7 @@ func (g *Gatherer) policyPages(ctx context.Context, ref string, plan []Query, hi
 			switch {
 			case !ok:
 				notes = append(notes, fmt.Sprintf("%s page could not be read: %s", kind, u))
-			case errorPage(p.RawContent):
+			case errorPage(p.Title, p.RawContent):
 				notes = append(notes, fmt.Sprintf("%s page is an error page: %s", kind, u))
 			case !about(kind, p.URL, p.Title, p.RawContent):
 				notes = append(notes, fmt.Sprintf("%s hit is not a %s page: %s", kind, kind, u))
@@ -363,7 +366,7 @@ func (g *Gatherer) policyPages(ctx context.Context, ref string, plan []Query, hi
 	for _, k := range kinds {
 		for _, h := range homes[k] {
 			p, ok := pages[h]
-			if !ok || errorPage(p.RawContent) {
+			if !ok || errorPage(p.Title, p.RawContent) {
 				notes = append(notes, fmt.Sprintf("homepage could not be read, so no %s link could be followed: %s", k, h))
 				continue
 			}
@@ -393,14 +396,15 @@ func (g *Gatherer) policyPages(ctx context.Context, ref string, plan []Query, hi
 
 var linkRE = regexp.MustCompile(`https?://[^\s<>()\[\]"'|]+`)
 
-// pageLinks are the absolute links in a page's text that sit on host and
-// whose path names kind, in page order, each once.
+// pageLinks are the absolute links in a page's text that sit on host's
+// registrable domain and whose path names kind, in page order, each once.
+// With no official host there is nothing to stay on, so nothing is followed.
 func pageLinks(text, host, kind string) []string {
 	var out []string
 	for _, l := range linkRE.FindAllString(text, -1) {
 		l = strings.TrimRight(l, ".,;:")
 		u, err := url.Parse(l)
-		if err != nil || (host != "" && registrable(l) != host) {
+		if err != nil || host == "" || registrable(l) != host {
 			continue
 		}
 		if names(kind, u.Path) && !contains(out, l) {
@@ -532,9 +536,9 @@ func pickApp(apps []appstore.App, title string) *appstore.App {
 // (minecraft.wiki, roblox.app, tocaboca.co.uk) or a look-alike name never
 // passes: no listing names it.
 func hostFromHits(hits []tavily.Result, apps []appstore.App, picked *appstore.App, title string) (string, *appstore.App) {
-	first := firstWord(title)
+	want := appName(title)
 	for _, h := range hits {
-		dom := registrable(h.URL)
+		dom := officialDomain(h.URL)
 		if dom == "" {
 			continue
 		}
@@ -549,7 +553,16 @@ func hostFromHits(hits []tavily.Result, apps []appstore.App, picked *appstore.Ap
 				}
 				continue
 			}
-			if developer(a.Seller) == label(dom) && first != "" && firstWord(a.Name) == first {
+			// With no picked app, the developer must be named for the
+			// domain, and the listing must be the title itself, or the
+			// developer named for the whole title, or a listing that opens
+			// with the developer's full name where that name is more than
+			// the title's first word ("Toca Boca World" by Toca Boca AB
+			// for "Toca Life World"). A first word alone lets "Toca Ltd"
+			// at toca.xyz pass for "Toca Boca World".
+			dev := developer(a.Seller)
+			if want != "" && dev == label(dom) && (appName(a.Name) == want || dev == want ||
+				(dev != firstName(title) && strings.HasPrefix(appName(a.Name), dev) && firstName(a.Name) == firstName(title))) {
 				return dom, &a
 			}
 		}
@@ -557,12 +570,22 @@ func hostFromHits(hits []tavily.Result, apps []appstore.App, picked *appstore.Ap
 	return "", nil
 }
 
-func firstWord(s string) string {
-	fs := strings.FieldsFunc(strings.ToLower(s), func(r rune) bool { return !unicode.IsLetter(r) && !unicode.IsDigit(r) })
-	if len(fs) == 0 {
+// appName folds a store name or title to its letters and digits, without a
+// store subtitle ("Roblox: Play with friends" is "roblox").
+// firstName is the folded first word of s.
+func firstName(s string) string {
+	f := strings.Fields(s)
+	if len(f) == 0 {
 		return ""
 	}
-	return fs[0]
+	return developer(f[0])
+}
+
+func appName(s string) string {
+	for _, sep := range []string{":", " - ", " – ", " — "} {
+		s, _, _ = strings.Cut(s, sep)
+	}
+	return developer(s)
 }
 
 // developer is a seller name reduced to letters and digits, without a
@@ -590,21 +613,38 @@ func registrable(raw string) string {
 	if err != nil || u.Hostname() == "" {
 		return ""
 	}
-	ls := strings.Split(strings.ToLower(u.Hostname()), ".")
-	if len(ls) < 2 {
+	dom, err := publicsuffix.EffectiveTLDPlusOne(strings.TrimSuffix(strings.ToLower(u.Hostname()), "."))
+	if err != nil {
 		return ""
 	}
-	n := 2
-	if len(ls) >= 3 && len(ls[len(ls)-1]) == 2 && secondLevel[ls[len(ls)-2]] {
-		n = 3
-	}
-	if len(ls) < n {
-		return ""
-	}
-	return strings.Join(ls[len(ls)-n:], ".")
+	return dom
 }
 
-var secondLevel = map[string]bool{"co": true, "com": true, "org": true, "net": true, "ac": true, "gov": true, "edu": true}
+// officialDomain is raw's registrable domain when it can be a title's
+// official host, and "" when it cannot: a domain under a shared platform's
+// suffix on the public suffix list's private section (foo.github.io,
+// foo.blogspot.com), or a platform where anyone has a page
+// (facebook.com/tocaboca, apps.apple.com). Narrowing to such a host would
+// read the platform's own policy as the title's.
+func officialDomain(raw string) string {
+	dom := registrable(raw)
+	if dom == "" || sharedPlatforms[dom] {
+		return ""
+	}
+	if _, icann := publicsuffix.PublicSuffix(dom); !icann {
+		return ""
+	}
+	return dom
+}
+
+var sharedPlatforms = map[string]bool{
+	"apple.com": true, "google.com": true, "github.com": true, "github.io": true, "gitlab.io": true,
+	"facebook.com": true, "instagram.com": true, "x.com": true, "twitter.com": true, "tiktok.com": true,
+	"youtube.com": true, "linkedin.com": true, "reddit.com": true, "discord.com": true, "discord.gg": true,
+	"medium.com": true, "substack.com": true, "wordpress.com": true, "blogspot.com": true, "wixsite.com": true,
+	"squarespace.com": true, "notion.site": true, "linktr.ee": true, "itch.io": true, "fandom.com": true,
+	"steampowered.com": true, "carrd.co": true, "weebly.com": true, "tumblr.com": true, "amazon.com": true,
+}
 
 // label is a registrable domain's name, "roblox" for roblox.com.
 func label(dom string) string {
@@ -683,44 +723,71 @@ func about(kind, u, title, text string) bool {
 	return names(kind, path+" "+title+" "+head)
 }
 
-// errorPage reports a not-found or error page that Tavily returned as a
-// success. A page is an error page when it is empty, when its first line
-// is a short heading that says so, or when it is a short page (under 400 characters) carrying a
-// strong sign such as "404" or Common Sense's "Oops! Looks like that page
-// doesn't exist." A page that merely mentions a missing page further down,
-// such as a policy or a Reddit snippet, is kept.
-func errorPage(text string) bool {
-	t := strings.ToLower(strings.TrimSpace(text))
-	if t == "" {
+// errorPage reports whether a page Tavily read as a success is a
+// not-found or error page. It goes by the page's signals, not its length:
+// the title, or any line of the text, that is wholly an error heading
+// ("Page Not Found | Common Sense Media", "Oops! Looks like that page
+// doesn't exist."). The captured Common Sense 404 pages carry their heading
+// after ~2400 characters of navigation and run 5.5k to 9k characters, so
+// neither position nor size can decide. A sentence that only mentions a
+// missing page has other words in it and is not a heading. Tavily reports
+// no HTTP status for an extract, so there is no status signal to read.
+func errorPage(title, text string) bool {
+	if strings.TrimSpace(text) == "" {
 		return true
 	}
-	line, _, _ := strings.Cut(t, "\n")
-	if len(line) <= 80 { // a heading, not a sentence that mentions one
-		for _, s := range errorSigns {
-			if strings.Contains(line, s) {
-				return true
-			}
+	for _, seg := range titleSep.Split(title, -1) {
+		if errorHeading(seg) {
+			return true
 		}
 	}
-	if len(t) < 400 {
-		for _, s := range strongErrorSigns {
-			if strings.Contains(t, s) {
-				return true
-			}
+	for _, line := range strings.Split(text, "\n") {
+		if errorHeading(line) {
+			return true
 		}
 	}
 	return false
 }
 
-var errorSigns = []string{
-	"looks like that page doesn't exist", "looks like that page doesn’t exist",
-	"page not found", "404 not found", "error 404", "404 error", "page doesn't exist", "page does not exist",
-	"this page isn't available", "the page you requested could not be found",
+// errorHeading reports whether line is an error sign and nothing else but
+// filler ("oops", "sorry", "404", "go home").
+func errorHeading(line string) bool {
+	l := strings.ToLower(strings.TrimSpace(line))
+	if l == "" || len(l) > 120 {
+		return false
+	}
+	l = strings.ReplaceAll(l, "’", "'")
+	for _, sign := range errorSigns {
+		i := strings.Index(l, sign)
+		if i < 0 {
+			continue
+		}
+		rest := l[:i] + " " + l[i+len(sign):]
+		only := true
+		for _, w := range strings.FieldsFunc(rest, func(r rune) bool { return !(r >= 'a' && r <= 'z' || r >= '0' && r <= '9' || r == '\'') }) {
+			if !errorFiller[w] {
+				only = false
+				break
+			}
+		}
+		if only {
+			return true
+		}
+	}
+	return false
 }
 
-var strongErrorSigns = []string{
-	"looks like that page doesn't exist", "looks like that page doesn’t exist", "404 not found", "error 404", "404 error",
-	"the page you requested could not be found",
+var titleSep = regexp.MustCompile(`\s[|–—-]\s`)
+
+var errorFiller = map[string]bool{
+	"oops": true, "whoops": true, "uh": true, "oh": true, "sorry": true, "error": true, "404": true, "410": true, "500": true,
+	"go": true, "home": true, "back": true, "we're": true, "we": true, "are": true, "this": true, "the": true,
+}
+
+var errorSigns = []string{
+	"looks like that page doesn't exist", "file not found",
+	"page not found", "404 not found", "error 404", "404 error", "page doesn't exist", "page does not exist",
+	"this page isn't available", "the page you requested could not be found",
 }
 
 // hitDoc turns one search hit into a document. A Reddit hit is its snippet,
@@ -738,7 +805,7 @@ func hitDoc(kind string, r tavily.Result, at time.Time) (Doc, string) {
 		text = dropSummaries(text)
 	}
 	text = strings.TrimSpace(text)
-	if errorPage(text) {
+	if errorPage(r.Title, text) {
 		return Doc{}, fmt.Sprintf("%s hit is an error page or empty: %s", kind, r.URL)
 	}
 	return Doc{

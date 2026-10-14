@@ -63,6 +63,17 @@ Record the source kinds that came back empty, for the card's small print.
 | L2 | `about` and `candidates` read the URL path only, so a query string such as `?ref=privacy` names nothing. | `TestAboutIgnoresQuery` |
 | L3 | The notes now say the extract is conditional and that Minecraft and Khan run at seven credits. | notes |
 
+**Round 2 remediation (T3.1).**
+
+| ID | Fix | Test |
+|---|---|---|
+| M1 | `errorPage(title, text)` goes by signals, not length or position. It flags a page whose title segment ("Page Not Found \| Common Sense Media") or any line of text is wholly an error heading: an error sign plus only filler like "oops", "sorry", "404" or "go home". A sentence that mentions a missing page has other words and is kept. Tavily gives no HTTP status for an extract, so there is no status signal. | `TestErrorPageOnCapturedNotFound` (all 4 captured Common Sense 404s in `tavily-extract-csm-advanced.json`, 5.5k–9k chars, caught by title and by text alone); `TestErrorPage` |
+| M2 | With no official host, no homepage is extracted and no link is followed (note: "no official host known…"). `pageLinks` returns nothing without a host and keeps only links on the host's registrable domain. | `TestGatherNoHostFollowsNoLinks` (Common Sense homepage linking its own privacy policy: no extract, policy missing) |
+| L1 | The no-app host rule needs the listing to be the full normalized title, or the developer to be named for the whole title, or the listing to open with the developer's full name where that name is more than the title's first word. The last case keeps the fixture "Toca Boca World" by Toca Boca AB for "Toca Life World". "Toca Ltd" at toca.xyz is refused. | `TestHostFromHitsNeedsMoreThanFirstWord`; `TestGatherFixtures/toca-life-world` |
+| L2 | `registrable` uses the public suffix list (`publicsuffix.EffectiveTLDPlusOne`). `officialDomain` refuses a domain under a private-section suffix (foo.github.io, *.blogspot.com) and a list of shared platforms (apple.com, google.com, facebook.com, github.com, youtube.com, …). It applies to both the picked app's seller URL and the search-hit host. | `TestOfficialDomain` |
+
+**Dependency: `golang.org/x/net` (for `publicsuffix`).** Why: a hand-kept two-label rule gets multi-label suffixes and shared hosts wrong, and the public suffix list is the standard answer. Cost: none new. It was already in the module graph at v0.58.0 through keel, so go.mod gains one direct require line and go.sum two lines, with no version changes.
+
 ---
 
 ### T3.2: Reader (Nano) ★
