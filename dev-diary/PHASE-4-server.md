@@ -98,7 +98,7 @@ requires:   T4.1
 fixture-ok: yes
 size:       S · mid
 owns:       internal/server/gate.go, internal/server/gate_test.go
-status:     not-started
+status:     in-review
 ```
 `POST /api/checks` sits behind Keel `gate`: a per-client and a global token bucket, and an optional shared passcode set in config. Every other route is free.
 
@@ -107,6 +107,15 @@ A `live` setting refuses new checks without a redeploy while cached cards keep w
 Behind Traefik the client key comes from forwarded headers only when the peer is a trusted proxy. Set `TrustedProxies` to match the Hetzner tenant.
 
 **Done when:** Tests show 429 with `Retry-After` past the bucket, 403 without the passcode when one is set, and `live_checks_off` for an uncached title while a cached card still returns.
+
+**Implementation notes (T4.3).**
+- `Server.GatedHandler(GateConfig)` in `internal/server/gate.go` wraps `Handler()`: `POST /api/checks` goes through Keel `gate.Protect` (passcode, then the per-client and global buckets), then the live switch, then the check handler. Every other route is the plain mux, ungated. `checks.go` is unchanged.
+- **Live switch: Keel `flag`, not config and a restart.** The task asks for refusing new checks without a redeploy, and a flag read goes through to SQLite on every request, so one write flips it with no restart. `LiveFlag(def)` declares `live_checks`; the config's `live` setting is the flag's default, which holds until the flag is set. A flag that cannot be read refuses with `live_checks_off` (fails closed).
+- Order follows `docs/api.md`: gate, then validation, then the card cache, then `live_checks_off`. The live switch peeks at the body (4 KB, the handler's own limit), lets an invalid body or a fresh cached card through to the handler, and refuses the rest.
+- `TrustedProxies` default: `127.0.0.0/8`, `::1/128` and `172.16.0.0/12` (the Docker bridge range Traefik reaches the container from). Narrower than Keel's default, which trusts every private range. The tenant's actual Docker network was not readable from here; T6.1 should confirm it.
+- `CheckRule` default: per client burst 3, then 1 every 2 minutes; global burst 10, then 1 every 30 seconds. A cached hit also draws a token, because the gate runs first.
+- The passcode uses Keel's default header `X-Passcode` and cookie `passcode`.
+- Wiring the passcode secret, the flag store and `GatedHandler` into `serve` is T4.4's.
 
 ---
 
