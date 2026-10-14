@@ -698,12 +698,13 @@ func TestKeyFailuresAreNotRetried(t *testing.T) {
 // another billed call and so draws the smaller one.
 func TestRetryBudgetsDifferBetweenRateLimitsAndHostFaults(t *testing.T) {
 	for _, tc := range []struct {
-		name   string
-		status int
-		want   int
+		name     string
+		status   int
+		want     int
+		wantNote string
 	}{
-		{"429 draws the rate-limit budget", http.StatusTooManyRequests, 4},
-		{"500 draws the smaller fault budget", http.StatusInternalServerError, 2},
+		{"429 draws the rate-limit budget", http.StatusTooManyRequests, 4, "still throttled after 4 attempts"},
+		{"500 draws the smaller fault budget", http.StatusInternalServerError, 2, "still failing after 2 attempts"},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			var calls atomic.Int32
@@ -721,7 +722,36 @@ func TestRetryBudgetsDifferBetweenRateLimitsAndHostFaults(t *testing.T) {
 			if got := int(calls.Load()); got != tc.want {
 				t.Fatalf("%d attempts, want %d", got, tc.want)
 			}
+			if !strings.Contains(err.Error(), tc.wantNote) {
+				t.Fatalf("error %q does not state its own budget as %q", err, tc.wantNote)
+			}
 		})
+	}
+}
+
+// TestPersistentHostFaultStatesItsOwnRetryBudget: Keel's throttle.Note counts
+// Config.Attempts, so a host fault that spent the smaller TransientAttempts
+// budget of two must not be reported as four attempts.
+func TestPersistentHostFaultStatesItsOwnRetryBudget(t *testing.T) {
+	var calls atomic.Int32
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		calls.Add(1)
+		w.WriteHeader(http.StatusInternalServerError)
+	}))
+	defer srv.Close()
+	c := newTestClient(srv.URL)
+	_, _, err := c.Search(context.Background(), Search{Query: "q"})
+	if err == nil {
+		t.Fatal("a persistent 500 was accepted")
+	}
+	if got := calls.Load(); got != 2 {
+		t.Fatalf("%d attempts, want the transient budget of 2", got)
+	}
+	if strings.Contains(err.Error(), "after 4 attempts") {
+		t.Fatalf("error %q claims the rate-limit budget of 4 attempts", err)
+	}
+	if !strings.Contains(err.Error(), "after 2 attempts") {
+		t.Fatalf("error %q does not name the transient budget of 2 attempts", err)
 	}
 }
 

@@ -309,10 +309,30 @@ func (c *Client) post(ctx context.Context, path string, in, out any) error {
 	err = throttle.Retry(ctx, cfg, Retryable, func() error {
 		return c.attempt(ctx, path, payload, out)
 	})
-	if err != nil {
+	return annotate(err, cfg)
+}
+
+// annotate marks an error that outlived its retries, naming the budget it
+// actually drew on. Keel's throttle.Note counts Config.Attempts, so a host
+// fault that spent the smaller TransientAttempts budget would be reported as
+// four attempts instead of two. That case is annotated here; a rate limit,
+// whose budget is Config.Attempts, keeps Keel's own wording.
+func annotate(err error, cfg throttle.Config) error {
+	if err == nil || !Retryable(err) {
+		return err
+	}
+	if !transient(err) {
 		return throttle.Note(err, cfg, Retryable)
 	}
-	return nil
+	n := cfg.TransientAttempts
+	if n <= 0 {
+		n = throttle.DefaultTransientAttempts
+	}
+	word := "attempts"
+	if n == 1 {
+		word = "attempt"
+	}
+	return fmt.Errorf("still failing after %d %s: %w", n, word, err)
 }
 
 // attempt is one try: read the key, send the body, and either decode the
