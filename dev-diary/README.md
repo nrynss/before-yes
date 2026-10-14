@@ -183,7 +183,7 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 | P2 | 12 / 12 | Done. All six exit criteria are met. Measured model cost is $0.0309 per check. Tavily is 7–8 credits per check, from fixtures, not a live run. |
 | P3 | 11 / 12 | Everything but T3.9b is done. T3.9 grounds every grade in a verified quote, and on the recorded replies all three demo titles now read **unclear**, because the judge paraphrases. T3.9b makes the judge cite finding ids and re-records live. |
 | P4 | 0 / 5 | Not started. T4.1, T4.2 and T4.4 drafted. |
-| P5 | 0 / 7 | Not started. |
+| P5 | 1 / 7 | T5.1 is done: the app shell and themes. T5.2, T5.3 and T5.4 can start from it. |
 | P6 | 0 / 6 | Not started. |
 
 ---
@@ -192,6 +192,19 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 
 Newest first. One entry per closed task, finding, or split.
 
+- **T5.1 closed (PR #18).** Implemented by a remote orchestrator. Round 1 was APPROVE, with no findings and no residue.
+  - **What landed:** `web/` with Svelte 5 (runes), SvelteKit on Vite with `adapter-static`, Chaaya 0.4.1 and Bits UI.
+    - Light and dark themes, plus system-following, persisted.
+    - Four placeholder routes: `/`, `/check/[id]`, `/card/[id]`, `/compare/[a]/[b]`. They make no API calls.
+    - The static build writes `web/build/` with an `index.html` fallback. T4.4 serves the assets and uses that fallback for app URLs.
+  - **The gate's web steps:**
+    - `lint` (ESLint) and `check` (svelte-check: 0 errors, 0 warnings).
+    - `test`: Node theme tests, including Chaaya's contrast gate for both themes; the build; `playwright install chromium`; and 10 Playwright tests. Every route renders at 360 px in both themes with no horizontal scroll and passes Chaaya's accessibility gate.
+  - **Dependencies:** the SvelteKit toolchain, Playwright (real browser layout) and axe-core (Chaaya's accessibility peer). No other production dependency.
+  - **Orchestrator verification:**
+    - The full gate ran on the branch on this machine (rc 0, 46 s; Node 26, pnpm 11), and again on `main` after the merge (rc 0). No key values found. No dates.
+    - Playwright warns that this OS is not officially supported and uses its Ubuntu fallback browser, which passed.
+    - `playwright install chromium` runs in every gate. It is cached after the first run, but a fresh machine needs network once.
 - **T3.9 closed (PR #17); T3.9b filed.** Implemented by a remote orchestrator. Rounds 1 and 2 were REMEDIATE, and round 3 was APPROVE with zero residue and 3 Lows accepted.
   - **What landed:**
     - `ground` runs after `checklist.Enforce` and before `Decide`.
