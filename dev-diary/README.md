@@ -183,7 +183,7 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 | P2 | 12 / 12 | Done. All six exit criteria are met. Measured model cost is $0.0309 per check. Tavily is 7–8 credits per check, from fixtures, not a live run. |
 | P3 | 13 / 13 | Done. Every standing flag and setting now meets its area's own definition, enforced by a per-grade entailment check (T3.10). Verdicts: Roblox **no** (four earned flags), Minecraft **yes_with_settings** (matches T0.5, with a recorded caveat on two settings), Khan Academy Kids **unclear**. Re-pick is the user's call. |
 | P4 | 2 / 5 | T4.1 and T4.2 are done: check jobs, the progress stream, card routes, the card store and both caches. Wire ids are `c_` / `j_` + a 32-hex Keel id. T4.3 and T4.5 can start; T4.4 is drafted and must wire `Judge.Entail` (T3.10). |
-| P5 | 3 / 7 | T5.1, T5.2 and T5.4 are done: the shell, the Ask form with free examples, and the evidence-linked card. T5.3 is blocked on an upstream Chaaya fix (terminal snapshot recovery), in progress. T5.5 can start; T5.6 waits on T5.3, T5.7 on T4.5. |
+| P5 | 4 / 7 | T5.1–T5.4 are done: the shell, the Ask form with free examples, the progress view and the evidence-linked card. T5.5 and T5.6 can start; T5.7 waits on T4.5. |
 | P6 | 0 / 6 | Not started. |
 
 ---
@@ -192,6 +192,10 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 
 Newest first. One entry per closed task, finding, or split.
 
+- **T5.3 closed (PR #21).** The frontend orchestrator implemented it. Round 1 found a High: Chaaya 0.4.1's `JobStream` dropped a saved terminal snapshot after a counted progress frame, so a reconnect after "120 of 500" never reached done or the error. The fix went upstream, not around it: [nrynss/chaaya#84](https://github.com/nrynss/chaaya/issues/84), fixed by Chaaya 0.4.2 ([nrynss/chaaya#85](https://github.com/nrynss/chaaya/pull/85)). Rounds 2 and 3 approved with zero residue.
+  - **What landed:** `web/src/lib/progress/` and `/check/[id]`: the three stages with the server's message and count, reconnect and catch-up from `GET /api/checks/{id}`, done goes to the card, and each failure code shows its own message, never `job_failed`. Both terminal reconnect pins run unconditionally.
+  - **Dependency:** Chaaya 0.4.1 → 0.4.2 (`web/package.json`, lockfile). `web/pnpm-workspace.yaml` exempts exactly `@nrynss/chaaya@0.4.2` from pnpm's `minimumReleaseAge`, because hosted CI refused the fresh release. The reviewer pinned a fresh-store install failing without it and passing with it; every other package keeps the age check. The exception can be removed once 0.4.2 is older than the window.
+  - **Pins:** the gate passed on main after the merge: 107 browser tests, 0 skipped.
 - **T3.10 closed: judge calibration.** Implemented by two ZCode sessions (the first died on a usage limit mid-task; the second finished it offline and ran the user-approved entailment re-record). Reviews: [round 1](adversarial-review/t3.10-round1.md) REMEDIATE (M 1, L 4), remediated; [round 2](adversarial-review/t3.10-round2.md) **APPROVE** (C 0 · H 0 · M 0 · L 2, both prose, closed by the orchestrator and recorded in the review file). Zero residue.
   - **What landed:**
     - Per-area flag and ok definitions (`areaDefs` in judge.go, told to the judge in the prompt and read by the entailment step from the same text, so the two cannot drift). The proportion rule: a flag is a serious concern, not whatever can be cited; a feature that merely sits in the area, a price, an email field, a sibling product or another company's story meets no definition.
