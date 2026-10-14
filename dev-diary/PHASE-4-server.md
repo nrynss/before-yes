@@ -98,7 +98,7 @@ requires:   T4.1
 fixture-ok: yes
 size:       S · mid
 owns:       internal/server/gate.go, internal/server/gate_test.go
-status:     in-review
+status:     done
 ```
 `POST /api/checks` sits behind Keel `gate`: a per-client and a global token bucket, and an optional shared passcode set in config. Every other route is free.
 
@@ -131,7 +131,7 @@ status:     drafted
 
 `cmd/before-yes` is the entry point: `serve`, `check` for one check from the terminal, and `config` to print the settings plan.
 
-It builds the pipeline the way `tools/eval` does. Set `Judge.Entail` to the reader's Nano client (T3.10). Left nil, the entailment check never runs, and unearned flags and unsupported reasons reach the card. Set `Pipeline.Checks` to the server's `*spend.Meter` (T4.5). A test pins that `serve` and `check` both build a judge with `Entail` set.
+It builds the pipeline the way `tools/eval` does. Set `Judge.Entail` to the reader's Nano client (T3.10). Left nil, the entailment check never runs, and unearned flags and unsupported reasons reach the card. Set `Server.Checks` and `Pipeline.Checks` to the same `*spend.Meter`; `Handler()` refuses anything else (T4.5). `serve` mounts `GatedHandler` (T4.3), not the bare `Handler()`, resolves `[gate.passcode]`, and gives the live switch its flag store. A test pins that `serve` and `check` both build a judge with `Entail` set, and that `serve` routes `POST /api/checks` through the gate.
 
 The built Chaaya app is served from a directory, and unknown paths fall back to `index.html` so `/card/{id}` loads in a fresh tab.
 
@@ -145,7 +145,7 @@ requires:   T4.1, T2.5
 fixture-ok: yes
 size:       M · frontier
 owns:       internal/server/byok.go, internal/server/byok_test.go
-status:     in-review
+status:     done
 ```
 From the brief's guardrails for judging: demo titles are precomputed, fresh checks are capped per day, and a visitor may paste their own Token Factory and Tavily keys for unlimited use. Those keys are held for the request only and never stored.
 
@@ -173,6 +173,22 @@ The daily cap follows T2.5's decision: 5 fresh checks per UTC day, `[budget] dai
 | M2 visitor panic not scrubbed | `wrap` recovers a visitor job's panic into `check_failed` with a fixed message and logs a redacted line | `TestVisitorPanicIsScrubbed` |
 | L1 half pair checked after the card cache | `startCheck` validates the visitor headers with the body, before the cache | `TestHalfPairRefusedBeforeCardCache` |
 | L2 headers missing from docs/api.md | One line under `POST /api/checks` (outside owns, minimal) | doc |
+
+---
+
+### T4.6: A double click joins the running check
+```yaml
+requires:   T4.5
+fixture-ok: yes
+size:       S · mid
+owns:       internal/server/checks.go (startCheck and its join), internal/server/checks_test.go
+status:     not-started
+```
+`docs/api.md` step 4: a running check for the same normalized title and age answers `202` with its `check_id`. Nothing implements it. A double click today starts two jobs, reserves two of the day's fresh checks and pays the judge twice; only the evidence collect is shared (T4.2's single flight). Found by the T4.3 reviewer.
+
+Join after the card cache and before the refusals (step 4 comes before `live_checks_off`, `budget_exhausted` and `busy`). A joined request reserves nothing. A visitor-key request never joins a check on our keys, and a check on visitor keys is never joined by anyone else, so one visitor's keys never pay for another request.
+
+**Done when:** Tests show two concurrent identical requests get one `check_id`, one job and one daily-cap reservation; a request after the check finishes gets the card; and the visitor-key cases above stay separate.
 
 ---
 
