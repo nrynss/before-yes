@@ -183,7 +183,7 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 | P2 | 12 / 12 | Done. All six exit criteria are met. Measured model cost is $0.0309 per check. Tavily is 7–8 credits per check, from fixtures, not a live run. |
 | P3 | 12 / 13 | Every standing grade cites verified, in-area findings by id (T3.9b). All three demo titles read **no**. Roblox's flags are earned. Minecraft's and Khan Academy Kids' are not. T3.10 calibrates the judge: flag definitions, off-product pages and invented reasons. |
 | P4 | 0 / 5 | Not started. T4.1, T4.2 and T4.4 drafted. |
-| P5 | 1 / 7 | T5.1 is done: the app shell and themes. T5.2, T5.3 and T5.4 can start from it. |
+| P5 | 2 / 7 | T5.1 and T5.2 are done: the app shell, themes and the Ask form with free example cards. T5.3 and T5.4 can start. |
 | P6 | 0 / 6 | Not started. |
 
 ---
@@ -192,6 +192,10 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 
 Newest first. One entry per closed task, finding, or split.
 
+- **T5.2 closed (PR #19).** The frontend orchestrator implemented it; a fresh reviewer returned APPROVE with zero findings (`adversarial-review/t5.2-round1.md`).
+  - **What landed:** `web/src/lib/ask/`: the Ask form (title, whole age 3–17, one button) and the free example cards from `GET /api/cards`. A `200` opens the card, a `202` the progress view, `passcode_required` opens a Bits UI passcode dialog that keeps the question, and `live_checks_off` points at the examples. Refusal messages live in `messages.ts`.
+  - **Pins:** the gate passed in the task checkout and on main after the merge, including 30 Playwright tests and the axe gate in both themes. The reviewer drove each T1.4 fixture in a browser and checked 360px.
+  - **Note for T5.3 and T4.5:** the form accepts ages 3–17; the frozen API still accepts 2–17, and the example-card check accepts 2–17 so older cards still show.
 - **T3.10 filed: judge calibration**, from the orchestrator's reading of T3.9b's replay. Three faults:
   - Flags that don't meet their area's definition (Khan: comments, an email address, two odd reviews).
   - Pages about a sibling product counted as evidence (Khan: another product's subscription and school prices).

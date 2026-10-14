@@ -41,7 +41,7 @@ requires:   T5.1
 fixture-ok: yes
 size:       S · mid
 owns:       web/src/routes/+page.svelte, web/src/lib/ask/, web/playwright.config.ts (ask test discovery)
-status:     in-review
+status:     done
 ```
 Two fields: what the child asked for, and the child's age (3 to 17). One button. Recent cards from `GET /api/cards` sit below as examples a judge can open without spending anything.
 
