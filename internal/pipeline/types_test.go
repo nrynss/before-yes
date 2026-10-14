@@ -362,7 +362,7 @@ func cardSpecs() []cardSpec {
 		rbxForum = "tavily-search-forum.json|https://www.commonsensemedia.org/articles/parents-ultimate-guide-to-roblox"
 	)
 	return []cardSpec{
-		{file: "card-no.json", slug: "roblox", title: "Roblox", cardID: "c_7Hq2mXv9pK3wLr8sTn4bYe", age: 9,
+		{file: "card-no.json", slug: "roblox", title: "Roblox", cardID: "c_00000000000000000000000000000001", age: 9,
 			app: &AppInfo{TrackID: 431946152, Name: "Roblox", Seller: "Roblox Corporation", SellerURL: "http://www.roblox.com/",
 				StoreURL: "https://apps.apple.com/us/app/roblox/id431946152?uo=4", ContentRating: "12+", Price: "Free", Genre: "Games",
 				Description: "ROBLOX – MILLIONS OF GAMES ACROSS EVERY GENRE. PLAY FREE."},
@@ -388,14 +388,14 @@ func cardSpecs() []cardSpec {
 				g(checklist.Data, checklist.Unknown, "", "No policy finding was verified."),
 				g(checklist.DeveloperRecord, checklist.Unknown, "", "No news finding was verified."),
 			},
-			alts: []Alternative{{Title: "Toca Life World", Reason: "Same open play-world genre with no chat with strangers.", CardID: "c_Tc6vRb1nQ8zKp2dWm5sLhA", Verdict: checklist.YesWithSettings, Status: AltChecked}},
+			alts: []Alternative{{Title: "Toca Life World", Reason: "Same open play-world genre with no chat with strangers.", CardID: "c_00000000000000000000000000000004", Verdict: checklist.YesWithSettings, Status: AltChecked}},
 			// User decision: a refused alternative's name is not shown; the
 			// card carries the one line instead.
 			altNote:    MoreAlternativesNote,
 			missing:    []string{"news"},
 			conflicted: []checklist.Area{checklist.Contact},
 		},
-		{file: "card-yes.json", slug: "khan-academy-kids", title: "Khan Academy Kids", cardID: "c_Kh3nAc9dYm2sWq7vLp4tRx", age: 5,
+		{file: "card-yes.json", slug: "khan-academy-kids", title: "Khan Academy Kids", cardID: "c_00000000000000000000000000000002", age: 5,
 			app: &AppInfo{TrackID: 1378467217, Name: "Khan Academy Kids", Seller: "Khan Academy", SellerURL: "http://khankids.org",
 				StoreURL: "https://apps.apple.com/us/app/khan-academy-kids/id1378467217?uo=4", ContentRating: "4+", Price: "Free", Genre: "Education",
 				Description: "Make screen time more meaningful with Khan Academy Kids—the award-winning, educational app for kids ages 2–8."},
@@ -421,7 +421,7 @@ func cardSpecs() []cardSpec {
 			},
 			missing: []string{"terms", "news"},
 		},
-		{file: "card-settings.json", slug: "minecraft", title: "Minecraft", cardID: "c_Mn8cRf4tZq1xHw6pLs3kVb", age: 9,
+		{file: "card-settings.json", slug: "minecraft", title: "Minecraft", cardID: "c_00000000000000000000000000000003", age: 9,
 			app: &AppInfo{TrackID: 479516143, Name: "Minecraft: Play with Friends!", Seller: "Mojang AB", SellerURL: "",
 				StoreURL: "https://apps.apple.com/us/app/minecraft-play-with-friends/id479516143?uo=4", ContentRating: "9+", Price: "$6.99", Genre: "Games",
 				Description: "Dive into an open world of building, crafting and survival."},
@@ -448,7 +448,7 @@ func cardSpecs() []cardSpec {
 			},
 			missing: []string{"policy"},
 		},
-		{file: "card-unclear.json", slug: "toca-life-world", title: "Toca Life World", cardID: "c_Tc6vRb1nQ8zKp2dWm5sLhA", age: 6,
+		{file: "card-unclear.json", slug: "toca-life-world", title: "Toca Life World", cardID: "c_00000000000000000000000000000004", age: 6,
 			app: nil,
 			specs: []spec{
 				{ref: "tavily-extract.json|https://www.tocaboca.com/docs/en/terms-of-service", kind: "terms", area: checklist.Money, stance: finding.Risk,
@@ -472,7 +472,7 @@ func cardSpecs() []cardSpec {
 		// example has no finding, since the captured Toca fixtures hold no
 		// news, forum or rating text about the title; it shows what such a
 		// card looks like when the general plan finds nothing.
-		{file: "card-unknown-kind.json", slug: "toca-life-world", title: "Toca Life World", cardID: "c_Uk4nWn7pQ2zKd8sVm3tRhB", age: 6,
+		{file: "card-unknown-kind.json", slug: "toca-life-world", title: "Toca Life World", cardID: "c_00000000000000000000000000000005", age: 6,
 			kind: KindUnknown, app: nil,
 			specs: []spec{},
 			grades: []checklist.Grade{

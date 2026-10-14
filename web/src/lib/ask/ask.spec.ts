@@ -102,7 +102,7 @@ test('loading, empty, failed and malformed list remain honest and form stays ava
 test('network, malformed success and server text are safe and actionable', async ({ page }) => {
   await examples(page);
   for (const response of ['network', 'malformed', 'unsafe', 'ambiguous']) {
-    await page.route('**/api/checks', route => response === 'network' ? route.abort() : response === 'malformed' ? route.fulfill({ body: '<html>SECRET stack</html>' }) : response === 'ambiguous' ? route.fulfill({ json: { card_id: 'c_safe', check_id: 'j_safe' } }) : route.fulfill({ status: 500, json: { error: { code: 'internal_error', message: 'SECRET stack trace' } } }));
+    await page.route('**/api/checks', route => response === 'network' ? route.abort() : response === 'malformed' ? route.fulfill({ body: '<html>SECRET stack</html>' }) : response === 'ambiguous' ? route.fulfill({ json: { card_id: 'c_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', check_id: 'j_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb' } }) : route.fulfill({ status: 500, json: { error: { code: 'internal_error', message: 'SECRET stack trace' } } }));
     await page.goto('/'); await fill(page); await page.getByRole('button', { name: 'Check before yes' }).click(); await expect(page.getByRole('alert')).toContainText(/try again/i); await expect(page.locator('body')).not.toContainText('SECRET'); await expect(page).toHaveURL('/'); await page.unroute('**/api/checks');
   }
 });

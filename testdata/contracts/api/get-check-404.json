@@ -1,7 +1,7 @@
 {
   "request": {
     "method": "GET",
-    "path": "/api/checks/j_unknown"
+    "path": "/api/checks/j_ffffffffffffffffffffffffffffffff"
   },
   "response": {
     "status": 404,
