@@ -93,3 +93,22 @@ test('initial stream refusal offers retry with saved state',async({page})=>{
  await page.route(`**/api/checks/${id}/events`,route=>route.fulfill({status:503,json:{error:{code:'busy',message:'busy'}}}));
  await page.goto(`/check/${id}`);await expect(page.getByRole('status')).toContainText('connection stopped');retry=true;await page.getByRole('button',{name:'Retry following'}).click();await expect(page).toHaveURL(`/card/${card}`);
 });
+for(const result of ['nonterminal','malformed','network']) test(`terminal final GET ${result} is recoverable`,async({page})=>{
+ await mock(page);await page.goto(`/check/${id}`);await opened(page);
+ if(result === 'network') await page.evaluate(()=>{const prior=window.fetch;window.fetch=(input,init)=>String(input).endsWith('/events')?prior(input,init):Promise.reject(new TypeError('network'));});
+ else await state(page,result === 'nonterminal'?{id,status:'running'}:{id,status:'done',card_id:'bad'});
+ await push(page,frames[3]);await expect(page.getByRole('button',{name:'Retry following'})).toBeVisible();await expect(page).toHaveURL(`/check/${id}`);
+});
+test('rapid retry ignores stale failed read from the previous attempt',async({page})=>{
+ await mock(page,{id,status:'invalid'});await page.goto(`/check/${id}`);await expect(page.getByRole('button',{name:'Retry following'})).toBeVisible();
+ await page.evaluate(({id,card})=>{
+  let reads=0;const pending:{release?:()=>void}={};(window as unknown as {stale:typeof pending}).stale=pending;
+  window.fetch=async(input)=>{
+   if(String(input).includes(`/api/checks/${id}`)) {reads++;if(reads===1) return new Promise<Response>(resolve=>{pending.release=()=>resolve(new Response('{bad'));});return new Response(JSON.stringify({id,status:'done',card_id:card}));}
+   return new Response('{}');
+  };
+ },{id,card});
+ // Two starts in one event turn deliberately stress overlap, even before rerender removes the button.
+ await page.getByRole('button',{name:'Retry following'}).evaluate(button=>{(button as HTMLButtonElement).click();(button as HTMLButtonElement).click();});
+ await expect(page).toHaveURL(`/card/${card}`);await page.evaluate(()=>(window as unknown as {stale:{release:()=>void}}).stale.release());await page.waitForTimeout(100);await expect(page).toHaveURL(`/card/${card}`);
+});

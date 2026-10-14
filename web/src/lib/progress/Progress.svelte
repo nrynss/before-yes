@@ -9,6 +9,7 @@
  let problem = $state('');
  let initial = $state('Loading the check…');
  let handled = false;
+ let generation = 0;
  let alive = false;
  let controller: AbortController;
  const stages = [{id:'gather',label:'Gather',text:'Find policies, reviews and parent reports.'},{id:'read',label:'Read',text:'Read the sources and keep the evidence.'},{id:'judge',label:'Judge',text:'Consider the evidence against the same checklist.'}];
@@ -20,33 +21,36 @@
  const total = $derived(latest?.name === 'progress' ? latest.total : undefined);
  const active = $derived(stage === 'alternatives' ? 3 : stages.findIndex(item => item.id === stage));
  async function read() {return snapshot(await api<unknown>(`/api/checks/${id}`,{signal:controller.signal,timeoutMs:15000}),id);}
- async function finish(state: JobSnapshot & {cardId?:string}) {
-  if (!alive) return;
+ async function finish(state: JobSnapshot & {cardId?:string}, attempt = generation) {
+  if (!alive || attempt !== generation) return;
   if (state.status === 'done' && state.cardId) await goto(resolve('/card/[id]',{id:state.cardId}));
   else if (state.status === 'error') problem = failure(state.error);
   else if (state.status === 'cancelled') problem = 'This check was cancelled. Return to the ask page to start it again.';
   else if (state.status === 'interrupted') problem = 'A restart interrupted this check. Return to the ask page to start it again.';
+  else problem = 'The saved result isn’t ready yet. Retry following this check to read it again.';
  }
  async function start() {
+  const attempt = ++generation;
   stream?.close(); controller?.abort(); controller = new AbortController();
   problem = ''; handled = false; stream = undefined;
   if (!validId(id,'j')) {problem = failure({code:'not_found'});return;}
   try {
    const state = await read();
-   if (!alive) return;
-   if (!['queued','running'].includes(state.status)) {await finish(state);return;}
+   if (!alive || attempt !== generation) return;
+   if (!['queued','running'].includes(state.status)) {await finish(state, attempt);return;}
    initial = state.status === 'queued' ? 'Your check is queued.' : 'The research is running.';
    stream = new JobStream({url:`/api/checks/${id}/events`,fetchState:async () => {
-    try {return await read();} catch(error) {if(alive) {problem = failure(error);stream?.close();} throw error;}
+    try {return await read();} catch(error) {if(alive && attempt === generation) {problem = failure(error);stream?.close();} throw error;}
    }});
    stream.attach(task => {task();});
-  } catch(error) {if(alive) problem = failure(error);}
+  } catch(error) {if(alive && attempt === generation) problem = failure(error);}
  }
  $effect(() => {
   if(!stream || !alive || handled || !['done','error','cancelled','interrupted'].includes(stream.status)) return;
   handled = true;
-  if(stream.status === 'cancelled' || stream.status === 'interrupted') void finish({jobId:id,status:stream.status});
-  else void read().then(finish).catch(error => {if(alive) problem = failure(error);});
+  const attempt = generation;
+  if(stream.status === 'cancelled' || stream.status === 'interrupted') void finish({jobId:id,status:stream.status}, attempt);
+  else void read().then(state => finish(state, attempt)).catch(error => {if(alive && attempt === generation) problem = failure(error);});
  });
  onMount(() => {alive = true;void start();return () => {alive=false;controller?.abort();stream?.close();};});
 </script>
@@ -59,7 +63,7 @@
   <div class="update" role="status" aria-live="polite" aria-atomic="true">
    {#if problem}<h2>Let’s take another look.</h2><p>{problem}</p>
    {:else if stream?.connection === 'failed'}<h2>The connection stopped.</h2><p>We couldn’t keep following the check. Retry to catch up with its saved state.</p>
-   {:else}<h2>{message || initial}</h2>{#if current !== undefined}<p class="count">{`${current.toLocaleString()}${total !== undefined ? ` of ${total.toLocaleString()}` : ''}`} <span>read so far</span></p>{/if}
+   {:else}<h2>{message || initial}</h2>{#if current !== undefined}<p class="count">{`${current.toLocaleString()}${total !== undefined ? ` of ${total.toLocaleString()}` : ''}`} <span>{stage === 'read' ? 'read so far' : 'so far'}</span></p>{/if}
     {#if stream?.connection === 'reconnecting'}<p>Connection lost. Reconnecting to your check…</p>{/if}
     {#if stage === 'alternatives'}<p>Checking safer alternatives.</p>{/if}
    {/if}
