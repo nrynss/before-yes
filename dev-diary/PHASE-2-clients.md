@@ -67,6 +67,22 @@ Write the confirmed ids and thinking switches into `before-yes.toml.example`.
 
 ---
 
+### T2.1c: Model client timeout that fits a thinking call
+```yaml
+requires:   T2.1
+fixture-ok: yes
+size:       S · mid
+owns:       internal/model/model.go, internal/model/model_test.go
+status:     not-started
+```
+Split from T2.1b's round-1 review (M3). The client's HTTP timeout is a fixed 3 minutes. Measured output rates are about 65 tokens a second for Token Factory Nano and build.nvidia.com, about 150 for Token Factory Super, and about 43 for OpenRouter's free judge. So a 16,000-token thinking call takes about 245 s on Nano and about 375 s on OpenRouter, and goes past the timeout. The judge's conflict pass (T3.3) asks for 16,000 tokens with thinking on.
+
+Make the per-call deadline scale with the call's `max_tokens`, or make it a setting per role, with a floor and a ceiling. A timed-out call must still never book at $0, keeping T2.1's unmeasured-reply rule.
+
+**Done when:** A test shows a large `max_tokens` call is not cut at 3 minutes and a small one keeps a short deadline. The setting, if there is one, is in `before-yes.toml.example`.
+
+---
+
 ### T2.2: Tavily client ★
 ```yaml
 requires:   T0.1
