@@ -73,3 +73,19 @@ Written by `tools/capture -only advanced`. A run rewrites this section. The Tavi
 ### Notes
 
 - none
+
+## T3.8a
+
+Written by `tools/capture -only storepage`. A run rewrites this section. The Tavily key is never recorded here.
+
+- T3.8a Tavily credits for this title: 0
+
+### Files
+
+| File | Source | HTTP status | Fetched (UTC) | Tavily credits | Note |
+|---|---|---|---|---|---|
+| tavily-extract-storepage.json | https://apps.apple.com/us/app/roblox/id431946152?uo=4 | 200 | 2026-10-14T08:44:02Z | 0 | basic; 1 results with text; review text: yes; failed_results: none |
+
+### Notes
+
+- none

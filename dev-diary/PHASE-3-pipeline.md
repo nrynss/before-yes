@@ -63,6 +63,17 @@ Record the source kinds that came back empty, for the card's small print.
 | L2 | `about` and `candidates` read the URL path only, so a query string such as `?ref=privacy` names nothing. | `TestAboutIgnoresQuery` |
 | L3 | The notes now say the extract is conditional and that Minecraft and Khan run at seven credits. | notes |
 
+**Round 2 remediation (T3.1).**
+
+| ID | Fix | Test |
+|---|---|---|
+| M1 | `errorPage(title, text)` goes by signals, not length or position. It flags a page whose title segment ("Page Not Found \| Common Sense Media") or any line of text is wholly an error heading: an error sign plus only filler like "oops", "sorry", "404" or "go home". A sentence that mentions a missing page has other words and is kept. Tavily gives no HTTP status for an extract, so there is no status signal. | `TestErrorPageOnCapturedNotFound` (all 4 captured Common Sense 404s in `tavily-extract-csm-advanced.json`, 5.5k–9k chars, caught by title and by text alone); `TestErrorPage` |
+| M2 | With no official host, no homepage is extracted and no link is followed (note: "no official host known…"). `pageLinks` returns nothing without a host and keeps only links on the host's registrable domain. | `TestGatherNoHostFollowsNoLinks` (Common Sense homepage linking its own privacy policy: no extract, policy missing) |
+| L1 | The no-app host rule needs the listing to be the full normalized title, or the developer to be named for the whole title, or the listing to open with the developer's full name where that name is more than the title's first word. The last case keeps the fixture "Toca Boca World" by Toca Boca AB for "Toca Life World". "Toca Ltd" at toca.xyz is refused. | `TestHostFromHitsNeedsMoreThanFirstWord`; `TestGatherFixtures/toca-life-world` |
+| L2 | `registrable` uses the public suffix list (`publicsuffix.EffectiveTLDPlusOne`). `officialDomain` refuses a domain under a private-section suffix (foo.github.io, *.blogspot.com) and a list of shared platforms (apple.com, google.com, facebook.com, github.com, youtube.com, …). It applies to both the picked app's seller URL and the search-hit host. | `TestOfficialDomain` |
+
+**Dependency: `golang.org/x/net` (for `publicsuffix`).** Why: a hand-kept two-label rule gets multi-label suffixes and shared hosts wrong, and the public suffix list is the standard answer. Cost: none new. It was already in the module graph at v0.58.0 through keel, so go.mod gains one direct require line and go.sum two lines, with no version changes.
+
 ---
 
 ### T3.2: Reader (Nano) ★
@@ -133,6 +144,12 @@ Every grade then goes through `checklist.Enforce`, and the verdict comes from `c
 | M1 | `parseGrades` takes the last object with grades, trying opening braces from the end, so a thinking reply that drafts and then revises is read for its final answer. | `TestParseGradesTakesTheLastBlock` (draft ok, final flag → flag) |
 | L1 | A conflict pass that parses but grades none of the conflicted areas sets `ConflictErr` ("graded none of the conflicted areas") and the first grades stand. | `TestConflictPassAnsweringNothingFails` |
 | L2 | Accepted by the user: the judge is tested on hand-written stand-in replies until T3.6b records real ones. | stand-in note above |
+
+**Round 2 remediation (T3.3).**
+
+| ID | Fix | Test |
+|---|---|---|
+| L1 | If a `"grades"` key appears after the last block that decodes (a final answer cut off at the token cap, or malformed), `parseGrades` returns an error ("final grades block is truncated or unparseable") instead of using the draft. On the first pass that fails the check. On the conflict pass it sets `ConflictErr`, and the first grades stand. The reply has no finish reason to check. A whole draft block restated after the answer still wins as the last block, because the text cannot tell it from an answer; that is left as is. | `TestParseGradesTruncatedFinalFails` |
 
 ---
 
@@ -254,7 +271,7 @@ requires:   T0.4
 fixture-ok: no
 size:       S · mid
 owns:       tools/capture/, testdata/titles/*/tavily-extract-storepage.json
-status:     not-started
+status:     done
 ```
 Apple's public review feed went dark: HTTP 200 with no entries for every app, from two hosts. The user chose the App Store web page as the fallback review source.
 
@@ -263,6 +280,8 @@ Extend `tools/capture` with `-only storepage`. For each of the four titles, extr
 Inspect the result and report: how many reviews the page shows, whether each review's title, body, rating, date and reviewer name survive extraction, and what separates one review from the next.
 
 **Done when:** All four titles have `tavily-extract-storepage.json`, with credits recorded. The handoff text answers the inspection questions with a short anonymised excerpt and says plainly whether the page is usable.
+
+**Result.** 1 Tavily credit spent in total: Khan Academy Kids 1; Roblox, Minecraft and Toca Boca World 0 each, as Tavily reported. Basic depth gave review text on all four pages, so advanced was never run. Reviews per title: Roblox 4, Minecraft 3, Khan Academy Kids 3, Toca Boca World 3. Minecraft, Khan and Toca also carry an "Editors' Choice" blurb, and Khan and Toca carry developer responses; neither is a review. Each review's title and body survive; rating, date and reviewer name do not. Each review block appears twice in the extract. Usable for T3.8, with those limits: one document per review with title and body, deduplicated by content, and no rating, date or name.
 
 ---
 
@@ -277,6 +296,15 @@ status:     not-started
 Turn the extracted App Store page into review documents the reader can quote, one per review. Each document keeps its position on the page, so a card can cite "App Store review 3". Each carries kind `review` and the page URL as its source. Never invent a field the page does not carry. The page's own aggregate text, such as the rating summary or "Ratings and Reviews", is not a review and is never a document.
 
 T3.1 calls this when the review feed returns nothing. The card's small print says which source the reviews came from, the feed or the page, and how many.
+
+**The page's shape, from the T3.8a fixtures:**
+- Reviews sit between the "Ratings & Reviews" heading and "What's New".
+- A review is a title line followed by a body line, with nothing else marking it.
+- Each block appears twice in a row.
+- A developer response appears first as a bare body line, with no label, before the repeat. Only the repeat carries "Developer Response" and a date. So a parser that splits only on that label leaves the first copy of the response attached to the review.
+- "Editors' Choice" blurbs are not reviews.
+- No rating, date or reviewer name survives. Leave those fields empty; never infer them, including a rating from the reviewer's own words.
+- Count positions after dropping duplicates.
 
 **Done when:** Against the T3.8a fixtures, each title yields its page's reviews as separate documents with verbatim text. A finding quoted from one passes `finding.Verify`. A page with no reviews yields no documents and is recorded as a missing source.
 

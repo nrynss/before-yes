@@ -74,7 +74,8 @@ func judgeUser(title string, age int, areas []checklist.Area, fs []finding.Findi
 // thinking reply can carry reasoning before the answer, braces and draft
 // grades included, and a host may wrap the answer in a code fence, so the
 // opening braces are tried from the end and the last one that decodes to an
-// object with grades wins. A grade object inside it has no grades key of
+// object with grades wins, unless a later grades block failed to decode,
+// which is an error rather than a silent fall back to the draft. A grade object inside it has no grades key of
 // its own, so it is skipped on the way back.
 func parseGrades(reply string) ([]checklist.Grade, error) {
 	for i := len(reply) - 1; i >= 0; i-- {
@@ -84,8 +85,15 @@ func parseGrades(reply string) ([]checklist.Grade, error) {
 		var out struct {
 			Grades []checklist.Grade `json:"grades"`
 		}
-		if err := json.NewDecoder(strings.NewReader(reply[i:])).Decode(&out); err != nil || len(out.Grades) == 0 {
+		dec := json.NewDecoder(strings.NewReader(reply[i:]))
+		if err := dec.Decode(&out); err != nil || len(out.Grades) == 0 {
 			continue
+		}
+		// A grades key after this block is a later answer that did not
+		// decode: cut off at the token cap, or malformed. Using the draft
+		// before it would grade on an answer the model revised.
+		if end := i + int(dec.InputOffset()); strings.Contains(reply[end:], `"grades"`) {
+			return nil, errors.New("judge: the final grades block is truncated or unparseable")
 		}
 		for i := range out.Grades {
 			out.Grades[i].Area = checklist.Area(strings.ToLower(strings.TrimSpace(string(out.Grades[i].Area))))
