@@ -997,10 +997,11 @@ func TestSiteNameNotSharedSubstring(t *testing.T) {
 	}
 }
 
-// The round-1 L3 probes: a nav-style heading whose address repeats inside
-// the 600-character window is not evidenced, however it repeats — the
-// second link on its own line with the same label, inline in a line of
-// text, or on its own line under another label but with no blurb between —
+// The round-1 L3 and round-2 L6 probes: a nav-style heading whose address
+// repeats inside the 600-character window is not evidenced, however it
+// repeats — the second link on its own line with the same label, inline in
+// a line of text, on its own line under another label with no blurb
+// between, or on its own line under another label with a blurb between —
 // while Common Sense Media's real pick shape (its card link, an age line
 // and a blurb, then "[See full review](…)" as its own line) still is, on a
 // synthesized page and on the captured one, whose bound-lifted names are
@@ -1011,6 +1012,7 @@ func TestRepeatLinkMustBeReadMore(t *testing.T) {
 		{"own line, same label", "### [Best Kids' TV](" + addr + ")\n[Best Kids' TV](" + addr + ")\n"},
 		{"inline, same label", "### [Best Kids' TV](" + addr + ")\nTonight: [Best Kids' TV](" + addr + ")\n"},
 		{"own line, other label, no blurb", "### [Best Kids' TV](" + addr + ")\n[Full schedule](" + addr + ")\n"},
+		{"own line, other label, with blurb", "### [Best Kids' TV](" + addr + ")\nSee what's on tonight for every age.\n[Full schedule](" + addr + ")\n"},
 	} {
 		if got := listNames(listHit("Kids TV Guide", "https://www.example.com/tv", c.page), nil, nil); len(got) != 0 {
 			t.Errorf("twice-linked nav heading (%s) = %q, want none", c.what, got)

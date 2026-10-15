@@ -272,10 +272,10 @@ func stripMarkdown(s string) string {
 // or a table row whose first cell is bold. Markup only locates; something
 // must evidence the name:
 //   - the entry links to the name's own page, and the link repeats as a
-//     read-more link: on its own line, under its own label, after the pick's
-//     blurb (a pick is linked twice, its card and its read-more link; a menu
-//     link names once, and a navigation repeat is inline or reuses the
-//     label),
+//     read-more link: on its own line, under a read-more label ("See full
+//     review"), after the pick's blurb (a pick is linked twice, its card
+//     and its read-more link; a menu link names once, and a navigation
+//     repeat is inline, reuses the label, or labels its destination),
 //   - the page's own title is a list's ("10 Best Games Like Roblox"), and the
 //     entry is ranked and marked, or a table's name cell,
 //   - another hit in the same search response is titled with the name.
@@ -507,14 +507,30 @@ func evidenced(e listEntry, text, name string, listPage bool, known func(string)
 	return known != nil && known(name)
 }
 
+// readMoreLabels are the folds of the labels a list page puts on a pick's
+// read-more link. The captured evidence is Common Sense Media's: every one
+// of its 20 picks repeats its address as "[See full review](…)", on its own
+// line, after the blurb. The set holds that phrase and its plain variants
+// ("Read the review", "Read our review") — labels about reading the review.
+// A navigation repeat labels its destination instead ("Full schedule", the
+// page's own name), even on its own line with a blurb between (round-2 L6).
+// "Read more" and "See more" stay out: they are the web's generic link
+// labels, navigation included, and no capture carries them.
+var readMoreLabels = map[string]bool{
+	"seefullreview": true, "readfullreview": true, "fullreview": true,
+	"readthereview": true, "seethereview": true, "readourreview": true,
+	"seeourreview": true, "readreview": true, "seereview": true,
+}
+
 // slugEvidence reports whether the entry links to a page whose address is
 // the name (Common Sense Media's "### [Blox 3D Junior](…/app-reviews/blox-3d-junior)")
 // and the link repeats as a read-more link. On the captured page every pick
 // carries its blurb and then the same address once more, as its own line,
-// under its own label: "age 5+", "Kids build block models in challenging
-// creative app.", then "[See full review](…)". A navigation repeat fails
-// one of those three: it sits inside a line of links or text, it repeats
-// the page's own label, or it follows no text at all.
+// under a read-more label: "age 5+", "Kids build block models in
+// challenging creative app.", then "[See full review](…)". A navigation
+// repeat fails one of those: it sits inside a line of links or text, it
+// repeats the page's own label, its label names its destination rather than
+// the review ("Full schedule", round-2 L6), or it follows no text at all.
 func slugEvidence(e listEntry, text, name string) bool {
 	fold := nameFold(name)
 	if fold == "" {
@@ -545,9 +561,11 @@ func slugEvidence(e listEntry, text, name string) bool {
 		if len(prefix) < 4 || prefix[0] != '[' || prefix[len(prefix)-2] != ']' || prefix[len(prefix)-1] != '(' {
 			continue
 		}
-		// The repeat carries its own label. Navigation repeats the page's
-		// own label; the captured read-more links do not.
-		if a := nameFold(prefix[1 : len(prefix)-2]); a == fold || a == lead {
+		// The label is about reading the review ("See full review"). A
+		// repeat of the page's own label, or a label naming the
+		// destination ("Full schedule", round-2 L6), is navigation,
+		// however the link sits on the page.
+		if a := nameFold(prefix[1 : len(prefix)-2]); a == fold || a == lead || !readMoreLabels[a] {
 			continue
 		}
 		if !blurbBetween(rest[:lineStart]) {
