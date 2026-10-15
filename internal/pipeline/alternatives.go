@@ -116,8 +116,10 @@ var (
 	markedHeading = regexp.MustCompile(`(?m)^[ \t]*#{2,4}[ \t]+(\*\*[^*]+\*\*|\[[^\]]+\]\([^)]*\))[ \t]*$`)
 	// tableRow is a table's row whose first cell is bold, the way
 	// kidsaitools' comparison lays its picks out: "| **Toca Builders** | 4-7
-	// | ... |".
-	tableRow = regexp.MustCompile(`(?m)^\|[ \t]*\*\*([^*]+)\*\*[^|]*\|`)
+	// | ... |". The whole row is captured, so a header row (every cell bold,
+	// the way blog.khanacademy.org's "| **App** | **Ages** | **Cost** |")
+	// can be told from a pick's row.
+	tableRow = regexp.MustCompile(`(?m)^\|[ \t]*\*\*([^*]+)\*\*.*$`)
 	// markedLead is a name marked as a title at the start of an entry: a
 	// bold span or a link, as list pages mark each pick ("**Minecraft** -
 	// great for builders", "[Toca Life World](url)", "[**Toca**](url)").
@@ -136,6 +138,56 @@ var (
 	// "Teacher-Recommended Apps" name a page, not an app.
 	genericTail = regexp.MustCompile(`(?i)\b(apps?|games?|channels?|websites?|sites?|picks?)$`)
 )
+
+// genericWhole is a name that is only a collection word: a table column or a
+// section label ("App", "Games", "Picks"), never a title. A real title may
+// end in one ("PBS Kids Games" on the captured Khan blog table); it is never
+// only one.
+var genericWhole = map[string]bool{
+	"app": true, "apps": true, "game": true, "games": true,
+	"channel": true, "channels": true, "website": true, "websites": true,
+	"site": true, "sites": true, "pick": true, "picks": true,
+}
+
+// genericName reports whether a list entry's whole name is such a collection
+// word.
+func genericName(name string) bool {
+	return genericWhole[nameFold(name)]
+}
+
+// minorWords are the closed-class words a title does not capitalise: "Build
+// A Boat for Treasure", "Hide and Seek Extreme", "Work at a Pizza Place",
+// "The Robot Factory by Tinybop".
+var minorWords = map[string]bool{
+	"a": true, "an": true, "the": true, "and": true, "or": true, "but": true,
+	"nor": true, "for": true, "by": true, "to": true, "of": true, "in": true,
+	"on": true, "at": true, "with": true, "from": true, "as": true, "vs": true,
+}
+
+// titleShape reports whether a multi-word name reads as a title rather than
+// a sentence: every word starts with a capital (or a digit, or is one of the
+// small words). The captured picks are all titled that way ("Theme Park
+// Tycoon 2", "Pango Build Safari", "ELSA Speak"); the advice steps an
+// advice page bolds under a list's title are sentences — "Set limits before
+// bed", "Disable chat", "Turn on parental controls" — and are not titles.
+// A name that is one word ("Duolingo") or starts with no letter ("3D
+// Blox") is left to the other checks.
+func titleShape(name string) bool {
+	words := strings.Fields(name)
+	if len(words) <= 1 {
+		return true
+	}
+	for _, w := range words {
+		if minorWords[strings.ToLower(strings.Trim(w, ".,;:!?'\""))] {
+			continue
+		}
+		r := []rune(w)[0]
+		if unicode.IsLetter(r) && !unicode.IsUpper(r) {
+			return false
+		}
+	}
+	return true
+}
 
 // entryRepeatWindow is how far after an entry a link to it must repeat for
 // the link to evidence the name. A list page links a pick twice, its card
@@ -215,10 +267,12 @@ func stripMarkdown(s string) string {
 //     entry is ranked and marked, or a table's name cell,
 //   - another hit in the same search response is titled with the name.
 //
-// A site or platform's own name is never a name. Questions and names over six
-// words are dropped. Repeats on the page and names skip rejects (the title
-// itself, names already taken) are dropped before the bound is applied, so
-// they use no slot; at most maxListEntries are returned.
+// A site or platform's own name is never a name. Questions, collection
+// words ("App", "Games", "Picks"), sentence-shaped names ("Set limits
+// before bed") and names over six words are dropped. Repeats on the page
+// and names skip rejects (the title itself, names already taken) are dropped
+// before the bound is applied, so they use no slot; at most maxListEntries
+// are returned.
 func listNames(h tavily.Result, skip, known func(string) bool) []string {
 	text := h.RawContent
 	if strings.TrimSpace(text) == "" {
@@ -229,7 +283,7 @@ func listNames(h tavily.Result, skip, known func(string) bool) []string {
 	own := map[string]bool{}
 	for _, e := range pageEntries(text) {
 		name := entryName(e)
-		if !plausibleName(name) {
+		if !plausibleName(name) || genericName(name) || !titleShape(name) {
 			continue
 		}
 		if !evidenced(e, text, name, listPage, known) {
@@ -280,6 +334,12 @@ func pageEntries(text string) []listEntry {
 	entries := make([]listEntry, 0, len(found))
 	for _, f := range found {
 		e := f.e
+		// A table's header row bolds its later cells too ("| **App** |
+		// **Ages** | **Cost** |"); it names the page's columns, not a pick.
+		// A pick's row bolds only its name cell.
+		if e.table && boldHeaderRow(e.raw) {
+			continue
+		}
 		// A lead marked on the whole line ("**1) Theme Park Tycoon 2**") or
 		// at the start of the entry ("3) [Quiet Garden](u) - grow plants")
 		// is the name, and marks the entry.
@@ -293,6 +353,23 @@ func pageEntries(text string) []listEntry {
 		entries = append(entries, e)
 	}
 	return entries
+}
+
+// boldHeaderRow reports whether a table row bolds a cell after its first:
+// the captured Khan blog heads its comparison with an all-bold row
+// ("| **App** | **Ages** | **Cost** | **Offline** | **Best For** |"), and a
+// row that bolds every cell names the page's columns, not a pick. A pick's
+// row bolds its name cell alone.
+func boldHeaderRow(raw string) bool {
+	first := strings.Index(raw, "**")
+	if first < 0 {
+		return false
+	}
+	second := strings.Index(raw[first+2:], "**")
+	if second < 0 {
+		return false
+	}
+	return strings.Contains(raw[first+2+second+2:], "**")
 }
 
 // entryName is an entry's name: the captured text with markdown, a lead

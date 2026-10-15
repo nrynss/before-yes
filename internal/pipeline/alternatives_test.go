@@ -841,3 +841,81 @@ func TestCapturedSiteNamesAndQuestionsRejected(t *testing.T) {
 		}
 	}
 }
+
+// boundLifted lists a hit's names with the maxListEntries bound lifted, the
+// way the round-1 review probed: listNames runs again with the names already
+// found (and the caller's own rejects) skipped, until nothing new comes.
+func boundLifted(h tavily.Result, also func(string) bool) []string {
+	var all []string
+	for n := 0; n < 40; n++ {
+		found := map[string]bool{}
+		for _, name := range all {
+			found[appName(name)] = true
+		}
+		got := listNames(h, func(name string) bool {
+			return found[appName(name)] || also != nil && also(name)
+		}, nil)
+		if len(got) == 0 {
+			return all
+		}
+		all = append(all, got...)
+	}
+	return all
+}
+
+// The round-1 M1 probes, pinned.
+//
+// A page titled as a list is the evidence E2 reads, so its own junk would
+// ride in on it: a table of contents' one-word entries ("Games", "Apps",
+// "Picks") and an advice section's bolded steps ("Set limits before bed",
+// "Disable chat") all sit under ranked, marked lines there. A collection
+// word is a column or a section label, never a title (a real title may end
+// in one: "PBS Kids Games" stays, pinned below), and a sentence-shaped name
+// is advice, not a title.
+func TestListEntriesRejectCollectionNames(t *testing.T) {
+	got := listNames(listHit("10 Best Games Like Roblox", "https://www.example.com/list", "1. **Games**\n2. **Apps**\n3. **Picks**\n"), nil, nil)
+	if len(got) != 0 {
+		t.Errorf("collection words on a list-titled page = %q, want none", got)
+	}
+}
+
+func TestListEntriesRejectAdviceSteps(t *testing.T) {
+	got := listNames(listHit("12 Best Building Games for Kids", "https://www.example.com/best", "1. **Set limits before bed**\n2. **Disable chat**\n"), nil, nil)
+	if len(got) != 0 {
+		t.Errorf("bolded advice steps on a list-titled page = %q, want none", got)
+	}
+}
+
+// The captured Khan blog hit's comparison table is headed by an all-bold
+// row, "| **App** | **Ages** | **Cost** | **Offline** | **Best For** |".
+// Replayed with the bound lifted, that header row names no pick, while the
+// data rows — bold name cell alone — still name theirs.
+func TestCapturedTableHeaderNotAPick(t *testing.T) {
+	var blog tavily.Result
+	for _, h := range altCapture(t, "khan-academy-kids") {
+		if strings.Contains(h.URL, "blog.khanacademy.org") {
+			blog = h
+			break
+		}
+	}
+	if blog.URL == "" {
+		t.Fatal("the khan capture has no blog.khanacademy.org hit")
+	}
+	all := boundLifted(blog, func(n string) bool { return sameTitle(n, "Khan Academy Kids") })
+	for _, n := range all {
+		if f := nameFold(n); f == "app" || f == "games" || f == "picks" {
+			t.Errorf("the captured table's header cell %q is a candidate", n)
+		}
+	}
+	for _, want := range []string{"PBS Kids Games", "ScratchJr", "Duolingo ABC"} {
+		found := false
+		for _, n := range all {
+			if appName(n) == appName(want) {
+				found = true
+			}
+		}
+		if !found {
+			t.Errorf("bound-lifted khan blog names %q miss the data row %q", all, want)
+		}
+	}
+}
