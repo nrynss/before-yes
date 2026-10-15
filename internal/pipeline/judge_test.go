@@ -299,6 +299,172 @@ func TestParseGradesTruncatedFinalFails(t *testing.T) {
 	}
 }
 
+// judgedArea returns the grade for area in a judgement, failing if none.
+func judgedArea(t *testing.T, j Judgement, area checklist.Area) checklist.Grade {
+	t.Helper()
+	g, ok := firstOf(j.Grades, area)
+	if !ok {
+		t.Fatalf("no grade for %s", area)
+	}
+	return g
+}
+
+// hasDemotion reports whether ds holds a demotion for area with rule.
+func hasDemotion(ds []checklist.Demotion, area checklist.Area, rule string) bool {
+	for _, d := range ds {
+		if d.Area == area && d.Rule == rule {
+			return true
+		}
+	}
+	return false
+}
+
+// A flag that cites good ids with bad ones keeps the good ids. Each bad id is
+// recorded, and entailment sees only the ids that are left.
+func TestBadCitationsAreRemovedNotTheGrade(t *testing.T) {
+	decisive, _, money, _ := robloxFindings(t)
+	fs := []finding.Finding{decisive, money}
+	reply := gradesJSON(t, checklist.Grade{Area: checklist.Contact, Level: checklist.Flag,
+		Findings: []string{decisive.ID, "f_madeup", money.ID}, Reason: "Strangers can reach the child."})
+	rec := &superRecorder{replies: []any{reply}}
+	ent := &superRecorder{replies: []any{`{"meets_definition": true, "reason_supported": true}`}}
+	got, err := (&Judge{Model: rec, Meter: openTestMeter(t), Entail: ent}).Judge(context.Background(), "Roblox", 9, "c", fs, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	g := judgedArea(t, got, checklist.Contact)
+	if g.Level != checklist.Flag || !reflect.DeepEqual(g.Findings, []string{decisive.ID}) {
+		t.Errorf("contact %+v, want the flag on the one id that checks out", g)
+	}
+	if len(got.Thin) != 0 {
+		t.Errorf("thin %v, want none", got.Thin)
+	}
+	var bad []string
+	for _, d := range got.Demotions {
+		if d.Rule == RuleBadCitation {
+			bad = append(bad, d.Detail)
+		}
+	}
+	if want := []string{"flag: f_madeup is not a verified finding", "flag: " + money.ID + " is in area money"}; !reflect.DeepEqual(bad, want) {
+		t.Errorf("citation demotions %q, want %q", bad, want)
+	}
+	if len(ent.users) != 1 || strings.Count(ent.users[0], "- stance=") != 1 || !strings.Contains(ent.users[0], decisive.Quote) {
+		t.Errorf("entailment saw %d findings, want the one that stands:\n%s", strings.Count(ent.users[0], "- stance="), ent.users[0])
+	}
+}
+
+// Conflict fallback. The first pass grades contact as a flag on a verified
+// risk. The conflict pass cites only a missing id, which the citation check
+// voids, so the conflict grade ends unknown.
+func TestConflictFallbackKeepsFirstPassGrade(t *testing.T) {
+	decisive, _, _, fs := robloxFindings(t)
+	first := gradesJSON(t, checklist.Grade{Area: checklist.Contact, Level: checklist.Flag, Findings: []string{decisive.ID}, Reason: "first reason"})
+	second := gradesJSON(t, checklist.Grade{Area: checklist.Contact, Level: checklist.Flag, Findings: []string{"f_madeup"}, Reason: "conflict reason"})
+	rec := &superRecorder{replies: []any{first, second}}
+	got, err := (&Judge{Model: rec, Meter: openTestMeter(t)}).Judge(context.Background(), "Roblox", 9, "c", fs, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got.ConflictErr != nil || len(rec.users) != 2 {
+		t.Fatalf("conflict err %v, %d judge calls", got.ConflictErr, len(rec.users))
+	}
+	g := judgedArea(t, got, checklist.Contact)
+	if g.Level != checklist.Flag || g.Reason != "first reason" || !reflect.DeepEqual(g.Findings, []string{decisive.ID}) {
+		t.Errorf("contact %+v, want the first pass flag", g)
+	}
+	if len(got.Thin) != 0 || !hasDemotion(got.Demotions, checklist.Contact, RuleConflictFallback) || got.Verdict != checklist.No {
+		t.Errorf("thin %v, demotions %+v, verdict %s", got.Thin, got.Demotions, got.Verdict)
+	}
+}
+
+// When the first pass's grade fails the same checks too, the area is unknown
+// and the area is thin.
+func TestConflictFallbackBothFailIsUnknown(t *testing.T) {
+	_, _, _, fs := robloxFindings(t)
+	first := gradesJSON(t, checklist.Grade{Area: checklist.Contact, Level: checklist.Flag, Findings: []string{"f_first_missing"}, Reason: "first reason"})
+	second := gradesJSON(t, checklist.Grade{Area: checklist.Contact, Level: checklist.Flag, Findings: []string{"f_madeup"}, Reason: "conflict reason"})
+	rec := &superRecorder{replies: []any{first, second}}
+	got, err := (&Judge{Model: rec, Meter: openTestMeter(t)}).Judge(context.Background(), "Roblox", 9, "c", fs, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	g := judgedArea(t, got, checklist.Contact)
+	if g.Level != checklist.Unknown || g.Reason != ThinReason {
+		t.Errorf("contact %+v, want unknown", g)
+	}
+	if !reflect.DeepEqual(got.Thin, []checklist.Area{checklist.Contact}) || hasDemotion(got.Demotions, checklist.Contact, RuleConflictFallback) {
+		t.Errorf("thin %v, demotions %+v", got.Thin, got.Demotions)
+	}
+}
+
+// A conflict grade that passes the checks is used, not the first pass grade.
+func TestConflictGradeThatStandsIsUsed(t *testing.T) {
+	decisive, _, _, fs := robloxFindings(t)
+	first := gradesJSON(t, checklist.Grade{Area: checklist.Contact, Level: checklist.Flag, Findings: []string{decisive.ID}, Reason: "first reason"})
+	second := gradesJSON(t, checklist.Grade{Area: checklist.Contact, Level: checklist.Flag, Findings: []string{decisive.ID}, Reason: "conflict reason"})
+	rec := &superRecorder{replies: []any{first, second}}
+	got, err := (&Judge{Model: rec, Meter: openTestMeter(t)}).Judge(context.Background(), "Roblox", 9, "c", fs, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if g := judgedArea(t, got, checklist.Contact); g.Level != checklist.Flag || g.Reason != "conflict reason" {
+		t.Errorf("contact %+v, want the conflict pass grade", g)
+	}
+	if hasDemotion(got.Demotions, checklist.Contact, RuleConflictFallback) {
+		t.Errorf("fallback recorded though the conflict grade stood: %+v", got.Demotions)
+	}
+}
+
+// The judge's own unknown in the conflict pass is an answer, not a voided
+// grade, so the first pass flag does not replace it.
+func TestConflictUnknownFromJudgeIsNotReplaced(t *testing.T) {
+	decisive, _, _, fs := robloxFindings(t)
+	first := gradesJSON(t, checklist.Grade{Area: checklist.Contact, Level: checklist.Flag, Findings: []string{decisive.ID}, Reason: "first reason"})
+	second := gradesJSON(t, checklist.Grade{Area: checklist.Contact, Level: checklist.Unknown})
+	rec := &superRecorder{replies: []any{first, second}}
+	got, err := (&Judge{Model: rec, Meter: openTestMeter(t)}).Judge(context.Background(), "Roblox", 9, "c", fs, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if g := judgedArea(t, got, checklist.Contact); g.Level != checklist.Unknown {
+		t.Errorf("contact %+v, want the conflict pass unknown kept", g)
+	}
+	if hasDemotion(got.Demotions, checklist.Contact, RuleConflictFallback) {
+		t.Errorf("fallback recorded: %+v", got.Demotions)
+	}
+}
+
+// The fallback grade goes through entailment like any standing grade: one
+// entailment call on its cited finding, and its verdict decides it.
+func TestConflictFallbackGoesThroughEntailment(t *testing.T) {
+	decisive, _, _, fs := robloxFindings(t)
+	first := gradesJSON(t, checklist.Grade{Area: checklist.Contact, Level: checklist.Flag, Findings: []string{decisive.ID}, Reason: "first reason"})
+	second := gradesJSON(t, checklist.Grade{Area: checklist.Contact, Level: checklist.Flag, Findings: []string{"f_madeup"}, Reason: "conflict reason"})
+	for _, c := range []struct {
+		entail string
+		level  checklist.Level
+	}{
+		{`{"meets_definition": true, "reason_supported": true}`, checklist.Flag},
+		{`{"meets_definition": false, "reason_supported": true}`, checklist.Unknown},
+	} {
+		rec := &superRecorder{replies: []any{first, second}}
+		ent := &superRecorder{replies: []any{c.entail}}
+		got, err := (&Judge{Model: rec, Meter: openTestMeter(t), Entail: ent}).Judge(context.Background(), "Roblox", 9, "c", fs, nil)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if len(ent.users) != 1 || !strings.Contains(ent.users[0], decisive.Quote) || strings.Count(ent.users[0], "- stance=") != 1 {
+			t.Errorf("%s: entailment calls %d, want one on the first pass finding:\n%v", c.entail, len(ent.users), ent.users)
+		}
+		if g := judgedArea(t, got, checklist.Contact); g.Level != c.level {
+			t.Errorf("%s: contact %+v, want %s", c.entail, g, c.level)
+		}
+		if c.level == checklist.Unknown && !slices.Contains(got.Thin, checklist.Contact) {
+			t.Errorf("%s: thin %v, want contact", c.entail, got.Thin)
+		}
+	}
+}
+
 // recordedReplies answers from T3.6b's recorded Token Factory replies under
 // testdata/eval/replies/<slug>/<role>/. The file name is the key tools/eval
 // computes (ReplyKey in tools/eval/replay.go): the first 24 hex digits of a
@@ -464,9 +630,10 @@ func TestRecordedRepliesGradesRestOnVerifiedQuotes(t *testing.T) {
 	}
 }
 
-// TestCitationsMustCheckOut pins checkCitations on hand-made findings. A
-// flag or ok_with_setting stands only if every cited id is a verified
-// finding in the grade's area with a fitting stance.
+// TestCitationsMustCheckOut pins checkCitations on hand-made findings. A bad
+// cited id is removed and recorded with its reason. The grade stands with
+// the ids that check out, in their order, while at least one is left. It
+// falls to unknown only when none is left.
 func TestCitationsMustCheckOut(t *testing.T) {
 	fs := []finding.Finding{
 		{ID: "r1", Area: "contact", Stance: finding.Risk, Quote: "A stranger sent my daughter private messages in chat."},
@@ -478,20 +645,21 @@ func TestCitationsMustCheckOut(t *testing.T) {
 	cases := []struct {
 		name  string
 		grade checklist.Grade
-		stand bool
-		why   string
+		keep  []string // the findings left on the grade; nil when it falls to unknown
+		dem   []string // the RuleBadCitation details, in order
 	}{
-		{"flag cites a risk", checklist.Grade{Area: "contact", Level: checklist.Flag, Findings: []string{"r1"}}, true, ""},
-		{"setting cites a risk and a mitigation", checklist.Grade{Area: "contact", Level: checklist.OKWithSetting, Setting: "Parental Controls", Findings: []string{"r1", "m1"}}, true, ""},
-		{"setting cites a mitigation alone", checklist.Grade{Area: "money", Level: checklist.OKWithSetting, Setting: "Ask to Buy", Findings: []string{"m2"}}, true, ""},
-		{"unknown id", checklist.Grade{Area: "contact", Level: checklist.Flag, Findings: []string{"r1", "f_madeup"}}, false, "f_madeup is not a verified finding"},
-		{"unverified finding", checklist.Grade{Area: "money", Level: checklist.Flag, Findings: []string{"f_dropped_by_verify"}}, false, "not a verified finding"},
-		{"wrong area", checklist.Grade{Area: "contact", Level: checklist.Flag, Findings: []string{"r1", "r2"}}, false, "r2 is in area money"},
-		{"flag cites a mitigation", checklist.Grade{Area: "contact", Level: checklist.Flag, Findings: []string{"r1", "m1"}}, false, "m1 is a mitigation finding"},
-		{"flag cites a neutral", checklist.Grade{Area: "contact", Level: checklist.Flag, Findings: []string{"n1"}}, false, "n1 is a neutral finding"},
-		{"setting cites a neutral", checklist.Grade{Area: "contact", Level: checklist.OKWithSetting, Setting: "Parental Controls", Findings: []string{"m1", "n1"}}, false, "n1 is a neutral finding"},
-		{"flag cites nothing", checklist.Grade{Area: "contact", Level: checklist.Flag, Findings: []string{}}, false, "no finding cited"},
-		{"setting cites nothing", checklist.Grade{Area: "money", Level: checklist.OKWithSetting, Setting: "Ask to Buy"}, false, "no finding cited"},
+		{"flag cites a risk", checklist.Grade{Area: "contact", Level: checklist.Flag, Findings: []string{"r1"}}, []string{"r1"}, nil},
+		{"setting cites a risk and a mitigation", checklist.Grade{Area: "contact", Level: checklist.OKWithSetting, Setting: "Parental Controls", Findings: []string{"r1", "m1"}}, []string{"r1", "m1"}, nil},
+		{"setting cites a mitigation alone", checklist.Grade{Area: "money", Level: checklist.OKWithSetting, Setting: "Ask to Buy", Findings: []string{"m2"}}, []string{"m2"}, nil},
+		{"unknown id", checklist.Grade{Area: "contact", Level: checklist.Flag, Findings: []string{"r1", "f_madeup"}}, []string{"r1"}, []string{"flag: f_madeup is not a verified finding"}},
+		{"unverified finding", checklist.Grade{Area: "money", Level: checklist.Flag, Findings: []string{"f_dropped_by_verify"}}, nil, []string{"flag: f_dropped_by_verify is not a verified finding", "flag: no verified finding left"}},
+		{"wrong area", checklist.Grade{Area: "contact", Level: checklist.Flag, Findings: []string{"r1", "r2"}}, []string{"r1"}, []string{"flag: r2 is in area money"}},
+		{"flag cites a mitigation", checklist.Grade{Area: "contact", Level: checklist.Flag, Findings: []string{"r1", "m1"}}, []string{"r1"}, []string{"flag: m1 is a mitigation finding"}},
+		{"flag cites a neutral", checklist.Grade{Area: "contact", Level: checklist.Flag, Findings: []string{"n1"}}, nil, []string{"flag: n1 is a neutral finding", "flag: no verified finding left"}},
+		{"setting cites a neutral", checklist.Grade{Area: "contact", Level: checklist.OKWithSetting, Setting: "Parental Controls", Findings: []string{"m1", "n1"}}, []string{"m1"}, []string{"ok_with_setting: n1 is a neutral finding"}},
+		{"bad ids around good ones keep order", checklist.Grade{Area: "contact", Level: checklist.OKWithSetting, Setting: "Parental Controls", Findings: []string{"m1", "f_x", "r1"}}, []string{"m1", "r1"}, []string{"ok_with_setting: f_x is not a verified finding"}},
+		{"flag cites nothing", checklist.Grade{Area: "contact", Level: checklist.Flag, Findings: []string{}}, nil, []string{"flag: no finding cited"}},
+		{"setting cites nothing", checklist.Grade{Area: "money", Level: checklist.OKWithSetting, Setting: "Ask to Buy"}, nil, []string{"ok_with_setting: no finding cited"}},
 	}
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
@@ -501,17 +669,29 @@ func TestCitationsMustCheckOut(t *testing.T) {
 			if fmt.Sprint(in) != orig {
 				t.Fatal("checkCitations modified its input")
 			}
-			if c.stand {
-				if got[0].Level != c.grade.Level || !reflect.DeepEqual(got[0].Findings, c.grade.Findings) || len(dem) != 0 || len(thin) != 0 {
-					t.Errorf("did not stand: %+v %+v %v", got[0], dem, thin)
+			var details []string
+			for _, d := range dem {
+				if d.Rule != RuleBadCitation || d.Area != c.grade.Area {
+					t.Errorf("demotion %+v: want rule %s in %s", d, RuleBadCitation, c.grade.Area)
+				}
+				details = append(details, d.Detail)
+			}
+			if !reflect.DeepEqual(details, c.dem) {
+				t.Errorf("demotion details %q, want %q", details, c.dem)
+			}
+			if c.keep != nil {
+				want := c.grade
+				want.Findings = c.keep
+				if !reflect.DeepEqual(got[0], want) || len(thin) != 0 {
+					t.Errorf("got %+v thin %v, want %+v standing", got[0], thin, want)
 				}
 				return
 			}
 			if got[0].Level != checklist.Unknown || got[0].Setting != "" || len(got[0].Findings) != 0 || got[0].Reason != ThinReason {
 				t.Errorf("not dropped to unknown: %+v", got[0])
 			}
-			if !reflect.DeepEqual(thin, []checklist.Area{c.grade.Area}) || len(dem) != 1 || dem[0].Rule != RuleBadCitation || !strings.Contains(dem[0].Detail, c.why) {
-				t.Errorf("thin %v, demotions %+v; want rule %s with %q", thin, dem, RuleBadCitation, c.why)
+			if !reflect.DeepEqual(thin, []checklist.Area{c.grade.Area}) {
+				t.Errorf("thin %v, want [%s]", thin, c.grade.Area)
 			}
 		})
 	}
@@ -567,9 +747,10 @@ func TestGroundSettingNeedsANamingMitigation(t *testing.T) {
 	}
 }
 
-// The whole judge step: a flag citing an unverified id drops to unknown and
-// its area is thin; a setting no cited mitigation names drops too; a valid
-// citation stands whatever words the reason uses.
+// The whole judge step: an unverified id is removed and the flag stands on
+// the id that checks out; a setting no cited mitigation names drops to
+// unknown and its area is thin; a valid citation stands whatever words the
+// reason uses.
 func TestJudgeCitationEndToEnd(t *testing.T) {
 	decisive, mit, money, fs := robloxFindings(t)
 	reply := gradesJSON(t,
@@ -589,10 +770,13 @@ func TestJudgeCitationEndToEnd(t *testing.T) {
 	if g := by[checklist.Contact]; g.Level != checklist.Flag || !reflect.DeepEqual(g.Findings, []string{decisive.ID}) {
 		t.Errorf("contact %+v, want a flag on the cited finding", g)
 	}
-	if by[checklist.Money].Level != checklist.Unknown || by[checklist.Data].Level != checklist.Unknown {
-		t.Errorf("money %+v, data %+v; want both unknown", by[checklist.Money], by[checklist.Data])
+	if g := by[checklist.Money]; g.Level != checklist.Flag || !reflect.DeepEqual(g.Findings, []string{money.ID}) {
+		t.Errorf("money %+v, want the flag on its verified finding alone", g)
 	}
-	if want := []checklist.Area{checklist.Money, checklist.Data}; !reflect.DeepEqual(got.Thin, want) {
+	if by[checklist.Data].Level != checklist.Unknown {
+		t.Errorf("data %+v, want unknown", by[checklist.Data])
+	}
+	if want := []checklist.Area{checklist.Data}; !reflect.DeepEqual(got.Thin, want) {
 		t.Errorf("thin %v, want %v", got.Thin, want)
 	}
 	if got.Verdict != checklist.No {
@@ -602,11 +786,12 @@ func TestJudgeCitationEndToEnd(t *testing.T) {
 
 // The thin areas reach the card as a field, not only as reason text.
 func TestThinAreasReachTheCard(t *testing.T) {
-	decisive, mit, money, fs := robloxFindings(t)
+	decisive, mit, _, fs := robloxFindings(t)
 	reply := gradesJSON(t,
 		checklist.Grade{Area: checklist.Contact, Level: checklist.Flag, Findings: []string{decisive.ID}, Reason: "A parent reports a child predator might ask where the child is."},
-		// Cites a contact mitigation for a money flag: wrong area, wrong stance.
-		checklist.Grade{Area: checklist.Money, Level: checklist.Flag, Findings: []string{money.ID, mit.ID}, Reason: "Purchases are charged twice."},
+		// Cites only a contact mitigation for a money flag: wrong area, wrong
+		// stance, so no id is left and the flag falls to unknown.
+		checklist.Grade{Area: checklist.Money, Level: checklist.Flag, Findings: []string{mit.ID}, Reason: "Purchases are charged twice."},
 	)
 	rec := &superRecorder{replies: []any{reply, reply}}
 	p := &Pipeline{Judge: &Judge{Model: rec, Meter: openTestMeter(t)}}

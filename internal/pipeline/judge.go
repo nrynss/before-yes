@@ -249,6 +249,8 @@ func (j *Judge) Judge(ctx context.Context, title string, age int, ref string, fs
 	}
 
 	out.Conflicted = conflicted(fs)
+	firstPass := grades
+	var conflictPass []checklist.Grade // the conflict pass's grades, when it counted
 	if len(out.Conflicted) > 0 {
 		max := j.ThinkMaxTokens
 		if max <= 0 {
@@ -264,6 +266,7 @@ func (j *Judge) Judge(ctx context.Context, title string, age int, ref string, fs
 			if second, err = parseGrades(reply.Text); err == nil {
 				if answers(second, out.Conflicted) {
 					grades = replace(grades, second, out.Conflicted)
+					conflictPass = second
 				} else {
 					err = errors.New("judge: the conflict pass graded none of the conflicted areas")
 				}
@@ -275,33 +278,30 @@ func (j *Judge) Judge(ctx context.Context, title string, age int, ref string, fs
 		}
 	}
 
-	// Citations are checked on the judge's own list, before Enforce drops
-	// the ids it cannot use: one bad id voids a flag or a setting (T3.9b).
-	var cited, grounded []checklist.Demotion
-	var thinCited, thinGround, thinEntail []checklist.Area
-	grades, cited, thinCited = checkCitations(grades, fs)
-	out.Grades, out.Demotions = checklist.Enforce(grades, finding.Cited(fs))
-	out.Demotions = append(cited, out.Demotions...)
-	out.Grades, grounded, thinGround = ground(out.Grades, fs)
-	out.Demotions = append(out.Demotions, grounded...)
-	// The entailment check (T3.10, fault 3): one call per standing flag or
-	// ok_with_setting, asking whether the cited findings meet the area's
-	// flag definition for this age and whether the reason says only what
-	// the quotes support. A failed or unparseable call keeps the grade and
-	// is recorded in EntailErr, as a failed conflict pass keeps the first
-	// grades in ConflictErr.
-	var entDem []checklist.Demotion
 	ageWitnesses := map[checklist.Area]ageGateWitness{}
-	if j.Entail != nil {
-		var entCost cost.Price
-		out.Grades, entDem, thinEntail, out.EntailErr, entCost = j.entail(ctx, title, age, ref, out.Grades, fs, ageWitnesses)
-		out.Cost += entCost
-		if err := ctx.Err(); err != nil {
-			return out, err
-		}
+	var stood []checklist.Area
+	var standCost cost.Price
+	out.Grades, out.Demotions, stood, out.EntailErr, standCost = j.standing(ctx, title, age, ref, grades, fs, ageWitnesses)
+	out.Cost += standCost
+	if err := ctx.Err(); err != nil {
+		return out, err
 	}
-	out.Demotions = append(out.Demotions, entDem...)
-	out.Thin = thinAreas(out.Grades, thinCited, thinGround, thinEntail)
+	// A conflict-pass grade the checks made unknown falls back to the first
+	// pass's grade for its area, when the same checks let that one stand.
+	var fbDem []checklist.Demotion
+	var fbThin []checklist.Area
+	var fbErr error
+	var fbCost cost.Price
+	out.Grades, fbDem, fbThin, fbErr, fbCost = j.conflictFallback(ctx, title, age, ref, firstPass, conflictPass, out.Conflicted, out.Grades, fs, ageWitnesses)
+	out.Cost += fbCost
+	out.Demotions = append(out.Demotions, fbDem...)
+	if out.EntailErr == nil {
+		out.EntailErr = fbErr
+	}
+	if err := ctx.Err(); err != nil {
+		return out, err
+	}
+	out.Thin = thinAreas(out.Grades, stood, fbThin)
 	if j.CheckedReasons != nil {
 		reasons := make(map[checklist.Area]string, len(out.Grades))
 		for _, g := range out.Grades {
@@ -362,13 +362,109 @@ func replace(first, second []checklist.Grade, areas []checklist.Area) []checklis
 	return out
 }
 
+// standing applies the checks that decide whether each grade stands, in
+// order: citations (checkCitations, which drops bad ids and voids a grade
+// only when none is left), Enforce, grounding, then entailment. It returns
+// the grades, the demotions in that order, and the areas the citation,
+// grounding and entailment checks dropped to unknown. The input is not
+// modified.
+func (j *Judge) standing(ctx context.Context, title string, age int, ref string, grades []checklist.Grade, fs []finding.Finding, witnesses map[checklist.Area]ageGateWitness) (out []checklist.Grade, dem []checklist.Demotion, thin []checklist.Area, entailErr error, price cost.Price) {
+	out, cited, thinCited := checkCitations(grades, fs)
+	var enforced []checklist.Demotion
+	out, enforced = checklist.Enforce(out, finding.Cited(fs))
+	var grounded []checklist.Demotion
+	var thinGround []checklist.Area
+	out, grounded, thinGround = ground(out, fs)
+	// The entailment check (T3.10, fault 3): one call per standing flag or
+	// ok_with_setting, asking whether the cited findings meet the area's
+	// flag definition for this age and whether the reason says only what
+	// the quotes support. A failed or unparseable call keeps the grade and
+	// is recorded in EntailErr, as a failed conflict pass keeps the first
+	// grades in ConflictErr.
+	var entDem []checklist.Demotion
+	var thinEntail []checklist.Area
+	if j.Entail != nil {
+		out, entDem, thinEntail, entailErr, price = j.entail(ctx, title, age, ref, out, fs, witnesses)
+	}
+	dem = append(dem, cited...)
+	dem = append(dem, enforced...)
+	dem = append(dem, grounded...)
+	dem = append(dem, entDem...)
+	thin = append(thin, thinCited...)
+	thin = append(thin, thinGround...)
+	thin = append(thin, thinEntail...)
+	return out, dem, thin, entailErr, price
+}
+
+// conflictFallback handles the areas the conflict pass re-graded. An area
+// whose conflict-pass grade was a concern or ok, and which the checks made
+// unknown, takes the first pass's grade for the area when the same checks let
+// that grade stand. The first pass's grade goes through standing like any
+// other grade, so it is entailed and reaches the parent-reason writer
+// unchanged. A first-pass grade that also fails leaves the area unknown, and
+// its demotions are recorded. Returns graded, with each fallback swapped in.
+func (j *Judge) conflictFallback(ctx context.Context, title string, age int, ref string, firstPass, conflictPass []checklist.Grade, areas []checklist.Area, graded []checklist.Grade, fs []finding.Finding, witnesses map[checklist.Area]ageGateWitness) (out []checklist.Grade, dem []checklist.Demotion, thin []checklist.Area, entailErr error, price cost.Price) {
+	out = graded
+	var firsts []checklist.Grade
+	conflictLevel := map[checklist.Area]checklist.Level{}
+	for _, a := range areas {
+		cur, ok := firstOf(graded, a)
+		if !ok || cur.Level != checklist.Unknown {
+			continue
+		}
+		cg, ok := firstOf(conflictPass, a)
+		if !ok || cg.Level == checklist.Unknown {
+			continue
+		}
+		fg, ok := firstOf(firstPass, a)
+		if !ok || fg.Level == checklist.Unknown {
+			continue
+		}
+		firsts = append(firsts, fg)
+		conflictLevel[a] = cg.Level
+	}
+	if len(firsts) == 0 {
+		return out, nil, nil, nil, 0
+	}
+	kept, dem, thin, entailErr, price := j.standing(ctx, title, age, ref, firsts, fs, witnesses)
+	out = slices.Clone(graded)
+	for _, g := range kept {
+		if g.Level == checklist.Unknown {
+			continue
+		}
+		for i := range out {
+			if out[i].Area == g.Area {
+				out[i] = g
+				break
+			}
+		}
+		dem = append(dem, checklist.Demotion{Area: g.Area, Rule: RuleConflictFallback, Detail: "conflict pass " + string(conflictLevel[g.Area]) + " made unknown by the checks; first pass " + string(g.Level) + " kept"})
+	}
+	return out, dem, thin, entailErr, price
+}
+
+// firstOf returns the first grade for area in grades.
+func firstOf(grades []checklist.Grade, area checklist.Area) (checklist.Grade, bool) {
+	for _, g := range grades {
+		if g.Area == area {
+			return g, true
+		}
+	}
+	return checklist.Grade{}, false
+}
+
 // Demotions the judge step makes after Enforce. Each leaves the grade
 // unknown and its area in Judgement.Thin.
 const (
-	// RuleBadCitation: a flag or ok_with_setting that cites no finding, or
-	// cites an id that is not a verified finding, is in another area, or has
-	// a stance the grade does not fit (T3.9b). One bad id voids the grade.
+	// RuleBadCitation: a cited id of a flag or ok_with_setting that is not a
+	// verified finding, is in another area, or has a stance the grade does
+	// not fit is removed (T3.9b). A grade left with no id, because it cited
+	// none or every id was bad, becomes unknown.
 	RuleBadCitation = "citation_invalid"
+	// RuleConflictFallback: a conflict-pass grade the checks made unknown was
+	// replaced by the first pass's grade for its area, which the same checks
+	// let stand.
+	RuleConflictFallback = "conflict_fallback"
 	// RuleSettingUnbacked: an ok_with_setting whose setting appears in no
 	// cited verified mitigation quote.
 	RuleSettingUnbacked = "setting_without_quote"
@@ -401,14 +497,18 @@ const NotEarnedReason = "Changed to unknown: the cited quotes do not meet this a
 const UnsupportedReason = "Changed to unknown: the reason says more than the cited quotes support."
 
 // checkCitations holds every flag and ok_with_setting to the findings it
-// cites (T3.9b). It reads the judge's own citation list, before
-// checklist.Enforce drops the ids it cannot use. The grade stands only if
-// it cites at least one finding and every cited id is a verified finding in
-// fs (fs holds only findings that passed finding.Verify), belongs to the
-// grade's area, and has a fitting stance: a risk for a flag; a risk or a
-// mitigation for ok_with_setting. A grade that fails becomes unknown with
-// no setting and no citations, a RuleBadCitation demotion, and its area in
-// thin. ok and unknown grades pass through, and the input is not modified.
+// cites (T3.9b, kept by the citation fix). It reads the judge's own citation
+// list, before checklist.Enforce drops the ids it cannot use. A cited id is
+// kept only if it is a verified finding in fs (fs holds only findings that
+// passed finding.Verify), belongs to the grade's area, and has a fitting
+// stance: a risk for a flag; a risk or a mitigation for ok_with_setting. Each
+// id that fails is removed and recorded as a RuleBadCitation demotion with
+// the id and reason. The grade stands with its level, setting and reason
+// unchanged while at least one cited id is left, and the kept ids keep their
+// order. A grade with no id left (none cited, or all bad) becomes unknown
+// with no setting and no citations, one more RuleBadCitation demotion, and
+// its area in thin. ok and unknown grades pass through, and the input is not
+// modified.
 func checkCitations(grades []checklist.Grade, fs []finding.Finding) (out []checklist.Grade, dem []checklist.Demotion, thin []checklist.Area) {
 	byID := make(map[string]finding.Finding, len(fs))
 	for _, f := range fs {
@@ -421,31 +521,34 @@ func checkCitations(grades []checklist.Grade, fs []finding.Finding) (out []check
 		if (g.Level != checklist.Flag && g.Level != checklist.OKWithSetting) || !g.Area.Valid() {
 			continue
 		}
-		bad := ""
-		seen := 0
+		var keep []string
 		for _, id := range g.Findings {
-			id = strings.TrimSpace(id)
-			f, ok := byID[id]
+			f, ok := byID[strings.TrimSpace(id)]
+			why := ""
 			switch {
 			case !ok:
-				bad = id + " is not a verified finding"
+				why = "is not a verified finding"
 			case f.Area != g.Area:
-				bad = id + " is in area " + string(f.Area)
+				why = "is in area " + string(f.Area)
 			case !stanceFits(g.Level, f.Stance):
-				bad = id + " is a " + string(f.Stance) + " finding"
-			default:
-				seen++
+				why = "is a " + string(f.Stance) + " finding"
+			}
+			if why == "" {
+				keep = append(keep, id)
 				continue
 			}
-			break
+			dem = append(dem, checklist.Demotion{Area: g.Area, Rule: RuleBadCitation, Detail: string(g.Level) + ": " + strings.TrimSpace(id) + " " + why})
 		}
-		if bad == "" && seen == 0 {
-			bad = "no finding cited"
-		}
-		if bad == "" {
+		if len(keep) > 0 {
+			g.Findings = keep
+			out[i] = g
 			continue
 		}
-		dem = append(dem, checklist.Demotion{Area: g.Area, Rule: RuleBadCitation, Detail: string(g.Level) + ": " + bad})
+		detail := string(g.Level) + ": no finding cited"
+		if len(g.Findings) > 0 {
+			detail = string(g.Level) + ": no verified finding left"
+		}
+		dem = append(dem, checklist.Demotion{Area: g.Area, Rule: RuleBadCitation, Detail: detail})
 		thin = append(thin, g.Area)
 		g.Level, g.Setting, g.Reason, g.Findings = checklist.Unknown, "", ThinReason, []string{}
 		out[i] = g
