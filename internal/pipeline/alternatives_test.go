@@ -945,3 +945,51 @@ func TestSiteNameNotSharedSubstring(t *testing.T) {
 		}
 	}
 }
+
+// The round-1 L3 probes: a nav-style heading whose address repeats inside
+// the 600-character window is not evidenced, however it repeats — the
+// second link on its own line with the same label, inline in a line of
+// text, or on its own line under another label but with no blurb between —
+// while Common Sense Media's real pick shape (its card link, an age line
+// and a blurb, then "[See full review](…)" as its own line) still is, on a
+// synthesized page and on the captured one, whose bound-lifted names are
+// exactly its 20 review-page titles.
+func TestRepeatLinkMustBeReadMore(t *testing.T) {
+	addr := "https://www.example.com/best-kids-tv"
+	for _, c := range []struct{ what, page string }{
+		{"own line, same label", "### [Best Kids' TV](" + addr + ")\n[Best Kids' TV](" + addr + ")\n"},
+		{"inline, same label", "### [Best Kids' TV](" + addr + ")\nTonight: [Best Kids' TV](" + addr + ")\n"},
+		{"own line, other label, no blurb", "### [Best Kids' TV](" + addr + ")\n[Full schedule](" + addr + ")\n"},
+	} {
+		if got := listNames(listHit("Kids TV Guide", "https://www.example.com/tv", c.page), nil, nil); len(got) != 0 {
+			t.Errorf("twice-linked nav heading (%s) = %q, want none", c.what, got)
+		}
+	}
+	pick := "### [Blox 3D Junior](https://www.commonsensemedia.org/app-reviews/blox-3d-junior)\n\n" +
+		"age 5+\n\nKids build block models in challenging creative app.\n\n" +
+		"[See full review](https://www.commonsensemedia.org/app-reviews/blox-3d-junior)\n"
+	got := listNames(listHit("Games Like Minecraft | Common Sense Media", "https://www.commonsensemedia.org/lists/games-like-minecraft", pick), nil, nil)
+	if strings.Join(got, "|") != "Blox 3D Junior" {
+		t.Errorf("CSM pick shape = %q, want [Blox 3D Junior]", got)
+	}
+
+	var csm tavily.Result
+	for _, h := range altCapture(t, "minecraft") {
+		if strings.Contains(h.URL, "commonsensemedia.org/lists/") {
+			csm = h
+			break
+		}
+	}
+	if csm.URL == "" {
+		t.Fatal("the minecraft capture has no commonsensemedia.org list hit")
+	}
+	all := boundLifted(csm, func(n string) bool { return sameTitle(n, "Minecraft") })
+	if len(all) != 20 {
+		t.Errorf("bound-lifted CSM names %d: %q", len(all), all)
+	}
+	for _, n := range all {
+		if platformNames[nameFold(n)] {
+			t.Errorf("bound-lifted CSM names a platform: %q", n)
+		}
+	}
+}

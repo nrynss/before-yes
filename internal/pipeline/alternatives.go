@@ -261,8 +261,11 @@ func stripMarkdown(s string) string {
 // …"), a heading that is only a link or bold text ("### [Lego Worlds](url)"),
 // or a table row whose first cell is bold. Markup only locates; something
 // must evidence the name:
-//   - the entry links to the name's own page, and the link repeats (a pick is
-//     linked twice, its card and its read-more link; a menu link names once),
+//   - the entry links to the name's own page, and the link repeats as a
+//     read-more link: on its own line, under its own label, after the pick's
+//     blurb (a pick is linked twice, its card and its read-more link; a menu
+//     link names once, and a navigation repeat is inline or reuses the
+//     label),
 //   - the page's own title is a list's ("10 Best Games Like Roblox"), and the
 //     entry is ranked and marked, or a table's name cell,
 //   - another hit in the same search response is titled with the name.
@@ -424,7 +427,12 @@ func evidenced(e listEntry, text, name string, listPage bool, known func(string)
 
 // slugEvidence reports whether the entry links to a page whose address is
 // the name (Common Sense Media's "### [Blox 3D Junior](…/app-reviews/blox-3d-junior)")
-// and the link repeats within the entry's neighbourhood.
+// and the link repeats as a read-more link. On the captured page every pick
+// carries its blurb and then the same address once more, as its own line,
+// under its own label: "age 5+", "Kids build block models in challenging
+// creative app.", then "[See full review](…)". A navigation repeat fails
+// one of those three: it sits inside a line of links or text, it repeats
+// the page's own label, or it follows no text at all.
 func slugEvidence(e listEntry, text, name string) bool {
 	fold := nameFold(name)
 	if fold == "" {
@@ -440,7 +448,45 @@ func slugEvidence(e listEntry, text, name string) bool {
 		if slug == "" || slug != fold && slug != lead {
 			continue
 		}
-		if strings.Count(text[e.pos:end], m[2]) >= 2 {
+		at := strings.Index(text[e.pos:end], m[2])
+		if at < 0 {
+			continue
+		}
+		rest := text[e.pos+at+len(m[2]) : end]
+		next := strings.Index(rest, m[2])
+		if next < 0 || !strings.HasPrefix(rest[next+len(m[2]):], ")") {
+			continue // the address does not repeat as a link's own address
+		}
+		lineStart := strings.LastIndex(rest[:next], "\n") + 1
+		prefix := rest[lineStart:next]
+		// The repeat is a link that owns its line: "[See full review](".
+		if len(prefix) < 4 || prefix[0] != '[' || prefix[len(prefix)-2] != ']' || prefix[len(prefix)-1] != '(' {
+			continue
+		}
+		// The repeat carries its own label. Navigation repeats the page's
+		// own label; the captured read-more links do not.
+		if a := nameFold(prefix[1 : len(prefix)-2]); a == fold || a == lead {
+			continue
+		}
+		if !blurbBetween(rest[:lineStart]) {
+			continue
+		}
+		return true
+	}
+	return false
+}
+
+// blurbBetween reports whether s holds a line of plain text: on the captured
+// pages a pick's age line and description stand between its card link and
+// its read-more link, while a menu's links sit next to each other with no
+// text at all. A line with link markup in it is another link, not a blurb.
+func blurbBetween(s string) bool {
+	for _, line := range strings.Split(s, "\n") {
+		line = strings.TrimSpace(line)
+		if len(line) < 4 || strings.Contains(line, "](") {
+			continue
+		}
+		if strings.IndexFunc(line, unicode.IsLetter) >= 0 {
 			return true
 		}
 	}
