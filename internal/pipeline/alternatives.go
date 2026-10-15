@@ -178,9 +178,11 @@ var minorWords = map[string]bool{
 // noun phrase is shape-identical to a pick ("Build A Boat for Treasure",
 // "Hide and Seek Extreme"): every word capitalised, no minor word, no other
 // signal on the line. No shape check separates them, and the verb stoplist
-// that once tried was removed in T3.5 round 3. The captured corpus never
-// produces the shape — every bolded advice step it carries is sentence-cased
-// — so the limit is pinned, not hidden:
+// that once tried was removed in T3.5 round 3. No list-titled capture
+// produces the shape — every bolded advice step they carry is sentence-cased
+// — and the one capture with title-shaped bold labels (educational-games.
+// online's numbered entries) never arms E2 at all: its emoji-led title is
+// no list's. So the limit is pinned, not hidden:
 // TestTitleCasedAdviceStepsAreAdmitted.
 func titleShape(name string) bool {
 	words := strings.Fields(name)
@@ -372,10 +374,10 @@ func pageEntries(text string) []listEntry {
 // columnLabels are the folds of the captured tables' header cells: the
 // comparison tables in the captures head themselves with these labels
 // (blog.khanacademy.org's "| **App** | **Ages** | **Cost** | **Offline** |
-// **Best For** |" and "| **App** | **Best For** | **Why It’s Great** |
-// **Link** |", kidsaitools' "| Game | Age Fit | Chat/Social | In-App
-// Purchases | First Success | Best For |"). A row of them names the page's
-// columns, never a pick.
+// **Best For** |", educational-games.online's "| **App** | **Best For** |
+// **Why It’s Great** | **Link** |", kidsaitools' "| Game | Age Fit |
+// Chat/Social | In-App Purchases | First Success | Best For |"). A row of
+// them names the page's columns, never a pick.
 var columnLabels = map[string]bool{
 	"app": true, "ages": true, "cost": true, "offline": true, "bestfor": true,
 	"whyitsgreat": true, "link": true, "game": true, "agefit": true,
@@ -389,8 +391,9 @@ func cellBold(cell string) bool {
 }
 
 // boldHeaderRow reports whether a table row is the table's header, which
-// names the page's columns rather than a pick. Two shapes, both from the
-// captures:
+// names the page's columns rather than a pick. Two shapes — the first read
+// off the captures, the second the rule's first-cell-only form (round-2 L5's
+// probe; no capture carries it):
 //   - every cell bold: the Khan blog heads its comparison with
 //     "| **App** | **Ages** | **Cost** | **Offline** | **Best For** |";
 //   - the first cell bold and every later cell a captured column label
@@ -515,7 +518,9 @@ func evidenced(e listEntry, text, name string, listPage bool, known func(string)
 // A navigation repeat labels its destination instead ("Full schedule", the
 // page's own name), even on its own line with a blurb between (round-2 L6).
 // "Read more" and "See more" stay out: they are the web's generic link
-// labels, navigation included, and no capture carries them.
+// labels, navigation included. No capture carries one as a whole label —
+// samiolearning's "Read more" appearances are tails of longer link labels,
+// never a label alone.
 var readMoreLabels = map[string]bool{
 	"seefullreview": true, "readfullreview": true, "fullreview": true,
 	"readthereview": true, "seethereview": true, "readourreview": true,
