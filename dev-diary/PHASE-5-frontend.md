@@ -131,11 +131,13 @@ requires:   T5.2, T4.5
 fixture-ok: yes
 size:       S · mid
 owns:       web/src/lib/keys/
-status:     not-started
+status:     in-review
 ```
 When the daily cap is spent, offer to run the check on the visitor's own Token Factory and Tavily keys. Say plainly that the keys are used for this one check and not stored. The keys live in component state only: never in local storage, the URL, or a log.
 
 **Done when:** A check runs on pasted keys against a mock, and a test confirms nothing is written to storage or the URL.
+
+**Note (T5.7).** `Keys.svelte` posts `{title, age}` to `/api/checks` with both `X-Token-Factory-Key` and `X-Tavily-Key`, or it sends nothing. A half pair, a space, a non-printable byte, or a key over 512 bytes is refused in fixed copy that does not repeat what was typed. `200` `card_id` and `202` `check_id` open only when the id is `c_` or `j_` plus 32 lowercase hex. The default client is Keel's `api`; a parent may pass another, including the passcode-gated one. Ask.svelte does not mount the dialog because it is outside owns. A later page mounts `Keys` with the title and age it already has.
 
 ---
 
