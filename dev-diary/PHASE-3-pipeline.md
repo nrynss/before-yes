@@ -713,6 +713,46 @@ The first live end-to-end run (handoff log) showed T3.10's checks demoting earne
 
 The title-specific reason on standing flags (T3.10: the judge copies the area definition as its reason) is a pending user decision; do not change it here unless the user says so.
 
+**Diagnosis, before any judge.go change.** `go run ./tools/eval -diagnose` replayed the fixture recordings and exited 0. Roblox gather 1 is `testdata/eval/gathers/1/roblox` (`-models live -gather 1 -live-only roblox`): verdict no, 200 findings, Tavily 8 credits, model $0.037053 on the task ledger. The ThinReason demotions from the first live end-to-end run did not recur on this gather or on the fixture replay. "Earned" below is a reading of the cited quote against `areaDefs`, not the check's own answer.
+
+Roblox gather 1, age 9, verdict no.
+
+| Area | Card grade | Cited quote | Earned | Check |
+|---|---|---|---|---|
+| contact | ok_with_setting, setting "parental controls" | "Roblox’s default settings, including unverified accounts, no age verification, and open communication channels, repeatedly exposed minors to sexual exploitation." Mitigation: "Direct messages and party chats can be disabled with parental controls." | earned | stood (entail true/true) |
+| money | ok_with_setting, setting "parental controls" | "Games may contain optional in-game purchases, including lootboxes and other items." Mitigation: "don’t forget to set parental controls to manage how much your kids are allowed to spend (or block spending entirely)." | earned | stood (entail true/true) |
+| data | ok_with_setting, setting "turn off ad personalization and data selling" | "Data will now be sold." Mitigation: "You can turn off ad personalization and data selling. You can also turn off data sharing." | earned | stood (entail true/true) |
+| age_gating | flag | "A kid who wants to dodge all of the above can simply enter any birthdate before September 2007." | earned | stood (entail true/true) |
+| content | flag | "god theres so many preds so i do NOT recommend this game for children/teens because there is some bad games where yk so yeah one star" | earned | stood (entail true/true) |
+| developer_record | unknown (judge had flagged) | A predator review, an account-suspension review, a VNG-partnership review, and terms Section 10.2 on reporting IP infringement. | not earned | entail: flag_not_earned |
+
+Ten developer_record risks were verified. One is verbatim in the news page the reader named and the judge did not cite: "Los Angeles County filed a civil lawsuit against Roblox Corporation alleging the company falsely marketed its online gaming platform as safe for children while knowingly allowing it to become a “hunting ground for predators.”" The entailment refusal of the four citations the judge did make is the definition check working. The miss is which finding the judge cited. Age gating and content still stand, and both are earned, so the verdict is no.
+
+Fixture recordings, replayed offline.
+
+| Title | Area | Card grade | Cited quote | Earned | Check |
+|---|---|---|---|---|---|
+| Roblox (9), verdict no | contact | unknown (judge flagged) | "Amazing i love roblox alot of pedos tho"; a chat-suspension loop; "predator47_ tried to bomb me" | not earned | entail: flag_not_earned |
+| Roblox | money | flag | Store loot-box line, plus a terms subscription line and a loot-box spending line | earned | stood (entail true/true). The reason is the area definition, unchanged. |
+| Roblox | data | unknown (judge flagged) | "Industry-leading safety, privacy, and civility"; an email or ID asked for a feature; Roblox may review content | not earned | entail: flag_not_earned |
+| Roblox | age_gating | flag | "a kid who wants to dodge all of the above can simply enter any birthdate before September 2007." Also an age-check camera review and "Roblox has an opt-in age verification feature." | earned, on the birthdate quote | stood (entail true/true). The reason is the area definition. |
+| Roblox | content | flag | A review of adults kidnapping players, and "This game has preds". A third review about a suspension does not meet the definition. | earned | stood (entail true/true). The reason is the area definition. |
+| Roblox | developer_record | flag | The Los Angeles County lawsuit sentence above. Also a Common Sense line about new under-13 protections, and a report of investigations that does not name this developer. | earned, on the lawsuit quote | stood (entail true/true). The reason is the area definition. |
+| Minecraft (9), verdict yes_with_settings | contact | ok_with_setting, "friends only" | Risk quote is a neutral gameplay paragraph ("You can mine, build houses…"). Mitigation: set chat to "friends only" or turn it off. | not earned: the risk quote does not show strangers reaching the child | stood (entail true/true) |
+| Minecraft | money | ok_with_setting, "Control Spending" | A review that a mod charge scammed a parent. Mitigation quote is the words "Control Spending". | earned as a spending gate, thinly | stood (entail true/true) |
+| Minecraft | data | unknown | none | n/a | stood (judge graded unknown) |
+| Minecraft | age_gating | ok_with_setting, "multiplayer starts off" | Risk: "Play with your friends on your own personal server." Mitigation: on a child account multiplayer starts off. | not earned: the risk quote is not a failed age gate, and multiplayer-off is not an age lock | stood (entail true/true) |
+| Minecraft | content | ok_with_setting, "single player" | "Good but has something satanic." Mitigation: single player keeps online servers away. | not earned: the quote names no harm on the content list | stood (entail true/true) |
+| Minecraft | developer_record | unknown | none, with 12 risk findings on the table | n/a | stood (judge graded unknown and cited nothing) |
+| Khan Academy Kids (5), verdict unclear | contact | unknown | none (judge graded ok and cited nothing) | n/a | ok_without_finding |
+| Khan | money | unknown | none (judge graded ok and cited nothing) | n/a | ok_without_finding |
+| Khan | data | unknown | none (judge graded ok and cited nothing) | n/a | ok_without_finding |
+| Khan | age_gating | unknown (judge ok_with_setting, "skills test and curriculum matching") | A review wishing the app would "update with a skills test, and then match the child up with curriculum" | not earned: the quote wishes for a feature, it does not name a control that exists | ground: setting_without_quote |
+| Khan | content | unknown (judge flagged) | A review that a voice prompt startles a child, and a review of a hat-and-bow question | not earned | entail: flag_not_earned |
+| Khan | developer_record | unknown | none (judge graded ok and cited nothing) | n/a | ok_without_finding |
+
+Minecraft's four standing settings are the T3.10 caveat again: the check that would refuse a fitting citation did not run, because entailment accepted grades whose risk quotes do not meet the area definition. Khan's demotions are the checks holding uncited ok grades, an unnamed setting, and two odd reviews. No fixture grade was voided by checkCitations.
+
 **Done when:** a per-area table for each title on both live gathers and on the recordings (grade, cited quote, earned or not, which check acted); Roblox reads **no** on both live gathers with its earned flags; each verdict is the same on both live gathers, or the difference is explained by the evidence; tests pin each rule changed; the verdicts and the spend are reported to the user.
 
 ---
