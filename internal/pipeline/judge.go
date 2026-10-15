@@ -453,15 +453,22 @@ func ground(grades []checklist.Grade, fs []finding.Finding) (out []checklist.Gra
 
 // entailSystem is the entailment check's fixed instruction. The replies are
 // recorded and replayed keyed on the exact messages, so this text is final
-// before a live re-record. The enforcement-record sentence scopes itself to
-// the one definition that names enforcement, so it reads no other area
-// differently: a suit filed against the developer is the record that
-// definition asks for, outcome or no outcome (Roblox's developer_record
-// refusal).
+// before a live re-record. A quote that shows the definition meets it even
+// when another cited quote shows less: one weak citation must not sink a
+// fitting one, and a quote that shows less still does not meet it on its
+// own. The enforcement sentence scopes itself to the one definition that
+// names enforcement.
 func entailSystem() string {
 	return `You check one grade of a parent checklist against the findings its grade cites, for one child. You are given the area's flag definition, the child's age, the grade, and each cited finding with its verbatim quote. Answer two questions and nothing else:
-(a) meets_definition: do the cited findings, taken together, show what the area's flag definition requires for a child of this age? For an "ok_with_setting", meet the definition instead by showing a cited mitigation actually answers the concern the cited risks raise. Hold the definition to its words: when it lists the harms it means, the quotes must show one of them, not only that a reviewer disliked, disagreed with or was startled by something. A quote that shows less than the definition asks does not meet it. When the definition asks for a record of enforcement (a fine, a data breach, a lawsuit or a regulatory action naming this developer), a quote showing one filed or brought against this developer meets it: the action itself is the record, and the quote need not show its outcome.
-(b) reason_supported: does the reason say only what the cited quotes support, with nothing added and nothing stronger?
+(a) meets_definition: for a "flag", true when at least one cited quote itself shows what the area's flag definition requires for a child of this age. A quote that shows less does not meet the definition, and it does not cancel a cited quote that does. For an "ok_with_setting", true only when a cited risk quote shows that concern and a cited mitigation quote names a control that answers that same concern. A control that does not close the hole the risk quote describes does not meet it.
+Hold the definition to its words. The quotes must show the harm the definition names, not only that a reviewer disliked, disagreed with or was startled by something.
+- Contact takes strangers reaching this child by message, chat or voice. A locked account, a Wi-Fi or tracking permission, or a settings label is not that. A child threatened or contacted by another player is.
+- Money takes a child pushed into a purchase, or a child completing one. A price on its own is not that. A mitigation meets it when its quote names a control that gates what the child can buy.
+- Data takes collection or sharing a parent cannot control: ad tracking aimed at children, third-party sharing or selling, or no way to delete what was collected. A store slogan, a compliance claim, or an email field is not that.
+- Age gating takes a child getting past the gate, a birth date the gate accepted, or the check stating the wrong age. A request to widen the age range, or a complaint that the lessons are too easy or stop at a grade, is not a failed gate. A mitigation meets it only when the control stops the bypass the risk quote describes.
+- Content takes a child meeting sexual content, realistic violence, horror, harassment or self-harm. "Scary in a good way", a wish, or a dislike that names none of those harms is not that.
+- A record of enforcement is a fine, a data breach, a lawsuit or a regulatory action naming this developer. A quote showing one filed or brought against this developer meets it: the action itself is the record, and the quote need not show its outcome. "Ban this game", or another company's action, is not a record.
+(b) reason_supported: false only when the reason states a fact no cited quote shows. A reason that restates the area definition is supported when the quotes show the part of that definition the grade rests on. Do not fail it for also naming the definition's other clauses.
 Judge from the quotes, not the claims: a quote is the source's own words, a claim is the reader's reading of them. Use only the findings given. Reply with one JSON object: {"meets_definition": true, "reason_supported": true}, with false where the answer is no.`
 }
 

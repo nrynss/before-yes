@@ -696,6 +696,33 @@ func TestJudgeSystemAreaDefinitions(t *testing.T) {
 	}
 }
 
+// The entailment instruction is what keeps an unearned flag from standing
+// and what keeps one weak citation from sinking a fitting one. The live
+// gathers measured both misses against the previous wording.
+func TestEntailSystemHoldsAFittingQuote(t *testing.T) {
+	s := entailSystem()
+	for _, w := range []string{
+		"at least one cited quote itself shows",
+		"does not cancel a cited quote that does",
+		"A control that does not close the hole the risk quote describes does not meet it",
+		"A locked account, a Wi-Fi or tracking permission, or a settings label is not that",
+		"A child threatened or contacted by another player is",
+		"A price on its own is not that",
+		"A store slogan, a compliance claim, or an email field is not that",
+		"A request to widen the age range, or a complaint that the lessons are too easy or stop at a grade, is not a failed gate",
+		"A mitigation meets it only when the control stops the bypass the risk quote describes",
+		`"Scary in a good way", a wish, or a dislike that names none of those harms is not that`,
+		`"Ban this game", or another company's action, is not a record`,
+		"the action itself is the record, and the quote need not show its outcome",
+		"false only when the reason states a fact no cited quote shows",
+		"Do not fail it for also naming the definition's other clauses",
+	} {
+		if !strings.Contains(s, w) {
+			t.Errorf("entail prompt misses %q", w)
+		}
+	}
+}
+
 // T3.10, fault 3, and the definition rule of fault 1: a standing grade whose
 // cited findings do not meet its area's flag definition falls to unknown
 // (meets_definition=false), and a standing grade whose reason goes beyond the
