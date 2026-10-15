@@ -723,7 +723,7 @@ requires:   T3.5
 fixture-ok: no (one capture, then offline)
 size:       S · mid
 owns:       internal/pipeline/alternatives.go, internal/pipeline/alternatives_test.go, testdata/alternatives/
-status:     not-started
+status:     claimed:impl-t3.12
 ```
 On live search, the alternatives step finds nothing usable. Replaying the live results for `safer app like Minecraft for a 9 year old` through `FindAlternatives` gave one candidate, "Medium" (the blogging site's name), and no name from Common Sense Media's "Games Like Minecraft" list (21k characters of page text) or any other list page.
 
