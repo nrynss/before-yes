@@ -713,7 +713,11 @@ func TestEntailSystemHoldsAFittingQuote(t *testing.T) {
 		"A mitigation meets it only when the control stops the bypass the risk quote describes",
 		`"Scary in a good way", a wish, or a dislike that names none of those harms is not that`,
 		`"Ban this game", or another company's action, is not a record`,
+		"A player saying to ban the game, a help page, or an FAQ citation is not a record",
+		"the quote itself has to name the fine, the suit, the breach, or the regulator's action",
 		"the action itself is the record, and the quote need not show its outcome",
+		"The reason is not evidence",
+		"meets_definition is false when no cited quote names the harm, even if the reason does",
 		"false only when the reason states a fact no cited quote shows",
 		"Do not fail it for also naming the definition's other clauses",
 	} {
