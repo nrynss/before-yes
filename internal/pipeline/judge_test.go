@@ -1186,3 +1186,95 @@ func TestParentReasonsMissingDuplicateMalformedFailClosed(t *testing.T) {
 		}
 	}
 }
+
+// Diagnostics retain the actual completed-check explanation, independently
+// of parent prose, and the observer cannot change a grade by editing its map.
+func TestCheckedReasonsSnapshotBeforeParentProse(t *testing.T) {
+	fs := []finding.Finding{{ID: "m", Area: checklist.Money, Stance: finding.Risk, Quote: "A child bought coins.", Source: finding.Source{Kind: KindReview}}}
+	writer := &superRecorder{replies: []any{gradesJSON(t, checklist.Grade{Area: checklist.Money, Level: checklist.Flag, Findings: []string{"m"}, Reason: "A child bought coins."})}}
+	checker := &superRecorder{replies: []any{`{"meets_definition":false,"reason_supported":false}`}}
+	var snapshot map[checklist.Area]string
+	j := &Judge{Model: writer, Entail: checker, Meter: openTestMeter(t), CheckedReasons: func(v map[checklist.Area]string) { snapshot = v; v[checklist.Contact] = "observer mutation" }}
+	got, err := j.Judge(context.Background(), "Any title", 9, "r", fs, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if snapshot[checklist.Money] != NotEarnedReason {
+		t.Fatalf("lost check cause: %v", snapshot)
+	}
+	for _, g := range got.Grades {
+		if g.Level != checklist.Unknown || g.Reason != parentUnknownReason {
+			t.Fatalf("observer or prose changed checked grade: %+v", g)
+		}
+	}
+	if got.Verdict != checklist.Unclear {
+		t.Fatal(got.Verdict)
+	}
+}
+
+func TestParentReasonRemediationRules(t *testing.T) {
+	for _, rule := range []string{"explicit actual and assigned ages", "two events joined by", "concrete encounter", "preserving qualifications", "does not verify its practices", "Never list risks"} {
+		if !strings.Contains(parentReasonSystem(), rule) {
+			t.Errorf("writer missing %q", rule)
+		}
+	}
+	for _, rule := range []string{"reject \"wrong group\"", "Reject a cause inferred", "reject generalized possibility", "preserve its qualifications", "Reject lists of risks", "exact unsupported words"} {
+		if !strings.Contains(parentReasonCheckSystem(), rule) {
+			t.Errorf("checker missing %q", rule)
+		}
+	}
+}
+
+// These rejected examples are real prior outputs, checked against their exact
+// cited source reports. The checker recordings are separate from accepted prose.
+func TestParentReasonRejectsRecordedUnsupportedProse(t *testing.T) {
+	cases := []struct {
+		name          string
+		area          checklist.Area
+		kind          string
+		quote, reason string
+	}{
+		{"age_wrong_group_cause", checklist.AgeGating, KindReview, "The new app updates age group ideas are completely broken plus my child got put in the 28th group.", "A review reports the child was placed in the wrong age group (28th group) due to broken age group updates."},
+		{"content_possibility", checklist.Content, KindForum, "Extreme violence, inappropriate language, and sexually explicit content is possible (and quite likely) within the user-created games.", "A forum post states extreme violence, inappropriate language, and sexually explicit content is possible and likely within user-created games."},
+		{"ok_omission_checklist", checklist.Money, "comparison guide", "It's MIT's free, block-based coding platform, and kids genuinely learn programming concepts like loops and variables while building.", "The comparison guide states Scratch is MIT's free, block-based coding platform with no mention of purchases, loot boxes, pay-to-win pressure, subscription traps, or any way for a child to spend money within the title."},
+		{"data_extra_use", checklist.Data, KindForum, "Images used for age verification may be processed by third-party providers, but Roblox does not publicly guarantee a fixed retention period for the images of children.", "A forum post reports children's verification images are used by third parties for advertising."},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			fs := []finding.Finding{{ID: "probe", Area: c.area, Stance: finding.Risk, Quote: c.quote, Source: finding.Source{Kind: c.kind}}}
+			level := checklist.Flag
+			if c.name == "ok_omission_checklist" {
+				level = checklist.OK
+				fs[0].Stance = finding.Neutral
+			}
+			g := checklist.Grade{Area: c.area, Level: level, Reason: c.reason, Findings: []string{"probe"}}
+			r := &recordedReplies{dir: filepath.Join("..", "..", "testdata", "eval", "parent-reasons", "rejection-probes"), role: "judge"}
+			j := &Judge{Entail: r, Meter: openTestMeter(t), Fast: map[string]any{"chat_template_kwargs": map[string]any{"enable_thinking": false}}}
+			supported, _, _ := j.checkParentReason(context.Background(), "Source report probe", 9, "probe", g, fs)
+			if r.misses.Load() != 0 {
+				t.Fatal("missing real checker recording")
+			}
+			if supported {
+				t.Fatal("unsupported or irrelevant prose accepted")
+			}
+		})
+	}
+}
+
+func TestParentWriterUsesValidatedAgeEventFocus(t *testing.T) {
+	fs := []finding.Finding{
+		{ID: "vague", Area: checklist.AgeGating, Quote: "Updates are broken plus my child is in group 28."},
+		{ID: "precise", Area: checklist.AgeGating, Quote: "I am 11 but the app says I am 40."},
+	}
+	g := checklist.Grade{Area: checklist.AgeGating, Level: checklist.Flag, Findings: []string{"vague", "precise"}}
+	witnesses := map[checklist.Area]ageGateWitness{checklist.AgeGating: {Criterion: "wrong_age_assignment", Quote: fs[1].Quote, ActualAge: "11", AssignedAge: "40"}}
+	user := parentReasonUser("Any title", 9, []checklist.Grade{g}, fs, witnesses)
+	for _, text := range []string{"Required age-event focus", `"I am 11 but the app says I am 40."`, "Actual age reported: 11", "Assigned age reported: 40", "describe only those reported actual and assigned ages"} {
+		if !strings.Contains(user, text) {
+			t.Errorf("missing precise event focus %q", text)
+		}
+	}
+	if strings.Contains(user, "Area definition") {
+		t.Fatal("prose pass must not re-run grade thresholds")
+	}
+}

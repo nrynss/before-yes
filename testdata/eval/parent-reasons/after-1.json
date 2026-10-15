@@ -16,7 +16,7 @@
           "f_2b5396534308f22c",
           "f_1da121f28cdd8761"
         ],
-        "reason": "Reviewers confirm the app requires no payment, with one stating 'ACTUALLY FREE YOU DONT NEED TO PAY' and noting gratitude for its cost-free access."
+        "reason": "A review reports 'ACTUALLY FREE YOU DONT NEED TO PAY' and describes using the app for school work without payment."
       },
       {
         "area": "data",
@@ -24,7 +24,7 @@
         "findings": [
           "f_03a93704589b927b"
         ],
-        "reason": "Read the cited source quotes before deciding; we couldn’t verify a plain-language explanation for this area."
+        "reason": "The store listing states the app is 'COPPA-compliant' and created with education experts, though this quote does not verify actual practices."
       },
       {
         "area": "age_gating",
@@ -38,7 +38,7 @@
         "findings": [
           "f_0fcffd8da2e19a5b"
         ],
-        "reason": "A review reports a grid of scary devil faces and men tied up with mouths taped shut appeared during math activities, which the reviewer described as very disturbing and unsuitable for a child."
+        "reason": "A review reports that 'a grid of scary devil faces and men tied up with their mouth taped shut popped up for about 15 seconds while my kid was working on math.'"
       },
       {
         "area": "developer_record",
@@ -79,7 +79,7 @@
             "quote": "Always 100% free, no ads, no subscriptions—just safe, joyful learning kids and parents love."
           }
         ],
-        "got_reason": "Reviewers confirm the app requires no payment, with one stating 'ACTUALLY FREE YOU DONT NEED TO PAY' and noting gratitude for its cost-free access."
+        "got_reason": "A review reports 'ACTUALLY FREE YOU DONT NEED TO PAY' and describes using the app for school work without payment."
       },
       {
         "area": "data",
@@ -93,7 +93,7 @@
             "quote": "We don't show ads in the app, and we don't let third parties track your child across other apps or websites."
           }
         ],
-        "got_reason": "Read the cited source quotes before deciding; we couldn’t verify a plain-language explanation for this area."
+        "got_reason": "The store listing states the app is 'COPPA-compliant' and created with education experts, though this quote does not verify actual practices."
       },
       {
         "area": "age_gating",
@@ -121,7 +121,7 @@
             "quote": "My 4 year old loves this. It has everything and isn’t overstimulating AND it has no ads."
           }
         ],
-        "got_reason": "A review reports a grid of scary devil faces and men tied up with mouths taped shut appeared during math activities, which the reviewer described as very disturbing and unsuitable for a child."
+        "got_reason": "A review reports that 'a grid of scary devil faces and men tied up with their mouth taped shut popped up for about 15 seconds while my kid was working on math.'"
       },
       {
         "area": "developer_record",
@@ -153,7 +153,7 @@
     ],
     "tavily_credits": 8,
     "read_cost_nano": 16476300,
-    "judge_cost_nano": 27029700
+    "judge_cost_nano": 27254400
   },
   {
     "title": "Minecraft",
@@ -329,7 +329,7 @@
         "findings": [
           "f_3e1e4d584522e5a9"
         ],
-        "reason": "A news article reports that a child can easily bypass the age gate by entering any birthdate before September 2007."
+        "reason": "A news report states that a child can easily bypass age restrictions by entering any birthdate before September 2007."
       },
       {
         "area": "content",
@@ -403,7 +403,7 @@
             "quote": "Im 14 but it said 9-12 on the age check"
           }
         ],
-        "got_reason": "A news article reports that a child can easily bypass the age gate by entering any birthdate before September 2007."
+        "got_reason": "A news report states that a child can easily bypass age restrictions by entering any birthdate before September 2007."
       },
       {
         "area": "content",
@@ -451,6 +451,6 @@
     "missing_kinds": [],
     "tavily_credits": 8,
     "read_cost_nano": 17831700,
-    "judge_cost_nano": 22631400
+    "judge_cost_nano": 22950600
   }
 ]

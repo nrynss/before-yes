@@ -277,7 +277,7 @@ func runOne(root, models string, e Expectation) Result {
 		// Entailment runs on the judge model, thinking off. The reader model
 		// accepted quotes the area definitions exclude. The server wires
 		// the same judge client in cmd/before-yes/build.go.
-		Judge: &pipeline.Judge{Model: judge, Meter: meter, Fast: fast, Think: think, Entail: entailChatter(judge)},
+		Judge: &pipeline.Judge{CheckedReasons: tr.captureCheckedReasons, Model: judge, Meter: meter, Fast: fast, Think: think, Entail: entailChatter(judge)},
 		Now:   now,
 	}
 	ev, _, err := p.Collect(ctx, e.Title, "eval-"+e.Slug)

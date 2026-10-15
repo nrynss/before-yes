@@ -1,0 +1,8 @@
+{
+  "text": "{\"reason_supported\": true, \"explanation\": \"A review states: 'my kids has been threatened by a person in adopt me and has been scared to play.' This directly attributes a threat via interaction within the game Adopt Me, supporting the claim about a reported communication channel involving child-adult contact.\"}",
+  "input_tokens": 1127,
+  "output_tokens": 65,
+  "price_nano": 396600,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

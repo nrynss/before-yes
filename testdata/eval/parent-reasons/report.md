@@ -45,15 +45,15 @@ Verdict: **no → no**. Evidence SHA-256: `85d83d14229bd9ca2694671989827df650d2c
 | Area / grade | Before | After | Voice assessment |
 |---|---|---|---|
 | contact / unknown | Changed to unknown: the cited quotes do not meet this area's flag definition. | We don’t have enough evidence to assess this area. Don’t assume it is safe. | Plain evidence gap; no factual title claim; no safety inference. |
-| money / flag | the title pushes purchases at children | The cited sources raise a concern here. Read the source quotes before deciding. | Cautious fallback; source quotes required; specificity not met. |
+| money / flag | the title pushes purchases at children | The store page notes that games may contain optional in-game purchases, including lootboxes. | Specific report; source attribution and concrete detail. |
 | data / unknown | Changed to unknown: the cited quotes do not meet this area's flag definition. | We don’t have enough evidence to assess this area. Don’t assume it is safe. | Plain evidence gap; no factual title claim; no safety inference. |
-| age_gating / flag | the age gate fails in practice | A news report states a child can enter any birthdate before September 2007 to bypass the age check, showing the gate fails in practice. | Specific report; source attribution and concrete detail. |
+| age_gating / flag | the age gate fails in practice | A news article reports that a kid who wants to dodge the age check can simply enter any birthdate before September 2007. | Specific report; source attribution and concrete detail. |
 | content / unknown | Changed to unknown: the cited quotes do not meet this area's flag definition. | We don’t have enough evidence to assess this area. Don’t assume it is safe. | Plain evidence gap; no factual title claim; no safety inference. |
-| developer_record / flag | this title's developer has a record of enforcement over how it treats children or their data | A news report cites a Los Angeles County civil lawsuit alleging Roblox falsely marketed its platform as safe for children while knowingly allowing it to become a hunting ground for predators. | Specific report; source attribution and concrete detail. |
+| developer_record / flag | this title's developer has a record of enforcement over how it treats children or their data | A news article reports that Los Angeles County filed a civil lawsuit against Roblox Corporation alleging the company falsely marketed its platform as safe for children while knowingly allowing it to become a hunting ground for predators. | Specific report; source attribution and concrete detail. |
 
-Incremental metered judge cost for final prose: **$0.00159630** (reader/gather evidence reused).
+Incremental metered judge cost for final prose: **$0.00181170** (reader/gather evidence reused).
 
-Set totals: **2 specific explanations; 1 cautious fallbacks; 15 unknown evidence gaps**. Specificity rate among non-unknown areas: **2/3**.
+Set totals: **3 specific explanations; 0 cautious fallbacks; 15 unknown evidence gaps**. Specificity rate among non-unknown areas: **3/3**.
 
 ### Saved gather 1: Khan Academy Kids, age 5
 
@@ -62,13 +62,13 @@ Verdict: **no → no**. Evidence SHA-256: `f8536883e5b76febfdb8ea044925652b40c8c
 | Area / grade | Before | After | Voice assessment |
 |---|---|---|---|
 | contact / unknown | Changed to unknown: no verified finding supports ok. | We don’t have enough evidence to assess this area. Don’t assume it is safe. | Plain evidence gap; no factual title claim; no safety inference. |
-| money / ok | The app is free with no in-app purchases, loot boxes, or subscriptions. | Reviewers confirm the app requires no payment, with one stating 'ACTUALLY FREE YOU DONT NEED TO PAY' and noting gratitude for its cost-free access. | Specific report; source attribution and concrete detail. |
-| data / ok | The app is COPPA-compliant and collects no personally identifiable information. | Read the cited source quotes before deciding; we couldn’t verify a plain-language explanation for this area. | Cautious fallback; source quotes required; specificity not met. |
+| money / ok | The app is free with no in-app purchases, loot boxes, or subscriptions. | A review reports 'ACTUALLY FREE YOU DONT NEED TO PAY' and describes using the app for school work without payment. | Specific report; source attribution and concrete detail. |
+| data / ok | The app is COPPA-compliant and collects no personally identifiable information. | The store listing states the app is 'COPPA-compliant' and created with education experts, though this quote does not verify actual practices. | Specific report; source attribution and concrete detail. |
 | age_gating / unknown | Changed to unknown: the cited quotes do not meet this area's flag definition. | We don’t have enough evidence to assess this area. Don’t assume it is safe. | Plain evidence gap; no factual title claim; no safety inference. |
-| content / flag | parents or reviewers report children actually meeting unsuitable material on this title | A review reports a grid of scary devil faces and men tied up with mouths taped shut appeared during math activities, which the reviewer described as very disturbing and unsuitable for a child. | Specific report; source attribution and concrete detail. |
+| content / flag | parents or reviewers report children actually meeting unsuitable material on this title | A review reports that 'a grid of scary devil faces and men tied up with their mouth taped shut popped up for about 15 seconds while my kid was working on math.' | Specific report; source attribution and concrete detail. |
 | developer_record / unknown | Changed to unknown: no verified finding supports ok. | We don’t have enough evidence to assess this area. Don’t assume it is safe. | Plain evidence gap; no factual title claim; no safety inference. |
 
-Incremental metered judge cost for final prose: **$0.00151950** (reader/gather evidence reused).
+Incremental metered judge cost for final prose: **$0.00174420** (reader/gather evidence reused).
 
 ### Saved gather 1: Minecraft, age 9
 
@@ -94,13 +94,13 @@ Verdict: **no → no**. Evidence SHA-256: `e7c67c61bd9cdebb2f7678444aa6f1599ebee
 | contact / unknown | Changed to unknown: the cited quotes do not meet this area's flag definition. | We don’t have enough evidence to assess this area. Don’t assume it is safe. | Plain evidence gap; no factual title claim; no safety inference. |
 | money / unknown | Changed to unknown: the cited quotes do not meet this area's flag definition. | We don’t have enough evidence to assess this area. Don’t assume it is safe. | Plain evidence gap; no factual title claim; no safety inference. |
 | data / unknown | Changed to unknown: the reason says more than the cited quotes support. | We don’t have enough evidence to assess this area. Don’t assume it is safe. | Plain evidence gap; no factual title claim; no safety inference. |
-| age_gating / flag | the age gate fails in practice | A news article reports that a child can easily bypass the age gate by entering any birthdate before September 2007. | Specific report; source attribution and concrete detail. |
+| age_gating / flag | the age gate fails in practice | A news report states that a child can easily bypass age restrictions by entering any birthdate before September 2007. | Specific report; source attribution and concrete detail. |
 | content / unknown | Changed to unknown: the cited quotes do not meet this area's flag definition. | We don’t have enough evidence to assess this area. Don’t assume it is safe. | Plain evidence gap; no factual title claim; no safety inference. |
 | developer_record / unknown | Changed to unknown: the cited quotes do not meet this area's flag definition. | We don’t have enough evidence to assess this area. Don’t assume it is safe. | Plain evidence gap; no factual title claim; no safety inference. |
 
-Incremental metered judge cost for final prose: **$0.00043920** (reader/gather evidence reused).
+Incremental metered judge cost for final prose: **$0.00075840** (reader/gather evidence reused).
 
-Set totals: **3 specific explanations; 1 cautious fallbacks; 14 unknown evidence gaps**. Specificity rate among non-unknown areas: **3/4**.
+Set totals: **4 specific explanations; 0 cautious fallbacks; 14 unknown evidence gaps**. Specificity rate among non-unknown areas: **4/4**.
 
 ### Saved gather 2: Khan Academy Kids, age 5
 
@@ -124,13 +124,13 @@ Verdict: **no → no**. Evidence SHA-256: `33482fb5a746f56f3528ed0c91780bf771791
 | Area / grade | Before | After | Voice assessment |
 |---|---|---|---|
 | contact / unknown | Changed to unknown: the cited quotes do not meet this area's flag definition. | We don’t have enough evidence to assess this area. Don’t assume it is safe. | Plain evidence gap; no factual title claim; no safety inference. |
-| money / flag | the title pushes purchases at children | The cited sources raise a concern here. Read the source quotes before deciding. | Cautious fallback; source quotes required; specificity not met. |
+| money / flag | the title pushes purchases at children | A reviewer who says they are 10 years old reports buying 10,000 Minecoins using birthday money and feeling scammed. | Specific report; source attribution and concrete detail. |
 | data / unknown | Changed to unknown: the cited quotes do not meet this area's flag definition. | We don’t have enough evidence to assess this area. Don’t assume it is safe. | Plain evidence gap; no factual title claim; no safety inference. |
 | age_gating / unknown | Changed to unknown: the reason says more than the cited quotes support. | We don’t have enough evidence to assess this area. Don’t assume it is safe. | Plain evidence gap; no factual title claim; no safety inference. |
 | content / unknown | Changed to unknown: the evidence was thin. No verified quote backs the reason the judge gave. | We don’t have enough evidence to assess this area. Don’t assume it is safe. | Plain evidence gap; no factual title claim; no safety inference. |
 | developer_record / unknown | Changed to unknown: the evidence was thin. No verified quote backs the reason the judge gave. | We don’t have enough evidence to assess this area. Don’t assume it is safe. | Plain evidence gap; no factual title claim; no safety inference. |
 
-Incremental metered judge cost for final prose: **$0.00095280** (reader/gather evidence reused).
+Incremental metered judge cost for final prose: **$0.00083100** (reader/gather evidence reused).
 
 ### Saved gather 2: Roblox, age 9
 
@@ -138,16 +138,16 @@ Verdict: **no → no**. Evidence SHA-256: `feb56959d7ade79df1b9715bacd6b46947d3d
 
 | Area / grade | Before | After | Voice assessment |
 |---|---|---|---|
-| contact / flag | strangers can reach this child by message, chat or voice, and no control a parent can set shuts that door | A forum post states chats built into the coding of specific mini-games cannot be disabled, and kids can type text on signs regardless of communication preferences. | Specific report; source attribution and concrete detail. |
-| money / flag | the title pushes purchases at children | The cited sources raise a concern here. Read the source quotes before deciding. | Cautious fallback; source quotes required; specificity not met. |
-| data / flag | children's data is collected and used in ways a parent cannot control | The cited sources raise a concern here. Read the source quotes before deciding. | Cautious fallback; source quotes required; specificity not met. |
-| age_gating / flag | the age gate fails in practice | A review reports the child was placed in the wrong age group (28th group) due to broken age group updates. | Attributed group-placement report; actual age is unspecified in this selected report. The grade retains a separate exact age-mismatch witness. |
-| content / flag | parents or reviewers report children actually meeting unsuitable material on this title | A forum post states extreme violence, inappropriate language, and sexually explicit content is possible and likely within user-created games. | Specific report; source attribution and concrete detail. |
-| developer_record / flag | this title's developer has a record of enforcement over how it treats children or their data | A news report states the Texas Attorney General sued Roblox for flagrantly ignoring safety laws and deceiving parents about dangers to young people. | Specific report; source attribution and concrete detail. |
+| contact / flag | strangers can reach this child by message, chat or voice, and no control a parent can set shuts that door | A forum post reports that chats built into the coding of specific mini-games cannot be disabled, and kids can type text on signs regardless of communication preferences. | Specific report; source attribution and concrete detail. |
+| money / flag | the title pushes purchases at children | A review reports being forced to add payment information to play, resulting in a $46 charge despite adding a card with no money, and a news article states a parent reported their 10-year-old daughter spent over $7,000 in two months despite purchase limits. | Specific report; source attribution and concrete detail. |
+| data / flag | children's data is collected and used in ways a parent cannot control | The terms state Roblox may access and review Content, including Content shared via Communication Features and other non-public Content, and a forum post indicates images used for age verification may be processed by third-party providers without a guaranteed retention period for children's images. | Specific report; source attribution and concrete detail. |
+| age_gating / flag | the age gate fails in practice | A review reports contacting Roblox support and being told to wait until age 13, while the system displayed an assigned age of 41 despite the user stating they are younger than 13. | Specific report; source attribution and concrete detail. |
+| content / flag | parents or reviewers report children actually meeting unsuitable material on this title | A forum post describes that within seconds, the 'Street Code' game showed an intense, fiery car accident and prompted the player to decide whether to shoot or save an officer. | Specific report; source attribution and concrete detail. |
+| developer_record / flag | this title's developer has a record of enforcement over how it treats children or their data | A news article states the Texas Attorney General has sued Roblox over 'flagrantly ignoring' safety laws and 'deceiving parents' about the dangers the platform poses to young people. | Specific report; source attribution and concrete detail. |
 
-Incremental metered judge cost for final prose: **$0.00388380** (reader/gather evidence reused).
+Incremental metered judge cost for final prose: **$0.00504900** (reader/gather evidence reused).
 
-Set totals: **4 specific explanations; 3 cautious fallbacks; 11 unknown evidence gaps**. Specificity rate among non-unknown areas: **4/7**.
+Set totals: **7 specific explanations; 0 cautious fallbacks; 11 unknown evidence gaps**. Specificity rate among non-unknown areas: **7/7**.
 
 ### Outside demo: judge-only: LEGO Worlds, age 9
 
@@ -155,14 +155,14 @@ Verdict: **unclear → unclear**. Evidence SHA-256: `35556ae247099f92d0d3ec3b2e7
 
 | Area / grade | Before | After | Voice assessment |
 |---|---|---|---|
-| contact / ok | The comparison guide states there is no open chat with strangers. | The comparison guide states there is no open chat with strangers. | Specific report; source attribution and concrete detail. |
+| contact / ok | The comparison guide states there is no open chat with strangers. | The comparison guide reports there is no open chat with strangers. | Specific report; source attribution and concrete detail. |
 | money / unknown | No findings were provided about in-app purchases, monetization, or financial risks. | We don’t have enough evidence to assess this area. Don’t assume it is safe. | Plain evidence gap; no factual title claim; no safety inference. |
 | data / unknown | No findings were provided about data collection, tracking, or privacy practices. | We don’t have enough evidence to assess this area. Don’t assume it is safe. | Plain evidence gap; no factual title claim; no safety inference. |
 | age_gating / unknown | No findings were provided about age verification or age-gating effectiveness. | We don’t have enough evidence to assess this area. Don’t assume it is safe. | Plain evidence gap; no factual title claim; no safety inference. |
 | content / unknown | No findings were provided about exposure to unsuitable content such as violence, horror, or harassment. | We don’t have enough evidence to assess this area. Don’t assume it is safe. | Plain evidence gap; no factual title claim; no safety inference. |
 | developer_record / unknown | No findings were provided about the developer's history of fines, breaches, lawsuits, or regulatory actions. | We don’t have enough evidence to assess this area. Don’t assume it is safe. | Plain evidence gap; no factual title claim; no safety inference. |
 
-Incremental metered judge cost for final prose: **$0.00043440** (reader/gather evidence reused).
+Incremental metered judge cost for final prose: **$0.00073650** (reader/gather evidence reused).
 
 ### Outside demo: judge-only: Scratch, age 9
 
@@ -171,13 +171,13 @@ Verdict: **unclear → unclear**. Evidence SHA-256: `dd2bb91632b3dc85039a4efd517
 | Area / grade | Before | After | Voice assessment |
 |---|---|---|---|
 | contact / unknown | No findings were provided about whether strangers can message or voice chat with the child, or about controls to shut that door. | We don’t have enough evidence to assess this area. Don’t assume it is safe. | Plain evidence gap; no factual title claim; no safety inference. |
-| money / ok | The description emphasizes Scratch as a free, educational coding platform with no mention of in-app purchases, loot boxes, or financial pressure on children. | The comparison guide states Scratch is MIT's free, block-based coding platform with no mention of purchases, loot boxes, pay-to-win pressure, subscription traps, or any way for a child to spend money within the title. | Attributed guide description; verbose list of omissions does not prove absence of risk. |
+| money / ok | The description emphasizes Scratch as a free, educational coding platform with no mention of in-app purchases, loot boxes, or financial pressure on children. | The comparison guide reports Scratch is free. | Specific report; source attribution and concrete detail. |
 | data / unknown | No findings were provided about data collection, tracking, third-party sharing, or deletion controls. | We don’t have enough evidence to assess this area. Don’t assume it is safe. | Plain evidence gap; no factual title claim; no safety inference. |
 | age_gating / unknown | No findings were provided about whether the age gate works in practice or if children under the stated age can access the platform. | We don’t have enough evidence to assess this area. Don’t assume it is safe. | Plain evidence gap; no factual title claim; no safety inference. |
 | content / unknown | No findings were provided about whether children encounter unsuitable material such as sexual content, violence, horror, harassment, or self-harm. | We don’t have enough evidence to assess this area. Don’t assume it is safe. | Plain evidence gap; no factual title claim; no safety inference. |
 | developer_record / unknown | No findings were provided about the developer's history of fines, breaches, lawsuits, or regulatory actions regarding children or their data. | We don’t have enough evidence to assess this area. Don’t assume it is safe. | Plain evidence gap; no factual title claim; no safety inference. |
 
-Incremental metered judge cost for final prose: **$0.00047580** (reader/gather evidence reused).
+Incremental metered judge cost for final prose: **$0.00153360** (reader/gather evidence reused).
 
 Set totals: **2 specific explanations; 0 cautious fallbacks; 10 unknown evidence gaps**. Specificity rate among non-unknown areas: **2/2**.
 
@@ -187,17 +187,17 @@ Set totals: **2 specific explanations; 0 cautious fallbacks; 10 unknown evidence
 |---|---|---|---|---|
 | Frozen fixtures | Khan Academy Kids | unclear | unclear | $0.00000000 |
 | Frozen fixtures | Minecraft | unclear | unclear | $0.00000000 |
-| Frozen fixtures | Roblox | no | no | $0.00159630 |
-| Saved gather 1 | Khan Academy Kids | no | no | $0.00151950 |
+| Frozen fixtures | Roblox | no | no | $0.00181170 |
+| Saved gather 1 | Khan Academy Kids | no | no | $0.00174420 |
 | Saved gather 1 | Minecraft | unclear | unclear | $0.00000000 |
-| Saved gather 1 | Roblox | no | no | $0.00043920 |
+| Saved gather 1 | Roblox | no | no | $0.00075840 |
 | Saved gather 2 | Khan Academy Kids | unclear | unclear | $0.00000000 |
-| Saved gather 2 | Minecraft | no | no | $0.00095280 |
-| Saved gather 2 | Roblox | no | no | $0.00388380 |
-| Outside demo: judge-only | LEGO Worlds | unclear | unclear | $0.00043440 |
-| Outside demo: judge-only | Scratch | unclear | unclear | $0.00047580 |
+| Saved gather 2 | Minecraft | no | no | $0.00083100 |
+| Saved gather 2 | Roblox | no | no | $0.00504900 |
+| Outside demo: judge-only | LEGO Worlds | unclear | unclear | $0.00073650 |
+| Outside demo: judge-only | Scratch | unclear | unclear | $0.00153360 |
 
-Whole-task measured spend: **$0.16847790 / $0.50**. This includes rejected grading-prompt pilots, superseded prose attempts, repairs, outside-case baselines and the final pass. Final prose alone adds **$0.00930180** across the eleven cases; the rest is retained task experimentation, not hidden from the cap.
+Whole-task measured spend: **$0.22411230 / $0.50**. This includes rejected grading-prompt pilots, superseded prose attempts, repairs, outside-case baselines and the final pass. Final prose alone adds **$0.01246440** across the eleven cases; the rest is retained task experimentation, not hidden from the cap.
 
 Final grade/verdict delta count: **0**. Final evidence, settings and citation delta count: **0**. The replay regression test checks these identities over the complete recordings, including both outside-demo cases.
 
@@ -243,7 +243,7 @@ The complete citation sets remain in each diagnosis. These verbatim witnesses ma
 | 2 | Roblox / money | news | A parent said their 10-year-old daughter spent more than $7,000 (£5,200) in two months despite attempts to limit purchases. |
 | 2 | Roblox / data | forum | Images used for age verification may be processed by third-party providers, but Roblox does not publicly guarantee a fixed retention period for the images of children. |
 | 2 | Roblox / age_gating | review | the pencil icon nor the link parent icon was there so if you could add a feature to ask Roblox themselves to reset your Face ID scan that would be nice and I contacted Roblox support and they said I gotta wait until I’m 13 but the birthday said Oct 7,1985 and I didn’t know how that worked… because it said that I’m 41 but I’m younger than 13 |
-| 2 | Roblox / content | forum | Extreme violence, inappropriate language, and sexually explicit content is possible (and quite likely) within the user-created games. |
+| 2 | Roblox / content | forum | Within seconds, this "Street Code" game showed an intense, fiery car accident and prompted the player to decide whether to shoot or save an officer. |
 | 2 | Roblox / developer_record | news | Texas Attorney General Ken Paxton says he has sued Roblox over "flagrantly ignoring" safety laws and "deceiving parents" about the dangers the online video gaming platform poses to young people. |
 | outside | LEGO Worlds / contact | comparison guide | LEGO Worlds gives you the creative freedom of a sandbox inside a calmer, more structured, LEGO-branded package. There's no open chat with strangers, it carries a family-friendly rating, and the toy-inspired building will feel instantly familiar to any kid who's snapped bricks together. If you want the joy of construction without the open social layer, it's one of the easiest recommendations on this list. |
 | outside | Scratch / money | comparison guide | If what your child loves about Roblox is the *making* — designing their own games and worlds — Scratch is the real thing. It's MIT's free, block-based coding platform, and kids genuinely learn programming concepts like loops and variables while building. The community is moderated, there's a huge library of projects to remix, and it all runs in the browser. |
@@ -252,9 +252,9 @@ The complete citation sets remain in each diagnosis. These verbatim witnesses ma
 
 Saved gather diagnoses next to each capture show every final grade, original entailment result, age witness and complete cited quotes. Fixture diagnoses are reproducible with `-diagnose`; no saved title fixture is edited. The machine-readable before/after snapshots include the full grades and evidence hash, not merely the computed verdict.
 
-The final prose checks are model judgments, not deterministic semantic proofs. A rejected explanation never changes the calibrated grade. The cautious fallback avoids introducing a factual claim but is less specific; the rates above make that limitation visible. Unknown areas remain unknown. In particular, a COPPA label alone did not yield an accepted explanation that actual privacy compliance was proven.
+The final prose checks are model judgments, not deterministic semantic proofs. A rejected explanation never changes the calibrated grade. The cautious fallback avoids introducing a factual claim but is less specific; the rates above make that limitation visible. Unknown areas remain unknown. A compliance label is described only as the source’s claim with an explicit limit; it does not establish actual privacy compliance.
 
-Regression pins retain Minecraft fixture gameplay contact unknown, Minecraft gather-1 generic tracking unknown, Minecraft gather-2 child-account-only age mitigation unknown, and Khan gather-2 curriculum age unknown. Both live Roblox age flags retain the original independent event witness; the conditional-correction ablation and source-witness unit tests remain. A prose source report is not a replacement age witness. Data, money and content prose is checked independently without the old copied-definition allowance; rejection leaves the earned grade and a cautious explanation.
+Regression pins retain Minecraft fixture gameplay contact unknown, Minecraft gather-1 generic tracking unknown, Minecraft gather-2 child-account-only age mitigation unknown, and Khan gather-2 curriculum age unknown. Both live Roblox age flags retain the original independent event witness; the conditional-correction ablation and source-witness unit tests remain. The age writer receives the already validated source event as its focus; it cannot replace or alter that witness. Diagnostic causes are captured before public prose replaces the internal check explanations. Data, money and content prose is checked independently without the old copied-definition allowance; rejection leaves the earned grade and a cautious explanation.
 
 ## Reproduce without a key
 
@@ -267,3 +267,38 @@ python3 tools/eval/parent_reason_report.py
 ```
 
 The live recording command uses `-models live -reuse-gather -live-cap-usd 0.50 -live-ledger /tmp/before-yes-t3.14-live-ledger.json`; the same ledger covered every pilot, repair and outside-case baseline. Do not reset it to re-run the task.
+
+
+## Round 1 remediation evidence
+
+The review remains `REMEDIATE` as an independent historical verdict. This change addresses M1, M2, M3, L1 and L2 for a fresh review; it does not supply user sample signoff or close the task. No push or merge.
+
+### Design and rejected attempts
+
+The calibrated grade prompt, definitions, original entailment prompts, citation and setting checks, and independent age-event classifier retain their decisions. The prose pass verifies each published claim and its relevance to the fixed area, rather than asking whether the source earns the fixed grade again. It receives an explanation focus, never an exemption based on a grade. Exact factual support, attribution, age comparisons, causation and encounter relevance remain required. The age writer receives the already validated source-event witness captured from the original check; it makes no extra classifier request and cannot replace that witness.
+
+The first remediation attempts were rejected rather than treated as successful examples. Their complete results are in `remediation-attempts/`, and all raw writer/checker replies remain under their original request hashes. Checker explanations now identify the rejected claim and feed the single bounded repair. Repeated overconservative checks demanded facts the prose did not claim: parental oversight or a purchase method for an attributed spending report, restricted-content access for an explicit reported age mismatch, or proof of no deletion for a quoted third-party-processing/retention report. Other incorrect checks demanded an unknown forum speaker identity or treated a reviewer's quoted self-reported age as a claim about this check's child. The narrowed writing/checking focus addresses those failures without permitting extra pressure, permission, advertising, causes or ages. Later attempts exposed overly broad source relevance; the final focus requires the actual area evidence, and the published data explanation includes the third-party/retention report.
+
+| Finding | Change | Reproducible pin |
+|---|---|---|
+| M1 | The writer receives the already validated age event. The checker rejects wrong-group comparisons and causes inferred from ambiguous group numbers. Final gather-2 Roblox prose reports the source's actual/assigned-age mismatch, without a claimed cause. | `go test ./internal/pipeline -run 'TestParentReasonRejectsRecordedUnsupportedProse/age_wrong_group_cause\|TestParentWriterUsesValidatedAgeEventFocus' -count=1`; replay gather 2, inspect age reason and exact `younger than 13` / `41` witness in its diagnosis. |
+| M2 | All five prior fallback areas now describe supported title-specific evidence. Runtime fallback remains for failed/missing/malformed candidates or checks. Qualified optional purchases remain qualified; self-reported spending stays attributed; compliance is only the store's claim, with an explicit verification limit; third-party image processing/retention remains the quoted report. | `go test ./tools/eval -run TestPublishedParentReasonsRegression -count=1`; all sixteen non-unknown areas have accepted specific reasons, and every original non-prose field is pinned by `TestParentReasonsPreserveRecordedGradesAndEvidence`. |
+| M3 | Content prose selects the reported Street Code encounter (fiery crash and shoot/save prompt), rather than generalized possible/likely content or a game's description alone. | `go test ./internal/pipeline -run TestParentReasonRejectsRecordedUnsupportedProse/content_possibility -count=1`; `go test ./tools/eval -run TestPublishedParentReasonsRegression -count=1`; gather-2 Roblox diagnosis includes exact encounter quote `f_6fab8dae3bd61975`. |
+| L1 | Scratch's positive source description is concise: “The comparison guide reports Scratch is free.” No omitted-risk checklist or implied safety claim. | `go test ./internal/pipeline -run TestParentReasonRejectsRecordedUnsupportedProse/ok_omission_checklist -count=1`; outside-case replay and `TestPublishedParentReasonsRegression`. |
+| L2 | An optional diagnostic observer receives a caller-owned copy of the completed-check reason map before public prose replaces it. Evaluation reads that snapshot. No card schema changes; observer map mutations cannot alter grades or reasons. Diagnoses were regenerated. | `go test ./internal/pipeline -run TestCheckedReasonsSnapshotBeforeParentProse -count=1`; `go test ./tools/eval -run TestDiagnoseUsesCheckedSnapshotRatherThanParentProse -count=1`; fixture Minecraft money/age/content now show `entail: flag_not_earned`, not `stood`. |
+
+`rejection-probes/requests.jsonl` preserves the exact four distinct current checker requests, including messages and model options. The real checker replies alongside it all return false: unsupported wrong-group/cause; generalized content possibility; omitted-risk checklist; and an invented advertising use. `TestParentReasonRejectsRecordedUnsupportedProse` replays those exact requests through the production checker method. These are narrow independent rejection measurements, not fabricated successful model replies. Normal accepted example replays use separate real writer/checker recordings.
+
+### Final sample accounting
+
+Across eleven cases: **16 specific checked explanations, 0 cautious fallbacks, 50 unknown evidence gaps**. The five formerly generic areas now describe optional lootboxes (fixture Roblox), the store's limited COPPA claim (gather-1 Khan), the 10-year-old reviewer's Minecoin purchase (gather-2 Minecraft), reported $7,000 child spending (gather-2 Roblox), and third-party image processing/unspecified retention (gather-2 Roblox). The full published text for every area appears above, without shortening or substituting friendlier sample text.
+
+All eleven before/after evidence hashes, verdicts and grade fields other than reason are identical, including settings and citation arrays. Unknowns remain unknown; the original four required rejection pins, both live Roblox age flags, and completed-child-purchase flags remain covered by existing tests. No title-specific rule or replacement reason is in product code. The runtime safe fallback is still tested even though these final examples no longer need it.
+
+The whole-task cap includes every rejected pilot, superseded prose pass, repair, final pass and four new rejection measurements. The ledger was never reset. Saved gathers were reused; there were no new Tavily calls. Final prose support remains model judgment, not deterministic semantic proof. User signoff of a sample remains pending.
+
+### Verification
+
+The final full `GOCACHE=/tmp/before-yes-go-cache ./tools/check.sh` passed Go formatting, vet, race tests, frontend lint/check/build and all **175 browser tests**. Log: `/tmp/t314-remediate-gate-final.log`. Two earlier full-gate attempts passed preceding stages but could not start browser tests because another task occupied port 4173; their failure logs remain `/tmp/t314-remediate-gate.log` and `/tmp/t314-remediate-gate-retry.log`. No other task was stopped and no port/test configuration was changed. The final complete run needed no bypass.
+
+Direct source comparison against calibrated main `67501f0` found `judgeSystem`, `entailSystem`, `ageGateSystem`, `checkEntail`, `witnessedAgeGate`, `checkCitations` and `ground` identical. All changed paths are task-owned or its phase note. A count-only scan of the full worktree, including untracked recordings, found zero occurrences of each of the four configured secret values. No dependencies were added.

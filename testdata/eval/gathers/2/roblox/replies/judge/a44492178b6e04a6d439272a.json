@@ -1,0 +1,8 @@
+{
+  "text": "{\"reason_supported\": false, \"explanation\": \"The reason states 'A review reports child predators interacting with children through threats in Adopt Me, requiring police intervention.' While the review quote mentions child predators, interaction with adults, threats, and police taking predators into custody, it does not state that the predator interacted via message, chat, or voice—only that the child 'has been threatened by a person in adopt me' and 'allows your child to interact with adults'. The area definition requires that strangers can reach the child by message, chat, or voice specifically. The quote does not confirm the threat occurred through any of those channels; it could have occurred via signs, gestures, or other in-game actions. Therefore, the claim that the interaction occurred via message, chat, or voice lacks direct support from the cited quote.\"}",
+  "input_tokens": 1126,
+  "output_tokens": 170,
+  "price_nano": 490800,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

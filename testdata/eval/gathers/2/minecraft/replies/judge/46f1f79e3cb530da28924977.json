@@ -1,0 +1,8 @@
+{
+  "text": "{\"reason_supported\": true, \"explanation\": \"A reviewer states they are 10 years old and reports purchasing 10,000 Minecoins using all their birthday money, describing the experience as a scam.\"}",
+  "input_tokens": 1134,
+  "output_tokens": 51,
+  "price_nano": 386100,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

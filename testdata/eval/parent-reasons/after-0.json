@@ -314,7 +314,7 @@
           "f_617ef30b88662b85",
           "f_8e63e88f4f3ed463"
         ],
-        "reason": "The cited sources raise a concern here. Read the source quotes before deciding."
+        "reason": "The store page notes that games may contain optional in-game purchases, including lootboxes."
       },
       {
         "area": "data",
@@ -330,7 +330,7 @@
           "f_3e1e4d584522e5a9",
           "f_6d5f412b40fb55a0"
         ],
-        "reason": "A news report states a child can enter any birthdate before September 2007 to bypass the age check, showing the gate fails in practice."
+        "reason": "A news article reports that a kid who wants to dodge the age check can simply enter any birthdate before September 2007."
       },
       {
         "area": "content",
@@ -346,7 +346,7 @@
           "f_def610c472adb7ff",
           "f_e6456ac7986e1e75"
         ],
-        "reason": "A news report cites a Los Angeles County civil lawsuit alleging Roblox falsely marketed its platform as safe for children while knowingly allowing it to become a hunting ground for predators."
+        "reason": "A news article reports that Los Angeles County filed a civil lawsuit against Roblox Corporation alleging the company falsely marketed its platform as safe for children while knowingly allowing it to become a hunting ground for predators."
       }
     ],
     "evidence_sha256": "85d83d14229bd9ca2694671989827df650d2cb8675da1de4deba7a47656537fb",
@@ -385,7 +385,7 @@
             "quote": "I got Robux and I got only 246 Robux instead of 1800"
           }
         ],
-        "got_reason": "The cited sources raise a concern here. Read the source quotes before deciding."
+        "got_reason": "The store page notes that games may contain optional in-game purchases, including lootboxes."
       },
       {
         "area": "data",
@@ -408,7 +408,7 @@
             "quote": "Im 14 but it said 9-12 on the age check"
           }
         ],
-        "got_reason": "A news report states a child can enter any birthdate before September 2007 to bypass the age check, showing the gate fails in practice."
+        "got_reason": "A news article reports that a kid who wants to dodge the age check can simply enter any birthdate before September 2007."
       },
       {
         "area": "content",
@@ -436,7 +436,7 @@
             "quote": "This lawsuit alleges that Roblox has violated the privacy of its users by tracking data without consent."
           }
         ],
-        "got_reason": "A news report cites a Los Angeles County civil lawsuit alleging Roblox falsely marketed its platform as safe for children while knowingly allowing it to become a hunting ground for predators."
+        "got_reason": "A news article reports that Los Angeles County filed a civil lawsuit against Roblox Corporation alleging the company falsely marketed its platform as safe for children while knowingly allowing it to become a hunting ground for predators."
       }
     ],
     "agreed": 4,
@@ -458,6 +458,6 @@
     ],
     "tavily_credits": 8,
     "read_cost_nano": 15718860,
-    "judge_cost_nano": 29279700
+    "judge_cost_nano": 29495100
   }
 ]

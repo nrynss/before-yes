@@ -174,6 +174,10 @@ func conflicted(fs []finding.Finding) []checklist.Area {
 
 // Judge grades the checklist with the judge model.
 type Judge struct {
+	// CheckedReasons observes the completed checks before parent prose replaces
+	// their explanations. The supplied map is a copy for diagnostics only.
+	CheckedReasons func(map[checklist.Area]string)
+
 	Model Chatter
 	Meter Meter
 	// Entail is the judge model, with thinking off (Fast). It checks each
@@ -287,9 +291,10 @@ func (j *Judge) Judge(ctx context.Context, title string, age int, ref string, fs
 	// is recorded in EntailErr, as a failed conflict pass keeps the first
 	// grades in ConflictErr.
 	var entDem []checklist.Demotion
+	ageWitnesses := map[checklist.Area]ageGateWitness{}
 	if j.Entail != nil {
 		var entCost cost.Price
-		out.Grades, entDem, thinEntail, out.EntailErr, entCost = j.entail(ctx, title, age, ref, out.Grades, fs)
+		out.Grades, entDem, thinEntail, out.EntailErr, entCost = j.entail(ctx, title, age, ref, out.Grades, fs, ageWitnesses)
 		out.Cost += entCost
 		if err := ctx.Err(); err != nil {
 			return out, err
@@ -297,11 +302,18 @@ func (j *Judge) Judge(ctx context.Context, title string, age int, ref string, fs
 	}
 	out.Demotions = append(out.Demotions, entDem...)
 	out.Thin = thinAreas(out.Grades, thinCited, thinGround, thinEntail)
+	if j.CheckedReasons != nil {
+		reasons := make(map[checklist.Area]string, len(out.Grades))
+		for _, g := range out.Grades {
+			reasons[g.Area] = g.Reason
+		}
+		j.CheckedReasons(reasons)
+	}
 	// Writing is deliberately separate from grading: it cannot change a
 	// level, setting, citation or the independently checked age witness.
 	if j.Entail != nil {
 		var reasonCost cost.Price
-		out.Grades, reasonCost = j.parentReasons(ctx, title, age, ref, out.Grades, fs)
+		out.Grades, reasonCost = j.parentReasons(ctx, title, age, ref, out.Grades, fs, ageWitnesses)
 		out.Cost += reasonCost
 		if err := ctx.Err(); err != nil {
 			return out, err
@@ -631,7 +643,7 @@ func parseEntail(reply string) (entailVerdict, error) {
 // Generic entailment errors retain the grade. Age flags require an exact source
 // event witness; without one they become unknown even if classification failed.
 // Errors and measured costs remain visible. The input is not modified.
-func (j *Judge) entail(ctx context.Context, title string, age int, ref string, grades []checklist.Grade, fs []finding.Finding) (out []checklist.Grade, dem []checklist.Demotion, thin []checklist.Area, entailErr error, price cost.Price) {
+func (j *Judge) entail(ctx context.Context, title string, age int, ref string, grades []checklist.Grade, fs []finding.Finding, witnesses ...map[checklist.Area]ageGateWitness) (out []checklist.Grade, dem []checklist.Demotion, thin []checklist.Area, entailErr error, price cost.Price) {
 	out = make([]checklist.Grade, len(grades))
 	for i, g := range grades {
 		g.Findings = slices.Clone(g.Findings)
@@ -665,6 +677,9 @@ func (j *Judge) entail(ctx context.Context, title string, age int, ref string, g
 				g.Level, g.Setting, g.Reason, g.Findings = checklist.Unknown, "", UnsupportedReason, []string{}
 			default:
 				g.Reason = standingReason(g.Area)
+				if len(witnesses) > 0 && witnesses[0] != nil && g.Area == checklist.AgeGating && g.Level == checklist.Flag && v.AgeGate != nil {
+					witnesses[0][g.Area] = *v.AgeGate
+				}
 			}
 			out[i] = g
 			continue
@@ -864,35 +879,75 @@ func parentReasonSystem() string {
 	return `Write explanations for a parent deciding about one title for a child of the stated age. The grades and citations are already checked and fixed. You write reasons only; do not change grades, settings or citations.
 Use one or two short sentences with concrete actions and familiar words. Describe what THIS title's cited sources report, not the area's general definition.
 Begin with explicit source attribution. Prefer "A review reports" over "A parent reports" unless the quote identifies its author as a parent. Describe one decisive report rather than joining every citation. For an age-check concern, describe the concrete bypass or the reported actual and recorded ages when supplied; a conditional correction procedure is not itself an observed failure.
+State the source report by itself. Do not append an interpretation such as "showing" or "indicating" the grade is earned. For a self-report, write "A reviewer who says they are [quoted age] reports..." rather than presenting the person’s age as independently verified.
+Select evidence before writing. For age gating, use a concrete bypass or a quote with explicit actual and assigned ages. A group number without the child's actual age does not establish a wrong placement; two events joined by "plus" do not establish cause. Do not select that vague report when a precise age event is available. For an age mismatch, report only the stated actual and displayed ages; do not explain how a birthday field, scan, update or other mechanism caused it unless the quote explicitly states that cause.
+For content flags, select a concrete encounter: say what a child or investigator actually saw or reached. A statement that content is possible, likely, or generally available is not an encounter and cannot explain this flag. Prefer a past-tense report of something that was shown or accessed, and retain that past-tense event in the explanation. Name who encountered it when the quote says so; a description of a game or its tutorial alone does not show anyone encountering it.
+For money, describe the quoted purchase mechanism or completed child purchase, preserving qualifications such as "may" and "optional". Do not add pressure, lack of parental approval, or a particular purchase type unless the quote shows it.
+For data flags, describe only the named information, recipient and retention limit. For a positive data grade supported by a compliance label, say the source claims that label and that this quote does not verify its practices; do not infer actual compliance.
+For OK grades, keep only the positive description the quote supplies. Never list risks that it does not mention. A free-platform description needs no checklist of absent purchase types.
 Attribute claims: say "A parent reports...", "A reviewer says...", "The privacy policy says...", "The store listing says...", or name the supplied source type. A report is not proof that every child has that experience; a policy promise is not proof that a control works.
 Explain uncertainty directly. Say what the cited quotes do not establish for this child's age. Do not turn missing evidence into reassurance. Do not claim a control works unless the cited quotes show it.
 Do not use internal terms such as "finding", "mitigation", "stance", "flag definition", "standing grade", or citation ids in the reason.
-Name only the specific practice, harm, recipient, purchase, or control the cited quotes establish. Do not copy a definition's list of possible harms. Do not add motives, causes, frequency, defaults, ages, or uses of data the quotes do not establish.
+Name only the specific practice, harm, recipient, purchase, or control the cited quotes establish. Do not copy a definition's list of possible harms. Do not add motives, causes, event order, frequency, defaults, ages, or uses of data the quotes do not establish. In particular, do not turn a purchase and a scam report into a claim the purchase happened after the scam. A self-report by a reviewer who states their age can be described as that reviewer’s purchase.
 For a flag, explain the concrete concern that meets the supplied area definition; a related product feature on its own does not explain why the area is a concern. The definition is a criterion, never evidence. Prefer one concise concrete report; do not combine many harms or add an explanation of causes.
 For a setting grade, explain the reported concern and name the quoted control a parent should change, without promising it prevents a reported bypass. For OK, describe the limited positive evidence without calling the whole title safe or treating silence as reassurance.
 Do not turn a compliance label, rating, certification or marketing promise into proof of actual compliance, safety or effectiveness. Attribute it as a claim and state that the quote alone does not verify it.
 Use only the exact cited source quotes, not a reader claim or a grade definition as evidence. Return JSON {"reasons":[{"area":"...","reason":"..."}]} with one reason per supplied area.`
 }
 func parentReasonCheckSystem() string {
-	return `You check the exact explanation a parent will see against only its cited source quotes. A fixed grade and an area definition are not evidence. For a flag, the explanation must describe the concrete concern that meets the supplied area definition, rather than an unrelated or merely adjacent feature. Answer reason_supported true only when every concrete claim in the reason is supported by a cited quote and attribution matches the supplied source type. Do not grant an allowance for text copied from a grade definition.
+	return `You check the exact explanation a parent will see against only its cited source quotes. A fixed grade and an area definition are not evidence. The fixed grade has already been judged separately. Verify factual support and relevance of this explanation, not whether the source earns that grade again. The explanation must describe concrete source evidence relevant to the supplied area focus, rather than an unrelated or merely adjacent feature. Do not demand an extra detail the explanation does not claim, and do not approve unsupported text just because the grade is fixed. Answer reason_supported true only when every concrete claim in the reason is supported by a cited quote and attribution matches the supplied source type. Do not grant an allowance for text copied from a grade definition.
 Check every practice, harm, recipient, purchase, control, age, number, default, frequency, cause and use of data separately. One unsupported item makes the reason false. A broad category does not support extra examples. A source claiming a policy or setting does not prove it works in practice. A report about one child does not prove all children experience it. Silence about a risk does not establish safety or absence of enforcement. An age recommendation or educational level does not prove an age gate works. A first-hand claim is supported when carefully attributed as that source's report, without presenting it as independently established fact.
-The explanation must begin with explicit source attribution, use plain parent-facing language, attribute factual claims, and explain limits without reassurance based on missing evidence. A review is not necessarily a parent: do not invent the author’s role. A compliance label, rating, certification or marketing promise does not demonstrate actual compliance, safety or effectiveness. Reject an inference of adherence from the mere presence of a label. Reject an unqualified factual opening even if later parts mention a source. Reject internal terms such as finding, mitigation, stance, flag definition, standing grade or citation ids. A statement that the evidence is insufficient is acceptable; a concrete claim added to that statement still needs its own quote.
-Return JSON {"reason_supported":true} or {"reason_supported":false}. Do not change or re-evaluate the grade.`
+An age failure must name a shown bypass or explicit actual/assigned-age mismatch. A group number alone cannot prove the group is wrong: reject "wrong group" when the quote gives neither actual age nor group meaning. Reject a cause inferred merely from two statements joined by "plus" or "and". A quote reporting a birthday and a displayed age does not by itself show the mechanism that caused a mismatch; reject an added claim that the field accepted it or made the system calculate it.
+For content flags, reject generalized possibility or likelihood even if quoted accurately: the explanation must describe a concrete encounter with unsuitable material, supported by a cited report of what was seen or reached. Describing a game or its tutorial does not establish an encounter unless the source reports someone actually encountering it; the explanation should retain that reported encounter.
+For money, a qualified source warning about a named purchase mechanism (such as optional loot boxes) is a concrete concern; preserve its qualifications rather than requiring an unshown completed purchase. A report of a completed child purchase supports an attributed account of that purchase. For this explanation, that concrete purchase is sufficient: do not require details of purchase method or parental oversight the explanation does not claim. It does not by itself prove extra pressure, lack of permission, or unrelated purchase types. Reject invented temporal order, including saying a purchase happened after a scam when the quote only reports both.
+For an OK grade, a source's positive description may be explained with explicit limits. A store's compliance claim can be attributed as a label with a clear statement that the quote does not verify actual practices; that is not a claim of actual compliance. Reject lists of risks a source does not mention: retain the positive description only.
+The explanation must begin with explicit source attribution, use plain parent-facing language, attribute factual claims, and explain limits without reassurance based on missing evidence. A review is not necessarily a parent: do not invent the author’s role. Attribution to the supplied source kind is sufficient; never require an unknown speaker identity. A reviewer’s stated own age is supported when described as a self-report, and ordinary paraphrase of that self-report does not invent a second child. The reported person’s age need not match the child being assessed: accurately attributing a report about someone else is not a claim that this child had that experience. Do not require independent verification of an attributed self-report. A compliance label, rating, certification or marketing promise does not demonstrate actual compliance, safety or effectiveness. Reject an inference of adherence from the mere presence of a label. Reject an unqualified factual opening even if later parts mention a source. Reject internal terms such as finding, mitigation, stance, flag definition, standing grade or citation ids. A statement that the evidence is insufficient is acceptable; a concrete claim added to that statement still needs its own quote.
+When rejecting, identify the exact unsupported words or missing decisive detail, and explain which quote fails to support them. Return JSON {"reason_supported":true,"explanation":"why each claim is supported"} or {"reason_supported":false,"explanation":"exact unsupported claim or missing decisive detail"}. Do not change or re-evaluate the grade.`
 }
-func parentReasonUser(title string, age int, grades []checklist.Grade, fs []finding.Finding) string {
+
+// These are writing focuses, not grading definitions. The calibrated areaDefs
+// and checks above remain the sole grading criteria. Repeating those thresholds
+// here caused the prose checker to demand practices the prose did not claim.
+func parentReasonFocus(area checklist.Area) string {
+	switch area {
+	case checklist.Contact:
+		return "a quoted stranger message, chat or voice channel and the quoted control or bypass; a report of harm without a communication channel does not explain this concern"
+	case checklist.Money:
+		return "a quoted loot box, pay-to-win or subscription mechanism, or a completed child spending event; preserve qualifications and do not infer permission or pressure"
+	case checklist.Data:
+		return "for a concern: a quoted third party handling children’s information, ad tracking, or stated retention/deletion gap. Access to user content alone is adjacent evidence. For OK: attribute the specific positive source description or compliance label with its limits, without claiming verified compliance"
+	case checklist.AgeGating:
+		return "a reported bypass or explicit actual/assigned-age mismatch; do not infer a wrong age from an undefined group or invent a cause"
+	case checklist.Content:
+		return "a concrete reported encounter with unsuitable material, not a generic possibility or description of available content"
+	case checklist.DeveloperRecord:
+		return "the specific reported enforcement, lawsuit, breach or other developer event; distinguish allegations from findings"
+	}
+	return "only the concrete source evidence for this area"
+}
+
+func parentReasonUser(title string, age int, grades []checklist.Grade, fs []finding.Finding, witnesses ...map[checklist.Area]ageGateWitness) string {
 	var b strings.Builder
 	fmt.Fprintf(&b, "Title: %s\nChild's age: %d\n", title, age)
 	for _, g := range grades {
-		fmt.Fprintf(&b, "\nArea: %s\nLevel: %s\nSetting: %s\nArea definition (criterion, not evidence): %s\n", g.Area, g.Level, g.Setting, areaDefs[g.Area])
+		if len(witnesses) > 0 {
+			if w, ok := witnesses[0][g.Area]; ok {
+				fmt.Fprintf(&b, "\nRequired age-event focus (verbatim source quote): %q\nActual age reported: %s\nAssigned age reported: %s\nWhen both ages are supplied, describe only those reported actual and assigned ages. Do not mention birthday dates, support conversations, or mechanisms behind the mismatch. For a bypass, describe only the quoted bypass.\n", w.Quote, w.ActualAge, w.AssignedAge)
+			}
+		}
+		fmt.Fprintf(&b, "\nArea: %s\nLevel: %s\nSetting: %s\nExplanation focus (grade fixed; not regraded): %s\n", g.Area, g.Level, g.Setting, parentReasonFocus(g.Area))
 		for _, f := range fs {
 			if slices.Contains(g.Findings, f.ID) {
 				fmt.Fprintf(&b, "Source: %s\nQuote: %q\n", f.Source.Kind, f.Quote)
 			}
 		}
 	}
+	if len(grades) == 1 && grades[0].Area == checklist.Content && grades[0].Level == checklist.Flag {
+		b.WriteString("\nContent evidence selection: choose a report of something someone actually saw, was shown, or accessed. Do not select a generic statement about what a game contains or encourages. Preserve the reported event in past tense.\n")
+	}
 	return b.String()
 }
-func (j *Judge) parentReasons(ctx context.Context, title string, age int, ref string, grades []checklist.Grade, fs []finding.Finding) ([]checklist.Grade, cost.Price) {
+func (j *Judge) parentReasons(ctx context.Context, title string, age int, ref string, grades []checklist.Grade, fs []finding.Finding, witnesses ...map[checklist.Area]ageGateWitness) ([]checklist.Grade, cost.Price) {
 	out := slices.Clone(grades)
 	var writable []checklist.Grade
 	for i, g := range out {
@@ -912,7 +967,7 @@ func (j *Judge) parentReasons(ctx context.Context, title string, age int, ref st
 	if len(writable) == 0 {
 		return out, 0
 	}
-	r, price, err := chat(ctx, j.Meter, j.Model, "reason", ref, []model.Message{{Role: "system", Content: parentReasonSystem()}, {Role: "user", Content: parentReasonUser(title, age, writable, fs)}}, model.Options{JSON: true, Extra: j.Fast, MaxTokens: 2048})
+	r, price, err := chat(ctx, j.Meter, j.Model, "reason", ref, []model.Message{{Role: "system", Content: parentReasonSystem()}, {Role: "user", Content: parentReasonUser(title, age, writable, fs, witnesses...)}}, model.Options{JSON: true, Extra: j.Fast, MaxTokens: 2048})
 	if err != nil {
 		return out, price
 	}
@@ -937,7 +992,7 @@ func (j *Judge) parentReasons(ctx context.Context, title string, age int, ref st
 		}
 		candidate := g
 		candidate.Reason = candidates[g.Area]
-		accepted, p := j.checkParentReason(ctx, title, age, ref, candidate, fs)
+		accepted, feedback, p := j.checkParentReason(ctx, title, age, ref, candidate, fs)
 		price += p
 		if accepted {
 			out[i].Reason = candidate.Reason
@@ -948,7 +1003,7 @@ func (j *Judge) parentReasons(ctx context.Context, title string, age int, ref st
 		// pass the same independent support check or the fallback remains.
 		r, p, err := chat(ctx, j.Meter, j.Model, "reason_repair", ref, []model.Message{
 			{Role: "system", Content: parentReasonSystem()},
-			{Role: "user", Content: parentReasonUser(title, age, []checklist.Grade{g}, fs) + "\nThe previous explanation failed verification: " + candidate.Reason + "\nWrite a narrower explanation from one concrete source quote. Attribute what that quote reports, omit inferences and do not infer failure from a hypothetical procedure. Return the same reasons JSON format."},
+			{Role: "user", Content: parentReasonUser(title, age, []checklist.Grade{g}, fs, witnesses...) + "\nThe previous explanation failed verification: " + candidate.Reason + "\nChecker feedback: " + feedback + "\nIf the selected quote cannot show the decisive event, select a different cited quote that does. Write a narrower explanation from one concrete source quote. Attribute what that quote reports, omit inferences and do not infer failure from a hypothetical procedure. Return the same reasons JSON format."},
 		}, model.Options{JSON: true, Extra: j.Fast, MaxTokens: 1024})
 		price += p
 		if err != nil {
@@ -964,7 +1019,7 @@ func (j *Judge) parentReasons(ctx context.Context, title string, age int, ref st
 			continue
 		}
 		candidate.Reason = strings.TrimSpace(repair.Reasons[0].Reason)
-		accepted, p = j.checkParentReason(ctx, title, age, ref, candidate, fs)
+		accepted, _, p = j.checkParentReason(ctx, title, age, ref, candidate, fs)
 		price += p
 		if accepted {
 			out[i].Reason = candidate.Reason
@@ -973,14 +1028,15 @@ func (j *Judge) parentReasons(ctx context.Context, title string, age int, ref st
 	return out, price
 }
 
-func (j *Judge) checkParentReason(ctx context.Context, title string, age int, ref string, g checklist.Grade, fs []finding.Finding) (bool, cost.Price) {
+func (j *Judge) checkParentReason(ctx context.Context, title string, age int, ref string, g checklist.Grade, fs []finding.Finding) (bool, string, cost.Price) {
 	user := parentReasonUser(title, age, []checklist.Grade{g}, fs) + "\nReason: " + g.Reason
 	r, p, err := chat(ctx, j.Meter, j.Entail, "reason_check", ref, []model.Message{{Role: "system", Content: parentReasonCheckSystem()}, {Role: "user", Content: user}}, model.Options{JSON: true, Extra: j.Fast, MaxTokens: 1024})
 	if err != nil {
-		return false, p
+		return false, "The support check did not complete.", p
 	}
 	var verdict struct {
-		Supported *bool `json:"reason_supported"`
+		Supported   *bool  `json:"reason_supported"`
+		Explanation string `json:"explanation"`
 	}
-	return json.Unmarshal([]byte(r.Text), &verdict) == nil && verdict.Supported != nil && *verdict.Supported, p
+	return json.Unmarshal([]byte(r.Text), &verdict) == nil && verdict.Supported != nil && *verdict.Supported, verdict.Explanation, p
 }

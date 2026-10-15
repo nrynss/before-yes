@@ -1,0 +1,8 @@
+{
+  "text": "{\"reason_supported\": false, \"explanation\": \"The Reason claims 'the child was placed in the wrong age group' but provides no basis for determining correctness—no actual age, expected group, or assignment logic is given. The Quote states only that the child 'got put in the 28th group,' which names a group number without defining what that group means or comparing it to the child's actual age (9). Without evidence of a mismatch between assigned group and actual age, the claim of being 'in the wrong age group' is unsupported.\"}",
+  "input_tokens": 1058,
+  "output_tokens": 117,
+  "price_nano": 422700,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

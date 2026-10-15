@@ -88,3 +88,85 @@ func assertReasonOnlyResults(t *testing.T, before, after []Result) {
 		}
 	}
 }
+
+// Final examples must explain their source evidence, not merely preserve a
+// correct verdict while quietly using the runtime fallback.
+func TestPublishedParentReasonsRegression(t *testing.T) {
+	oldGather, oldCases, oldOnly := *gatherN, *reasonCases, *liveOnly
+	defer func() { *gatherN = oldGather; *reasonCases = oldCases; *liveOnly = oldOnly }()
+	*reasonCases = ""
+	*liveOnly = ""
+	root := filepath.Join("..", "..")
+	for n := 0; n < 3; n++ {
+		*gatherN = n
+		got, err := evaluate(root, "replay")
+		if err != nil {
+			t.Fatal(err)
+		}
+		for _, r := range got {
+			if r.Err != "" {
+				t.Fatal(r.Err)
+			}
+			for _, g := range r.Grades {
+				if g.Level == "unknown" {
+					continue
+				}
+				if strings.HasPrefix(g.Reason, "The cited sources raise") || strings.Contains(g.Reason, "couldn’t verify a plain-language") {
+					t.Fatalf("%d %s %s still has fallback", n, r.Title, g.Area)
+				}
+				if n == 0 && r.Title == "Roblox" && g.Area == "money" && !strings.Contains(g.Reason, "lootboxes") {
+					t.Fatal(g.Reason)
+				}
+				if n == 1 && r.Title == "Khan Academy Kids" && g.Area == "data" {
+					if !strings.Contains(strings.ToLower(g.Reason), "coppa") || !strings.Contains(strings.ToLower(g.Reason), "verif") {
+						t.Fatal(g.Reason)
+					}
+				}
+				if n == 2 && r.Title == "Minecraft" && g.Area == "money" && !strings.Contains(g.Reason, "10,000 Minecoins") {
+					t.Fatal(g.Reason)
+				}
+				if n == 2 && r.Title == "Roblox" {
+					switch g.Area {
+					case "money":
+						if !strings.Contains(g.Reason, "$7,000") {
+							t.Fatal(g.Reason)
+						}
+					case "data":
+						if !strings.Contains(strings.ToLower(g.Reason), "third-party") || !strings.Contains(g.Reason, "retention") {
+							t.Fatal(g.Reason)
+						}
+					case "age_gating":
+						if !strings.Contains(g.Reason, "41") || !strings.Contains(g.Reason, "younger than 13") || strings.Contains(g.Reason, "28th") || strings.Contains(g.Reason, "due to") {
+							t.Fatal(g.Reason)
+						}
+					case "content":
+						if !strings.Contains(g.Reason, "Street Code") || strings.Contains(g.Reason, "possible") || strings.Contains(g.Reason, "likely") {
+							t.Fatal(g.Reason)
+						}
+					}
+				}
+			}
+		}
+	}
+	*gatherN = 0
+	*reasonCases = "testdata/eval/parent-reasons/outside-cases.json"
+	got, err := evaluateReasonCases(root, "replay")
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, r := range got {
+		if r.Err != "" {
+			t.Fatal(r.Err)
+		}
+		if r.Title != "Scratch" {
+			continue
+		}
+		for _, g := range r.Grades {
+			if g.Area == "money" {
+				if !strings.Contains(g.Reason, "free") || strings.Contains(g.Reason, "no mention") || len(strings.Fields(g.Reason)) > 30 {
+					t.Fatal(g.Reason)
+				}
+			}
+		}
+	}
+}

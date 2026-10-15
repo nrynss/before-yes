@@ -1,0 +1,8 @@
+{
+  "text": "{\"reason_supported\": false, \"explanation\": \"The reason states 'showing a purchase a child can complete without a parent,' but no cited quote confirms the child made the purchase without parental involvement. The review describes a child spending birthday money and feeling scammed, yet provides no information about whether a parent approved, supervised, or was aware of the transaction. The rating mentions a parental control ('Ask a parent to buy things'), but it does not state that this control was absent, bypassed, or ineffective in the review's case. Therefore, the claim that the purchase was completed without a parent lacks decisive detail from the sources.\"}",
+  "input_tokens": 1026,
+  "output_tokens": 131,
+  "price_nano": 425700,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

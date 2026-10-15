@@ -2,7 +2,7 @@ diagnose Roblox age 9 verdict no findings 200 (conflict pass replaced the confli
   contact  risks 46 mitigations 14 other 2
     judge ok_with_setting setting "parental controls" cited 2 [f_8b34dcd067352227 f_2bbf8633ef6c9b47]
     card unknown setting ""
-    check stood
+    check entail: flag_not_earned
     entail meets_definition=false reason_supported=false
     reason We don’t have enough evidence to assess this area. Don’t assume it is safe.
     quote f_8b34dcd067352227 risk news: Roblox’s default settings, including unverified accounts, no age verification, and open communication channels, repeatedly exposed minors to sexual exploitation.
@@ -10,7 +10,7 @@ diagnose Roblox age 9 verdict no findings 200 (conflict pass replaced the confli
   money  risks 22 mitigations 4 other 6
     judge ok_with_setting setting "parental controls" cited 2 [f_1f8ad057919885d2 f_5c944121c4fbb0b1]
     card unknown setting ""
-    check stood
+    check entail: flag_not_earned
     entail meets_definition=false reason_supported=false
     reason We don’t have enough evidence to assess this area. Don’t assume it is safe.
     quote f_1f8ad057919885d2 risk store: Games may contain optional in-game purchases, including lootboxes and other items
@@ -18,7 +18,7 @@ diagnose Roblox age 9 verdict no findings 200 (conflict pass replaced the confli
   data  risks 24 mitigations 1 other 12
     judge ok_with_setting setting "turn off ad personalization and data selling" cited 2 [f_81873d6371e5c237 f_802f58b0fea298fe]
     card unknown setting ""
-    check stood
+    check entail: reason_unsupported
     entail meets_definition=true reason_supported=false
     reason We don’t have enough evidence to assess this area. Don’t assume it is safe.
     quote f_81873d6371e5c237 risk policy: Data will now be sold
@@ -28,19 +28,19 @@ diagnose Roblox age 9 verdict no findings 200 (conflict pass replaced the confli
     card flag setting ""
     check stood
     age-gate event=access_bypass witness="A kid who wants to dodge all of the above can simply enter any birthdate before September 2007." actual_age="" assigned_age=""
-    reason A news article reports that a child can easily bypass the age gate by entering any birthdate before September 2007.
+    reason A news report states that a child can easily bypass age restrictions by entering any birthdate before September 2007.
     quote f_3e1e4d584522e5a9 risk news: A kid who wants to dodge all of the above can simply enter any birthdate before September 2007.
   content  risks 28 mitigations 1 other 1
     judge flag setting "" cited 1 [f_7bfc294c87ff4e36]
     card unknown setting ""
-    check stood
+    check entail: flag_not_earned
     entail meets_definition=false reason_supported=false
     reason We don’t have enough evidence to assess this area. Don’t assume it is safe.
     quote f_7bfc294c87ff4e36 risk review: god theres so many preds so i do NOT recommend this game for children/teens because there is some bad games where yk so yeah one star
   developer_record  risks 10 mitigations 0 other 3
     judge flag setting "" cited 4 [f_36d826992acf4266 f_b4bf19322a6df69d f_005ff9ce800de2bf f_7124f060b141bae7]
     card unknown setting ""
-    check stood
+    check entail: flag_not_earned
     entail meets_definition=false reason_supported=false
     reason We don’t have enough evidence to assess this area. Don’t assume it is safe.
     quote f_36d826992acf4266 risk review: Genuinely the most money-hungry game I have ever seen This game supports child predators. That’s all I need to say.

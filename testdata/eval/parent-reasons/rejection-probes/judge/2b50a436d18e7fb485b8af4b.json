@@ -1,0 +1,8 @@
+{
+  "text": "{\"reason_supported\": false, \"explanation\": \"The explanation includes multiple negative claims—'no mention of purchases', 'loose boxes', 'pay-to-win pressure', 'subscription traps', or 'any way for a child to spend money'—that go beyond the provided quote. The quote only describes Scratch as a free, block-based coding platform where kids learn programming concepts. It does not state or imply the absence of monetization features, so asserting there is 'no mention' of such mechanisms or 'no way for a child to spend money' introduces unsupported negations not present in the source.\"}",
+  "input_tokens": 1085,
+  "output_tokens": 128,
+  "price_nano": 440700,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

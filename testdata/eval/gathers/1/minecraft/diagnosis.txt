@@ -2,7 +2,7 @@ diagnose Minecraft age 9 verdict unclear findings 221 (conflict pass replaced th
   contact  risks 27 mitigations 11 other 2
     judge ok_with_setting setting "Restrict Communication" cited 2 [f_8e13d0d8cf810113 f_31c58032f10f0ed3]
     card unknown setting ""
-    check stood
+    check entail: flag_not_earned
     entail meets_definition=false reason_supported=false
     reason We don’t have enough evidence to assess this area. Don’t assume it is safe.
     quote f_8e13d0d8cf810113 risk review: Gosh Minecraft NEVER have I EVER been so MAD in my life! I use to play Minecraft on my ps4 BACK THEN! And now I downloaded it on my phone after thinking of it, but as I put my email in it says account has been locked! So I used my mother’s email and it work but it was talking about some unusual activity🫩 fix this.
@@ -10,7 +10,7 @@ diagnose Minecraft age 9 verdict unclear findings 221 (conflict pass replaced th
   money  risks 60 mitigations 4 other 6
     judge ok_with_setting setting "Control Spending" cited 2 [f_4f0d24b3b6bb0948 f_6b222f7ec75ab54a]
     card unknown setting ""
-    check stood
+    check entail: flag_not_earned
     entail meets_definition=false reason_supported=false
     reason We don’t have enough evidence to assess this area. Don’t assume it is safe.
     quote f_4f0d24b3b6bb0948 risk review: i bought 10,000 minecoins and im litterly a kid im only 10 and i got scammed i litterly used all my birthday money! FRICK YOU MINECRAFT
@@ -18,21 +18,21 @@ diagnose Minecraft age 9 verdict unclear findings 221 (conflict pass replaced th
   data  risks 21 mitigations 2 other 10
     judge flag setting "" cited 1 [f_62d7413616ee25d9]
     card unknown setting ""
-    check stood
+    check entail: flag_not_earned
     entail meets_definition=false reason_supported=false
     reason We don’t have enough evidence to assess this area. Don’t assume it is safe.
     quote f_62d7413616ee25d9 risk store: App Tracking: To deliver personalized ads and improve application experience
   age_gating  risks 10 mitigations 2 other 8
     judge flag setting "" cited 1 [f_88d325d4c1d10860]
     card unknown setting ""
-    check stood
+    check entail: flag_not_earned
     age-gate event=none witness="" actual_age="" assigned_age=""
     reason We don’t have enough evidence to assess this area. Don’t assume it is safe.
     quote f_88d325d4c1d10860 risk review: Can you make the game available for +5 year-old?
   content  risks 18 mitigations 2 other 15
     judge ok_with_setting setting "block access to games based on the ESRB-assigned rating information" cited 2 [f_3cad9aec44591175 f_81363ff213c488f0]
     card unknown setting ""
-    check stood
+    check entail: flag_not_earned
     entail meets_definition=false reason_supported=false
     reason We don’t have enough evidence to assess this area. Don’t assume it is safe.
     quote f_3cad9aec44591175 risk review: it was scary but in the good way
@@ -40,7 +40,7 @@ diagnose Minecraft age 9 verdict unclear findings 221 (conflict pass replaced th
   developer_record  risks 12 mitigations 1 other 10
     judge flag setting "" cited 2 [f_895e1f4c7ea107f6 f_84aa4cf4beb17e84]
     card unknown setting ""
-    check stood
+    check entail: flag_not_earned
     entail meets_definition=false reason_supported=false
     reason We don’t have enough evidence to assess this area. Don’t assume it is safe.
     quote f_895e1f4c7ea107f6 risk review: BAN YOUR STUPID GAME

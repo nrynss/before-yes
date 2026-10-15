@@ -1,0 +1,8 @@
+{
+  "text": "{\"reasons\": [{\"area\": \"age_gating\", \"reason\": \"A review reports the child was placed in the 28th age group due to broken age group ideas in new app updates.\"}]}",
+  "input_tokens": 1181,
+  "output_tokens": 46,
+  "price_nano": 395700,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

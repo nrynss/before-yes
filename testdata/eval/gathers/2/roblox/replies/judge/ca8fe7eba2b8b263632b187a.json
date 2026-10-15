@@ -1,0 +1,8 @@
+{
+  "text": "{\"reason_supported\": true, \"explanation\": \"A forum post states: 'This \\\"Baddies\\\" game is labeled for age 5+ and encourages punching, stomping, shooting, and other violence as part of the opening tutorial.' This directly reports a specific instance of realistic violence in a game accessible to young children, matching the area definition of parents or reviewers reporting children actually meeting unsuitable material.\"}",
+  "input_tokens": 1967,
+  "output_tokens": 86,
+  "price_nano": 667500,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

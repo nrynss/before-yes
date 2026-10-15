@@ -1,0 +1,8 @@
+{
+  "text": "{\"reasons\": [{\"area\": \"money\", \"reason\": \"A review reports a child aged 10 spent birthday money on Minecoins and felt scammed, showing a purchase a child can complete without a parent.\"}]}",
+  "input_tokens": 1031,
+  "output_tokens": 50,
+  "price_nano": 354300,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

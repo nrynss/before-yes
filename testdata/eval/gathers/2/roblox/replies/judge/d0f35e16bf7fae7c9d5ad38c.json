@@ -1,0 +1,8 @@
+{
+  "text": "{\"reason_supported\": false, \"explanation\": \"The reason states 'A review reports the child was placed in the 28th age group due to broken age group ideas in new app updates.' The supporting quote says: \\\"The new app updates age group ideas are completely broken plus my child got put in the 28th group.\\\" This attributes both the placement in the 28th group and the brokenness of age group ideas to the same reviewer. However, the area definition requires evidence that the age gate fails in practice — specifically, a first-hand report that a child ended up on the wrong side of it, a child far under the stated age getting in, etc. While being placed in the '28th group' suggests misplacement, the quote does not clarify what the '28th group' means in terms of age bands (e.g., whether it corresponds to an age range like 28+ or is merely a label). Without knowing how the group numbering maps to actual ages, we cannot determine if this constitutes a child being placed on the wrong side of an age gate (e.g., a 9-year-old in an over-13 group). The term '28th group' is ambiguous and not defined in the quote or sources. Therefore, the reason incorrectly assumes that placement in the '28th group' equates to failing the age gate, but no source establishes what the 28th group signifies age-wise. The claim that the child was placed in the wrong age group due to broken age gates is not fully supported because the meaning of '28th group' is unspecified.\"}",
+  "input_tokens": 1054,
+  "output_tokens": 339,
+  "price_nano": 621300,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

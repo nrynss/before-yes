@@ -1,0 +1,8 @@
+{
+  "text": "{\"reasons\": [{\"area\": \"contact\", \"reason\": \"The comparison guide reports there is no open chat with strangers.\"}]}",
+  "input_tokens": 1124,
+  "output_tokens": 30,
+  "price_nano": 364200,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

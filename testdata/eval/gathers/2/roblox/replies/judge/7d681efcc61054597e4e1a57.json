@@ -1,0 +1,8 @@
+{
+  "text": "{\"reason_supported\": false, \"explanation\": \"The reason states 'A review reports child predators interacting with children through threats in Adopt Me'—this is accurate per the review quote—but then adds 'causing fear and police involvement.' While the review mentions the child was 'scared to play' and 'police have come,' these are presented as outcomes of the interaction, yet the reason frames them as direct results of predator interaction without citing any part of the quote that explicitly links the fear or police action specifically to the threat in Adopt Me as a causal chain. More critically, the reason omits any mention of the forum quote, which provides essential context about technical limitations (chats in mini-games cannot be disabled, signs allow text regardless of settings). Since the area definition requires showing that 'no control a parent can set shuts that door,' the explanation must include evidence that parental controls fail. The reason relies solely on the review, which describes harm but does not address whether controls exist or fail. Without referencing the forum quote—which shows specific uncontrollable chat mechanisms—the reason fails to support the core claim that no parental control can shut the door. Thus, the reason is incomplete and unsupported regarding the area definition’s requirement.\"}",
+  "input_tokens": 1128,
+  "output_tokens": 256,
+  "price_nano": 568800,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

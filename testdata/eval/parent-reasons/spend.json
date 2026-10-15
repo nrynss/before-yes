@@ -1,8 +1,9 @@
 {
   "cap_usd": 0.5,
-  "spent_nano": 168477900,
-  "spent_usd": 0.1684779,
-  "final_prose_increment_nano": 9301800,
+  "spent_nano": 224112300,
+  "spent_usd": 0.2241123,
+  "final_prose_increment_nano": 12464400,
   "ledger": "/tmp/before-yes-t3.14-live-ledger.json",
-  "includes": "All paid grading-prompt pilots, prose candidates, support checks, bounded repairs, outside-case baselines and final recordings; no failed attempt is removed."
+  "includes": "All paid grading-prompt pilots, prose candidates, support checks, bounded repairs, outside-case baselines and final recordings; no failed attempt is removed.",
+  "remediation_increment_nano": 55634400
 }

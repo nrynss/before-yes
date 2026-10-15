@@ -1,0 +1,8 @@
+{
+  "text": "{\"reason_supported\": true, \"explanation\": \"The store page states 'Games may contain optional in-game purchases, including lootboxes', which directly describes a reported purchase mechanism—optional in-game purchases—and preserves the qualification 'optional' without inferring permission or pressure.\"}",
+  "input_tokens": 1098,
+  "output_tokens": 58,
+  "price_nano": 381600,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

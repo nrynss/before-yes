@@ -1,0 +1,8 @@
+{
+  "text": "{\"reason_supported\": true, \"explanation\": \"The terms explicitly state that Roblox may access and review Content, including Content shared via Communication Features and other non-public Content, confirming access to user-generated content. The forum post further states that images used for age verification may be processed by third-party providers and that Roblox does not publicly guarantee a fixed retention period for those images, indicating a potential retention/deletion gap involving third-party handling of children's information.\"}",
+  "input_tokens": 1160,
+  "output_tokens": 97,
+  "price_nano": 435300,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

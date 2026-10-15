@@ -162,7 +162,7 @@
           "f_4f0d24b3b6bb0948",
           "f_52134516877ae723"
         ],
-        "reason": "The cited sources raise a concern here. Read the source quotes before deciding."
+        "reason": "A reviewer who says they are 10 years old reports buying 10,000 Minecoins using birthday money and feeling scammed."
       },
       {
         "area": "data",
@@ -226,7 +226,7 @@
             "quote": "there is no ads to interrupt me and I can get friends"
           }
         ],
-        "got_reason": "The cited sources raise a concern here. Read the source quotes before deciding."
+        "got_reason": "A reviewer who says they are 10 years old reports buying 10,000 Minecoins using birthday money and feeling scammed."
       },
       {
         "area": "data",
@@ -294,7 +294,7 @@
     ],
     "tavily_credits": 7,
     "read_cost_nano": 13780620,
-    "judge_cost_nano": 19776000
+    "judge_cost_nano": 19654200
   },
   {
     "title": "Roblox",
@@ -306,7 +306,7 @@
           "f_a8ef6e887203f7cd",
           "f_936c4f1c94f5d7a9"
         ],
-        "reason": "A forum post states chats built into the coding of specific mini-games cannot be disabled, and kids can type text on signs regardless of communication preferences."
+        "reason": "A forum post reports that chats built into the coding of specific mini-games cannot be disabled, and kids can type text on signs regardless of communication preferences."
       },
       {
         "area": "money",
@@ -316,7 +316,7 @@
           "f_783661ae59b066c7",
           "f_1368a2c5a6fe539a"
         ],
-        "reason": "The cited sources raise a concern here. Read the source quotes before deciding."
+        "reason": "A review reports being forced to add payment information to play, resulting in a $46 charge despite adding a card with no money, and a news article states a parent reported their 10-year-old daughter spent over $7,000 in two months despite purchase limits."
       },
       {
         "area": "data",
@@ -326,7 +326,7 @@
           "f_3863f822c43eb156",
           "f_37a8bd5d8f222dac"
         ],
-        "reason": "The cited sources raise a concern here. Read the source quotes before deciding."
+        "reason": "The terms state Roblox may access and review Content, including Content shared via Communication Features and other non-public Content, and a forum post indicates images used for age verification may be processed by third-party providers without a guaranteed retention period for children's images."
       },
       {
         "area": "age_gating",
@@ -336,7 +336,7 @@
           "f_979e8a567e65fc3b",
           "f_ed2aac5c14c3bb92"
         ],
-        "reason": "A review reports the child was placed in the wrong age group (28th group) due to broken age group updates."
+        "reason": "A review reports contacting Roblox support and being told to wait until age 13, while the system displayed an assigned age of 41 despite the user stating they are younger than 13."
       },
       {
         "area": "content",
@@ -367,7 +367,7 @@
           "f_08f1157eb8532858",
           "f_81a68c8fe941e881"
         ],
-        "reason": "A forum post states extreme violence, inappropriate language, and sexually explicit content is possible and likely within user-created games."
+        "reason": "A forum post describes that within seconds, the 'Street Code' game showed an intense, fiery car accident and prompted the player to decide whether to shoot or save an officer."
       },
       {
         "area": "developer_record",
@@ -375,7 +375,7 @@
         "findings": [
           "f_13ff2ba3714f5fe6"
         ],
-        "reason": "A news report states the Texas Attorney General sued Roblox for flagrantly ignoring safety laws and deceiving parents about dangers to young people."
+        "reason": "A news article states the Texas Attorney General has sued Roblox over 'flagrantly ignoring' safety laws and 'deceiving parents' about the dangers the platform poses to young people."
       }
     ],
     "evidence_sha256": "feb56959d7ade79df1b9715bacd6b46947d3d19dd5c39f81ab8a6e6092fa52b4",
@@ -400,7 +400,7 @@
             "quote": "they can’t stop the child predators and E-Daters"
           }
         ],
-        "got_reason": "A forum post states chats built into the coding of specific mini-games cannot be disabled, and kids can type text on signs regardless of communication preferences."
+        "got_reason": "A forum post reports that chats built into the coding of specific mini-games cannot be disabled, and kids can type text on signs regardless of communication preferences."
       },
       {
         "area": "money",
@@ -414,7 +414,7 @@
             "quote": "I got Robux and I got only 246 Robux instead of 1800"
           }
         ],
-        "got_reason": "The cited sources raise a concern here. Read the source quotes before deciding."
+        "got_reason": "A review reports being forced to add payment information to play, resulting in a $46 charge despite adding a card with no money, and a news article states a parent reported their 10-year-old daughter spent over $7,000 in two months despite purchase limits."
       },
       {
         "area": "data",
@@ -423,7 +423,7 @@
         "agree": false,
         "found": [],
         "missed": [],
-        "got_reason": "The cited sources raise a concern here. Read the source quotes before deciding."
+        "got_reason": "The terms state Roblox may access and review Content, including Content shared via Communication Features and other non-public Content, and a forum post indicates images used for age verification may be processed by third-party providers without a guaranteed retention period for children's images."
       },
       {
         "area": "age_gating",
@@ -437,7 +437,7 @@
             "quote": "Im 14 but it said 9-12 on the age check"
           }
         ],
-        "got_reason": "A review reports the child was placed in the wrong age group (28th group) due to broken age group updates."
+        "got_reason": "A review reports contacting Roblox support and being told to wait until age 13, while the system displayed an assigned age of 41 despite the user stating they are younger than 13."
       },
       {
         "area": "content",
@@ -451,7 +451,7 @@
             "quote": "It’s also a very inappropriate game with all the horror games"
           }
         ],
-        "got_reason": "A forum post states extreme violence, inappropriate language, and sexually explicit content is possible and likely within user-created games."
+        "got_reason": "A forum post describes that within seconds, the 'Street Code' game showed an intense, fiery car accident and prompted the player to decide whether to shoot or save an officer."
       },
       {
         "area": "developer_record",
@@ -465,7 +465,7 @@
             "quote": "This lawsuit alleges that Roblox has violated the privacy of its users by tracking data without consent."
           }
         ],
-        "got_reason": "A news report states the Texas Attorney General sued Roblox for flagrantly ignoring safety laws and deceiving parents about dangers to young people."
+        "got_reason": "A news article states the Texas Attorney General has sued Roblox over 'flagrantly ignoring' safety laws and 'deceiving parents' about the dangers the platform poses to young people."
       }
     ],
     "agreed": 5,
@@ -485,6 +485,6 @@
     "missing_kinds": [],
     "tavily_credits": 8,
     "read_cost_nano": 17948820,
-    "judge_cost_nano": 31756200
+    "judge_cost_nano": 32921400
   }
 ]

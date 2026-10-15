@@ -43,10 +43,6 @@ for set_name in ("0", "1", "2", "outside"):
                 fallback += 1
             else:
                 assessment = "Specific report; source attribution and concrete detail."
-                if a["title"] == "Scratch":
-                    assessment = "Attributed guide description; verbose list of omissions does not prove absence of risk."
-                if set_name == "2" and a["title"] == "Roblox" and new["area"] == "age_gating":
-                    assessment = "Attributed group-placement report; actual age is unspecified in this selected report. The grade retains a separate exact age-mismatch witness."
                 specific += 1
             lines.append(f"| {new['area']} / {new['level']} | {cell(old.get('reason',''))} | {cell(reason)} | {assessment} |")
         delta = (a["judge_cost_nano"] - b["judge_cost_nano"]) / 1e9
@@ -94,7 +90,7 @@ selected={
 ("1","Roblox","age_gating"):"f_3e1e4d584522e5a9",
 ("2","Minecraft","money"):"f_4f0d24b3b6bb0948",
 ("2","Roblox","contact"):"f_936c4f1c94f5d7a9",
-("2","Roblox","content"):"f_4132e355653730d0",
+("2","Roblox","content"):"f_6fab8dae3bd61975",
 ("2","Roblox","money"):"f_783661ae59b066c7",
 ("2","Roblox","data"):"f_37a8bd5d8f222dac",
 ("2","Roblox","age_gating"):"f_979e8a567e65fc3b",
@@ -113,9 +109,10 @@ for case in load("outside-cases.json"):
         lines.append(f"| outside | {case['title']} / {f['area']} | {f['source']['kind']} | {cell(f['quote'])} |")
 lines += ["", "## Evidence and limits", "",
 "Saved gather diagnoses next to each capture show every final grade, original entailment result, age witness and complete cited quotes. Fixture diagnoses are reproducible with `-diagnose`; no saved title fixture is edited. The machine-readable before/after snapshots include the full grades and evidence hash, not merely the computed verdict.", "",
-"The final prose checks are model judgments, not deterministic semantic proofs. A rejected explanation never changes the calibrated grade. The cautious fallback avoids introducing a factual claim but is less specific; the rates above make that limitation visible. Unknown areas remain unknown. In particular, a COPPA label alone did not yield an accepted explanation that actual privacy compliance was proven.", "",
-"Regression pins retain Minecraft fixture gameplay contact unknown, Minecraft gather-1 generic tracking unknown, Minecraft gather-2 child-account-only age mitigation unknown, and Khan gather-2 curriculum age unknown. Both live Roblox age flags retain the original independent event witness; the conditional-correction ablation and source-witness unit tests remain. A prose source report is not a replacement age witness. Data, money and content prose is checked independently without the old copied-definition allowance; rejection leaves the earned grade and a cautious explanation.", "",
+"The final prose checks are model judgments, not deterministic semantic proofs. A rejected explanation never changes the calibrated grade. The cautious fallback avoids introducing a factual claim but is less specific; the rates above make that limitation visible. Unknown areas remain unknown. A compliance label is described only as the source’s claim with an explicit limit; it does not establish actual privacy compliance.", "",
+"Regression pins retain Minecraft fixture gameplay contact unknown, Minecraft gather-1 generic tracking unknown, Minecraft gather-2 child-account-only age mitigation unknown, and Khan gather-2 curriculum age unknown. Both live Roblox age flags retain the original independent event witness; the conditional-correction ablation and source-witness unit tests remain. The age writer receives the already validated source event as its focus; it cannot replace or alter that witness. Diagnostic causes are captured before public prose replaces the internal check explanations. Data, money and content prose is checked independently without the old copied-definition allowance; rejection leaves the earned grade and a cautious explanation.", "",
 "## Reproduce without a key", "", "```sh", "for n in 0 1 2; do", "  go run ./tools/eval -models replay -gather \"$n\" -json", "done", "go run ./tools/eval -models replay -reason-cases testdata/eval/parent-reasons/outside-cases.json -json", "python3 tools/eval/parent_reason_report.py", "```", "",
 "The live recording command uses `-models live -reuse-gather -live-cap-usd 0.50 -live-ledger /tmp/before-yes-t3.14-live-ledger.json`; the same ledger covered every pilot, repair and outside-case baseline. Do not reset it to re-run the task.", ""]
-(DATA / "report.md").write_text("\n".join(lines))
+lines += ["", (DATA / "remediation.md").read_text(), ""]
+(DATA / "report.md").write_text("\n".join(lines).rstrip()+"\n")
 print("Wrote", DATA / "report.md")
