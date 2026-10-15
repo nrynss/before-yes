@@ -667,6 +667,8 @@ func TestCheckConcurrencyLimitBusy(t *testing.T) {
 	if resp1.StatusCode != http.StatusAccepted {
 		t.Fatalf("first status = %d, want 202", resp1.StatusCode)
 	}
+	b1, _ := io.ReadAll(resp1.Body)
+	first := checkIDOf(t, b1)
 
 	// Second check arrives while slot is occupied.
 	resp2, err := http.Post(env.srv.URL+"/api/checks", "application/json", strings.NewReader(`{"title": "Check2", "age": 8}`))
@@ -704,8 +706,10 @@ func TestCheckConcurrencyLimitBusy(t *testing.T) {
 		t.Errorf("retry_after_seconds = %d; want 20", errResp.Error.Detail.RetryAfterSeconds)
 	}
 
-	// Release first check
+	// Release the first check and let it finish, so its progress and
+	// terminal writes land before the temp dir is removed.
 	close(gate)
+	waitCheckDone(t, env, first)
 }
 
 // TestCheckInterruptedOnRestart: non-idempotent check job interrupted across runner restarts,
