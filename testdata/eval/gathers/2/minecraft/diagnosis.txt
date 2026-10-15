@@ -3,7 +3,7 @@ diagnose Minecraft age 9 verdict no findings 142 (conflict pass replaced the con
     judge ok_with_setting setting "Multiplayer is off by default on child accounts in both Java Edition and Bedrock Edition" cited 2 [f_a204ed94e6ffcd86 f_1e24b73e7fa966bc]
     card unknown setting ""
     check entail: flag_not_earned
-    entail meets_definition=false reason_supported=true
+    entail meets_definition=false reason_supported=false
     reason Changed to unknown: the cited quotes do not meet this area's flag definition.
     quote f_a204ed94e6ffcd86 risk store: Local Network: To find other devices on the same Wi‑Fi network for multiplayer gameplay.
     quote f_1e24b73e7fa966bc mitigation rating: Multiplayer is off by default on child accounts in both Java Edition and Bedrock Edition.
@@ -25,10 +25,10 @@ diagnose Minecraft age 9 verdict no findings 142 (conflict pass replaced the con
     quote f_7bff118ec684f6e0 mitigation rating: child accounts automatically provide guardrails against the collection of some data
   age_gating  risks 11 mitigations 4 other 6
     judge ok_with_setting setting "Players younger than 16 will automatically have a \"child account,\" which must be linked to an adult account." cited 2 [f_e9731cf660fbf00c f_ee415e54d7a54a34]
-    card ok_with_setting setting "Players younger than 16 will automatically have a \"child account,\" which must be linked to an adult account."
-    check stood
-    entail meets_definition=true reason_supported=true
-    reason The age gate can be bypassed with a fake birthdate, but child accounts require linking to a parent account and multiplayer is off by default.
+    card unknown setting ""
+    check entail: flag_not_earned
+    entail meets_definition=false reason_supported=false
+    reason Changed to unknown: the cited quotes do not meet this area's flag definition.
     quote f_e9731cf660fbf00c risk forum: When setting up an account it checks to verify age requirements, but it's pretty easy for a savvy kid to fake their birthdate to gain access.
     quote f_ee415e54d7a54a34 mitigation forum: Players younger than 16 will automatically have a "child account," which must be linked to an adult account.
   content  risks 11 mitigations 1 other 8
