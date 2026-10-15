@@ -1,0 +1,8 @@
+{
+  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D533]\",\n      \"area\": \"data\",\n      \"claim\": \"A parent reports that the app collects extensive personal data including social security numbers, bank account details, and children's information which can be shared with third parties.\",\n      \"stance\": \"risk\",\n      \"quote\": \"The vulnerability exposed 885 million records related to mortgages over a 16-year period. The vulnerability exposed 885 million records related to mortgages over a 16-year period. Anyone could gain access to personal information, including bank account details, mortgage and tax records, social security numbers and driver’s licenses.\"\n    }\n  ]\n}",
+  "input_tokens": 3931,
+  "output_tokens": 151,
+  "price_nano": 272100,
+  "measured": true,
+  "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B"
+}

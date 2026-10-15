@@ -1,0 +1,8 @@
+{
+  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D530]\",\n      \"area\": \"contact\",\n      \"claim\": \"A parent reports that strangers can message or voice chat with a child in Roblox.\",\n      \"stance\": \"risk\",\n      \"quote\": \"Roblox allows users to chat with others, including strangers, through text and voice messages.\"\n    }\n  ]\n}",
+  "input_tokens": 3892,
+  "output_tokens": 85,
+  "price_nano": 253920,
+  "measured": true,
+  "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B"
+}
