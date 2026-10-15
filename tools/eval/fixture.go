@@ -13,7 +13,6 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/nrynss/before-yes/internal/pipeline"
 	"github.com/nrynss/before-yes/internal/tavily"
 )
 
@@ -82,8 +81,23 @@ func (f *fixture) file(w http.ResponseWriter, name string) {
 		f.fail(w, err.Error())
 		return
 	}
+	if sb, err := os.ReadFile(filepath.Join(f.dir, name+".status")); err == nil {
+		code, _ := strconv.Atoi(strings.TrimSpace(string(sb)))
+		if code >= 400 {
+			w.WriteHeader(code)
+			_, _ = w.Write(b)
+			return
+		}
+	}
 	w.Header().Set("Content-Type", "application/json")
 	_, _ = w.Write(b)
+}
+
+// liveCapture reports whether dir is a saved live gather (gather.json),
+// whose search and extract bodies are the hosts' own replies.
+func (f *fixture) liveCapture() bool {
+	_, err := os.Stat(filepath.Join(f.dir, "gather.json"))
+	return err == nil
 }
 
 func onDomain(raw, dom string) bool {
@@ -104,22 +118,27 @@ func (f *fixture) search(w http.ResponseWriter, r *http.Request) {
 	f.mu.Lock()
 	f.searches++
 	f.mu.Unlock()
-	name := ""
-	for _, q := range pipeline.Plan(f.title, "") {
-		if q.Search.Query == s.Query {
-			name = q.Name
-		}
-	}
+	name := searchFile(f.title, s.Query)
 	if name == "" {
 		f.fail(w, "search not in the plan: "+s.Query)
 		return
 	}
-	var body map[string]any
-	b, err := os.ReadFile(filepath.Join(f.dir, "tavily-search-"+name+".json"))
-	if err == nil {
-		err = json.Unmarshal(b, &body)
-	}
+	b, err := os.ReadFile(filepath.Join(f.dir, name))
 	if err != nil {
+		f.fail(w, name+": "+err.Error())
+		return
+	}
+	// A live gather stores Tavily's own reply, already narrowed the way the
+	// request asked. Serving it unchanged is what the live call returned.
+	// The frozen fixtures are wider than any one request, so they are
+	// narrowed here, as Tavily would have.
+	if f.liveCapture() {
+		w.Header().Set("Content-Type", "application/json")
+		_, _ = w.Write(b)
+		return
+	}
+	var body map[string]any
+	if err = json.Unmarshal(b, &body); err != nil {
 		f.fail(w, name+": "+err.Error())
 		return
 	}
@@ -148,6 +167,17 @@ func (f *fixture) extract(w http.ResponseWriter, r *http.Request) {
 	f.mu.Lock()
 	f.extracts++
 	f.mu.Unlock()
+	if f.liveCapture() {
+		name := extractRecordName(req.URLs)
+		b, err := os.ReadFile(filepath.Join(f.dir, name))
+		if err != nil {
+			f.fail(w, "extract not recorded: "+name)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		_, _ = w.Write(b)
+		return
+	}
 	var rec struct {
 		Results []map[string]any `json:"results"`
 		Usage   map[string]any   `json:"usage"`

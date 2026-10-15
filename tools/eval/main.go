@@ -11,7 +11,9 @@
 //	go run ./tools/eval                  # replay where recorded, else stand-ins
 //	go run ./tools/eval -models standin  # stand-ins only
 //	go run ./tools/eval -models replay   # recorded replies only
-//	go run ./tools/eval -models live     # real hosts, spend-capped (live.go)
+//	go run ./tools/eval -models live     # real hosts, spend-capped, fixtures (live.go)
+//	go run ./tools/eval -models live -gather 1 -live-only roblox
+//	                                 # record one live gather, then replay it with -models replay -gather 1
 //	go run ./tools/eval -json            # machine-readable
 //
 // The stand-ins are a keyword reader and a judge that reads stances. They
@@ -28,6 +30,7 @@ import (
 	"flag"
 	"fmt"
 	"io"
+	"net/http/httptest"
 	"os"
 	"path/filepath"
 	"sort"
@@ -153,6 +156,9 @@ func loadExpectations(dir string) ([]Expectation, error) {
 }
 
 func evaluate(root, models string) ([]Result, error) {
+	if *gatherN < 0 || *gatherN > 2 {
+		return nil, fmt.Errorf("gather: -gather must be 0, 1 or 2")
+	}
 	exps, err := loadExpectations(filepath.Join(root, "testdata", "eval"))
 	if err != nil {
 		return nil, err
@@ -172,7 +178,27 @@ var evalNow = time.Date(2026, 10, 13, 19, 0, 0, 0, time.UTC)
 func runOne(root, models string, e Expectation) Result {
 	res := Result{Title: e.Title, Age: e.Age, WantVerdict: e.Verdict}
 	ctx := context.Background()
-	f, srv := serveFixture(filepath.Join(root, "testdata", "titles", e.Slug), e.Title)
+	var f *fixture
+	var rec *gatherRecorder
+	var srv *httptest.Server
+	capDir := captureDir(root, e.Slug)
+	if models == "live" && *gatherN > 0 {
+		var err error
+		rec, err = newGatherRecorder(capDir, e.Title, itunesHost, tavilyHost)
+		if err != nil {
+			res.Err = err.Error()
+			return res
+		}
+		srv = httptest.NewServer(rec)
+	} else {
+		if *gatherN > 0 {
+			if st, err := os.Stat(capDir); err != nil || !st.IsDir() {
+				res.Err = fmt.Sprintf("gather %d: no saved capture for %s (want %s)", *gatherN, e.Title, capDir)
+				return res
+			}
+		}
+		f, srv = serveFixture(capDir, e.Title)
+	}
 	defer srv.Close()
 
 	tmp, err := os.MkdirTemp("", "before-yes-eval-")
@@ -190,31 +216,51 @@ func runOne(root, models string, e Expectation) Result {
 	}
 	defer meter.Close()
 
-	tc := tavily.New(srv.URL, func() (string, error) { return "offline", nil })
-	tc.Retry.PerMinute = 0
-	tc.Retry.Name = ""
-	tc.Retry.Backoff = time.Millisecond
-	tc.Retry.Max = time.Millisecond
-	tc.Retry.Sleep = func(context.Context, time.Duration) error { return nil }
+	key := func() (string, error) { return "offline", nil }
+	if rec != nil {
+		key = func() (string, error) {
+			v := os.Getenv("TAVILY_KEY")
+			if v == "" {
+				return "", fmt.Errorf("TAVILY_KEY is not set")
+			}
+			return v, nil
+		}
+	}
+	tc := tavily.New(srv.URL, key)
+	if rec == nil {
+		// Fixture captures are local. A live gather keeps the client's own
+		// pace and retries, because a refused call was not saved.
+		tc.Retry.PerMinute = 0
+		tc.Retry.Name = ""
+		tc.Retry.Backoff = time.Millisecond
+		tc.Retry.Max = time.Millisecond
+		tc.Retry.Sleep = func(context.Context, time.Duration) error { return nil }
+	}
 
 	reader, judge := chatters(root, models, e.Slug)
+	tr := &callTrace{}
+	reader = &tracingChatter{inner: reader, role: "reader", tr: tr}
+	judge = &tracingChatter{inner: judge, role: "judge", tr: tr}
 	if models == "replay" {
-		dir := filepath.Join(root, "testdata", "eval", "replies", e.Slug)
+		dir := replyDir(root, e.Slug, "")
 		if st, err := os.Stat(dir); err != nil || !st.IsDir() {
 			res.Err = fmt.Sprintf("replay: no recordings for %s (want %s; record them with T3.6b)", e.Title, dir)
 			return res
 		}
 	}
 	defer func() {
-		liveSummarise(e.Title, reader, judge)
+		liveSummarise(e.Title, bare(reader), bare(judge))
+		if rec != nil {
+			fmt.Fprintf(os.Stderr, "gather %d %s: upstream calls %d\n", *gatherN, e.Title, rec.upstream.Load())
+		}
 		if res.Err != "" {
 			return
 		}
-		if msg := replayMisses(reader, judge); msg != "" {
+		if msg := replayMisses(bare(reader), bare(judge)); msg != "" {
 			res.Err = msg
 			return
 		}
-		res.Err = liveRefusals(reader, judge)
+		res.Err = liveRefusals(bare(reader), bare(judge))
 	}()
 	res.Models = reader.Settings().Model + " + " + judge.Settings().Model
 	fast, think := judgeSwitches(models)
@@ -238,11 +284,29 @@ func runOne(root, models string, e Expectation) Result {
 		res.Err = err.Error()
 		return res
 	}
-	if len(f.errs) > 0 {
-		res.Err = "fixture server: " + strings.Join(f.errs, "; ")
+	var errs []string
+	if f != nil {
+		errs = append(errs, f.errs...)
+	}
+	if rec != nil {
+		errs = append(errs, rec.errors()...)
+		rec.saved.mu.Lock()
+		errs = append(errs, rec.saved.errs...)
+		rec.saved.mu.Unlock()
+	}
+	if len(errs) > 0 {
+		res.Err = "fixture server: " + strings.Join(errs, "; ")
 		return res
 	}
 	compare(&res, e, card, ev)
+	if *diagnoseOn {
+		var buf strings.Builder
+		diagnose(&buf, card, ev, tr)
+		fmt.Fprint(os.Stderr, buf.String())
+		if *gatherN > 0 {
+			_ = os.WriteFile(filepath.Join(capDir, "diagnosis.txt"), []byte(buf.String()), 0o644)
+		}
+	}
 	return res
 }
 
@@ -262,7 +326,7 @@ func chatters(root, models, slug string) (pipeline.Chatter, pipeline.Chatter) {
 	if models == "live" {
 		return liveChatters(root, slug)
 	}
-	dir := filepath.Join(root, "testdata", "eval", "replies", slug)
+	dir := replyDir(root, slug, "")
 	recorded := false
 	if st, err := os.Stat(dir); err == nil && st.IsDir() {
 		recorded = true
