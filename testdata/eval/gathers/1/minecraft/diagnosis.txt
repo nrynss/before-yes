@@ -17,10 +17,10 @@ diagnose Minecraft age 9 verdict no findings 221 (conflict pass replaced the con
     quote f_6b222f7ec75ab54a mitigation rating: Control Spending
   data  risks 21 mitigations 2 other 10
     judge flag setting "" cited 1 [f_62d7413616ee25d9]
-    card unknown setting ""
-    check entail: flag_not_earned
-    entail meets_definition=false reason_supported=false
-    reason Changed to unknown: the cited quotes do not meet this area's flag definition.
+    card flag setting ""
+    check stood
+    entail meets_definition=true reason_supported=true
+    reason The app collects data for ads and may share it with third parties, and no setting is shown to stop this collection.
     quote f_62d7413616ee25d9 risk store: App Tracking: To deliver personalized ads and improve application experience
   age_gating  risks 10 mitigations 2 other 8
     judge flag setting "" cited 1 [f_88d325d4c1d10860]
