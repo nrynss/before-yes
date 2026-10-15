@@ -42,6 +42,11 @@ var (
 	liveCapUSD = flag.Float64("live-cap-usd", 1.5, "with -models live: refuse a call that would take the ledger past this many dollars")
 	liveLedger = flag.String("live-ledger", "", "with -models live: file that holds the running spend in nanodollars, kept outside the repository")
 	liveDry    = flag.Bool("live-dry", false, "with -models live: make no call; report what each title's calls would reserve, at most")
+	// gatherN selects a saved live gather. 0 is the frozen testdata/titles
+	// fixtures. 1 and 2 are the two live gathers under testdata/eval/gathers,
+	// recorded when -models live is set and replayed with no network otherwise.
+	gatherN    = flag.Int("gather", 0, "0 uses testdata/titles. 1 or 2 records or replays testdata/eval/gathers/<n>, beside the fixture recordings")
+	diagnoseOn = flag.Bool("diagnose", false, "print each area's grade, cited quote and the check that acted")
 )
 
 // errLiveDry is the reply a dry judge call gives: the run stops there, and
@@ -127,11 +132,7 @@ func liveChatters(root, slug string) (pipeline.Chatter, pipeline.Chatter) {
 		err := fmt.Errorf("live: unknown -live-set %q", *liveSet)
 		return &liveChatter{role: "reader", err: err}, &liveChatter{role: "judge", err: err}
 	}
-	dir := filepath.Join(root, "testdata", "eval", "replies")
-	if set.subdir != "" {
-		dir = filepath.Join(dir, set.subdir)
-	}
-	dir = filepath.Join(dir, slug)
+	dir := replyDir(root, slug, set.subdir)
 	key := func() (string, error) {
 		v := os.Getenv(set.keyVar)
 		if v == "" {
