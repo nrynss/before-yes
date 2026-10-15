@@ -1,4 +1,4 @@
-diagnose Minecraft age 9 verdict no findings 221 (conflict pass replaced the conflicted areas)
+diagnose Minecraft age 9 verdict unclear findings 221 (conflict pass replaced the conflicted areas)
   contact  risks 27 mitigations 11 other 2
     judge ok_with_setting setting "Restrict Communication" cited 2 [f_8e13d0d8cf810113 f_31c58032f10f0ed3]
     card unknown setting ""
@@ -17,16 +17,16 @@ diagnose Minecraft age 9 verdict no findings 221 (conflict pass replaced the con
     quote f_6b222f7ec75ab54a mitigation rating: Control Spending
   data  risks 21 mitigations 2 other 10
     judge flag setting "" cited 1 [f_62d7413616ee25d9]
-    card flag setting ""
-    check stood
-    entail meets_definition=true reason_supported=false
-    reason children's data is collected and used in ways a parent cannot control
+    card unknown setting ""
+    check entail: flag_not_earned
+    entail meets_definition=false reason_supported=false
+    reason Changed to unknown: the cited quotes do not meet this area's flag definition.
     quote f_62d7413616ee25d9 risk store: App Tracking: To deliver personalized ads and improve application experience
   age_gating  risks 10 mitigations 2 other 8
     judge flag setting "" cited 1 [f_88d325d4c1d10860]
     card unknown setting ""
     check entail: flag_not_earned
-    entail meets_definition=false reason_supported=false
+    age-gate event=none witness=""
     reason Changed to unknown: the cited quotes do not meet this area's flag definition.
     quote f_88d325d4c1d10860 risk review: Can you make the game available for +5 year-old?
   content  risks 18 mitigations 2 other 15

@@ -22,7 +22,7 @@ diagnose Khan Academy Kids age 5 verdict no findings 155 (conflict pass unusable
     judge flag setting "" cited 4 [f_582dc2075d52845a f_6f92f0d977c76a50 f_fc4866d088d95f5a f_526f10b42a2d62c5]
     card unknown setting ""
     check entail: flag_not_earned
-    entail meets_definition=false reason_supported=false
+    age-gate event=none witness=""; age-gate event=none witness=""; age-gate event=none witness=""; age-gate event=none witness=""
     reason Changed to unknown: the cited quotes do not meet this area's flag definition.
     quote f_582dc2075d52845a risk review: I am 10 years old and the app literally lets you choose your grade from pre-k to 2nd grade. Where is 5th grade?! You need to change this “age thing” immediately or I will delete the app.
     quote f_6f92f0d977c76a50 risk review: So the game is really fun but the age range is to small I like it and I’m 11 so the highest it goes is 2nd grade even though older kids like it too. Just try to put the age range a little higher like maybe up to middle school, thats all I’m asking.

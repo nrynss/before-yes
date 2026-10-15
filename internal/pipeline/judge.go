@@ -175,8 +175,8 @@ func conflicted(fs []finding.Finding) []checklist.Area {
 type Judge struct {
 	Model Chatter
 	Meter Meter
-	// Entail is the judge model, one call per standing flag or
-	// ok_with_setting, with thinking off (Fast). It checks the cited
+	// Entail is the judge model, with thinking off (Fast). It checks each
+	// standing grade (age flags check cited risks independently) and its cited
 	// findings against the area's flag definition and the reason against
 	// the quotes (T3.10, fault 3). The reader model accepted quotes the
 	// definitions exclude, so the server wires this client, the same one
@@ -203,8 +203,8 @@ type Judgement struct {
 	ConflictErr error
 	// EntailErr says why an entailment call did not count, when one failed
 	// (a call error or an unparseable reply). Like ConflictErr it keeps the
-	// grades as they are: an entailment failure must not sink a grade
-	// (T3.10).
+	// non-age grades as they are (T3.10). Age flags require a verified
+	// source-event witness and become unknown without one.
 	EntailErr error
 	// Thin lists the areas dropped to unknown because a cited id did not
 	// check out, no cited mitigation quote named the setting (T3.9, T3.9b),
@@ -355,9 +355,9 @@ const (
 	// setting: no cited mitigation actually answers the cited concern). The
 	// definition rule of T3.10, fault 1, enforced through fault 3.
 	RuleNotEarned = "flag_not_earned"
-	// RuleReasonUnsupported: an ok_with_setting whose reason says something
-	// the cited quotes do not support (T3.10, fault 3; T3.9's L1). A flag
-	// whose quotes meet the definition stands; its reason is standingReason.
+	// RuleReasonUnsupported: a flag or setting whose published reason is not
+	// supported by its cited quotes (T3.10, fault 3; T3.9's L1). Flags are
+	// assessed using standingReason before the call.
 	RuleReasonUnsupported = "reason_unsupported"
 )
 
@@ -491,13 +491,26 @@ Hold each definition to its own words. A quote must show the harm that definitio
 - Content is a child meeting sexual content, realistic violence, horror, harassment, or self-harm. A dislike, a startle, or a wish that names none of those harms is not that.
 - A record of enforcement is a fine, a data breach, a lawsuit, or a regulatory action naming this developer. A quote that shows one filed or brought against this developer meets it: the action itself is the record, and the quote need not show its outcome. Another company's action is not a record. A demand that the developer be punished, or a page that only explains a policy, is not a record: the quote itself has to name the fine, the suit, the breach, or the regulator's action.
 (b) reason_supported. Do these two steps in order. Stop when a step decides the field.
-Step 1. The opening statement is the first sentence of the flag definition you were given, ending at its first period. Step 1 applies only when the reason is those same words, with nothing changed but the case of the first letter. If you would add, drop, or replace any other word, it is not this step. A paraphrase of the opening statement is step 2. When step 1 does apply, reason_supported is true when the cited quotes show the part of that sentence the grade rests on, and clauses of that copied sentence that the quotes do not show are allowed. Stop.
+Step 1. The opening statement is the flag definition before its first colon, or before its first period when there is no colon. Step 1 applies only when the reason is those same words, with nothing changed but the case of the first letter. If you would add, drop, or replace any other word, it is not this step. A paraphrase of the opening statement is step 2. When step 1 does apply, reason_supported is true when the cited quotes show the part of that sentence the grade rests on, and clauses of that copied sentence that the quotes do not show are allowed. Stop.
 Step 2. The reason is the judge's own words. List every practice, use, recipient, harm, number, or control it names. A use or a recipient attached to a shown fact is its own item. The flag definition is not a quote: a practice the definition lists is not shown unless a cited quote shows it. A different word for the same fact a cited quote shows is supported. The definition's name for a child who paid is a purchase that child completed without a parent, and that name is supported when any cited quote shows the child paying. Calling that purchase a push, or a purchase inside the product, is the same fact. The word "pushes" is that name. It is not an extra practice, and it must not be why reason_supported is false, when a cited quote shows the child paid. The currency, the amount, and a scam that quote names are the same fact. Another cited quote that names a control a parent could turn on does not erase the purchase. A kind of purchase no quote names is still an extra practice. For that money shape, when a cited quote shows the child paid and the reason names only that purchase, reason_supported is true. That money rule is only for a money grade. It does not make a use supported on any other area.
 An extra practice is a concrete thing the reason names that no cited quote shows: a buyer, a kind of purchase, a kind of tracking, a use, a recipient, or a harm the quote does not name. Each harm a free-form reason names is its own item. One extra item fails the reason even when every other item is shown.
 A free-form reason does not get that allowance. Naming another clause of the definition is allowed only in step 1.
 A cited quote can meet the definition while reason_supported is false. meets_definition does not forgive an extra practice, and the grade does not stand.
 Worked split, for a different grade than the one you were given. Reason: "The company shares children's information for advertising, and a partner keeps their photos with no stated deletion period." Quote: "A partner stores the child's photos and does not say for how long." The storage and the missing deletion period are in the quote, so meets_definition is true. reason_supported is false, because advertising is not in the quote. The matching storage does not carry the advertising use. One unshown use fails the reason. A short name for that same use is the same failure. The flag definition listing the use is not a quote. Do not answer true for reason_supported on that shape, on a data grade or any other grade.
 Use only the findings given. A quote is the source's own words; a claim is the reader's reading of them. Reply with one JSON object: {"meets_definition": true, "reason_supported": true}, with false where the answer is no. Set each field from the steps above. Do not copy the two trues. A data reason that names a use no cited quote contains has reason_supported false.`
+}
+
+// Age gating distinguishes observed identity/access failures from educational
+// placement. Classify a source event without a discarded generated reason or
+// another child's target age; one credible failure report can earn the flag.
+func ageGateSystem() string {
+	return `Classify the observed event in one source quote about age checks.
+An age gate restricts access by age or assigns an account's age. Choose one criterion:
+- access_bypass: the source reports a child passing an age restriction on entry or features meant for older users, or an age check accepting a fictitious birth date.
+- wrong_age_assignment: the source reports a displayed or recorded age or age band inconsistent with the person's stated age. Non-overlapping reported ranges suffice; neither an exact birthday nor an explanation of the verification mechanism is required.
+- none: the source reports neither failure.
+A school grade, course selection, curriculum's intended age range, lessons below a child's ability, an age recommendation, or inability to enter is not an age-gate failure. A generic opinion that age limits do not suffice does not report an observed failure.
+Return one JSON object with criterion and quote strings. For a failure, quote an exact source span containing the reported event and the age mismatch or bypass. For none, quote is empty. Do not invent or paraphrase source text.`
 }
 
 // entailUser shows one grade and the findings it cites. It mirrors judgeUser's
@@ -509,6 +522,11 @@ func entailUser(title string, age int, g checklist.Grade, fs []finding.Finding) 
 		fmt.Fprintf(&b, "Setting: %s\n", g.Setting)
 	}
 	reason := g.Reason
+	if g.Level == checklist.Flag {
+		// Assess the claim the card will actually publish, independently of
+		// unsupported additions in the generator's discarded prose.
+		reason = standingReason(g.Area)
+	}
 	if strings.TrimSpace(reason) == "" {
 		reason = "(no reason given)"
 	}
@@ -526,15 +544,36 @@ func entailUser(title string, age int, g checklist.Grade, fs []finding.Finding) 
 		if f.Source.Kind == KindReview {
 			src = fmt.Sprintf("review %d", f.Source.Index)
 		}
-		fmt.Fprintf(&b, "- stance=%s source=%s\n  claim: %s\n  quote: %q\n", f.Stance, src, f.Claim, f.Quote)
+		fmt.Fprintf(&b, "- stance=%s source=%s\n  quote: %q\n", f.Stance, src, f.Quote)
 	}
 	return b.String()
 }
 
 // entailVerdict is one entailment reply.
 type entailVerdict struct {
-	Meets  bool
-	Reason bool
+	Meets   bool
+	Reason  bool
+	AgeGate *ageGateWitness
+}
+
+type ageGateWitness struct {
+	Criterion string `json:"criterion"`
+	Quote     string `json:"quote"`
+}
+
+// An age-gate acceptance must expose its supporting source span. The model
+// chooses the semantic criterion; code verifies its witness is source text,
+// in an in-area cited risk, rather than another generated assertion.
+func witnessedAgeGate(g checklist.Grade, fs []finding.Finding, w *ageGateWitness) bool {
+	if w == nil || (w.Criterion != "access_bypass" && w.Criterion != "wrong_age_assignment") || len(strings.Fields(w.Quote)) < 5 {
+		return false
+	}
+	for _, f := range fs {
+		if f.Area == checklist.AgeGating && f.Stance == finding.Risk && slices.Contains(g.Findings, f.ID) && strings.Contains(f.Quote, w.Quote) {
+			return true
+		}
+	}
+	return false
 }
 
 // parseEntail finds the verdict in a reply, trying opening braces from the
@@ -546,14 +585,15 @@ func parseEntail(reply string) (entailVerdict, error) {
 			continue
 		}
 		var out struct {
-			Meets  *bool `json:"meets_definition"`
-			Reason *bool `json:"reason_supported"`
+			Meets   *bool           `json:"meets_definition"`
+			Reason  *bool           `json:"reason_supported"`
+			AgeGate *ageGateWitness `json:"age_gate_witness"`
 		}
 		dec := json.NewDecoder(strings.NewReader(reply[i:]))
 		if err := dec.Decode(&out); err != nil || out.Meets == nil || out.Reason == nil {
 			continue
 		}
-		return entailVerdict{Meets: *out.Meets, Reason: *out.Reason}, nil
+		return entailVerdict{Meets: *out.Meets, Reason: *out.Reason, AgeGate: out.AgeGate}, nil
 	}
 	return entailVerdict{}, errors.New("judge: no entailment verdict in the reply")
 }
@@ -562,18 +602,13 @@ func parseEntail(reply string) (entailVerdict, error) {
 // flag definition, one call per grade through the judge model (Entail),
 // thinking off via Fast, metered like any other call (T3.10, fault 3).
 // meets_definition false drops the grade to unknown (RuleNotEarned). An
-// ok_with_setting whose reason the quotes do not support also drops
-// (RuleReasonUnsupported). A flag whose quotes meet the definition stands
-// even then, and a grade that stands keeps standingReason, not the model's
-// sentence. A failed or unparseable call keeps the grade: the reason is
-// returned as entailErr and never sinks a standing grade, so a rate limit
-// or a bad reply cannot turn earned flags into unclear cards. The calls'
-// price is returned for the judgement's cost. The input is not modified.
+// unsupported published claim also drops (RuleReasonUnsupported). Flags
+// are checked using standingReason, independently of discarded generated
+// prose. A grade that stands keeps standingReason, not the model's sentence.
+// Generic entailment errors retain the grade. Age flags require an exact source
+// event witness; without one they become unknown even if classification failed.
+// Errors and measured costs remain visible. The input is not modified.
 func (j *Judge) entail(ctx context.Context, title string, age int, ref string, grades []checklist.Grade, fs []finding.Finding) (out []checklist.Grade, dem []checklist.Demotion, thin []checklist.Area, entailErr error, price cost.Price) {
-	byID := make(map[string]finding.Finding, len(fs))
-	for _, f := range fs {
-		byID[f.ID] = f
-	}
 	out = make([]checklist.Grade, len(grades))
 	for i, g := range grades {
 		g.Findings = slices.Clone(g.Findings)
@@ -581,37 +616,103 @@ func (j *Judge) entail(ctx context.Context, title string, age int, ref string, g
 		if (g.Level != checklist.Flag && g.Level != checklist.OKWithSetting) || !g.Area.Valid() || len(g.Findings) == 0 {
 			continue
 		}
-		// Fast is the judge's thinking-off switch. Entailment is a short
-		// check, and a thinking pass would bill a different call.
-		reply, p, err := chat(ctx, j.Meter, j.Entail, "entail", ref, []model.Message{
-			{Role: "system", Content: entailSystem()},
-			{Role: "user", Content: entailUser(title, age, g, fs)},
-		}, model.Options{JSON: true, Extra: j.Fast})
+		v, p, err := j.checkEntail(ctx, title, age, ref, g, fs)
 		price += p
-		if err == nil {
-			var v entailVerdict
-			if v, err = parseEntail(reply.Text); err == nil {
-				switch {
-				case !v.Meets:
-					dem = append(dem, checklist.Demotion{Area: g.Area, Rule: RuleNotEarned, Detail: string(g.Level) + ": " + string(g.Area)})
-					thin = append(thin, g.Area)
-					g.Level, g.Setting, g.Reason, g.Findings = checklist.Unknown, "", NotEarnedReason, []string{}
-				case g.Level == checklist.OKWithSetting && !v.Reason:
-					dem = append(dem, checklist.Demotion{Area: g.Area, Rule: RuleReasonUnsupported, Detail: string(g.Level) + ": " + string(g.Area)})
-					thin = append(thin, g.Area)
-					g.Level, g.Setting, g.Reason, g.Findings = checklist.Unknown, "", UnsupportedReason, []string{}
-				default:
-					g.Reason = standingReason(g.Area)
-				}
-				out[i] = g
-				continue
+		// Without any verified event an age flag cannot stand, even when
+		// one of the independent classifications failed. Keep the error
+		// visible while treating the missing witness as thin evidence.
+		if err != nil && g.Area == checklist.AgeGating && g.Level == checklist.Flag {
+			if entailErr == nil {
+				entailErr = fmt.Errorf("judge: entailment for %s: %w", g.Area, err)
 			}
+			err = nil
+		}
+		if err == nil {
+			if g.Area == checklist.AgeGating && g.Level == checklist.Flag && v.Meets && !witnessedAgeGate(g, fs, v.AgeGate) {
+				v.Meets = false
+			}
+			switch {
+			case !v.Meets:
+				dem = append(dem, checklist.Demotion{Area: g.Area, Rule: RuleNotEarned, Detail: string(g.Level) + ": " + string(g.Area)})
+				thin = append(thin, g.Area)
+				g.Level, g.Setting, g.Reason, g.Findings = checklist.Unknown, "", NotEarnedReason, []string{}
+			case !v.Reason:
+				dem = append(dem, checklist.Demotion{Area: g.Area, Rule: RuleReasonUnsupported, Detail: string(g.Level) + ": " + string(g.Area)})
+				thin = append(thin, g.Area)
+				g.Level, g.Setting, g.Reason, g.Findings = checklist.Unknown, "", UnsupportedReason, []string{}
+			default:
+				g.Reason = standingReason(g.Area)
+			}
+			out[i] = g
+			continue
 		}
 		if entailErr == nil {
 			entailErr = fmt.Errorf("judge: entailment for %s: %w", g.Area, err)
 		}
 	}
 	return out, dem, thin, entailErr, price
+}
+
+// checkEntail evaluates age-gating risks independently because its definition
+// explicitly makes one credible first-hand failure sufficient. An unrelated
+// citation must not dilute a source witness. Each request is cached and metered
+// through the same path as other entailment checks; the first valid witness ends
+// the search. Settings still require the combined risk and mitigation check.
+func (j *Judge) checkEntail(ctx context.Context, title string, age int, ref string, g checklist.Grade, fs []finding.Finding) (entailVerdict, cost.Price, error) {
+	check := func(one checklist.Grade, system string) (entailVerdict, cost.Price, error) {
+		user := entailUser(title, age, one, fs)
+		if one.Area == checklist.AgeGating && one.Level == checklist.Flag {
+			var evidence strings.Builder
+			fmt.Fprintf(&evidence, "Title: %s\nArea: age_gating\nCited source quotes:\n", title)
+			for _, f := range fs {
+				if slices.Contains(one.Findings, f.ID) {
+					fmt.Fprintf(&evidence, "Source: %s\nQuote: %q\n", f.Source.Kind, f.Quote)
+				}
+			}
+			user = evidence.String()
+		}
+		r, p, err := chat(ctx, j.Meter, j.Entail, "entail", ref, []model.Message{
+			{Role: "system", Content: system},
+			{Role: "user", Content: user},
+		}, model.Options{JSON: true, Extra: j.Fast})
+		if err != nil {
+			return entailVerdict{}, p, err
+		}
+		if one.Area == checklist.AgeGating && one.Level == checklist.Flag {
+			var witness ageGateWitness
+			if err := json.Unmarshal([]byte(r.Text), &witness); err != nil {
+				return entailVerdict{}, p, err
+			}
+			if witness.Criterion == "none" {
+				return entailVerdict{}, p, nil
+			}
+			valid := witnessedAgeGate(one, fs, &witness)
+			return entailVerdict{Meets: valid, Reason: valid, AgeGate: &witness}, p, nil
+		}
+		v, err := parseEntail(r.Text)
+		return v, p, err
+	}
+	if g.Area != checklist.AgeGating || g.Level != checklist.Flag {
+		return check(g, entailSystem())
+	}
+	var total cost.Price
+	var firstErr error
+	for _, id := range g.Findings {
+		one := g
+		one.Findings = []string{id}
+		v, p, err := check(one, ageGateSystem())
+		total += p
+		if err != nil && firstErr == nil {
+			firstErr = err
+		}
+		if err == nil && v.Meets && v.Reason && witnessedAgeGate(one, fs, v.AgeGate) {
+			return v, total, nil
+		}
+		if ctx.Err() != nil {
+			return entailVerdict{}, total, ctx.Err()
+		}
+	}
+	return entailVerdict{}, total, firstErr
 }
 
 // thinAreas merges the areas each step dropped, once each, in card order,

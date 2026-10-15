@@ -1,0 +1,8 @@
+{
+  "text": "{\"criterion\": \"none\", \"quote\": \"\"}",
+  "input_tokens": 303,
+  "output_tokens": 13,
+  "price_nano": 102600,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

@@ -20,7 +20,7 @@ diagnose Roblox age 9 verdict no findings 187 (conflict pass replaced the confli
     judge flag setting "" cited 3 [f_642612c1692ab232 f_3863f822c43eb156 f_37a8bd5d8f222dac]
     card flag setting ""
     check stood
-    entail meets_definition=true reason_supported=false
+    entail meets_definition=true reason_supported=true
     reason children's data is collected and used in ways a parent cannot control
     quote f_642612c1692ab232 risk store: Advanced content filtering and age-appropriate moderation
     quote f_3863f822c43eb156 risk terms: Roblox may access and review Content, including Content shared via Communication Features and other non-public Content.
@@ -29,7 +29,7 @@ diagnose Roblox age 9 verdict no findings 187 (conflict pass replaced the confli
     judge flag setting "" cited 3 [f_8197a153550302ef f_979e8a567e65fc3b f_ed2aac5c14c3bb92]
     card flag setting ""
     check stood
-    entail meets_definition=true reason_supported=true
+    age-gate event=wrong_age_assignment witness="my child got put in the 28th group"
     reason the age gate fails in practice
     quote f_8197a153550302ef risk review: The new app updates age group ideas are completely broken plus my child got put in the 28th group. Please fix your game. And plus there’s kind of like disrespectful people and disgusting people on here so please please please fix your game
     quote f_979e8a567e65fc3b risk review: the pencil icon nor the link parent icon was there so if you could add a feature to ask Roblox themselves to reset your Face ID scan that would be nice and I contacted Roblox support and they said I gotta wait until I’m 13 but the birthday said Oct 7,1985 and I didn’t know how that worked… because it said that I’m 41 but I’m younger than 13

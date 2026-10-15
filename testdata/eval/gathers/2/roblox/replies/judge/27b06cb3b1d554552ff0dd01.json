@@ -1,0 +1,8 @@
+{
+  "text": "{\"criterion\": \"wrong_age_assignment\", \"quote\": \"my child got put in the 28th group\"}",
+  "input_tokens": 312,
+  "output_tokens": 27,
+  "price_nano": 117900,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

@@ -27,6 +27,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"sync"
 	"sync/atomic"
 
@@ -37,11 +38,12 @@ import (
 )
 
 var (
-	liveSet    = flag.String("live-set", "tokenfactory", "with -models live: tokenfactory (Nano and Super on Token Factory) or openrouter (the free stand-ins)")
-	liveOnly   = flag.String("live-only", "", "with -models live: run only the title with this slug")
-	liveCapUSD = flag.Float64("live-cap-usd", 1.5, "with -models live: refuse a call that would take the ledger past this many dollars")
-	liveLedger = flag.String("live-ledger", "", "with -models live: file that holds the running spend in nanodollars, kept outside the repository")
-	liveDry    = flag.Bool("live-dry", false, "with -models live: make no call; report what each title's calls would reserve, at most")
+	liveSet        = flag.String("live-set", "tokenfactory", "with -models live: tokenfactory (Nano and Super on Token Factory) or openrouter (the free stand-ins)")
+	liveOnly       = flag.String("live-only", "", "with -models live: run only the title with this slug")
+	liveCapUSD     = flag.Float64("live-cap-usd", 1.5, "with -models live: refuse a call that would take the ledger past this many dollars")
+	liveLedger     = flag.String("live-ledger", "", "with -models live: file that holds the running spend in nanodollars, kept outside the repository")
+	liveEntailOnly = flag.Bool("live-entail-only", false, "with -models live: refuse any uncached call except entailment")
+	liveDry        = flag.Bool("live-dry", false, "with -models live: make no call; report what each title's calls would reserve, at most")
 	// gatherN selects a saved live gather. 0 is the frozen testdata/titles
 	// fixtures. 1 and 2 are the two live gathers under testdata/eval/gathers,
 	// recorded when -models live is set and replayed with no network otherwise.
@@ -193,6 +195,9 @@ func (l *liveChatter) Chat(ctx context.Context, msgs []model.Message, o model.Op
 		l.cached.Add(1)
 		l.count(rec.InputTokens, rec.OutputTokens)
 		return model.Reply{Text: rec.Text, InputTokens: rec.InputTokens, OutputTokens: rec.OutputTokens, Price: rec.PriceNano, Measured: rec.Measured}, nil
+	}
+	if *liveEntailOnly && (l.role != "judge" || len(msgs) == 0 || !strings.HasPrefix(msgs[0].Content, "You check one grade of a parent checklist") && !strings.HasPrefix(msgs[0].Content, "Classify the observed event in one source quote about age checks.")) {
+		return model.Reply{}, errors.New("live: entail-only refuses uncached reader or grade call")
 	}
 	est := l.c.Estimate(msgs, o)
 	if *liveDry {

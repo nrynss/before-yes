@@ -1,0 +1,8 @@
+{
+  "text": "{\"meets_definition\": true, \"reason_supported\": true, \"age_gate_witness\": {\"criterion\": \"wrong_age_assignment\", \"quote\": \"the birthday said Oct 7,1985 and I didn’t know how that worked… because it said that I’m 41 but I’m younger than 13\"}}",
+  "input_tokens": 2374,
+  "output_tokens": 75,
+  "price_nano": 779700,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

@@ -70,7 +70,7 @@ func (t *tracingChatter) Chat(ctx context.Context, msgs []model.Message, o model
 	}
 	t.tr.mu.Lock()
 	switch {
-	case strings.Contains(system, "meets_definition"):
+	case strings.Contains(system, "meets_definition") || strings.HasPrefix(system, "Classify the observed event in one source quote about age checks."):
 		// Entailment can run on the judge client. Classify it before the
 		// role, or its JSON is read as a second judge pass.
 		t.tr.entail = append(t.tr.entail, traced{user: user, reply: r.Text})
@@ -231,17 +231,31 @@ func entailNote(tr *callTrace, area checklist.Area) string {
 	tr.mu.Lock()
 	defer tr.mu.Unlock()
 	mark := "Area: " + string(area) + "\n"
+	var notes []string
 	for _, c := range tr.entail {
 		if !strings.Contains(c.user, mark) {
 			continue
 		}
 		v, ok := parseEntailReply(c.reply)
 		if !ok {
-			return "entail reply unparsed"
+			var w struct {
+				Criterion string `json:"criterion"`
+				Quote     string `json:"quote"`
+			}
+			if json.Unmarshal([]byte(c.reply), &w) == nil && w.Criterion != "" {
+				notes = append(notes, fmt.Sprintf("age-gate event=%s witness=%q", w.Criterion, w.Quote))
+			} else {
+				notes = append(notes, "entail reply unparsed")
+			}
+			continue
 		}
-		return fmt.Sprintf("entail meets_definition=%t reason_supported=%t", v.meets, v.reason)
+		line := fmt.Sprintf("entail meets_definition=%t reason_supported=%t", v.meets, v.reason)
+		if v.witness != nil {
+			line += fmt.Sprintf(" witness=%s %q", v.witness.Criterion, v.witness.Quote)
+		}
+		notes = append(notes, line)
 	}
-	return ""
+	return strings.Join(notes, "; ")
 }
 
 // diagnose writes one line per area. Quotes are the judge's citations, not
@@ -309,7 +323,12 @@ func diagnose(w io.Writer, card pipeline.Card, ev pipeline.Evidence, tr *callTra
 	}
 }
 
+type diagnosticWitness struct {
+	Criterion string `json:"criterion"`
+	Quote     string `json:"quote"`
+}
 type entailBits struct {
+	witness       *diagnosticWitness
 	meets, reason bool
 }
 
@@ -319,13 +338,14 @@ func parseEntailReply(reply string) (entailBits, bool) {
 			continue
 		}
 		var v struct {
-			Meets  *bool `json:"meets_definition"`
-			Reason *bool `json:"reason_supported"`
+			Meets   *bool              `json:"meets_definition"`
+			Reason  *bool              `json:"reason_supported"`
+			Witness *diagnosticWitness `json:"age_gate_witness"`
 		}
 		if err := json.NewDecoder(strings.NewReader(reply[i:])).Decode(&v); err != nil || v.Meets == nil || v.Reason == nil {
 			continue
 		}
-		return entailBits{meets: *v.Meets, reason: *v.Reason}, true
+		return entailBits{meets: *v.Meets, reason: *v.Reason, witness: v.Witness}, true
 	}
 	return entailBits{}, false
 }

@@ -182,7 +182,7 @@ func runOne(root, models string, e Expectation) Result {
 	var rec *gatherRecorder
 	var srv *httptest.Server
 	capDir := captureDir(root, e.Slug)
-	if models == "live" && *gatherN > 0 {
+	if models == "live" && *gatherN > 0 && !*liveEntailOnly {
 		var err error
 		rec, err = newGatherRecorder(capDir, e.Title, itunesHost, tavilyHost)
 		if err != nil {

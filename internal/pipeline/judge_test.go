@@ -882,7 +882,7 @@ func TestEntailmentFallsToUnknown(t *testing.T) {
 	// The prompt shows the grade, the definition and the cited findings.
 	if !strings.Contains(entail.users[0], "Flag definition: "+areaDefs[checklist.Contact]) ||
 		!strings.Contains(entail.users[0], `quote: "a child predator might ask where you are"`) ||
-		!strings.Contains(entail.users[0], "source=review 355") || !strings.Contains(entail.users[0], "Reason: Strangers can reach the child.") {
+		!strings.Contains(entail.users[0], "source=review 355") || !strings.Contains(entail.users[0], "Reason: "+standingReason(checklist.Contact)) {
 		t.Errorf("entail prompt:\n%s", entail.users[0])
 	}
 	if !strings.Contains(entail.users[1], "Setting: Ask to Buy") {
@@ -890,8 +890,8 @@ func TestEntailmentFallsToUnknown(t *testing.T) {
 	}
 }
 
-// A flag whose recorded entailment is meets_definition true and
-// reason_supported false stands, and its reason is the area definition.
+// A generated flag reason may run beyond the quotes. Entailment checks
+// the canonical reason that will reach the card instead.
 // An ok_with_setting with reason_supported false does not stand. A setting
 // that passes both keeps the area definition too, not the model's sentence.
 func TestFlagStandsWhenTheReasonRunsPastTheQuotes(t *testing.T) {
@@ -919,8 +919,8 @@ func TestFlagStandsWhenTheReasonRunsPastTheQuotes(t *testing.T) {
 	)
 	entail := &superRecorder{replies: []any{
 		`{"meets_definition": true, "reason_supported": false}`, // money setting: drops
-		`{"meets_definition": true, "reason_supported": false}`, // data flag: stands
-		`{"meets_definition": true, "reason_supported": false}`, // content flag: stands
+		`{"meets_definition": true, "reason_supported": true}`,  // canonical data claim: stands
+		`{"meets_definition": true, "reason_supported": true}`,  // canonical content claim: stands
 	}}
 	got, err := (&Judge{Model: &superRecorder{replies: []any{reply}}, Meter: openTestMeter(t), Entail: entail}).
 		Judge(context.Background(), "Roblox", 9, "c", fs, nil)
@@ -1025,5 +1025,97 @@ func TestEntailNilSkips(t *testing.T) {
 	}
 	if got.Grades[0].Level != checklist.Flag || got.EntailErr != nil {
 		t.Errorf("grades changed without an entailment model: %+v, %v", got.Grades[0], got.EntailErr)
+	}
+}
+
+// The semantic check must assess the claim the parent sees. Reader claims
+// and discarded judge prose cannot supply missing evidence or poison a
+// fitting quote. This applies to arbitrary titles and wording, not fixtures.
+func TestFlagEntailmentUsesOnlyPublishedClaimAndQuotes(t *testing.T) {
+	for _, area := range []checklist.Area{checklist.Data, checklist.AgeGating, checklist.Content} {
+		for _, prose := range []string{"unsupported practice and invented control", "", "an unrelated assertion"} {
+			g := checklist.Grade{Area: area, Level: checklist.Flag, Reason: prose, Findings: []string{"f"}}
+			fs := []finding.Finding{{ID: "f", Area: area, Stance: finding.Risk, Claim: "invented child harm", Quote: "verbatim source evidence"}}
+			user := entailUser("Arbitrary title", 8, g, fs)
+			if !strings.Contains(user, "Reason: "+standingReason(area)+"\n") || !strings.Contains(user, `quote: "verbatim source evidence"`) {
+				t.Fatalf("missing published claim or quote: %s", user)
+			}
+			if strings.Contains(user, "invented child harm") || strings.Contains(user, "unsupported practice") || strings.Contains(user, "unrelated assertion") {
+				t.Fatalf("generated prose leaked into semantic evidence: %s", user)
+			}
+		}
+	}
+}
+
+func TestCanonicalFlagStillRequiresBothEntailmentAnswers(t *testing.T) {
+	for _, verdict := range []string{`{"meets_definition":false,"reason_supported":true}`, `{"meets_definition":true,"reason_supported":false}`} {
+		j := &Judge{Meter: openTestMeter(t), Entail: &superRecorder{replies: []any{verdict}}}
+		g := checklist.Grade{Area: checklist.Data, Level: checklist.Flag, Reason: "generated text", Findings: []string{"f"}}
+		fs := []finding.Finding{{ID: "f", Area: checklist.Data, Stance: finding.Risk, Quote: "source"}}
+		out, dem, thin, err, _ := j.entail(context.Background(), "Title", 8, "r", []checklist.Grade{g}, fs)
+		if err != nil || out[0].Level != checklist.Unknown || len(out[0].Findings) != 0 || len(dem) != 1 || len(thin) != 1 {
+			t.Fatalf("refusal did not clear flag: %+v %+v %v", out, dem, err)
+		}
+	}
+}
+
+func TestAgeGateWitnessMustComeFromCitedRisk(t *testing.T) {
+	q := "The account verification recorded my daughter's age as 34 although she is eleven."
+	g := checklist.Grade{Area: checklist.AgeGating, Level: checklist.Flag, Findings: []string{"risk"}}
+	fs := []finding.Finding{{ID: "risk", Area: checklist.AgeGating, Stance: finding.Risk, Quote: q}, {ID: "other", Area: checklist.AgeGating, Stance: finding.Risk, Quote: "An uncited sentence reports a failed restriction on entry."}}
+	for _, tc := range []struct {
+		name string
+		w    *ageGateWitness
+		want bool
+	}{
+		{"source paraphrase of failure", &ageGateWitness{"wrong_age_assignment", q}, true},
+		{"no witness", nil, false},
+		{"invented source words", &ageGateWitness{"wrong_age_assignment", "The check incorrectly says she is an adult."}, false},
+		{"uncited source", &ageGateWitness{"access_bypass", fs[1].Quote}, false},
+		{"educational criterion", &ageGateWitness{"curriculum_level", q}, false},
+		{"context-free fragment", &ageGateWitness{"wrong_age_assignment", "age as 34"}, false},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			if got := witnessedAgeGate(g, fs, tc.w); got != tc.want {
+				t.Fatalf("got %v want %v", got, tc.want)
+			}
+		})
+	}
+	fs[0].Stance = finding.Mitigation
+	if witnessedAgeGate(g, fs, &ageGateWitness{"wrong_age_assignment", q}) {
+		t.Fatal("mitigation supplied risk witness")
+	}
+}
+
+func TestAgeGateChecksEachRiskAndStopsAtVerifiedEvent(t *testing.T) {
+	q := "The verification recorded my eleven year old as a thirty year old."
+	fs := []finding.Finding{
+		{ID: "lesson", Area: checklist.AgeGating, Stance: finding.Risk, Quote: "The lessons are easier than the school grade I selected."},
+		{ID: "event", Area: checklist.AgeGating, Stance: finding.Risk, Quote: q},
+		{ID: "later", Area: checklist.AgeGating, Stance: finding.Risk, Quote: "Another source that must not need a request."},
+	}
+	g := checklist.Grade{Area: checklist.AgeGating, Level: checklist.Flag, Findings: []string{"lesson", "event", "later"}, Reason: "invented interpretation"}
+	for _, initial := range []any{`{"criterion":"none","quote":""}`, `{"criterion":"wrong_age_assignment","quote":"made up source span"}`, `not JSON`, errors.New("unavailable")} {
+		r := &superRecorder{price: 10, replies: []any{initial, fmt.Sprintf(`{"criterion":"wrong_age_assignment","quote":%q}`, q)}}
+		j := &Judge{Meter: openTestMeter(t), Entail: r}
+		out, dem, thin, err, price := j.entail(context.Background(), "An arbitrary title", 8, "ref", []checklist.Grade{g}, fs)
+		if err != nil || len(dem) != 0 || len(thin) != 0 || out[0].Level != checklist.Flag || out[0].Reason != standingReason(checklist.AgeGating) || len(r.users) != 2 {
+			t.Fatalf("event lost: %+v %+v %v requests=%d", out, dem, err, len(r.users))
+		}
+		if price < 10 || strings.Contains(r.users[0], q) || strings.Contains(r.users[1], fs[0].Quote) || strings.Contains(r.users[1], "Child's age:") || strings.Contains(r.users[1], g.Reason) {
+			t.Fatalf("requests not independent source reports: %q; cost %d", r.users, price)
+		}
+	}
+}
+
+func TestAgeGateWithoutVerifiedEventCannotStandOnClassifierFailure(t *testing.T) {
+	g := checklist.Grade{Area: checklist.AgeGating, Level: checklist.Flag, Findings: []string{"risk"}}
+	fs := []finding.Finding{{ID: "risk", Area: checklist.AgeGating, Stance: finding.Risk, Quote: "A sentence that says the lessons are easy."}}
+	for _, reply := range []any{`not JSON`, errors.New("unavailable"), `{"criterion":"none","quote":""}`, `{"criterion":"wrong_age_assignment","quote":"fabricated words here are not a source witness"}`} {
+		j := &Judge{Meter: openTestMeter(t), Entail: &superRecorder{replies: []any{reply}}}
+		out, dem, thin, _, _ := j.entail(context.Background(), "Title", 8, "ref", []checklist.Grade{g}, fs)
+		if out[0].Level != checklist.Unknown || len(out[0].Findings) != 0 || len(dem) != 1 || len(thin) != 1 {
+			t.Fatalf("unwitnessed flag stood: %+v %+v", out, dem)
+		}
 	}
 }

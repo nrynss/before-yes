@@ -289,3 +289,36 @@ func areaGot(t *testing.T, r Result, area checklist.Area) AreaResult {
 	t.Fatalf("no %s grade", area)
 	return AreaResult{}
 }
+
+// These replays independently exercise the published decision on captured
+// evidence. Generic tracking and curriculum placement cannot cause refusal,
+// while real birthdate bypass and incorrect account ages retain their flags.
+func TestGatherFlagsRequireTheirOwnDefinition(t *testing.T) {
+	prevG, prevOnly := *gatherN, *liveOnly
+	t.Cleanup(func() { *gatherN = prevG; *liveOnly = prevOnly })
+	for _, tc := range []struct {
+		gather  int
+		slug    string
+		area    checklist.Area
+		want    checklist.Level
+		verdict checklist.Verdict
+	}{
+		{1, "minecraft", checklist.Data, checklist.Unknown, checklist.Unclear},
+		{2, "khan-academy-kids", checklist.AgeGating, checklist.Unknown, checklist.Unclear},
+		{1, "roblox", checklist.AgeGating, checklist.Flag, checklist.No},
+		{2, "roblox", checklist.AgeGating, checklist.Flag, checklist.No},
+	} {
+		*gatherN = tc.gather
+		*liveOnly = tc.slug
+		rs := mustEval(t, "replay")
+		if len(rs) != 1 || rs[0].Err != "" {
+			t.Fatalf("replay %s/%d: %+v", tc.slug, tc.gather, rs)
+		}
+		if a := areaGot(t, rs[0], tc.area); a.Got != tc.want {
+			t.Errorf("%s/%d %s=%s want %s", tc.slug, tc.gather, tc.area, a.Got, tc.want)
+		}
+		if rs[0].GotVerdict != tc.verdict {
+			t.Errorf("%s/%d verdict=%s want %s", tc.slug, tc.gather, rs[0].GotVerdict, tc.verdict)
+		}
+	}
+}

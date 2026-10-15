@@ -1,0 +1,8 @@
+{
+  "text": "{\"criterion\": \"wrong_age_assignment\", \"quote\": \"I am 10 years old and the app literally lets you choose your grade from pre-k to 2nd grade.\"}",
+  "input_tokens": 317,
+  "output_tokens": 41,
+  "price_nano": 132000,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

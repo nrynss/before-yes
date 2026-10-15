@@ -814,99 +814,116 @@ Fixture recordings, replayed offline.
 
 Minecraft's four standing settings are the T3.10 caveat again: the check that would refuse a fitting citation did not run, because entailment accepted grades whose risk quotes do not meet the area definition. Khan's demotions are the checks holding uncited ok grades, an unnamed setting, and two odd reviews. No fixture grade was voided by checkCitations.
 
-**Result, after the entailment change.** The reader model returned `meets_definition: true` on 11 of the 12 Minecraft gather 1 entailment replies. The same check on the judge model, thinking off, refuses the grades whose quotes do not show the harm `areaDefs` names. This round wires the server the same way `tools/eval` already did: `cmd/before-yes/build.go` passes the judge client as `Entail`, and the entail call keeps `JudgeFast` (thinking off). `TestServeAndCheckWireEntail` fails if that client is the reader. That wiring was not already true. Reader and judge grade recordings were replayed. A new entailment prompt writes new keys; the old Nano true/true files stay. `go run ./tools/eval` exits 0. Replay of gathers 1 and 2 exits 0.
+**Result after round-3 remediation.** The published flag claim is canonicalized before entailment, and the reader's interpretation is omitted: only verified source quotes are evidence. Both semantic answers must pass for non-age flags and settings. A generated claim about ads, horror, self-harm, loot boxes or pay-to-win is discarded before assessment; it cannot become the card reason. Citation validity and setting grounding are unchanged.
 
-A flag whose quotes meet the definition stands even when `reason_supported` is false. An `ok_with_setting` still drops when `reason_supported` is false. `meets_definition` false still drops as `flag_not_earned`. The entailment prompt is unchanged, and the decision is applied to the replies already on disk. A grade that stands stores the area definition's opening claim: the words of `areaDefs` before the colon that lists examples, or the first sentence when there is no colon. That claim does not carry an ads sentence, and it does not name horror, self-harm, loot boxes, or pay-to-win. The example list stays in the prompt. A model's sentence is never the card reason. `checklist.Decide` is unchanged.
+Age-gating flags classify each cited risk independently as an observed access bypass, wrong recorded age, or neither. One credible report suffices under the definition, so unrelated citations cannot dilute it. The first accepted event ends the search; each request is metered and recorded. A recognized criterion also requires an exact span of at least five words from that cited, in-area risk. Without a verified event the flag becomes unknown, including when classification fails; errors remain visible. Settings keep the combined definition-and-mitigation check. Tests exercise independent requests, early termination, invented/uncited witnesses, malformed replies and outages.
 
-Fixture Minecraft contact does not stand. The risk quote is a gameplay paragraph and the mitigation is chat set to friends only; entailment was false/false (`flag_not_earned`). Content is also unknown, so the verdict stays unclear. Minecraft gather 2 age gating does not stand: it is `ok_with_setting` with `meets_definition` true and `reason_supported` false, on a child account linked to an adult against a birth date the child can fake. Money on that card remains a flag, so the verdict stays no. Roblox gather 2 data stands. The image-retention quote meets the data definition (`meets_definition` true) and the model's sentence says the data is shared for ads, which none of the three cited quotes say, so `reason_supported` is false. The flag stands, and the stored reason is the data opening claim, which does not say ads. Roblox gather 1 is no. The age-gating flag stands on the birthdate quote (`meets_definition` true, `reason_supported` false). The stored reason is the age-gating opening claim, not the model's sentence about a parent-set control. `Decide` returns no on that flag.
+This is a model classification, not a deterministic guarantee of semantic correctness. On Khan gather 2 the model mislabeled one curriculum quote as wrong-age assignment and invented a supporting span. Exact source validation rejected that span; all other cited quotes were classified none. This limitation remains visible in the saved diagnosis and paid recordings. No title or quote blacklist was added, and every superseded paid reply is retained.
 
-Roblox gather 1, age 9, verdict **no**. Card read $0.017832, judge $0.022718 (entailment on the judge model is in the judge figure). Tavily 8. Gather 2 also reads no. The age-gating flag stands. The birthdate quote shows the bypass. The model's sentence adds that no parent-set control locks the account, which the quote does not say, so `reason_supported` is false. The grade stands, and the card reason is "the age gate fails in practice". Content is unknown. `Decide` returns no on the flag before content unknown can make the card unclear.
+H3: Minecraft gather 1 generic app tracking is unknown; it identifies neither child-directed tracking nor uncontrolled children's sharing/deletion. H4: Khan gather 2's curriculum ceiling is unknown. Roblox's real birthdate bypass in gather 1 and wrong recorded-age report in gather 2 preserve age flags. Khan gather 1 is no on its verified horror quote; gather 2 is unclear because that quote was filed with the wrong review reference and dropped. Minecraft gather 1 is unclear; gather 2 is no on a completed child purchase. The differing verdicts follow differing evidence.
 
-| Area | Card grade | Cited quote | Earned | Check |
-|---|---|---|---|---|
-| contact | ok_with_setting, "parental controls" | Open communication channels exposed minors to sexual exploitation. Mitigation: direct messages and party chats can be disabled with parental controls. | earned | stood (entail true/true). The reason is the contact opening claim. |
-| money | unknown (judge ok_with_setting, "parental controls") | Store loot-box line. Mitigation: parental controls can block spending. | the check returned meets_definition false | entail: flag_not_earned |
-| data | unknown (judge ok_with_setting, "turn off ad personalization and data selling") | "Data will now be sold." Mitigation names turning off ad personalization and data selling. | the check returned meets_definition false | entail: flag_not_earned |
-| age_gating | flag | "A kid who wants to dodge all of the above can simply enter any birthdate before September 2007." | the quote shows the bypass. The model's sentence adds a control the quote does not show. | stood (meets_definition true, reason_supported false). The reason is the age-gating opening claim. |
-| content | unknown (judge flagged) | "god theres so many preds so i do NOT recommend this game for children/teens because there is some bad games" | not earned on the content list: the quote names predators and bad games, and none of sexual content, violence, horror, harassment or self-harm | entail: flag_not_earned |
-| developer_record | unknown (judge flagged) | Predator review, suspension review, VNG-partnership review, terms Section 10.2 | not earned | entail: flag_not_earned |
+Cumulative task model spend is **$0.36160692**, including superseded attempts, below the authorized $0.50 cap. Round-3 remediation added $0.05525520 after $0.30635172. Only saved public evidence entailment was refreshed; no new gather, reader or grading call was made. Tavily remains 46 credits for the six original live gathers. The fixture replay mean is $0.04253606; live-gather mean is $0.04178143. Ceilings remain $20 / 900 / 5.
 
-Roblox gather 2, age 9, verdict **no**. Read $0.017949, judge $0.028423. Tavily 8. The grades differ from gather 1 because this gather's pages include the threat report, the $7,000 spend, and the Texas suit. Data stands. The model's sentence is "Roblox collects and shares children's data for ads, and users cannot fully delete it or stop third-party sharing of age-verification images." The three cited quotes are a store slogan, a terms line that Roblox may review content, and the image-retention line (third-party providers, no fixed retention period). None of them say ads. The image-retention quote meets the data definition, so `meets_definition` stayed true and `reason_supported` is false. The flag stands. The card reason is "children's data is collected and used in ways a parent cannot control", which does not say ads. Content, money, and the other standing flags use the same opening-claim reasons. Content does not say horror or self-harm. Money does not say loot boxes or pay-to-win. The verdict stays no.
+The following final tables are transcribed from the current saved replays; complete citations and source spans are in each gather's diagnosis. Earned assessments refer to the area's definition, independently of the model's answer.
+
+Khan Academy Kids fixture, age 5, verdict **unclear**. Read $0.01159422, judge $0.02790420, Tavily 7.
 
 | Area | Card grade | Cited quote | Earned | Check |
 |---|---|---|---|---|
-| contact | flag | "my kids has been threatened by a person in adopt me". Also mini-game chats that cannot be disabled. | earned | stood (entail true/true). The reason is the contact opening claim. The pre-fix entailment on this gather had refused this citation. |
-| money | flag | A 10-year-old spent more than $7,000 in two months, and a $46 charge. A third review does not mention a purchase. | earned, on the two spend quotes | stood (entail true/true). The reason is the money opening claim. It does not say loot boxes or pay-to-win. |
-| data | flag | Age-verification images "may be processed by third-party providers" with no fixed retention. Also a store slogan and a terms line. | the image quote meets the data definition. The model's sentence adds "for ads", which no cited quote says. | stood (meets_definition true, reason_supported false). The reason is the data opening claim. It does not say ads. |
-| age_gating | flag | Birthday recorded as 7 October 1985 for a child under 13, and a child "put in the 28th group." | earned | stood (entail true/true). The reason is the age-gating opening claim. |
-| content | flag | Sexually explicit user-made games, a shooting scene, a 5+ punching tutorial, a 10-year-old reaching suggestive spaces. Other cited quotes do not meet the definition. | earned, on the quotes that name sexual content and violence | stood (entail true/true). The reason is the content opening claim. It does not say horror or self-harm. |
-| developer_record | flag | "Texas Attorney General Ken Paxton says he has sued Roblox" | earned | stood (entail true/true). The reason is the developer-record opening claim. |
+| contact | unknown | none | n/a: no standing grade | ok_without_finding |
+| money | unknown | none | n/a: no standing grade | ok_without_finding |
+| data | unknown | none | n/a: no standing grade | ok_without_finding |
+| age_gating | unknown | My daughter is 4, but she is autistic. She reads on a 1st/2nd grade level, can add, subtract up to digit numbers, tells time by a digital and analog clock— and because of that, this game is far too easy for her. She gets bored and starts answering the questions wrong just to see what will happen. Maybe update with a skills test, and then match the child up with curriculum that is in their skill range rather than a… (full citations in diagnosis) | not earned for the proposed grade | ground: setting_without_quote |
+| content | unknown | Out of nowhere it will talk and ask her to record her voice. Each time it startles my child who then gets quiet and runs to whispers to me what it said. This is inappropriate, and it’s always in the coloring app. / I was looking for something for my grandson to get a foundation for reading. During his first time using it, I noticed that there were two men, and who was supposed to put the hats on them. Then he was … (full citations in diagnosis) | not earned for the proposed grade | entail: flag_not_earned |
+| developer_record | unknown | none | n/a: no standing grade | ok_without_finding |
 
-Every Roblox gather 2 flag that stands is earned on the quotes named above. Gather 1 reads no on the age-gating flag. Gather 2 reads no.
-
-Minecraft gather 1, age 9, verdict **no**. Read $0.020038, judge $0.025169. Tavily 7. The fixture recordings for this title were yes_with_settings before this change. Contact, money, age gating, content, and developer record are unknown. Data stands: the judge flagged the app-tracking line, and the recorded reply is `meets_definition` true and `reason_supported` false, so the flag stands and the reason is the data opening claim. That flag makes the verdict no. Money stays unknown. The mitigation is the words "Control Spending", and entailment was false/false.
+Minecraft fixture, age 9, verdict **unclear**. Read $0.02098980, judge $0.02390430, Tavily 7.
 
 | Area | Card grade | Cited quote | Earned | Check |
 |---|---|---|---|---|
-| contact | unknown (judge ok_with_setting, "Restrict Communication") | Locked-account review. Mitigation is the words "Restrict Communication". | not earned | entail: flag_not_earned |
-| money | unknown (judge ok_with_setting, "Control Spending") | A 10-year-old spent birthday money on minecoins. Mitigation is the words "Control Spending". | the purchase quote is earned. The mitigation quote is only the label, and the check refused the setting. | entail: flag_not_earned |
-| data | flag | "App Tracking: To deliver personalized ads and improve application experience" | the recorded reply says the quote meets the definition. The model's sentence says more than the quote shows. | stood (meets_definition true, reason_supported false). The reason is the data opening claim. It does not say ads. |
-| age_gating | unknown (judge flagged) | "Can you make the game available for +5 year-old?" | not earned | entail: flag_not_earned |
-| content | unknown (judge ok_with_setting) | "it was scary but in the good way" | not earned | entail: flag_not_earned |
-| developer_record | unknown (judge flagged) | "BAN YOUR STUPID GAME" and a Microsoft age-assurance FAQ citation. The reason says fines and lawsuits. | not earned | entail: flag_not_earned |
+| contact | unknown | Minecraft is a game that barely has a “standard way to play.” Unlike many games that require you to finish missions, follow a storyline, or defeat a final boss, Minecraft simply places a world made of blocks into your hands. You can mine, build houses, farm, explore caves, fight monsters, trade with villagers, or team up with friends to create entire cities. You can even use redstone to design automatic farms, hid… (full citations in diagnosis) | not earned for the proposed grade | entail: flag_not_earned |
+| money | unknown | This dumb Mining game spent me 1.09$ for a mod thean because I got 0 mine coins I have to pay 15.99$ so my mom got scammed 1.09$ / Control Spending | not earned for the proposed grade | entail: flag_not_earned |
+| data | unknown | none | n/a: no standing grade | stood |
+| age_gating | unknown | Play with your friends on your own personal server. / On a child account, multiplayer starts off, and you choose whether others can communicate with your child: everyone, friends only, or no one. | not earned for the proposed grade | entail: flag_not_earned |
+| content | unknown | Good but has something satanic / Minecraft is safe, although some of the online servers are pretty rough. But single player and with people you know who can be trusted not to be | not earned for the proposed grade | entail: flag_not_earned |
+| developer_record | unknown | none | n/a: no standing grade | stood |
 
-Minecraft gather 2, age 9, verdict **no**. Read $0.013781, judge $0.018884. Tavily 7. Both gathers read no, and not for the same grade. Gather 2 cites a completed child purchase and has no money mitigation, so the money flag stands. Its reason is the money opening claim. Gather 1's no is the data flag above. Age gating is not ok_with_setting.
-
-| Area | Card grade | Cited quote | Earned | Check |
-|---|---|---|---|---|
-| contact | unknown (judge ok_with_setting) | "Local Network: To find other devices on the same Wi-Fi network". Mitigation: multiplayer off by default on child accounts. | not earned | entail: flag_not_earned |
-| money | flag | "i bought 10,000 minecoins and im litterly a kid im only 10 and i got scammed i litterly used all my birthday money!" | earned | stood (entail true/true). The reason is the money opening claim. This flag carries the verdict. |
-| data | unknown (judge ok_with_setting) | App-tracking line. Mitigation: child accounts "provide guardrails against the collection of some data". | not earned | entail: flag_not_earned |
-| age_gating | unknown (judge ok_with_setting, child account linked to an adult) | "it's pretty easy for a savvy kid to fake their birthdate to gain access." Mitigation: under-16 accounts are child accounts linked to an adult. | the risk quote shows a birth date the child can fake. The control is given only to accounts the age check has already treated as children, so it does not close that hole. The model returned meets_definition true anyway. reason_supported is false, and the grade does not stand. | entail: reason_unsupported (meets_definition true, reason_supported false) |
-| content | unknown | Harassment quote "Racist It called me the n word", plus a contact mitigation. | the harassment quote is earned. The grade does not stand. | checkCitations: citation outside the area |
-| developer_record | unknown | Store tracking line, and the Microsoft FTC fine, filed under data. | the fine was not a developer_record finding | checkCitations: citation outside the area |
-
-Khan Academy Kids gather 1, age 5, verdict **no**. Read $0.016476, judge $0.025631. Tavily 8. The content flag cites the devil-faces sentence. Its ref is `[R18]`, and review 18's body contains those words.
+Roblox fixture, age 9, verdict **no**. Read $0.01571886, judge $0.02749680, Tavily 8.
 
 | Area | Card grade | Cited quote | Earned | Check |
 |---|---|---|---|---|
-| contact | unknown | none (judge graded ok) | n/a | ok_without_finding |
-| money | ok | "Khan Academy Kids is 100% free with no ads or subscriptions." | earned | stood. An ok grade is not sent to entailment. |
-| data | ok | "COPPA-compliant, and 100% free—no ads, no subscriptions." | a store claim. It does not show the data flag. | stood. An ok grade is not sent to entailment. |
-| age_gating | unknown (judge flagged) | Lessons stop at 2nd grade. | not earned | entail: flag_not_earned |
-| content | flag | "A grid of scary devil faces and men tied up with their mouth taped shut popped up" during math. | earned | stood (entail true/true). The reason is the content opening claim. This flag carries the verdict. |
-| developer_record | unknown | none (judge graded ok) | n/a | ok_without_finding |
+| contact | unknown | Amazing i love roblox alot of pedos tho / I type nothing bad and get tagged normal yes but I get tag looped no matter what I say sometimes and Roblox suspended my chat for 10 mins so I say they made a mistake when I get it back and try chatting I’m tagged again…and chat suspended for 30 mins! / this game SUCKS predator47_ tried to bomb me | not earned for the proposed grade | entail: flag_not_earned |
+| money | flag | Games may contain optional in-game purchases, including lootboxes and other items / Roblox may offer you access to additional benefits or other digital items provided by Roblox through paid subscriptions (“Roblox Subscription”). / Some experts have raised concerns that loot boxes can encourage repeated spending because players do not know what reward they will receive. | earned | stood |
+| data | unknown | Industry-leading safety, privacy, and civility / You may be asked to provide information like an email address, phone number, or a government-issued photo identification to access certain Content or features in Roblox Player. / Roblox may access and review Content, including Content shared via Communication Features and other non-public Content. | not earned for the proposed grade | entail: flag_not_earned |
+| age_gating | flag | if the estimation isn't not you're age you need to PUT AN ID TO COMFRIM YOUR CORRECT AGE | earned | stood |
+| content | unknown | people have been kidnapped by adults ever since 20 years i try my best not to get hacked. It is not the safest game ever. / This game has preds and it’s dumbahh can’t even detect it but it can ban you for 3 year for literally saying hello / Thank u for unsuspending me because I was just trying to spread awareness about Oblock20101 | kidnapping quote earned; entailment refused it | entail: flag_not_earned |
+| developer_record | flag | Following safety concerns, Roblox is rolling out new protections for under-13 users in November and December 2024. These updates include mandatory age ratings for games, limits on social spaces, and restrictions on unmoderated content. Since these changes are new and won't be fully enforced until 2025, we're not sure what their impact will be. / Los Angeles County filed a civil lawsuit against Roblox Corporation a… (full citations in diagnosis) | earned | stood |
 
-Khan Academy Kids gather 2, age 5, verdict **no**. Read $0.015596, judge $0.029604. Tavily 8. Gather 1 reads no on the devil-faces content flag. Gather 2 reads no on age gating, and the content quote is still missing. The reader filed the same devil-faces sentence gather 1 kept, with ref `[R52]`. Review 52 does not contain those words (its body is a crashing and green-bear story), so the quote was dropped and never reached the judge. Of the gather 2 content-risk quotes whose named review contains them, none name sexual content, violence, horror, harassment, or self-harm. The judge graded content ok and cited nothing. The age-gating citations are still the curriculum ceiling. The recorded reply is `meets_definition` true and `reason_supported` false, so the flag stands and the reason is the age-gating opening claim, not the model's sentence about the grade range. That is the same rule as Roblox gather 1 age gating. An `ok_with_setting` with `reason_supported` false still drops.
+Khan Academy Kids gather 1, age 5, verdict **no**. Read $0.01647630, judge $0.02532900, Tavily 8.
 
 | Area | Card grade | Cited quote | Earned | Check |
 |---|---|---|---|---|
-| contact | unknown | none | n/a | ok_without_finding |
-| money | unknown | none | n/a | ok_without_finding |
-| data | unknown | none | n/a | ok_without_finding |
-| age_gating | flag | Nineteen citations that the lessons stop at 2nd grade. | the citations are a curriculum ceiling. The recorded reply says meets_definition true and reason_supported false, so the flag stands. | stood. The reason is the age-gating opening claim. |
-| content | unknown | none. The devil-faces sentence was filed with ref `[R52]` and dropped, because review 52 does not contain those words. | n/a | ok_without_finding |
-| developer_record | unknown | none | n/a | ok_without_finding |
+| contact | unknown | none | n/a: no standing grade | ok_without_finding |
+| money | ok | ACTUALLY FREE YOU DONT NEED TO PAY Thank goodness I use khan academy for school work so when I found out they had a learning games for kids I was so happy and I thought “ they teach fee videos on YouTube “ and it absolutely was free glad to know someone cares for our youth / Khan Academy Kids is 100% free with no ads or subscriptions. / It is free. It includes learning games that give rewards in the game like musi… (full citations in diagnosis) | earned | stood |
+| data | ok | Created in partnership with the Stanford Graduate School of Education by education experts, aligned with Head Start and Common Core Standards, COPPA-compliant, and 100% free—no ads, no subscriptions. | earned | stood |
+| age_gating | unknown | "; age-gate event=none witness= | not earned for the proposed grade | entail: flag_not_earned |
+| content | flag | A grid of scary devil faces and men tied up with their mouth taped shut popped up for about 15 seconds while my kid was working on math. Very disturbing and disappointing since this is such a widely advertised app for homeschooling | earned | stood |
+| developer_record | unknown | none | n/a: no standing grade | ok_without_finding |
 
-Fixture recordings, replayed offline after the same entailment calls. `go run ./tools/eval` exited 0. Roblox read $0.015719, judge $0.028154, Tavily 8, verdict no. Minecraft read $0.020990, judge $0.023953, Tavily 7, verdict unclear. Khan read $0.011594, judge $0.027934, Tavily 7, verdict unclear.
+Minecraft gather 1, age 9, verdict **unclear**. Read $0.02003760, judge $0.02460750, Tavily 7.
 
-| Title | Area | Card grade | Cited quote | Earned | Check |
-|---|---|---|---|---|---|
-| Roblox (9), verdict no | contact | unknown (judge flagged) | "Amazing i love roblox alot of pedos tho"; a chat-suspension loop; "predator47_ tried to bomb me" | not earned | entail: flag_not_earned |
-| Roblox | money | flag | Store loot-box line, a subscription line, and a loot-box spending line | earned | stood (entail true/true). The reason is the money opening claim. |
-| Roblox | data | unknown (judge flagged) | "Industry-leading safety, privacy, and civility"; an email or ID; Roblox may review content | not earned | entail: flag_not_earned |
-| Roblox | age_gating | flag | "a kid who wants to dodge all of the above can simply enter any birthdate before September 2007." | earned, on the birthdate quote | stood (entail true/true). The reason is the age-gating opening claim. |
-| Roblox | content | unknown (judge flagged) | "people have been kidnapped by adults", and "This game has preds". A third review is a suspension complaint. | earned on the kidnapping quote | entail: flag_not_earned. The verdict no does not use this grade. |
-| Roblox | developer_record | flag | "Los Angeles County filed a civil lawsuit against Roblox Corporation". Also a line about new under-13 protections, and a report of investigations that does not name this developer. | earned, on the lawsuit quote | stood (entail true/true). The reason is the developer-record opening claim. |
-| Minecraft (9), verdict unclear | contact | unknown (judge ok_with_setting, "friends only") | Risk quote is a gameplay paragraph ("You can mine, build houses…"). Mitigation: set chat to "friends only". | not earned: the risk quote does not show strangers reaching the child | entail: flag_not_earned (meets_definition false, reason_supported false) |
-| Minecraft | money | unknown (judge ok_with_setting, "Control Spending") | A mod charge "scammed" a parent. Mitigation is the words "Control Spending". | the purchase quote is thin. The check refused the setting. | entail: flag_not_earned |
-| Minecraft | data | unknown | none | n/a | stood (judge graded unknown) |
-| Minecraft | age_gating | unknown (judge ok_with_setting, "multiplayer starts off") | "Play with your friends on your own personal server." | not earned | entail: flag_not_earned |
-| Minecraft | content | unknown (judge ok_with_setting, "single player") | "Good but has something satanic." | not earned | entail: flag_not_earned |
-| Minecraft | developer_record | unknown | none | n/a | stood (judge graded unknown) |
-| Khan (5), verdict unclear | contact, money, data, developer_record | unknown | none (judge graded ok) | n/a | ok_without_finding |
-| Khan | age_gating | unknown (judge ok_with_setting) | A review wishing for a skills test | not earned | ground: setting_without_quote |
-| Khan | content | unknown (judge flagged) | A voice prompt that startles a child, and a hat-and-bow question | not earned | entail: flag_not_earned |
+| Area | Card grade | Cited quote | Earned | Check |
+|---|---|---|---|---|
+| contact | unknown | Gosh Minecraft NEVER have I EVER been so MAD in my life! I use to play Minecraft on my ps4 BACK THEN! And now I downloaded it on my phone after thinking of it, but as I put my email in it says account has been locked! So I used my mother’s email and it work but it was talking about some unusual activity🫩 fix this. / Restrict Communication | not earned for the proposed grade | entail: flag_not_earned |
+| money | unknown | i bought 10,000 minecoins and im litterly a kid im only 10 and i got scammed i litterly used all my birthday money! FRICK YOU MINECRAFT / Control Spending | not earned for the proposed grade | entail: flag_not_earned |
+| data | unknown | App Tracking: To deliver personalized ads and improve application experience | not earned for the proposed grade | entail: flag_not_earned |
+| age_gating | unknown | Can you make the game available for +5 year-old? | not earned for the proposed grade | entail: flag_not_earned |
+| content | unknown | it was scary but in the good way / block access to games based on the ESRB-assigned rating information | not earned for the proposed grade | entail: flag_not_earned |
+| developer_record | unknown | BAN YOUR STUPID GAME / Microsoft. (n.d.). [Frequently asked questions about Microsoft account age assurance](https://support.microsoft.com/en-us/accounts-billing/manage/about-microsoft-account-age-verification). Accessed October 2, 2026. | not earned for the proposed grade | entail: flag_not_earned |
+
+Roblox gather 1, age 9, verdict **no**. Read $0.01783170, judge $0.02214690, Tavily 8.
+
+| Area | Card grade | Cited quote | Earned | Check |
+|---|---|---|---|---|
+| contact | unknown | Roblox’s default settings, including unverified accounts, no age verification, and open communication channels, repeatedly exposed minors to sexual exploitation. / Direct messages and party chats can be disabled with parental controls. | not earned for the proposed grade | entail: flag_not_earned |
+| money | unknown | Games may contain optional in-game purchases, including lootboxes and other items / don’t forget to set parental controls to manage how much your kids are allowed to spend (or block spending entirely). | not earned for the proposed grade | entail: flag_not_earned |
+| data | unknown | Data will now be sold / You can turn off ad personalization and data selling. You can also turn off data sharing. | not earned for the proposed grade | entail: reason_unsupported |
+| age_gating | flag | A kid who wants to dodge all of the above can simply enter any birthdate before September 2007. | earned | stood |
+| content | unknown | god theres so many preds so i do NOT recommend this game for children/teens because there is some bad games where yk so yeah one star | not earned for the proposed grade | entail: flag_not_earned |
+| developer_record | unknown | Genuinely the most money-hungry game I have ever seen This game supports child predators. That’s all I need to say. / Good ig I got my whole acc suspended after years of playing but it was a very wonderful game!! / You need to immediately terminate your partnership with VNG; we Vietnamese players have seen a multitude of game titles disappear due to issues that remain unresolved to this day. / If you are a rights … (full citations in diagnosis) | not earned for the proposed grade | entail: flag_not_earned |
+
+Khan Academy Kids gather 2, age 5, verdict **unclear**. Read $0.01559574, judge $0.03050850, Tavily 8.
+
+| Area | Card grade | Cited quote | Earned | Check |
+|---|---|---|---|---|
+| contact | unknown | none | n/a: no standing grade | ok_without_finding |
+| money | unknown | none | n/a: no standing grade | ok_without_finding |
+| data | unknown | none | n/a: no standing grade | ok_without_finding |
+| age_gating | unknown | "; age-gate event=none witness= | not earned: curriculum, not account age or access | entail: flag_not_earned |
+| content | unknown | none | n/a: no standing grade | ok_without_finding |
+| developer_record | unknown | none | n/a: no standing grade | ok_without_finding |
+
+Minecraft gather 2, age 9, verdict **no**. Read $0.01378062, judge $0.01882320, Tavily 7.
+
+| Area | Card grade | Cited quote | Earned | Check |
+|---|---|---|---|---|
+| contact | unknown | Local Network: To find other devices on the same Wi‑Fi network for multiplayer gameplay. / Multiplayer is off by default on child accounts in both Java Edition and Bedrock Edition. | not earned for the proposed grade | entail: flag_not_earned |
+| money | flag | i bought 10,000 minecoins and im litterly a kid im only 10 and i got scammed i litterly used all my birthday money! FRICK YOU MINECRAFT / In your child’s spending settings, turn on “Ask a parent to buy things” so every Marketplace purchase (paid for with Minecoins) or Realms subscription needs your approval, or remove the saved payment method from the account entirely. | earned | stood |
+| data | unknown | App Tracking: To deliver personalized ads and improve application experience / child accounts automatically provide guardrails against the collection of some data | not earned for the proposed grade | entail: flag_not_earned |
+| age_gating | unknown | When setting up an account it checks to verify age requirements, but it's pretty easy for a savvy kid to fake their birthdate to gain access. / Players younger than 16 will automatically have a "child account," which must be linked to an adult account. | bypass risk earned; proposed control does not close it | entail: reason_unsupported |
+| content | unknown | Racist It called me the n word / The chat option is pre-set: Kids have to choose from certain words or phrases, or use emojis. | not earned for the proposed grade | checkCitations: citation outside the area: f_1a136a5457e77c50 is in contact |
+| developer_record | unknown | App Tracking: To deliver personalized ads and improve application experience / Microsoft will pay a fine of $20 million to settle Federal Trade Commission charges that it illegally collected and retained the data of children who signed up | not earned for the proposed grade | checkCitations: citation outside the area: f_796e7220c1a87086 is in data |
+
+Roblox gather 2, age 9, verdict **no**. Read $0.01794882, judge $0.02760270, Tavily 8.
+
+| Area | Card grade | Cited quote | Earned | Check |
+|---|---|---|---|---|
+| contact | flag | There are child predators in this game, it allows your child to interact with adults and my kids has been threatened by a person in adopt me and has been scared to play. The police have come and taken the predators under custody but Roblox owner wanted them on there. DO NOT GET THIS APP ESPECIALLY IF YOUR 16 AND UNDER!!!! / Chats built into the coding of specific mini-games cannot be disabled, and kids can type te… (full citations in diagnosis) | earned | stood |
+| money | flag | Kinda good! I do not like the updates and but also no chat so but I like. The games that you can still play I still like the AI I like the fun / A parent said their 10-year-old daughter spent more than $7,000 (£5,200) in two months despite attempts to limit purchases. / I don’t know if anyone else has been having the same problem but it will not let me play without paying. When I open up the game it tells me to up… (full citations in diagnosis) | earned | stood |
+| data | flag | Advanced content filtering and age-appropriate moderation / Roblox may access and review Content, including Content shared via Communication Features and other non-public Content. / Images used for age verification may be processed by third-party providers, but Roblox does not publicly guarantee a fixed retention period for the images of children. | earned | stood |
+| age_gating | flag | my child got put in the 28th group | earned | stood |
+| content | flag | So much hackers and online dating like 1 because like Roblox’s has harassment in games such as Brookhaven or many rol plays games like I don’t know why and Roblox please ban these online daters/hackers / Also the role play games such as Brookhaven are a huge problem because half the people in the game are doing very disturbing and innaproprite stuff. / Look it’s fun but there are prefers be careful / The worst gam… (full citations in diagnosis) | earned | stood |
+| developer_record | flag | Texas Attorney General Ken Paxton says he has sued Roblox over "flagrantly ignoring" safety laws and "deceiving parents" about the dangers the online video gaming platform poses to young people. | earned | stood |
 
 **Done when:** a per-area table for each title on both live gathers and on the recordings (grade, cited quote, earned or not, which check acted); Roblox reads **no** on both live gathers with its earned flags; each verdict is the same on both live gathers, or the difference is explained by the evidence; tests pin each rule changed; the verdicts and the spend are reported to the user.
 

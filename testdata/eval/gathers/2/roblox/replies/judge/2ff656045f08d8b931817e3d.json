@@ -1,0 +1,8 @@
+{
+  "text": "{\"meets_definition\": true, \"reason_supported\": true}",
+  "input_tokens": 1928,
+  "output_tokens": 16,
+  "price_nano": 592800,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}
