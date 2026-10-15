@@ -47,8 +47,9 @@ var (
 	// gatherN selects a saved live gather. 0 is the frozen testdata/titles
 	// fixtures. 1 and 2 are the two live gathers under testdata/eval/gathers,
 	// recorded when -models live is set and replayed with no network otherwise.
-	gatherN    = flag.Int("gather", 0, "0 uses testdata/titles. 1 or 2 records or replays testdata/eval/gathers/<n>, beside the fixture recordings")
-	diagnoseOn = flag.Bool("diagnose", false, "print each area's grade, cited quote and the check that acted")
+	reuseGather = flag.Bool("reuse-gather", false, "with live models, require saved gather fixtures and make no upstream gather calls")
+	gatherN     = flag.Int("gather", 0, "0 uses testdata/titles. 1 or 2 records or replays testdata/eval/gathers/<n>, beside the fixture recordings")
+	diagnoseOn  = flag.Bool("diagnose", false, "print each area's grade, cited quote and the check that acted")
 )
 
 // errLiveDry is the reply a dry judge call gives: the run stops there, and
@@ -221,7 +222,7 @@ func (l *liveChatter) Chat(ctx context.Context, msgs []model.Message, o model.Op
 		return model.Reply{}, err
 	}
 	l.calls.Add(1)
-	if o.MaxTokens > 0 && l.role == "judge" {
+	if o.MaxTokens == conflictMaxTokens && l.role == "judge" {
 		l.conflict.Add(1)
 	}
 	r, err := l.c.Chat(ctx, msgs, o)

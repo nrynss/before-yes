@@ -74,6 +74,8 @@ func (t *tracingChatter) Chat(ctx context.Context, msgs []model.Message, o model
 		// Entailment can run on the judge client. Classify it before the
 		// role, or its JSON is read as a second judge pass.
 		t.tr.entail = append(t.tr.entail, traced{user: user, reply: r.Text})
+	case strings.HasPrefix(system, "Write explanations for a parent") || strings.HasPrefix(system, "You check the exact explanation a parent"):
+		// Prose-only calls cannot replace a grading pass in the diagnosis.
 	case t.role == "judge":
 		t.tr.judge = append(t.tr.judge, traced{user: user, reply: r.Text})
 	}

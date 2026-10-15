@@ -2,9 +2,9 @@ diagnose Minecraft age 9 verdict no findings 142 (conflict pass replaced the con
   contact  risks 26 mitigations 7 other 0
     judge ok_with_setting setting "Multiplayer is off by default on child accounts in both Java Edition and Bedrock Edition" cited 2 [f_a204ed94e6ffcd86 f_1e24b73e7fa966bc]
     card unknown setting ""
-    check entail: flag_not_earned
+    check stood
     entail meets_definition=false reason_supported=false
-    reason Changed to unknown: the cited quotes do not meet this area's flag definition.
+    reason We don’t have enough evidence to assess this area. Don’t assume it is safe.
     quote f_a204ed94e6ffcd86 risk store: Local Network: To find other devices on the same Wi‑Fi network for multiplayer gameplay.
     quote f_1e24b73e7fa966bc mitigation rating: Multiplayer is off by default on child accounts in both Java Edition and Bedrock Edition.
   money  risks 30 mitigations 0 other 7
@@ -12,38 +12,38 @@ diagnose Minecraft age 9 verdict no findings 142 (conflict pass replaced the con
     card flag setting ""
     check stood
     entail meets_definition=true reason_supported=true
-    reason the title pushes purchases at children
+    reason The cited sources raise a concern here. Read the source quotes before deciding.
     quote f_4f0d24b3b6bb0948 risk review: i bought 10,000 minecoins and im litterly a kid im only 10 and i got scammed i litterly used all my birthday money! FRICK YOU MINECRAFT
     quote f_52134516877ae723 risk rating: In your child’s spending settings, turn on “Ask a parent to buy things” so every Marketplace purchase (paid for with Minecoins) or Realms subscription needs your approval, or remove the saved payment method from the account entirely.
   data  risks 8 mitigations 2 other 5
     judge ok_with_setting setting "child accounts automatically provide guardrails against the collection of some data" cited 2 [f_62d7413616ee25d9 f_7bff118ec684f6e0]
     card unknown setting ""
-    check entail: flag_not_earned
+    check stood
     entail meets_definition=false reason_supported=false
-    reason Changed to unknown: the cited quotes do not meet this area's flag definition.
+    reason We don’t have enough evidence to assess this area. Don’t assume it is safe.
     quote f_62d7413616ee25d9 risk store: App Tracking: To deliver personalized ads and improve application experience
     quote f_7bff118ec684f6e0 mitigation rating: child accounts automatically provide guardrails against the collection of some data
   age_gating  risks 11 mitigations 4 other 6
     judge ok_with_setting setting "Players younger than 16 will automatically have a \"child account,\" which must be linked to an adult account." cited 2 [f_e9731cf660fbf00c f_ee415e54d7a54a34]
     card unknown setting ""
-    check entail: reason_unsupported
+    check stood
     entail meets_definition=true reason_supported=false
-    reason Changed to unknown: the reason says more than the cited quotes support.
+    reason We don’t have enough evidence to assess this area. Don’t assume it is safe.
     quote f_e9731cf660fbf00c risk forum: When setting up an account it checks to verify age requirements, but it's pretty easy for a savvy kid to fake their birthdate to gain access.
     quote f_ee415e54d7a54a34 mitigation forum: Players younger than 16 will automatically have a "child account," which must be linked to an adult account.
   content  risks 11 mitigations 1 other 8
     judge ok_with_setting setting "The chat option is pre-set: Kids have to choose from certain words or phrases, or use emojis." cited 2 [f_c9072b9921500c3f f_1a136a5457e77c50]
     citation citation outside the area: f_1a136a5457e77c50 is in contact
     card unknown setting ""
-    check checkCitations: citation outside the area: f_1a136a5457e77c50 is in contact
-    reason Changed to unknown: the evidence was thin. No verified quote backs the reason the judge gave.
+    check stood
+    reason We don’t have enough evidence to assess this area. Don’t assume it is safe.
     quote f_c9072b9921500c3f risk review: Racist It called me the n word
     quote f_1a136a5457e77c50 mitigation forum: The chat option is pre-set: Kids have to choose from certain words or phrases, or use emojis.
   developer_record  risks 12 mitigations 0 other 4
     judge flag setting "" cited 2 [f_de8b2f2e9b3dc91e f_796e7220c1a87086]
     citation citation outside the area: f_796e7220c1a87086 is in data
     card unknown setting ""
-    check checkCitations: citation outside the area: f_796e7220c1a87086 is in data
-    reason Changed to unknown: the evidence was thin. No verified quote backs the reason the judge gave.
+    check stood
+    reason We don’t have enough evidence to assess this area. Don’t assume it is safe.
     quote f_de8b2f2e9b3dc91e risk store: App Tracking: To deliver personalized ads and improve application experience
     quote f_796e7220c1a87086 risk news: Microsoft will pay a fine of $20 million to settle Federal Trade Commission charges that it illegally collected and retained the data of children who signed up

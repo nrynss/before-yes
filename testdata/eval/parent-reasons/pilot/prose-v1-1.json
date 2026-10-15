@@ -1,0 +1,456 @@
+[
+  {
+    "title": "Khan Academy Kids",
+    "grades": [
+      {
+        "area": "contact",
+        "level": "unknown",
+        "findings": [],
+        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+      },
+      {
+        "area": "money",
+        "level": "ok",
+        "findings": [
+          "f_fafdd7902651ab6c",
+          "f_2b5396534308f22c",
+          "f_1da121f28cdd8761"
+        ],
+        "reason": "Reviewers confirm there are no payments required, describing the app as actually free with no need to pay."
+      },
+      {
+        "area": "data",
+        "level": "ok",
+        "findings": [
+          "f_03a93704589b927b"
+        ],
+        "reason": "The store listing states the app is COPPA-compliant, indicating adherence to children's privacy regulations."
+      },
+      {
+        "area": "age_gating",
+        "level": "unknown",
+        "findings": [],
+        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+      },
+      {
+        "area": "content",
+        "level": "flag",
+        "findings": [
+          "f_0fcffd8da2e19a5b"
+        ],
+        "reason": "A review reports that disturbing images of scary devil faces and bound individuals appeared briefly during use, which could upset a young child."
+      },
+      {
+        "area": "developer_record",
+        "level": "unknown",
+        "findings": [],
+        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+      }
+    ],
+    "evidence_sha256": "f8536883e5b76febfdb8ea044925652b40c8c12476eeaab14ca4f63e4f25a723",
+    "age": 5,
+    "models": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B + nvidia/nemotron-3-super-120b-a12b",
+    "want_verdict": "yes",
+    "got_verdict": "no",
+    "areas": [
+      {
+        "area": "contact",
+        "want": "ok",
+        "got": "unknown",
+        "agree": false,
+        "found": [],
+        "missed": [
+          {
+            "source": "https://apps.apple.com/mx/app/khan-academy-kids/id1378467217?l=en-GB",
+            "quote": "Made For Ages 0–5"
+          }
+        ],
+        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+      },
+      {
+        "area": "money",
+        "want": "ok",
+        "got": "ok",
+        "agree": true,
+        "found": [],
+        "missed": [
+          {
+            "source": "https://apps.apple.com/mx/app/khan-academy-kids/id1378467217?l=en-GB",
+            "quote": "Always 100% free, no ads, no subscriptions—just safe, joyful learning kids and parents love."
+          }
+        ],
+        "got_reason": "Reviewers confirm there are no payments required, describing the app as actually free with no need to pay."
+      },
+      {
+        "area": "data",
+        "want": "ok",
+        "got": "ok",
+        "agree": true,
+        "found": [],
+        "missed": [
+          {
+            "source": "https://www.khanacademy.org/kids",
+            "quote": "We don't show ads in the app, and we don't let third parties track your child across other apps or websites."
+          }
+        ],
+        "got_reason": "The store listing states the app is COPPA-compliant, indicating adherence to children's privacy regulations."
+      },
+      {
+        "area": "age_gating",
+        "want": "ok",
+        "got": "unknown",
+        "agree": false,
+        "found": [],
+        "missed": [
+          {
+            "source": "https://www.khanacademy.org/kids",
+            "quote": "A free educational app for children ages 2–8, with games, books, and lessons"
+          }
+        ],
+        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+      },
+      {
+        "area": "content",
+        "want": "ok",
+        "got": "flag",
+        "agree": false,
+        "found": [],
+        "missed": [
+          {
+            "source": "R311",
+            "quote": "My 4 year old loves this. It has everything and isn’t overstimulating AND it has no ads."
+          }
+        ],
+        "got_reason": "A review reports that disturbing images of scary devil faces and bound individuals appeared briefly during use, which could upset a young child."
+      },
+      {
+        "area": "developer_record",
+        "want": "unknown",
+        "got": "unknown",
+        "agree": true,
+        "found": [],
+        "missed": [],
+        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+      }
+    ],
+    "agreed": 3,
+    "decisive_found": 0,
+    "decisive_total": 5,
+    "findings": 155,
+    "drops": {
+      "bad_area": 12,
+      "bad_stance": 0,
+      "no_quote": 7,
+      "unquoted": 51,
+      "duplicates": 3
+    },
+    "drop_rate": 0.3201754385964912,
+    "chunks": 28,
+    "failed_chunks": 2,
+    "missing_kinds": [
+      "policy",
+      "terms"
+    ],
+    "tavily_credits": 8,
+    "read_cost_nano": 16476300,
+    "judge_cost_nano": 26228700
+  },
+  {
+    "title": "Minecraft",
+    "grades": [
+      {
+        "area": "contact",
+        "level": "unknown",
+        "findings": [],
+        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+      },
+      {
+        "area": "money",
+        "level": "unknown",
+        "findings": [],
+        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+      },
+      {
+        "area": "data",
+        "level": "unknown",
+        "findings": [],
+        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+      },
+      {
+        "area": "age_gating",
+        "level": "unknown",
+        "findings": [],
+        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+      },
+      {
+        "area": "content",
+        "level": "unknown",
+        "findings": [],
+        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+      },
+      {
+        "area": "developer_record",
+        "level": "unknown",
+        "findings": [],
+        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+      }
+    ],
+    "evidence_sha256": "d42026185dc69cd24f9fc7d264ca08e1ca187c017c9b6e7bf5c2e858630ff0c0",
+    "age": 9,
+    "models": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B + nvidia/nemotron-3-super-120b-a12b",
+    "want_verdict": "yes_with_settings",
+    "got_verdict": "unclear",
+    "areas": [
+      {
+        "area": "contact",
+        "want": "ok_with_setting",
+        "got": "unknown",
+        "agree": false,
+        "found": [
+          {
+            "source": "https://virtual-addiction.com/online-safety/minecraft",
+            "quote": "On a child account, multiplayer starts off, and you choose whether others can communicate with your child"
+          }
+        ],
+        "missed": [
+          {
+            "source": "https://www.esrb.org/blog/what-parents-need-to-know-about-minecraft",
+            "quote": "offer child accounts that empower parents to manage and monitor gameplay, multiplayer access, chat settings, and friend requests"
+          }
+        ],
+        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+      },
+      {
+        "area": "money",
+        "want": "ok",
+        "got": "unknown",
+        "agree": false,
+        "found": [],
+        "missed": [
+          {
+            "source": "R127",
+            "quote": "there is no ads to interrupt me and I can get friends"
+          }
+        ],
+        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+      },
+      {
+        "area": "data",
+        "want": "unknown",
+        "got": "unknown",
+        "agree": true,
+        "found": [],
+        "missed": [],
+        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+      },
+      {
+        "area": "age_gating",
+        "want": "ok",
+        "got": "unknown",
+        "agree": false,
+        "found": [],
+        "missed": [
+          {
+            "source": "https://virtual-addiction.com/online-safety/minecraft",
+            "quote": "On a child account, multiplayer starts off, and you choose whether others can communicate with your child"
+          }
+        ],
+        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+      },
+      {
+        "area": "content",
+        "want": "ok",
+        "got": "unknown",
+        "agree": false,
+        "found": [
+          {
+            "source": "https://www.minecraft.net/en-us/article/parents--guide-minecraft",
+            "quote": "Because combat is part of the game, there are some elements of mild violence."
+          }
+        ],
+        "missed": [],
+        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+      },
+      {
+        "area": "developer_record",
+        "want": "unknown",
+        "got": "unknown",
+        "agree": true,
+        "found": [],
+        "missed": [],
+        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+      }
+    ],
+    "agreed": 2,
+    "decisive_found": 2,
+    "decisive_total": 5,
+    "findings": 221,
+    "drops": {
+      "bad_area": 17,
+      "bad_stance": 2,
+      "no_quote": 7,
+      "unquoted": 98,
+      "duplicates": 1
+    },
+    "drop_rate": 0.36127167630057805,
+    "chunks": 48,
+    "failed_chunks": 1,
+    "missing_kinds": [
+      "policy"
+    ],
+    "tavily_credits": 7,
+    "read_cost_nano": 20037600,
+    "judge_cost_nano": 24652800
+  },
+  {
+    "title": "Roblox",
+    "grades": [
+      {
+        "area": "contact",
+        "level": "unknown",
+        "findings": [],
+        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+      },
+      {
+        "area": "money",
+        "level": "unknown",
+        "findings": [],
+        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+      },
+      {
+        "area": "data",
+        "level": "unknown",
+        "findings": [],
+        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+      },
+      {
+        "area": "age_gating",
+        "level": "flag",
+        "findings": [
+          "f_3e1e4d584522e5a9"
+        ],
+        "reason": "Roblox allows users to enter any birthdate before September 2007 to bypass age-based restrictions."
+      },
+      {
+        "area": "content",
+        "level": "unknown",
+        "findings": [],
+        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+      },
+      {
+        "area": "developer_record",
+        "level": "unknown",
+        "findings": [],
+        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+      }
+    ],
+    "evidence_sha256": "e7c67c61bd9cdebb2f7678444aa6f1599ebee26886f15626178947bc4d14db63",
+    "age": 9,
+    "models": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B + nvidia/nemotron-3-super-120b-a12b",
+    "want_verdict": "no",
+    "got_verdict": "no",
+    "areas": [
+      {
+        "area": "contact",
+        "want": "flag",
+        "got": "unknown",
+        "agree": false,
+        "found": [],
+        "missed": [
+          {
+            "source": "R355",
+            "quote": "if your kid plays Roblox high chance a child predator might ask where you are"
+          },
+          {
+            "source": "R242",
+            "quote": "they can’t stop the child predators and E-Daters"
+          }
+        ],
+        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+      },
+      {
+        "area": "money",
+        "want": "flag",
+        "got": "unknown",
+        "agree": false,
+        "found": [],
+        "missed": [
+          {
+            "source": "R1",
+            "quote": "I got Robux and I got only 246 Robux instead of 1800"
+          }
+        ],
+        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+      },
+      {
+        "area": "data",
+        "want": "unknown",
+        "got": "unknown",
+        "agree": true,
+        "found": [],
+        "missed": [],
+        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+      },
+      {
+        "area": "age_gating",
+        "want": "flag",
+        "got": "flag",
+        "agree": true,
+        "found": [],
+        "missed": [
+          {
+            "source": "R147",
+            "quote": "Im 14 but it said 9-12 on the age check"
+          }
+        ],
+        "got_reason": "Roblox allows users to enter any birthdate before September 2007 to bypass age-based restrictions."
+      },
+      {
+        "area": "content",
+        "want": "flag",
+        "got": "unknown",
+        "agree": false,
+        "found": [],
+        "missed": [
+          {
+            "source": "R491",
+            "quote": "It’s also a very inappropriate game with all the horror games"
+          }
+        ],
+        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+      },
+      {
+        "area": "developer_record",
+        "want": "flag",
+        "got": "unknown",
+        "agree": false,
+        "found": [],
+        "missed": [
+          {
+            "source": "https://www.securitymagazine.com/articles/101628-lawsuit-alleges-roblox-tracks-childrens-data-without-parental-consent",
+            "quote": "This lawsuit alleges that Roblox has violated the privacy of its users by tracking data without consent."
+          }
+        ],
+        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+      }
+    ],
+    "agreed": 2,
+    "decisive_found": 0,
+    "decisive_total": 6,
+    "findings": 200,
+    "drops": {
+      "bad_area": 3,
+      "bad_stance": 0,
+      "no_quote": 2,
+      "unquoted": 93,
+      "duplicates": 0
+    },
+    "drop_rate": 0.3288590604026846,
+    "chunks": 46,
+    "failed_chunks": 0,
+    "missing_kinds": [],
+    "tavily_credits": 8,
+    "read_cost_nano": 17831700,
+    "judge_cost_nano": 22477500
+  }
+]

@@ -38,7 +38,8 @@ var areaDefs = map[checklist.Area]string{
 // lists examples, or the first sentence when the definition has no colon.
 // The example list stays in the prompt. It is not the card reason, because
 // that list names harms and practices a cited quote may not show. A model's
-// sentence is never the card reason.
+// grading sentence is never published directly. The separate parent-prose
+// pass can replace this reason only after its own quote-support check.
 func standingReason(area checklist.Area) string {
 	def := areaDefs[area]
 	if head, _, ok := strings.Cut(def, ":"); ok {
@@ -296,6 +297,16 @@ func (j *Judge) Judge(ctx context.Context, title string, age int, ref string, fs
 	}
 	out.Demotions = append(out.Demotions, entDem...)
 	out.Thin = thinAreas(out.Grades, thinCited, thinGround, thinEntail)
+	// Writing is deliberately separate from grading: it cannot change a
+	// level, setting, citation or the independently checked age witness.
+	if j.Entail != nil {
+		var reasonCost cost.Price
+		out.Grades, reasonCost = j.parentReasons(ctx, title, age, ref, out.Grades, fs)
+		out.Cost += reasonCost
+		if err := ctx.Err(); err != nil {
+			return out, err
+		}
+	}
 	out.Verdict, err = checklist.Decide(out.Grades)
 	if err != nil {
 		return out, fmt.Errorf("judge: %w", err)
@@ -615,7 +626,8 @@ func parseEntail(reply string) (entailVerdict, error) {
 // meets_definition false drops the grade to unknown (RuleNotEarned). An
 // unsupported published claim also drops (RuleReasonUnsupported). Flags
 // are checked using standingReason, independently of discarded generated
-// prose. A grade that stands keeps standingReason, not the model's sentence.
+// prose. A grade that stands keeps standingReason at this grading step;
+// parentReasons subsequently writes and verifies the card explanation.
 // Generic entailment errors retain the grade. Age flags require an exact source
 // event witness; without one they become unknown even if classification failed.
 // Errors and measured costs remain visible. The input is not modified.
@@ -840,4 +852,135 @@ func normWords(s string) []string {
 	return strings.FieldsFunc(s, func(r rune) bool {
 		return !unicode.IsLetter(r) && !unicode.IsDigit(r)
 	})
+}
+
+// Parent prose has no authority over grades. Unknown areas make no factual
+// claim about a title; checked sources remain available in the evidence view.
+const parentUnknownReason = "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+const parentConcernFallback = "The cited sources raise a concern here. Read the source quotes before deciding."
+const parentOKFallback = "Read the cited source quotes before deciding; we couldn’t verify a plain-language explanation for this area."
+
+func parentReasonSystem() string {
+	return `Write explanations for a parent deciding about one title for a child of the stated age. The grades and citations are already checked and fixed. You write reasons only; do not change grades, settings or citations.
+Use one or two short sentences with concrete actions and familiar words. Describe what THIS title's cited sources report, not the area's general definition.
+Begin with explicit source attribution. Prefer "A review reports" over "A parent reports" unless the quote identifies its author as a parent. Describe one decisive report rather than joining every citation. For an age-check concern, describe the concrete bypass or the reported actual and recorded ages when supplied; a conditional correction procedure is not itself an observed failure.
+Attribute claims: say "A parent reports...", "A reviewer says...", "The privacy policy says...", "The store listing says...", or name the supplied source type. A report is not proof that every child has that experience; a policy promise is not proof that a control works.
+Explain uncertainty directly. Say what the cited quotes do not establish for this child's age. Do not turn missing evidence into reassurance. Do not claim a control works unless the cited quotes show it.
+Do not use internal terms such as "finding", "mitigation", "stance", "flag definition", "standing grade", or citation ids in the reason.
+Name only the specific practice, harm, recipient, purchase, or control the cited quotes establish. Do not copy a definition's list of possible harms. Do not add motives, causes, frequency, defaults, ages, or uses of data the quotes do not establish.
+For a flag, explain the concrete concern that meets the supplied area definition; a related product feature on its own does not explain why the area is a concern. The definition is a criterion, never evidence. Prefer one concise concrete report; do not combine many harms or add an explanation of causes.
+For a setting grade, explain the reported concern and name the quoted control a parent should change, without promising it prevents a reported bypass. For OK, describe the limited positive evidence without calling the whole title safe or treating silence as reassurance.
+Do not turn a compliance label, rating, certification or marketing promise into proof of actual compliance, safety or effectiveness. Attribute it as a claim and state that the quote alone does not verify it.
+Use only the exact cited source quotes, not a reader claim or a grade definition as evidence. Return JSON {"reasons":[{"area":"...","reason":"..."}]} with one reason per supplied area.`
+}
+func parentReasonCheckSystem() string {
+	return `You check the exact explanation a parent will see against only its cited source quotes. A fixed grade and an area definition are not evidence. For a flag, the explanation must describe the concrete concern that meets the supplied area definition, rather than an unrelated or merely adjacent feature. Answer reason_supported true only when every concrete claim in the reason is supported by a cited quote and attribution matches the supplied source type. Do not grant an allowance for text copied from a grade definition.
+Check every practice, harm, recipient, purchase, control, age, number, default, frequency, cause and use of data separately. One unsupported item makes the reason false. A broad category does not support extra examples. A source claiming a policy or setting does not prove it works in practice. A report about one child does not prove all children experience it. Silence about a risk does not establish safety or absence of enforcement. An age recommendation or educational level does not prove an age gate works. A first-hand claim is supported when carefully attributed as that source's report, without presenting it as independently established fact.
+The explanation must begin with explicit source attribution, use plain parent-facing language, attribute factual claims, and explain limits without reassurance based on missing evidence. A review is not necessarily a parent: do not invent the author’s role. A compliance label, rating, certification or marketing promise does not demonstrate actual compliance, safety or effectiveness. Reject an inference of adherence from the mere presence of a label. Reject an unqualified factual opening even if later parts mention a source. Reject internal terms such as finding, mitigation, stance, flag definition, standing grade or citation ids. A statement that the evidence is insufficient is acceptable; a concrete claim added to that statement still needs its own quote.
+Return JSON {"reason_supported":true} or {"reason_supported":false}. Do not change or re-evaluate the grade.`
+}
+func parentReasonUser(title string, age int, grades []checklist.Grade, fs []finding.Finding) string {
+	var b strings.Builder
+	fmt.Fprintf(&b, "Title: %s\nChild's age: %d\n", title, age)
+	for _, g := range grades {
+		fmt.Fprintf(&b, "\nArea: %s\nLevel: %s\nSetting: %s\nArea definition (criterion, not evidence): %s\n", g.Area, g.Level, g.Setting, areaDefs[g.Area])
+		for _, f := range fs {
+			if slices.Contains(g.Findings, f.ID) {
+				fmt.Fprintf(&b, "Source: %s\nQuote: %q\n", f.Source.Kind, f.Quote)
+			}
+		}
+	}
+	return b.String()
+}
+func (j *Judge) parentReasons(ctx context.Context, title string, age int, ref string, grades []checklist.Grade, fs []finding.Finding) ([]checklist.Grade, cost.Price) {
+	out := slices.Clone(grades)
+	var writable []checklist.Grade
+	for i, g := range out {
+		if g.Level == checklist.Unknown {
+			out[i].Reason = parentUnknownReason
+			continue
+		}
+		if g.Level == checklist.OK {
+			out[i].Reason = parentOKFallback
+		} else {
+			out[i].Reason = parentConcernFallback
+		}
+		if len(g.Findings) > 0 {
+			writable = append(writable, g)
+		}
+	}
+	if len(writable) == 0 {
+		return out, 0
+	}
+	r, price, err := chat(ctx, j.Meter, j.Model, "reason", ref, []model.Message{{Role: "system", Content: parentReasonSystem()}, {Role: "user", Content: parentReasonUser(title, age, writable, fs)}}, model.Options{JSON: true, Extra: j.Fast, MaxTokens: 2048})
+	if err != nil {
+		return out, price
+	}
+	var parsed struct {
+		Reasons []struct {
+			Area   checklist.Area `json:"area"`
+			Reason string         `json:"reason"`
+		} `json:"reasons"`
+	}
+	if json.Unmarshal([]byte(r.Text), &parsed) != nil {
+		return out, price
+	}
+	candidates := map[checklist.Area]string{}
+	counts := map[checklist.Area]int{}
+	for _, v := range parsed.Reasons {
+		counts[v.Area]++
+		candidates[v.Area] = strings.TrimSpace(v.Reason)
+	}
+	for i, g := range out {
+		if g.Level == checklist.Unknown || counts[g.Area] != 1 || candidates[g.Area] == "" || len(g.Findings) == 0 {
+			continue
+		}
+		candidate := g
+		candidate.Reason = candidates[g.Area]
+		accepted, p := j.checkParentReason(ctx, title, age, ref, candidate, fs)
+		price += p
+		if accepted {
+			out[i].Reason = candidate.Reason
+			continue
+		}
+		// One bounded repair can make the reason narrower, but has no
+		// authority to rescue or change the grade. The repaired prose must
+		// pass the same independent support check or the fallback remains.
+		r, p, err := chat(ctx, j.Meter, j.Model, "reason_repair", ref, []model.Message{
+			{Role: "system", Content: parentReasonSystem()},
+			{Role: "user", Content: parentReasonUser(title, age, []checklist.Grade{g}, fs) + "\nThe previous explanation failed verification: " + candidate.Reason + "\nWrite a narrower explanation from one concrete source quote. Attribute what that quote reports, omit inferences and do not infer failure from a hypothetical procedure. Return the same reasons JSON format."},
+		}, model.Options{JSON: true, Extra: j.Fast, MaxTokens: 1024})
+		price += p
+		if err != nil {
+			continue
+		}
+		var repair struct {
+			Reasons []struct {
+				Area   checklist.Area `json:"area"`
+				Reason string         `json:"reason"`
+			} `json:"reasons"`
+		}
+		if json.Unmarshal([]byte(r.Text), &repair) != nil || len(repair.Reasons) != 1 || repair.Reasons[0].Area != g.Area || strings.TrimSpace(repair.Reasons[0].Reason) == "" {
+			continue
+		}
+		candidate.Reason = strings.TrimSpace(repair.Reasons[0].Reason)
+		accepted, p = j.checkParentReason(ctx, title, age, ref, candidate, fs)
+		price += p
+		if accepted {
+			out[i].Reason = candidate.Reason
+		}
+	}
+	return out, price
+}
+
+func (j *Judge) checkParentReason(ctx context.Context, title string, age int, ref string, g checklist.Grade, fs []finding.Finding) (bool, cost.Price) {
+	user := parentReasonUser(title, age, []checklist.Grade{g}, fs) + "\nReason: " + g.Reason
+	r, p, err := chat(ctx, j.Meter, j.Entail, "reason_check", ref, []model.Message{{Role: "system", Content: parentReasonCheckSystem()}, {Role: "user", Content: user}}, model.Options{JSON: true, Extra: j.Fast, MaxTokens: 1024})
+	if err != nil {
+		return false, p
+	}
+	var verdict struct {
+		Supported *bool `json:"reason_supported"`
+	}
+	return json.Unmarshal([]byte(r.Text), &verdict) == nil && verdict.Supported != nil && *verdict.Supported, p
 }

@@ -1,0 +1,8 @@
+{
+  "text": "{\"reasons\": [{\"area\": \"money\", \"reason\": \"Multiple sources confirm there are no payments required: a review states 'ACTUALLY FREE YOU DONT NEED TO PAY', the store listing says '100% free with no ads or subscriptions', and a Reddit user notes 'It is free' with no mention of costs.\"}, {\"area\": \"data\", \"reason\": \"The store listing explicitly states the app is 'COPPA-compliant', indicating adherence to children's privacy regulations for users under 13, which includes a 5-year-old.\"}, {\"area\": \"content\", \"reason\": \"A review reports that disturbing imagery appeared during use: 'A grid of scary devil faces and men tied up with their mouth taped shut popped up for about 15 seconds while my kid was working on math.'\"}]}",
+  "input_tokens": 795,
+  "output_tokens": 181,
+  "price_nano": 401400,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

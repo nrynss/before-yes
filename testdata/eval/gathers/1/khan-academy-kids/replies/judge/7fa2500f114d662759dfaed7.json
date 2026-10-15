@@ -1,0 +1,8 @@
+{
+  "text": "{\"reasons\": [{\"area\": \"money\", \"reason\": \"Reviewers confirm there are no payments required, describing the app as actually free with no need to pay.\"}, {\"area\": \"data\", \"reason\": \"The store listing states the app is COPPA-compliant, indicating adherence to children's privacy regulations.\"}, {\"area\": \"content\", \"reason\": \"A review reports that disturbing images of scary devil faces and bound individuals appeared briefly during use, which could upset a young child.\"}]}",
+  "input_tokens": 686,
+  "output_tokens": 108,
+  "price_nano": 303000,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

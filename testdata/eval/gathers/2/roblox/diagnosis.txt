@@ -4,7 +4,7 @@ diagnose Roblox age 9 verdict no findings 187 (conflict pass replaced the confli
     card flag setting ""
     check stood
     entail meets_definition=true reason_supported=true
-    reason strangers can reach this child by message, chat or voice, and no control a parent can set shuts that door
+    reason A forum post states chats built into the coding of specific mini-games cannot be disabled, and kids can type text on signs regardless of communication preferences.
     quote f_a8ef6e887203f7cd risk review: There are child predators in this game, it allows your child to interact with adults and my kids has been threatened by a person in adopt me and has been scared to play. The police have come and taken the predators under custody but Roblox owner wanted them on there. DO NOT GET THIS APP ESPECIALLY IF YOUR 16 AND UNDER!!!!
     quote f_936c4f1c94f5d7a9 risk forum: Chats built into the coding of specific mini-games cannot be disabled, and kids can type text on "signs" regardless of communication preferences.
   money  risks 29 mitigations 2 other 4
@@ -12,7 +12,7 @@ diagnose Roblox age 9 verdict no findings 187 (conflict pass replaced the confli
     card flag setting ""
     check stood
     entail meets_definition=true reason_supported=true
-    reason the title pushes purchases at children
+    reason The cited sources raise a concern here. Read the source quotes before deciding.
     quote f_ef55d9331aff6121 risk review: Kinda good! I do not like the updates and but also no chat so but I like. The games that you can still play I still like the AI I like the fun
     quote f_783661ae59b066c7 risk news: A parent said their 10-year-old daughter spent more than $7,000 (£5,200) in two months despite attempts to limit purchases.
     quote f_1368a2c5a6fe539a risk review: I don’t know if anyone else has been having the same problem but it will not let me play without paying. When I open up the game it tells me to upgrade it, when I try to upgrade it in the App Store it tells me e that I need to add a payment option. So I go to add my card info, thankfully I added the one with no money, and I looked to see that I got a $46 charge. This is unacceptable when you guys advertise the game as free.
@@ -21,7 +21,7 @@ diagnose Roblox age 9 verdict no findings 187 (conflict pass replaced the confli
     card flag setting ""
     check stood
     entail meets_definition=true reason_supported=true
-    reason children's data is collected and used in ways a parent cannot control
+    reason The cited sources raise a concern here. Read the source quotes before deciding.
     quote f_642612c1692ab232 risk store: Advanced content filtering and age-appropriate moderation
     quote f_3863f822c43eb156 risk terms: Roblox may access and review Content, including Content shared via Communication Features and other non-public Content.
     quote f_37a8bd5d8f222dac risk forum: Images used for age verification may be processed by third-party providers, but Roblox does not publicly guarantee a fixed retention period for the images of children.
@@ -30,7 +30,7 @@ diagnose Roblox age 9 verdict no findings 187 (conflict pass replaced the confli
     card flag setting ""
     check stood
     age-gate event=wrong_age_assignment witness="my child got put in the 28th group" actual_age="" assigned_age=""; age-gate event=wrong_age_assignment witness="I contacted Roblox support and they said I gotta wait until I’m 13 but the birthday said Oct 7,1985 and I didn’t know how that worked… because it said that I’m 41 but I’m younger than 13" actual_age="younger than 13" assigned_age="41"
-    reason the age gate fails in practice
+    reason A review reports the child was placed in the wrong age group (28th group) due to broken age group updates.
     quote f_8197a153550302ef risk review: The new app updates age group ideas are completely broken plus my child got put in the 28th group. Please fix your game. And plus there’s kind of like disrespectful people and disgusting people on here so please please please fix your game
     quote f_979e8a567e65fc3b risk review: the pencil icon nor the link parent icon was there so if you could add a feature to ask Roblox themselves to reset your Face ID scan that would be nice and I contacted Roblox support and they said I gotta wait until I’m 13 but the birthday said Oct 7,1985 and I didn’t know how that worked… because it said that I’m 41 but I’m younger than 13
     quote f_ed2aac5c14c3bb92 risk news: Drew Benvie, chief executive of social media consultancy Battenhall and founder of the youth safety nonprofit Raise, said creating age limits for features will only go so far to keeping children safe on Roblox.
@@ -39,7 +39,7 @@ diagnose Roblox age 9 verdict no findings 187 (conflict pass replaced the confli
     card flag setting ""
     check stood
     entail meets_definition=true reason_supported=true
-    reason parents or reviewers report children actually meeting unsuitable material on this title
+    reason A forum post states extreme violence, inappropriate language, and sexually explicit content is possible and likely within user-created games.
     quote f_99d787be8d0bf74c risk review: So much hackers and online dating like 1 because like Roblox’s has harassment in games such as Brookhaven or many rol plays games like I don’t know why and Roblox please ban these online daters/hackers
     quote f_d4c614fe03358dea risk review: Also the role play games such as Brookhaven are a huge problem because half the people in the game are doing very disturbing and innaproprite stuff.
     quote f_2b802b187656359b risk review: Look it’s fun but there are prefers be careful
@@ -69,5 +69,5 @@ diagnose Roblox age 9 verdict no findings 187 (conflict pass replaced the confli
     card flag setting ""
     check stood
     entail meets_definition=true reason_supported=true
-    reason this title's developer has a record of enforcement over how it treats children or their data
+    reason A news report states the Texas Attorney General sued Roblox for flagrantly ignoring safety laws and deceiving parents about dangers to young people.
     quote f_13ff2ba3714f5fe6 risk news: Texas Attorney General Ken Paxton says he has sued Roblox over "flagrantly ignoring" safety laws and "deceiving parents" about the dangers the online video gaming platform poses to young people.

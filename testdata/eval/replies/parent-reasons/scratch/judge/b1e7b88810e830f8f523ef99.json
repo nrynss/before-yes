@@ -1,0 +1,8 @@
+{
+  "text": "{\"reasons\": [{\"area\": \"money\", \"reason\": \"Scratch is described as a free, block-based coding platform from MIT where children can design games and learn programming concepts at no cost.\"}]}",
+  "input_tokens": 472,
+  "output_tokens": 45,
+  "price_nano": 182100,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

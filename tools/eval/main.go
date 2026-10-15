@@ -26,6 +26,7 @@ package main
 
 import (
 	"context"
+	"crypto/sha256"
 	"encoding/json"
 	"flag"
 	"fmt"
@@ -85,6 +86,8 @@ type AreaResult struct {
 // Result compares one title and age.
 type Result struct {
 	Title        string            `json:"title"`
+	Grades       []checklist.Grade `json:"grades"`
+	EvidenceHash string            `json:"evidence_sha256"`
 	Age          int               `json:"age"`
 	Models       string            `json:"models"`
 	WantVerdict  checklist.Verdict `json:"want_verdict"`
@@ -156,6 +159,9 @@ func loadExpectations(dir string) ([]Expectation, error) {
 }
 
 func evaluate(root, models string) ([]Result, error) {
+	if *reasonCases != "" {
+		return evaluateReasonCases(root, models)
+	}
 	if *gatherN < 0 || *gatherN > 2 {
 		return nil, fmt.Errorf("gather: -gather must be 0, 1 or 2")
 	}
@@ -182,7 +188,7 @@ func runOne(root, models string, e Expectation) Result {
 	var rec *gatherRecorder
 	var srv *httptest.Server
 	capDir := captureDir(root, e.Slug)
-	if models == "live" && *gatherN > 0 && !*liveEntailOnly {
+	if models == "live" && *gatherN > 0 && !*liveEntailOnly && !*reuseGather {
 		var err error
 		rec, err = newGatherRecorder(capDir, e.Title, itunesHost, tavilyHost)
 		if err != nil {
@@ -371,6 +377,9 @@ const quoteCover = 2.0 / 3
 // not cite still counts as found by the reader.
 func compare(res *Result, e Expectation, card pipeline.Card, ev pipeline.Evidence) {
 	res.GotVerdict = card.Verdict
+	res.Grades = card.Grades
+	evidenceJSON, _ := json.Marshal(ev.Findings)
+	res.EvidenceHash = fmt.Sprintf("%x", sha256.Sum256(evidenceJSON))
 	got := map[checklist.Area]checklist.Grade{}
 	for _, g := range card.Grades {
 		got[g.Area] = g

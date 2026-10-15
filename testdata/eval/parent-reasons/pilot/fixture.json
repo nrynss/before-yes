@@ -1,0 +1,332 @@
+[
+  {
+    "title": "Khan Academy Kids",
+    "age": 5,
+    "models": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B + nvidia/nemotron-3-super-120b-a12b",
+    "want_verdict": "yes",
+    "got_verdict": "yes",
+    "areas": [
+      {
+        "area": "contact",
+        "want": "ok",
+        "got": "ok",
+        "agree": true,
+        "found": [],
+        "missed": [
+          {
+            "source": "https://apps.apple.com/mx/app/khan-academy-kids/id1378467217?l=en-GB",
+            "quote": "Made For Ages 0–5"
+          }
+        ],
+        "got_reason": "The app has no contact feature, so strangers cannot message or voice chat with the child."
+      },
+      {
+        "area": "money",
+        "want": "ok",
+        "got": "ok",
+        "agree": true,
+        "found": [],
+        "missed": [
+          {
+            "source": "https://apps.apple.com/mx/app/khan-academy-kids/id1378467217?l=en-GB",
+            "quote": "Always 100% free, no ads, no subscriptions—just safe, joyful learning kids and parents love."
+          }
+        ],
+        "got_reason": "The app is free with no costs or hidden fees, so it does not push purchases on children."
+      },
+      {
+        "area": "data",
+        "want": "ok",
+        "got": "unknown",
+        "agree": false,
+        "found": [],
+        "missed": [
+          {
+            "source": "https://www.khanacademy.org/kids",
+            "quote": "We don't show ads in the app, and we don't let third parties track your child across other apps or websites."
+          }
+        ],
+        "got_reason": "We don’t have enough evidence to assess this concern for your child’s age."
+      },
+      {
+        "area": "age_gating",
+        "want": "ok",
+        "got": "ok",
+        "agree": true,
+        "found": [],
+        "missed": [
+          {
+            "source": "https://www.khanacademy.org/kids",
+            "quote": "A free educational app for children ages 2–8, with games, books, and lessons"
+          }
+        ],
+        "got_reason": "The app is designed for children aged 2 to 7, so the age gate works in practice for a 5‑year‑old."
+      },
+      {
+        "area": "content",
+        "want": "ok",
+        "got": "ok",
+        "agree": true,
+        "found": [],
+        "missed": [
+          {
+            "source": "R311",
+            "quote": "My 4 year old loves this. It has everything and isn’t overstimulating AND it has no ads."
+          }
+        ],
+        "got_reason": "Parents report the app provides educational activities like counting, letters, and storytime that are suitable for young children."
+      },
+      {
+        "area": "developer_record",
+        "want": "unknown",
+        "got": "ok",
+        "agree": false,
+        "found": [],
+        "missed": [],
+        "got_reason": "The developer has no recorded fines, breaches, lawsuits, or regulatory actions regarding children or their data."
+      }
+    ],
+    "agreed": 4,
+    "decisive_found": 0,
+    "decisive_total": 5,
+    "findings": 212,
+    "drops": {
+      "bad_area": 22,
+      "bad_stance": 0,
+      "no_quote": 3,
+      "unquoted": 39,
+      "duplicates": 51
+    },
+    "drop_rate": 0.3516819571865443,
+    "chunks": 19,
+    "failed_chunks": 0,
+    "missing_kinds": [
+      "policy",
+      "terms"
+    ],
+    "tavily_credits": 7,
+    "read_cost_nano": 11594220,
+    "judge_cost_nano": 26852100
+  },
+  {
+    "title": "Minecraft",
+    "age": 9,
+    "models": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B + nvidia/nemotron-3-super-120b-a12b",
+    "want_verdict": "yes_with_settings",
+    "got_verdict": "no",
+    "areas": [
+      {
+        "area": "contact",
+        "want": "ok_with_setting",
+        "got": "unknown",
+        "agree": false,
+        "found": [
+          {
+            "source": "https://virtual-addiction.com/online-safety/minecraft",
+            "quote": "On a child account, multiplayer starts off, and you choose whether others can communicate with your child"
+          }
+        ],
+        "missed": [
+          {
+            "source": "https://www.esrb.org/blog/what-parents-need-to-know-about-minecraft",
+            "quote": "offer child accounts that empower parents to manage and monitor gameplay, multiplayer access, chat settings, and friend requests"
+          }
+        ],
+        "got_reason": "We don’t have enough evidence to assess this concern for your child’s age."
+      },
+      {
+        "area": "money",
+        "want": "ok",
+        "got": "unknown",
+        "agree": false,
+        "found": [],
+        "missed": [
+          {
+            "source": "R127",
+            "quote": "there is no ads to interrupt me and I can get friends"
+          }
+        ],
+        "got_reason": "We don’t have enough evidence to assess this concern for your child’s age."
+      },
+      {
+        "area": "data",
+        "want": "unknown",
+        "got": "unknown",
+        "agree": true,
+        "found": [],
+        "missed": [],
+        "got_reason": "While some parents report concerns about data collection for ads or third parties, no findings clearly state that children's data is collected and used in ways a parent cannot control, such as ad tracking aimed at children or no way to delete data."
+      },
+      {
+        "area": "age_gating",
+        "want": "ok",
+        "got": "unknown",
+        "agree": false,
+        "found": [
+          {
+            "source": "https://virtual-addiction.com/online-safety/minecraft",
+            "quote": "On a child account, multiplayer starts off, and you choose whether others can communicate with your child"
+          }
+        ],
+        "missed": [],
+        "got_reason": "We don’t have enough evidence to assess this area. The sources do not support the explanation."
+      },
+      {
+        "area": "content",
+        "want": "ok",
+        "got": "flag",
+        "agree": false,
+        "found": [],
+        "missed": [
+          {
+            "source": "https://www.minecraft.net/en-us/article/parents--guide-minecraft",
+            "quote": "Because combat is part of the game, there are some elements of mild violence."
+          }
+        ],
+        "got_reason": "A parent reports seeing satanic themes in the game, which is unsuitable horror content for a 9‑year‑old."
+      },
+      {
+        "area": "developer_record",
+        "want": "unknown",
+        "got": "unknown",
+        "agree": true,
+        "found": [],
+        "missed": [],
+        "got_reason": "No findings indicate that Mojang or Microsoft has faced fines, breaches, lawsuits, or regulatory actions specifically naming the developer for how it treats children or their data."
+      }
+    ],
+    "agreed": 2,
+    "decisive_found": 2,
+    "decisive_total": 5,
+    "findings": 259,
+    "drops": {
+      "bad_area": 44,
+      "bad_stance": 0,
+      "no_quote": 5,
+      "unquoted": 95,
+      "duplicates": 1
+    },
+    "drop_rate": 0.3589108910891089,
+    "chunks": 45,
+    "failed_chunks": 1,
+    "missing_kinds": [
+      "policy",
+      "terms"
+    ],
+    "tavily_credits": 7,
+    "read_cost_nano": 20989800,
+    "judge_cost_nano": 21450300
+  },
+  {
+    "title": "Roblox",
+    "age": 9,
+    "models": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B + nvidia/nemotron-3-super-120b-a12b",
+    "want_verdict": "no",
+    "got_verdict": "unclear",
+    "areas": [
+      {
+        "area": "contact",
+        "want": "flag",
+        "got": "unknown",
+        "agree": false,
+        "found": [],
+        "missed": [
+          {
+            "source": "R355",
+            "quote": "if your kid plays Roblox high chance a child predator might ask where you are"
+          },
+          {
+            "source": "R242",
+            "quote": "they can’t stop the child predators and E-Daters"
+          }
+        ],
+        "got_reason": "We don’t have enough evidence to assess this area. The sources do not support the explanation."
+      },
+      {
+        "area": "money",
+        "want": "flag",
+        "got": "unknown",
+        "agree": false,
+        "found": [],
+        "missed": [
+          {
+            "source": "R1",
+            "quote": "I got Robux and I got only 246 Robux instead of 1800"
+          }
+        ],
+        "got_reason": "We don’t have enough evidence to assess this area. The sources do not support the explanation."
+      },
+      {
+        "area": "data",
+        "want": "unknown",
+        "got": "unknown",
+        "agree": true,
+        "found": [],
+        "missed": [],
+        "got_reason": "We don’t have enough evidence to assess this area. The sources do not support the explanation."
+      },
+      {
+        "area": "age_gating",
+        "want": "flag",
+        "got": "unknown",
+        "agree": false,
+        "found": [],
+        "missed": [
+          {
+            "source": "R147",
+            "quote": "Im 14 but it said 9-12 on the age check"
+          }
+        ],
+        "got_reason": "We don’t have enough evidence to assess this area. The sources do not support the explanation."
+      },
+      {
+        "area": "content",
+        "want": "flag",
+        "got": "unknown",
+        "agree": false,
+        "found": [],
+        "missed": [
+          {
+            "source": "R491",
+            "quote": "It’s also a very inappropriate game with all the horror games"
+          }
+        ],
+        "got_reason": "We don’t have enough evidence to assess this area. The sources do not support the explanation."
+      },
+      {
+        "area": "developer_record",
+        "want": "flag",
+        "got": "unknown",
+        "agree": false,
+        "found": [],
+        "missed": [
+          {
+            "source": "https://www.securitymagazine.com/articles/101628-lawsuit-alleges-roblox-tracks-childrens-data-without-parental-consent",
+            "quote": "This lawsuit alleges that Roblox has violated the privacy of its users by tracking data without consent."
+          }
+        ],
+        "got_reason": "We don’t have enough evidence to assess this area. The sources do not support the explanation."
+      }
+    ],
+    "agreed": 1,
+    "decisive_found": 0,
+    "decisive_total": 6,
+    "findings": 165,
+    "drops": {
+      "bad_area": 2,
+      "bad_stance": 0,
+      "no_quote": 1,
+      "unquoted": 75,
+      "duplicates": 4
+    },
+    "drop_rate": 0.3319838056680162,
+    "chunks": 36,
+    "failed_chunks": 1,
+    "missing_kinds": [
+      "policy"
+    ],
+    "tavily_credits": 8,
+    "read_cost_nano": 15718860,
+    "judge_cost_nano": 26170800
+  }
+]

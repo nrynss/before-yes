@@ -1,0 +1,40 @@
+[
+  {
+    "title": "LEGO Worlds",
+    "slug": "parent-reasons/lego-worlds",
+    "age": 9,
+    "source_file": "testdata/alternatives/minecraft/tavily-search-alternatives.json",
+    "findings": [
+      {
+        "id": "f_outside_lego-worlds",
+        "area": "contact",
+        "stance": "neutral",
+        "quote": "LEGO Worlds gives you the creative freedom of a sandbox inside a calmer, more structured, LEGO-branded package. There's no open chat with strangers, it carries a family-friendly rating, and the toy-inspired building will feel instantly familiar to any kid who's snapped bricks together. If you want the joy of construction without the open social layer, it's one of the easiest recommendations on this list.",
+        "claim": "A comparison article describes this title.",
+        "source": {
+          "url": "https://playmysh.com/blog/the-best-games-like-roblox-for-kids-in-2026",
+          "kind": "comparison guide"
+        }
+      }
+    ]
+  },
+  {
+    "title": "Scratch",
+    "slug": "parent-reasons/scratch",
+    "age": 9,
+    "source_file": "testdata/alternatives/minecraft/tavily-search-alternatives.json",
+    "findings": [
+      {
+        "id": "f_outside_scratch",
+        "area": "money",
+        "stance": "neutral",
+        "quote": "If what your child loves about Roblox is the *making* \u2014 designing their own games and worlds \u2014 Scratch is the real thing. It's MIT's free, block-based coding platform, and kids genuinely learn programming concepts like loops and variables while building. The community is moderated, there's a huge library of projects to remix, and it all runs in the browser.",
+        "claim": "A comparison article describes this title.",
+        "source": {
+          "url": "https://playmysh.com/blog/the-best-games-like-roblox-for-kids-in-2026",
+          "kind": "comparison guide"
+        }
+      }
+    ]
+  }
+]

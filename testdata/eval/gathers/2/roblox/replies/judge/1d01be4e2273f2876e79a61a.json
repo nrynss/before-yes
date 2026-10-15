@@ -1,0 +1,8 @@
+{
+  "text": "{\"reaso ns\": [{\"area\": \"money\", \"reason\": \"A news report states a parent said their 10-year-old daughter spent more than $7,000 in two months despite attempts to limit purchases.\"}]}",
+  "input_tokens": 910,
+  "output_tokens": 51,
+  "price_nano": 318900,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}
