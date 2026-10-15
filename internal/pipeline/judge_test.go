@@ -349,17 +349,17 @@ func (r *recordedReplies) Settings() model.Settings {
 	return model.Settings{Provider: "replay", Model: "recorded-" + r.role}
 }
 
-// TestRecordedRepliesGradesRestOnVerifiedQuotes is T3.9b's pin, carried to
-// T3.10. It replays the Token Factory replies recorded under T3.10 for the
-// three demo titles through Collect and Decide, with the judge switches the
-// recordings were made with and the entailment check wired to the recorded
-// reader, and checks that no flag or ok_with_setting stands on the card
-// without a valid citation: at least one cited id, every one a verified
-// finding in the grade's area with a fitting stance, and for a setting, a
-// cited mitigation quote that names it. It checks that every area in
-// Card.ThinAreas is unknown, and pins each title's grade levels, thin areas
-// and verdict. The entailment replays cover the definition rule: a standing
-// grade also survives the area's flag definition and its own reason.
+// TestRecordedRepliesGradesRestOnVerifiedQuotes is T3.9b's pin, carried
+// through T3.11. It replays the Token Factory replies for the three demo
+// titles through Collect and Decide, with the judge switches the recordings
+// were made with and the entailment check wired to the recorded judge, and
+// checks that no flag or ok_with_setting stands on the card without a valid
+// citation: at least one cited id, every one a verified finding in the
+// grade's area with a fitting stance, and for a setting, a cited mitigation
+// quote that names it. It checks that every area in Card.ThinAreas is
+// unknown, and pins each title's grade levels, thin areas and verdict. The
+// entailment replays cover the definition rule: a standing grade also
+// survives the area's flag definition and its own reason.
 func TestRecordedRepliesGradesRestOnVerifiedQuotes(t *testing.T) {
 	L := func(ls ...checklist.Level) []checklist.Level { return ls }
 	const (
@@ -372,15 +372,15 @@ func TestRecordedRepliesGradesRestOnVerifiedQuotes(t *testing.T) {
 		levels  []checklist.Level // in card order, after every demotion
 		thin    []checklist.Area
 	}{
-		// Roblox: the money, age_gating, content and developer_record flags
-		// stand the entailment check (developer_record on the enforcement-
-		// record sentence: the LA County suit is filed against the developer);
-		// contact and data are dropped by it (flag_not_earned) and land thin.
-		{demos[0], 9, checklist.No, L(unk, flag, unk, flag, flag, flag), []checklist.Area{"contact", "data"}},
-		// Minecraft: four ok_with_settings, each naming a setting a cited
-		// mitigation quote backs; data and developer_record are the judge's
-		// own unknowns, so nothing is thin.
-		{demos[1], 9, checklist.YesWithSettings, L(set, set, unk, set, set, unk), nil},
+		// Roblox: money, age_gating and developer_record stand (the LA County
+		// suit is filed against the developer). contact, data and content
+		// are flag_not_earned and land thin. Verdict no.
+		{demos[0], 9, checklist.No, L(unk, flag, unk, flag, unk, flag), []checklist.Area{"contact", "data", "content"}},
+		// Minecraft: contact stays ok_with_setting. money, age_gating and
+		// content are flag_not_earned. data and developer_record are the
+		// judge's own unknowns, so they are not thin. Content unknown makes
+		// the verdict unclear.
+		{demos[1], 9, checklist.Unclear, L(set, unk, unk, unk, unk, unk), []checklist.Area{"money", "age_gating", "content"}},
 		// Khan: the judge graded four areas ok citing nothing (Enforce's
 		// ok_without_finding), age_gating named a setting no cited quote
 		// names, and the content flag's quotes do not meet the definition
@@ -402,7 +402,7 @@ func TestRecordedRepliesGradesRestOnVerifiedQuotes(t *testing.T) {
 			p := &Pipeline{
 				Gatherer: &Gatherer{Store: store, Search: tc, Meter: m, Now: now},
 				Reader:   &Reader{Model: reader, Meter: m},
-				Judge:    &Judge{Model: judge, Meter: m, Fast: tokenFactory(false), Think: tokenFactory(true), Entail: reader},
+				Judge:    &Judge{Model: judge, Meter: m, Fast: tokenFactory(false), Think: tokenFactory(true), Entail: judge},
 				Now:      now,
 			}
 			ctx := context.Background()
