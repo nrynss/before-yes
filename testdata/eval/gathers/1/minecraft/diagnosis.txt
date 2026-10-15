@@ -1,4 +1,4 @@
-diagnose Minecraft age 9 verdict no findings 221 (conflict pass replaced the conflicted areas)
+diagnose Minecraft age 9 verdict unclear findings 221 (conflict pass replaced the conflicted areas)
   contact  risks 27 mitigations 11 other 2
     judge ok_with_setting setting "Restrict Communication" cited 2 [f_8e13d0d8cf810113 f_31c58032f10f0ed3]
     card unknown setting ""
@@ -9,10 +9,10 @@ diagnose Minecraft age 9 verdict no findings 221 (conflict pass replaced the con
     quote f_31c58032f10f0ed3 mitigation rating: Restrict Communication
   money  risks 60 mitigations 4 other 6
     judge ok_with_setting setting "Control Spending" cited 2 [f_4f0d24b3b6bb0948 f_6b222f7ec75ab54a]
-    card ok_with_setting setting "Control Spending"
-    check stood
-    entail meets_definition=true reason_supported=true
-    reason Reports of unauthorized purchases exist, but the Control Spending setting can limit what a child can buy.
+    card unknown setting ""
+    check entail: flag_not_earned
+    entail meets_definition=false reason_supported=false
+    reason Changed to unknown: the cited quotes do not meet this area's flag definition.
     quote f_4f0d24b3b6bb0948 risk review: i bought 10,000 minecoins and im litterly a kid im only 10 and i got scammed i litterly used all my birthday money! FRICK YOU MINECRAFT
     quote f_6b222f7ec75ab54a mitigation rating: Control Spending
   data  risks 21 mitigations 2 other 10
@@ -26,22 +26,22 @@ diagnose Minecraft age 9 verdict no findings 221 (conflict pass replaced the con
     judge flag setting "" cited 1 [f_88d325d4c1d10860]
     card unknown setting ""
     check entail: flag_not_earned
-    entail meets_definition=false reason_supported=false
+    entail meets_definition=false reason_supported=true
     reason Changed to unknown: the cited quotes do not meet this area's flag definition.
     quote f_88d325d4c1d10860 risk review: Can you make the game available for +5 year-old?
   content  risks 18 mitigations 2 other 15
     judge ok_with_setting setting "block access to games based on the ESRB-assigned rating information" cited 2 [f_3cad9aec44591175 f_81363ff213c488f0]
     card unknown setting ""
     check entail: flag_not_earned
-    entail meets_definition=false reason_supported=false
+    entail meets_definition=false reason_supported=true
     reason Changed to unknown: the cited quotes do not meet this area's flag definition.
     quote f_3cad9aec44591175 risk review: it was scary but in the good way
     quote f_81363ff213c488f0 mitigation rating: block access to games based on the ESRB-assigned rating information
   developer_record  risks 12 mitigations 1 other 10
     judge flag setting "" cited 2 [f_895e1f4c7ea107f6 f_84aa4cf4beb17e84]
-    card flag setting ""
-    check stood
-    entail meets_definition=true reason_supported=true
-    reason The developer has faced regulatory fines and lawsuits over data‑privacy violations.
+    card unknown setting ""
+    check entail: flag_not_earned
+    entail meets_definition=false reason_supported=false
+    reason Changed to unknown: the cited quotes do not meet this area's flag definition.
     quote f_895e1f4c7ea107f6 risk review: BAN YOUR STUPID GAME
     quote f_84aa4cf4beb17e84 risk rating: Microsoft. (n.d.). [Frequently asked questions about Microsoft account age assurance](https://support.microsoft.com/en-us/accounts-billing/manage/about-microsoft-account-age-verification). Accessed October 2, 2026.
