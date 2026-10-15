@@ -81,3 +81,19 @@ Keel v0.7.3's `stream.Broker` replays only a retained terminal event to a subscr
 ## A test that leaves its job running can fail on temp-dir cleanup
 
 `TestCheckConcurrencyLimitBusy` released its blocked check and returned at once. With T4.7's per-report progress writes, the still-running job wrote to its SQLite file while `t.TempDir` was being removed, and hosted CI failed with `unlinkat …: directory not empty`. Locally it passed. The test now waits for the check to finish before it returns. Any test that starts a check should wait for it to end. No live service was called; cost was zero.
+
+## A Tavily hit's title can be the platform's name alone
+
+The alternatives search for Minecraft returned a Medium article whose whole hit `title` is "Medium": the article's own headline appears nowhere in the response — not in the title, the content snippet, or the raw content's first bytes. Any pipeline that takes a hit title as "the name of the thing this page is about" reads "Medium" and, without a site-name check against the hit's URL, proposes the blogging platform as a safer alternative for a 9-year-old. T3.12 rejects the publishing site's name derived from the hit URL's registrable domain for exactly this. *Fix upstream:* include the article headline in the result's title or content when the crawl target is an article page. Cost: the one bad candidate in the live replay; the capture spent 1 credit.
+
+## Search results overlap heavily across sibling queries
+
+The playmysh.com article "Safe Games Like Roblox" was a top hit for both the Roblox and the Minecraft alternatives searches, and T3.12's captures share further hits across the three titles' queries. Tavily's ranking for "safer app like X for a N year old" appears to draw on one pool of kid-safety listicles, adjusted only slightly per title. Consequence: candidates found for sibling titles repeat, and per-title variety in alternatives is lower than the query wording suggests. *Fix upstream:* none needed by us; a diversity control or query-conditioned re-ranking would help. Cost: none beyond what the captures show.
+
+## raw_content availability is per-site, inside one response
+
+In the same alternatives search, Facebook, Reddit and Quora hits return `raw_content` of 0 bytes while Common Sense Media and parent blogs return full markdown with links (the CSM page alone is ~21k characters). `content` snippets are present for all. So any list-page reading step must degrade to snippet-only on platform hits precisely where those platforms' threads (the most parent-voice-dense material) live. We make no extra call to compensate: the single metered search stands. *Fix upstream:* consistent raw content, or a clear per-domain flag in the response. Cost: none; measured on the three capture files (1 credit each).
+
+## Same-platform alternatives can rarely beat a platform "no"
+
+The alternatives search for Roblox (verdict no) returns Roblox experiences — Theme Park Tycoon 2, Build A Boat for Treasure, My Hello Kitty Cafe — and their own gathered evidence inherits platform-wide risks (a "Roblox is dangerous" parent report sits inside My Hello Kitty Cafe's findings), so none can honestly beat the no. T3.12's live run checked all three (3 fresh checks, ~23 credits, ~$0.045 model) and the card correctly shows none. This is the product's honesty working, but it means a platform-"no" title's alternatives step will keep coming back empty. *Fix (ours, a product decision):* seek alternatives from outside the platform, or let the precomputed demo path own the side-by-side. Recorded for the user; not changed in T3.12.
