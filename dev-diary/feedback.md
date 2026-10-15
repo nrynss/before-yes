@@ -73,3 +73,11 @@ Upstream issue: [nrynss/chaaya#84](https://github.com/nrynss/chaaya/issues/84). 
 Resolved by Chaaya 0.4.2, published from [nrynss/chaaya#85](https://github.com/nrynss/chaaya/pull/85). T5.3 adopts that supported release with the public API unchanged. The count-free terminal `done` and `error` reconnect pins now run unconditionally in the normal browser suite; the done pin opens the fixture-backed card page. No application workaround or fake count was added.
 
 The hosted T5.3 CI run rejected the freshly published Chaaya 0.4.2 during pnpm 11's frozen install because it fell inside `minimumReleaseAge`. The earlier local install had the package cached and did not expose the policy failure. The workspace config exempts only `@nrynss/chaaya@0.4.2`, the reviewed release adopted by T5.3; the lockfile and other dependency policies remain unchanged. CI run: [38609948475](https://github.com/nrynss/before-yes/actions/runs/38609948475).
+
+## Keel stream gives a late subscriber no progress
+
+Keel v0.7.3's `stream.Broker` replays only a retained terminal event to a subscriber that sends no `Last-Event-ID`; the latest progress event is not retained, so a page that opens mid-check sees nothing until the next report. That is by design, and T4.7 covers it by answering `GET /api/checks/{id}` with the progress snapshot `job.Runner` already stores on the record (`Record.Progress`). Keel gap: `job.Result` does not expose that snapshot, so the app reads it through `Runner.Attempts` and picks the matching id. *Fix upstream:* add `Progress` to `job.Result`, or let the broker retain the latest progress per topic for replay. No live service was called; cost was zero.
+
+## A test that leaves its job running can fail on temp-dir cleanup
+
+`TestCheckConcurrencyLimitBusy` released its blocked check and returned at once. With T4.7's per-report progress writes, the still-running job wrote to its SQLite file while `t.TempDir` was being removed, and hosted CI failed with `unlinkat …: directory not empty`. Locally it passed. The test now waits for the check to finish before it returns. Any test that starts a check should wait for it to end. No live service was called; cost was zero.

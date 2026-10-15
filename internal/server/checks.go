@@ -24,8 +24,10 @@ import (
 
 	"github.com/nrynss/before-yes/internal/cards"
 	"github.com/nrynss/before-yes/internal/checklist"
+	"github.com/nrynss/before-yes/internal/model"
 	"github.com/nrynss/before-yes/internal/pipeline"
 	"github.com/nrynss/before-yes/internal/spend"
+	"github.com/nrynss/before-yes/internal/tavily"
 )
 
 const (
@@ -323,7 +325,25 @@ func (s *Server) startCheck(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) work(p *pipeline.Pipeline, req pipeline.Request, ref string) job.Func {
 	return func(ctx context.Context, report func(job.Progress)) ([]byte, error) {
+		// The reader's chunks report from their own goroutines, so reports
+		// are serialized here and a read count never goes backwards: the
+		// stored snapshot GET /api/checks/{id} answers with is the last one.
+		var mu sync.Mutex
+		var lastStage string
+		var lastCur int64 = -1
 		progress := func(stage, msg string, cur, total *int64) {
+			mu.Lock()
+			defer mu.Unlock()
+			if stage == lastStage && cur != nil && *cur < lastCur {
+				return
+			}
+			if stage != lastStage {
+				lastCur = -1
+			}
+			lastStage = stage
+			if cur != nil {
+				lastCur = *cur
+			}
 			p := job.Progress{Stage: stage, Current: cur, Total: total}
 			if msg != "" {
 				p.Detail, _ = json.Marshal(map[string]string{"message": msg})
@@ -331,7 +351,18 @@ func (s *Server) work(p *pipeline.Pipeline, req pipeline.Request, ref string) jo
 			report(p)
 		}
 
-		progress("gather", "searching for the privacy policy", nil, nil)
+		progress("gather", "starting the search", nil, nil)
+		// Gather and read report through the context. A check that joins
+		// another's evidence collect sees none of them: only the leader's
+		// context reaches the pipeline.
+		ctx = pipeline.WithProgress(ctx, func(st pipeline.Step) {
+			if st.Total > 0 {
+				cur, tot := int64(st.Current), int64(st.Total)
+				progress(st.Stage, st.Message, &cur, &tot)
+				return
+			}
+			progress(st.Stage, st.Message, nil, nil)
+		})
 
 		var ev pipeline.Evidence
 		var hit bool
@@ -349,13 +380,6 @@ func (s *Server) work(p *pipeline.Pipeline, req pipeline.Request, ref string) jo
 
 		if hit {
 			progress("read", "using sources read "+ev.CollectedAt.Format("2 Jan 2006"), nil, nil)
-		} else {
-			if ev.Stats.Reviews > 0 {
-				cur, tot := int64(ev.Stats.Reviews), int64(ev.Stats.Reviews)
-				progress("read", fmt.Sprintf("reading %d reviews", ev.Stats.Reviews), &cur, &tot)
-			} else {
-				progress("read", "reading sources", nil, nil)
-			}
 		}
 
 		progress("judge", "grading 6 areas", nil, nil)
@@ -372,6 +396,10 @@ func (s *Server) work(p *pipeline.Pipeline, req pipeline.Request, ref string) jo
 				if errors.Is(err, cost.ErrOverBudget) {
 					return nil, mapFailure(err)
 				}
+				// The card stands without alternatives. The log names the
+				// failure's kind and status only, never a key or a body.
+				s.log().Warn("alternatives failed; storing the card without them",
+					"ref", ref, "cause", safeCause(err))
 				cid, err := s.Cards.Put(ctx, card)
 				if err != nil {
 					return nil, mapFailure(err)
@@ -491,16 +519,10 @@ func (s *Server) getCheck(w http.ResponseWriter, r *http.Request) {
 	}
 
 	switch res.Status {
-	case job.StatusRunning:
-		writeJSON(w, http.StatusOK, map[string]any{
-			"id":     rawID,
-			"status": "running",
-		})
-	case job.StatusQueued:
-		writeJSON(w, http.StatusOK, map[string]any{
-			"id":     rawID,
-			"status": "queued",
-		})
+	case job.StatusRunning, job.StatusQueued:
+		out := map[string]any{"id": rawID, "status": string(res.Status)}
+		s.addProgress(r.Context(), jid, out)
+		writeJSON(w, http.StatusOK, out)
 	case job.StatusDone:
 		cardID := string(res.Data)
 		if !strings.HasPrefix(cardID, "c_") {
@@ -611,4 +633,63 @@ func writeJSON(w http.ResponseWriter, status int, v any) {
 	w.Header().Set("Cache-Control", "no-store")
 	w.WriteHeader(status)
 	_ = json.NewEncoder(w).Encode(v)
+}
+
+// addProgress copies the job's latest stored progress into out as the
+// optional stage, message, current and total fields. A job with no
+// progress yet, or a store read that fails, adds nothing: the status alone
+// still answers.
+func (s *Server) addProgress(ctx context.Context, jid string, out map[string]any) {
+	recs, err := s.Runner.Attempts(ctx, jid)
+	if err != nil {
+		return
+	}
+	for _, rec := range recs {
+		if rec.ID != jid {
+			continue
+		}
+		p := rec.Progress
+		if p.Stage == "" {
+			return
+		}
+		out["stage"] = p.Stage
+		if len(p.Detail) > 0 {
+			var d struct {
+				Message string `json:"message"`
+			}
+			if json.Unmarshal(p.Detail, &d) == nil && d.Message != "" {
+				out["message"] = d.Message
+			}
+		}
+		if p.Current != nil && p.Total != nil {
+			out["current"] = *p.Current
+			out["total"] = *p.Total
+		}
+		return
+	}
+}
+
+// safeCause names an alternatives failure for the log without its text,
+// which can carry an upstream body: the upstream and HTTP status when
+// there is one, the failure code when there is one, otherwise a fixed kind.
+func safeCause(err error) string {
+	var te *tavily.Error
+	if errors.As(err, &te) {
+		return fmt.Sprintf("tavily HTTP %d", te.Status)
+	}
+	var me *model.Error
+	if errors.As(err, &me) {
+		return fmt.Sprintf("model HTTP %d", me.Status)
+	}
+	var f job.Failure
+	if errors.As(err, &f) && f.Code != "" {
+		return "failure " + f.Code
+	}
+	switch {
+	case errors.Is(err, context.Canceled):
+		return "cancelled"
+	case errors.Is(err, context.DeadlineExceeded):
+		return "timed out"
+	}
+	return "error"
 }

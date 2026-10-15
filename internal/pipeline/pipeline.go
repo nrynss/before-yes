@@ -169,6 +169,35 @@ func storefrontOf(s Store) (string, error) {
 	return "", errors.New("pipeline: the store does not say its storefront (implement Storefronter)")
 }
 
+// Step is one progress report from Collect: the stage, a parent-facing
+// message, and counts when the stage counts something (Total 0 means it
+// does not).
+type Step struct {
+	Stage   string
+	Message string
+	Current int
+	Total   int
+}
+
+type progressKey struct{}
+
+// WithProgress returns ctx carrying fn, the progress hook Collect, Gather
+// and Read report to as they work. fn must be safe for concurrent use: the
+// reader's chunks finish on their own goroutines.
+func WithProgress(ctx context.Context, fn func(Step)) context.Context {
+	return context.WithValue(ctx, progressKey{}, fn)
+}
+
+// report sends s to ctx's progress hook, if it has one.
+// A panicking hook is recovered: progress is for display, and a reader
+// chunk's goroutine must not take the process down with it.
+func report(ctx context.Context, s Step) {
+	defer func() { _ = recover() }()
+	if fn, ok := ctx.Value(progressKey{}).(func(Step)); ok && fn != nil {
+		fn(s)
+	}
+}
+
 // MaxFailedChunks is the most reader chunks that may fail for evidence to
 // be cached. Any failed chunk means the findings may be thin for a reason
 // that will not last, so the evidence is used for this card but not kept.
@@ -242,6 +271,7 @@ func (p *Pipeline) Collect(ctx context.Context, title, ref string) (ev Evidence,
 	if len(g.Docs) == 0 {
 		return Evidence{}, false, fmt.Errorf("%w: found nothing to read for %q", ErrNoSources, title)
 	}
+	report(ctx, Step{Stage: "read", Message: fmt.Sprintf("reading %d sources", len(g.Docs))})
 	rd, err := p.Reader.Read(ctx, title, ref, g.Docs)
 	if err != nil {
 		return Evidence{}, false, err

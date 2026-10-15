@@ -31,7 +31,7 @@ async function state(page: Page, state:unknown) {
 }
 async function opened(page: Page, count=1) {await expect.poll(() => page.evaluate(() => (window as unknown as {research:{streams:unknown[]}}).research.streams.length)).toBe(count);}
 test('exact fixture Gather Read Judge done, counts reset and card route', async ({page}) => {
- await mock(page);await page.goto(`/check/${id}`);await opened(page);
+ await mock(page,{id,status:'running'});await page.goto(`/check/${id}`);await opened(page);
  await push(page,frames[0]);await expect(page.getByRole('status')).toContainText('searching for the privacy policy');
  await push(page,frames[1]);await expect(page.getByRole('status')).toContainText('120 of 500');
  await push(page,frames[2]);await expect(page.getByRole('status')).toContainText('grading 6 areas');await expect(page.getByRole('status')).not.toContainText('120');
@@ -44,6 +44,40 @@ test('dropped mid-read replays with Last-Event-ID and finishes', async ({page}) 
  await opened(page,2);
  expect(await page.evaluate(() => (window as unknown as {research:{requests:{lastId:string|null}[]}}).research.requests.filter(r=>r.lastId).at(-1)?.lastId)).toBe('2');
  await push(page,frames[2],1);await state(page,fixture('get-check-done'));await push(page,frames[3],1);await expect(page).toHaveURL(`/card/${card}`);
+});
+test('page opened mid-read shows the saved stage and count at once', async ({page}) => {
+ await mock(page);await page.goto(`/check/${id}`);
+ const status = page.getByRole('status');
+ await expect(status).toContainText('reading 14 sources');await expect(status).toContainText('3 of 9');
+ await expect(page.locator('li[aria-current="step"]')).toContainText('Read');
+ await opened(page);await expect(page.getByRole('status')).toContainText('3 of 9');
+});
+test('reconnect rereads the saved stage and count', async ({page}) => {
+ await mock(page,{id,status:'running'});await page.goto(`/check/${id}`);await opened(page);await push(page,frames[0]);
+ await expect(page.getByRole('status')).toContainText('searching for the privacy policy');
+ await state(page,{...fixture('get-check-running'),message:'reading 14 sources',current:7,total:9});
+ await page.evaluate(() => (window as unknown as {research:{streams:ReadableStreamDefaultController<Uint8Array>[]}}).research.streams[0].close());
+ await opened(page,2);
+ await expect(page.getByRole('status')).toContainText('7 of 9');
+ await push(page,frames[2],1);await expect(page.getByRole('status')).toContainText('grading 6 areas');await expect(page.getByRole('status')).not.toContainText('7 of 9');
+});
+test('replayed older read count after the snapshot never moves the count backwards', async ({page}) => {
+ await mock(page,{id,status:'running'});await page.goto(`/check/${id}`);await opened(page);await push(page,frames[0]);
+ await state(page,{...fixture('get-check-running'),current:7,total:9});
+ await page.evaluate(() => (window as unknown as {research:{streams:ReadableStreamDefaultController<Uint8Array>[]}}).research.streams[0].close());
+ await opened(page,2);
+ const status = page.getByRole('status');
+ await expect(status).toContainText('7 of 9');
+ const seen: string[] = [];
+ for (const n of [5, 6, 7, 8]) {
+  await push(page,`event: progress\nid: ${n}\ndata: ${JSON.stringify({job_id:id,stage:'read',current:n,total:9,detail:{message:'reading 14 sources'}})}`,1);
+  await expect.poll(() => status.textContent()).toMatch(/\d of 9/);
+  seen.push(((await status.textContent()) ?? '').match(/(\d) of 9/)?.[1] ?? '');
+ }
+ await expect(status).toContainText('8 of 9');
+ const counts = seen.map(Number);
+ for (let i = 0; i < counts.length; i++) expect(counts[i]).toBeGreaterThanOrEqual(i === 0 ? 7 : counts[i-1]);
+ expect(counts.slice(0,2)).toEqual([7,7]);
 });
 const shown: Record<string, [string, string]> = {
  budget_exhausted: ['The research budget is used up.', 'Open an example card, or come back later.'],

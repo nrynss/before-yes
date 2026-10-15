@@ -7,7 +7,11 @@
     "status": 200,
     "body": {
       "id": "j_00000000000000000000000000000001",
-      "status": "running"
+      "status": "running",
+      "stage": "read",
+      "message": "reading 14 sources",
+      "current": 3,
+      "total": 9
     }
   }
 }

@@ -236,7 +236,7 @@ requires:   T4.6
 fixture-ok: yes
 size:       M · mid
 owns:       internal/server/checks.go (work and getCheck), internal/server/checks_test.go, internal/pipeline/pipeline.go (a progress hook on Collect), internal/pipeline/read.go (chunk counts only), internal/pipeline/gather.go (stage reports only), docs/api.md and testdata/contracts/api/get-check-running.json (the stage fields), web/src/lib/progress/
-status:     not-started
+status:     in-review
 ```
 On the first live run, the progress page showed only its static list of stages for most of a check. `work` reports `gather` once, at the start; gather and read run as one `Collect` call, and `read` with its count is sent only after reading ends. A page that subscribes after the first event receives no replay, and `GET /api/checks/{id}` carries no stage.
 
@@ -247,6 +247,26 @@ On the first live run, the progress page showed only its static list of stages f
 T3.11 owns `judge.go` and T3.12 owns `alternatives.go`; this task touches neither. If T3.12 lands first, rebase.
 
 **Done when:** a test with a slow fake pipeline sees gather, then read with rising counts, then judge; a page opened mid-read shows the current stage and count at once; the alternatives failure is logged; the gate passes.
+
+**Implementation notes (T4.7):**
+- The hook rides the context: `pipeline.WithProgress(ctx, fn)` and a `Step{Stage, Message, Current, Total}`. `Collect`'s signature is unchanged, so `EvidenceCache` and `tools/eval` are untouched.
+- Gather reports the App Store lookup, each plan search ("searching for the privacy policy") and the policy/terms extract. Read reports 0 of N as it starts and one more as each chunk ends, failed or not, under a lock so the counts arrive in order. Counts are reader chunks ("source sections"), not reviews; the message is "reading N sources".
+- `work` serializes reports and drops a read count lower than the last one. A cache hit still reports "using sources read …".
+- `GET /api/checks/{id}` reads the latest progress from Keel's own durable snapshot (`Runner.Attempts`, the record whose id matches), so no server-side table was added. The fields are only present while queued or running.
+- A check that joins another's in-flight evidence collect (single flight) gets no gather or read reports: only the leader's context reaches the pipeline.
+- An alternatives failure other than the budget is logged at warn as `alternatives failed; storing the card without them` with `ref` and `cause`: `tavily HTTP <status>`, `model HTTP <status>`, `failure <code>`, `cancelled`, `timed out`, or `error`. The error text is never logged.
+- The view keeps the snapshot's stage until a newer stream progress event arrives, on load and on every reconnect.
+- Outside owns: `dev-diary/feedback.md` (a Keel gap entry) and this file.
+
+**Round-1 remediation (T4.7):**
+
+| Finding | Severity | Fix | Test |
+|---|---|---|---|
+| M1: a replayed older read count could replace a newer saved snapshot after a reconnect | Medium | `Progress.svelte` lets a stream frame replace the saved snapshot only for a later stage, or the same stage with `current >=` the saved count | `replayed older read count after the snapshot never moves the count backwards` (Playwright) |
+| L1: a panic in the progress hook was not recovered | Low (accepted, hardened) | `pipeline.report` recovers a panicking hook, so a reader chunk goroutine cannot crash the process | `TestProgressHookPanicRecovered` (new `internal/pipeline/progress_test.go`, outside owns) |
+| L2: a joiner shows "starting the search" until judge | Low (accepted) | none; matches the stated decision | none |
+
+Two existing progress specs ("exact fixture…" and "reconnect rereads…") now start from a running snapshot with no stage, since under M1's rule a saved read stage correctly outranks a later gather frame.
 
 ---
 

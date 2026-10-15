@@ -11,7 +11,7 @@ All bodies are JSON. Ids are Keel `id` values: a card id starts `c_`, a check id
 | Route | Answers | Examples |
 |---|---|---|
 | `POST /api/checks` `{title, age}` | `200 {card_id}` if a fresh card exists for this title, age and checklist version, else `202 {check_id}` | `post-checks-200.json`, `post-checks-200-cached-while-live-off.json`, `post-checks-202.json`, and the error examples below |
-| `GET /api/checks/{id}` | `200 {id, status, card_id?, code?, message?, detail?}` | `get-check-running.json`, `get-check-done.json`, `get-check-error.json`, `get-check-404.json` |
+| `GET /api/checks/{id}` | `200 {id, status, stage?, message?, current?, total?, card_id?, code?, detail?}` | `get-check-running.json`, `get-check-done.json`, `get-check-error.json`, `get-check-404.json` |
 | `GET /api/checks/{id}/events` | Server-sent events in Keel's wire vocabulary | `events-done.txt`, `events-error.txt` |
 | `GET /api/cards/{id}` | A card, exactly the shape of [`card-*.json`](../testdata/contracts/) | `get-card.json`, `get-card-404.json` |
 | `GET /api/cards` | `{cards: [{id, title, age, verdict, checklist_version, checked_at}]}`: recent cards, one per title and age, newest first | `get-cards.json` |
@@ -36,6 +36,8 @@ All bodies are JSON. Ids are Keel `id` values: a card id starts `c_`, a check id
 ### `GET /api/checks/{id}`
 
 `status` is Keel's job status: `queued`, `running`, `done`, `error`, `cancelled` or `interrupted`.
+
+While a check is `queued` or `running`, `GET /api/checks/{id}` also carries its latest progress, when it has reported any: `stage` (`gather`, `read`, `judge` or `alternatives`), `message` (a parent-facing sentence) and, when the stage counts, `current` and `total`. In `read` they count the source sections read so far, not reviews. A page opened mid-check, or reconnecting, shows these at once; the event stream replays only a retained terminal to a subscriber with no `Last-Event-ID`. A finished check carries none of them.
 - `done` carries `card_id`.
 - `error` carries `code`, `message` and, when the failure named one, `detail`. `code` is the job's `Result.Code` and `detail` is `Result.Detail` (Keel v0.7.3, nrynss/keel#83), so both survive a restart and a reconnect, and the app keeps `detail.pool`. `message` is the server's fixed sentence for that code. It is not `Result.Err`'s text, which can carry internal causes. An empty `Result.Code` is reported as `job_failed`.
 - An unknown id is `404 not_found`.
