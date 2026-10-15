@@ -565,6 +565,18 @@ func (g *Gatherer) storeDocs(ctx context.Context, ref string, a *appstore.App, a
 	if pages <= 0 {
 		pages = appstore.MaxPages
 	}
+	// The listing's page is read for every title: its price line and privacy
+	// label are the store facts (storefacts.go), and when the feed has no
+	// reviews its reviews stand in. One extract, one credit. A page that
+	// cannot be read costs the facts, not the gather: it is noted and
+	// counted as a failed call, so the evidence is not cached.
+	page, used, pageWhy, pageFailed := g.readStorePage(ctx, ref, a)
+	out.Credits += used
+	out.storePage = page
+	if pageFailed {
+		out.Failures = append(out.Failures, "store_page")
+		out.Notes = append(out.Notes, pageWhy)
+	}
 	reviews, err := g.Store.Reviews(ctx, a.ID, pages)
 	if err != nil || len(reviews) == 0 {
 		// User decision: a feed error falls back to the web page as an
@@ -578,11 +590,10 @@ func (g *Gatherer) storeDocs(ctx context.Context, ref string, a *appstore.App, a
 		} else {
 			out.Notes = append(out.Notes, "App Store review feed returned no reviews; reading the App Store page")
 		}
-		docs, page, used, why, failed := g.storePageDocs(ctx, ref, a, at)
-		out.storePage = page
-		out.Credits += used
-		if failed {
-			out.Failures = append(out.Failures, "store_page")
+		var docs []Doc
+		why := pageWhy
+		if page != "" {
+			docs, why = storePageDocs(page, a, at)
 		}
 		if len(docs) == 0 {
 			if err != nil {

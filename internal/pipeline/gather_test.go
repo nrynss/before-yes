@@ -49,6 +49,8 @@ type fixture struct {
 	mu       sync.Mutex
 	searches []tavily.Search
 	extracts [][]string
+	// storePageReads counts the extracts of the listing page.
+	storePageReads int
 }
 
 func newFixture(t *testing.T, d demo) (*fixture, *httptest.Server) {
@@ -151,6 +153,25 @@ func (f *fixture) extract(w http.ResponseWriter, r *http.Request) {
 	f.mu.Lock()
 	f.extracts = append(f.extracts, req.URLs)
 	f.mu.Unlock()
+	// The listing page itself is answered from its own capture (the US page
+	// text), the way a live extract of it would be.
+	if len(req.URLs) == 1 {
+		if b, err := os.ReadFile(filepath.Join(f.dir, "tavily-extract-storepage.json")); err == nil {
+			var page struct {
+				Results []struct {
+					URL string `json:"url"`
+				} `json:"results"`
+			}
+			if json.Unmarshal(b, &page) == nil && len(page.Results) > 0 && page.Results[0].URL == req.URLs[0] {
+				f.mu.Lock()
+				f.storePageReads++
+				f.mu.Unlock()
+				w.Header().Set("Content-Type", "application/json")
+				_, _ = w.Write(b)
+				return
+			}
+		}
+	}
 	var rec struct {
 		Results []map[string]any `json:"results"`
 		Usage   map[string]any   `json:"usage"`
@@ -194,8 +215,11 @@ func (f *fixture) credits() float64 {
 	}
 	f.mu.Lock()
 	defer f.mu.Unlock()
-	if len(f.extracts) > 0 {
+	if len(f.extracts) > f.storePageReads {
 		add("tavily-extract.json")
+	}
+	if f.storePageReads > 0 {
+		add("tavily-extract-storepage.json")
 	}
 	return total
 }

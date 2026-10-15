@@ -160,27 +160,82 @@ func TestStoreFactsFromTheLookup(t *testing.T) {
 }
 
 // TestStoreFactsOnTheKhanGather pins what the Khan Academy Kids gather
-// produces: the lookup's 4+ rating and, from the store page of the same app
-// that the rating search returned (another storefront, in the markdown form),
-// the "Data Not Linked to You" mitigation, cited to that page's own URL.
-// That page has no price line, so there is no money fact.
+// produces. The gatherer extracts the listing page on every gather (the
+// fixture answers with the captured US page text), so the price line gives
+// the money mitigation and the label the data one, cited to the listing's own
+// URL, with exactly one extract of that page.
 func TestStoreFactsOnTheKhanGather(t *testing.T) {
-	got, _, _ := gatherFixture(t, demos[2])
+	got, f, _ := gatherFixture(t, demos[2])
 	var page *StoreFacts
-	for i, f := range got.StoreFacts {
-		if f.Doc.Source.Title == pageFactsTitle {
+	for i, sf := range got.StoreFacts {
+		if sf.Doc.Source.Title == pageFactsTitle {
 			page = &got.StoreFacts[i]
 		}
 	}
 	if page == nil {
 		t.Fatalf("no page facts in %d fact documents", len(got.StoreFacts))
 	}
-	if page.Doc.Source.URL != "https://apps.apple.com/mx/app/khan-academy-kids/id1378467217?l=en-GB" {
-		t.Errorf("page facts cite %s", page.Doc.Source.URL)
+	if page.Doc.Source.URL != got.App.StoreURL {
+		t.Errorf("page facts cite %s, want the listing %s", page.Doc.Source.URL, got.App.StoreURL)
 	}
 	wantFacts(t, verifiedFacts(t, []StoreFacts{*page}), []factWant{
+		{checklist.Money, finding.Mitigation, "Reading & Math Learning Games\nFree"},
+		{checklist.Data, finding.Mitigation, "Data Not Linked to You\nThe following data, which may be collected but is not linked to your identity, may be used for the following purposes:"},
+	})
+	if f.storePageReads != 1 {
+		t.Errorf("listing page extracts = %d, want 1", f.storePageReads)
+	}
+}
+
+// The markdown form of a listing page, as the rating search returns another
+// storefront's copy, still gives the label fact (the fallback when the
+// gatherer's own extract is unavailable is the document of the same app id).
+func TestStoreFactsFromAnotherStorefrontCopy(t *testing.T) {
+	b, err := os.ReadFile(filepath.Join("..", "..", "testdata", "titles", "khan-academy-kids", "tavily-search-rating.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var rec struct {
+		Results []struct {
+			URL        string `json:"url"`
+			RawContent string `json:"raw_content"`
+		} `json:"results"`
+	}
+	if err := json.Unmarshal(b, &rec); err != nil {
+		t.Fatal(err)
+	}
+	var docs []Doc
+	for _, r := range rec.Results {
+		docs = append(docs, Doc{Source: finding.Source{URL: r.URL, Kind: KindRating}, Text: r.RawContent})
+	}
+	a := &appstore.App{ID: 1378467217, Name: "Khan Academy Kids", StoreURL: "https://apps.apple.com/us/app/khan-academy-kids/id1378467217?uo=4"}
+	facts := storeFacts(a, docs, "", fixedNow)
+	if len(facts) != 1 || facts[0].Doc.Source.URL != "https://apps.apple.com/mx/app/khan-academy-kids/id1378467217?l=en-GB" {
+		t.Fatalf("facts = %+v", facts)
+	}
+	wantFacts(t, verifiedFacts(t, facts), []factWant{
 		{checklist.Data, finding.Mitigation, "Data Not Linked to You\nThe following data may be collected but it is not linked to your identity:"},
 	})
+}
+
+// A listing page that cannot be read costs the facts, not the gather: the
+// call is a failure (the evidence is not cached), the lookup facts remain,
+// and no page fact is produced.
+func TestFailedStorePageExtractDoesNotFailTheGather(t *testing.T) {
+	a := robloxApp()
+	a.AgeRating = "12+"
+	s := &stubSearch{pages: map[string]string{}}
+	g := &Gatherer{Store: feedStub{apps: []appstore.App{a}, reviews: []appstore.Review{{Index: 1, Title: "t", Body: "b"}}}, Search: s, Meter: openTestMeter(t)}
+	got, err := g.Gather(context.Background(), "Roblox", "c")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !contains(got.Failures, "store_page") {
+		t.Errorf("failures = %v, want store_page", got.Failures)
+	}
+	if len(got.StoreFacts) != 1 || got.StoreFacts[0].Doc.Source.Title != lookupFactsTitle {
+		t.Errorf("store facts = %+v, want the lookup's alone", got.StoreFacts)
+	}
 }
 
 // TestStoreFactsFromTheFallbackExtract pins the page facts when the gatherer
@@ -228,7 +283,8 @@ func TestCollectAddsStoreFacts(t *testing.T) {
 	}
 	wantFacts(t, got, []factWant{
 		{checklist.Content, finding.Neutral, "Age rating: 4+"},
-		{checklist.Data, finding.Mitigation, "Data Not Linked to You\nThe following data may be collected but it is not linked to your identity:"},
+		{checklist.Money, finding.Mitigation, "Reading & Math Learning Games\nFree"},
+		{checklist.Data, finding.Mitigation, "Data Not Linked to You\nThe following data, which may be collected but is not linked to your identity, may be used for the following purposes:"},
 	})
 	user := judgeUser("Khan Academy Kids", 5, []checklist.Area{checklist.Data}, ev.Findings, nil)
 	if !strings.Contains(user, "Data Not Linked to You") || !strings.Contains(user, "stance=mitigation source=store") {

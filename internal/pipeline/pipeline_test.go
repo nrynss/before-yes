@@ -418,6 +418,7 @@ func (p plainStore) Find(ctx context.Context, title string, limit int) ([]appsto
 	apps, err := p.Store.Find(ctx, title, limit)
 	for i := range apps {
 		apps[i].Advisories = nil
+		apps[i].StoreURL = "" // no listing page to read, so no page facts
 	}
 	return apps, err
 }
