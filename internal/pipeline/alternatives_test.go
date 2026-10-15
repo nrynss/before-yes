@@ -886,6 +886,19 @@ func TestListEntriesRejectAdviceSteps(t *testing.T) {
 	}
 }
 
+// The round-2 L4 residual, pinned, not fixed: the same advice steps in
+// title case are shape-identical to real picks ("Build A Boat for
+// Treasure", "Hide and Seek Extreme"), so titleShape admits them and E2
+// takes them. See the residual note on titleShape for why no shape check
+// can separate them and why the captures never produce the shape. The
+// sentence-cased shape above stays rejected.
+func TestTitleCasedAdviceStepsAreAdmitted(t *testing.T) {
+	got := listNames(listHit("12 Best Building Games for Kids", "https://www.example.com/best", "1. **Set Limits Before Bed**\n2. **Disable In-App Chat**\n"), nil, nil)
+	if strings.Join(got, "|") != "Set Limits Before Bed|Disable In-App Chat" {
+		t.Errorf("title-cased advice steps = %q, want the documented residual [Set Limits Before Bed|Disable In-App Chat]", got)
+	}
+}
+
 // The captured Khan blog hit's comparison table is headed by an all-bold
 // row, "| **App** | **Ages** | **Cost** | **Offline** | **Best For** |".
 // Replayed with the bound lifted, that header row names no pick, while the

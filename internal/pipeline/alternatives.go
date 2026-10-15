@@ -172,6 +172,16 @@ var minorWords = map[string]bool{
 // bed", "Disable chat", "Turn on parental controls" — and are not titles.
 // A name that is one word ("Duolingo") or starts with no letter ("3D
 // Blox") is left to the other checks.
+//
+// Recorded residual (round-2 L4): the same steps in title case — "Set
+// Limits Before Bed", "Disable In-App Chat" — pass this check. A title-cased
+// noun phrase is shape-identical to a pick ("Build A Boat for Treasure",
+// "Hide and Seek Extreme"): every word capitalised, no minor word, no other
+// signal on the line. No shape check separates them, and the verb stoplist
+// that once tried was removed in T3.5 round 3. The captured corpus never
+// produces the shape — every bolded advice step it carries is sentence-cased
+// — so the limit is pinned, not hidden:
+// TestTitleCasedAdviceStepsAreAdmitted.
 func titleShape(name string) bool {
 	words := strings.Fields(name)
 	if len(words) <= 1 {
