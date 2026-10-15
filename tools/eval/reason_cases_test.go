@@ -128,7 +128,7 @@ func TestPublishedParentReasonsRegression(t *testing.T) {
 				if n == 2 && r.Title == "Roblox" {
 					switch g.Area {
 					case "money":
-						if !strings.Contains(g.Reason, "$7,000") {
+						if (!strings.Contains(g.Reason, "$7,000") && !strings.Contains(g.Reason, "$46")) || strings.Contains(g.Reason, "despite purchase limits") {
 							t.Fatal(g.Reason)
 						}
 					case "data":

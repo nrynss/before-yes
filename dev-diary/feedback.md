@@ -4,6 +4,10 @@ Friction and wins with the services and libraries Before Yes uses, recorded when
 
 Each entry gives what happened, the evidence, what it cost, and what would fix it. Never paste a key.
 
+## Nemotron parent-facing explanations (T3.14)
+
+- **Writing instructions can move grades; prose checks remain fallible.** Adding parent-facing voice rules directly to the grading prompt changed citations and verdicts on unchanged evidence. A separate metered reason writer now preserves all calibrated grade fields and checks its explanations against the fixed cited quotes. Checks sometimes demanded unclaimed purchase methods or privacy guarantees, and also accepted unsupported wrong-age causation and the promotion of attempted spending limits into implemented controls. *Evidence:* `testdata/eval/parent-reasons/report.md`, retained failed attempts, and both T3.14 review files. *Cost:* every failed attempt stays on the task’s capped ledger; the evaluation report gives the measured total. *Fix:* separate grading from writing, use narrow claim-by-claim support and attribution checks, retain a bounded repair and cautious fallback, and keep real acceptance and rejection probes. The checker is a model judgment, not a semantic proof.
+
 ## Apple App Store
 
 - **The customer-review feed went dark with no error and no status change.** `itunes.apple.com/{cc}/rss/customerreviews/.../json` now returns HTTP 200 and a feed skeleton with no `entry` member, which is the same answer an app with no reviews gets. *Evidence:* T0.4 captured 500 reviews per title; later the feed was empty for every app tried, including Facebook (284882215) as a control, in `us`, `gb` and `in`, in the json, xml and no-sort variants, from this machine at two probes and from a separate Hetzner host (T2.3b, [transcript](live/t2.3b-transcript.txt)). The search API still works. *Cost:* the review source the brief rests on is gone, and a client cannot tell a retired feed from a title nobody reviewed, so the pipeline falls back to the App Store web page through Tavily (T3.8). *Fix:* return a 4xx or 410, or an explicit retirement notice, when the feed is withdrawn; or keep serving it.

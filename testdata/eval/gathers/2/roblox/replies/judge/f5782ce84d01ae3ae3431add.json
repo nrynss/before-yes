@@ -1,0 +1,8 @@
+{
+  "text": "{\"reason_supported\": false, \"explanation\": \"The explanation states 'A review reports that a child has been threatened by a stranger in Adopt Me'—this implies the threat occurred via direct interaction within the game environment involving communication channels like chat or voice. However, the provided review quote contains no mention of any communication channel (e.g., chat, messaging, signs, voice), nor does it specify how the threat was delivered (only that it came from 'a person in Adopt Me'). Since the area focus requires a quoted stranger message, chat or voice channel and the quoted control or bypass—and the explanation adds the claim of a threatening interaction occurring through such a channel—the explanation introduces an unsupported detail. The review quote confirms fear and threat but does not describe or imply the medium of contact, making the explanation go beyond what is cited.\"}",
+  "input_tokens": 1187,
+  "output_tokens": 174,
+  "price_nano": 512700,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

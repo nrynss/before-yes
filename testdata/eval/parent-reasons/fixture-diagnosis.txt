@@ -1,3 +1,17 @@
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_model filename=0001_cost.sql
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_model filename=0002_cost_owner.sql
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_model filename=0003_cost_settle.sql
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_model filename=0004_cost_denomination.sql
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_model filename=0005_cost_quote.sql
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_model filename=0006_cost_settle_once.sql
+2026/10/15 23:31:16 INFO sqlitestore: opened namespace=cost_model limit=1000000000000 denomination="" expired_reservations=0 expired_quotes=0
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_tavily filename=0001_cost.sql
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_tavily filename=0002_cost_owner.sql
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_tavily filename=0003_cost_settle.sql
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_tavily filename=0004_cost_denomination.sql
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_tavily filename=0005_cost_quote.sql
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_tavily filename=0006_cost_settle_once.sql
+2026/10/15 23:31:16 INFO sqlitestore: opened namespace=cost_tavily limit=1000000 denomination=tavily.credit expired_reservations=0 expired_quotes=0
 diagnose Khan Academy Kids age 5 verdict unclear findings 212 (conflict pass unusable (no grades); first pass kept)
   contact  risks 10 mitigations 2 other 6
     judge ok setting "" cited 0 []
@@ -34,6 +48,22 @@ diagnose Khan Academy Kids age 5 verdict unclear findings 212 (conflict pass unu
     card unknown setting ""
     check ok_without_finding
     reason We don’t have enough evidence to assess this area. Don’t assume it is safe.
+live Khan Academy Kids reader: calls 0 (conflict 0), recorded 19, refused 0, failed 0; tokens in 76765 out 29118; booked $0.000000; dry reserve $0.000000
+live Khan Academy Kids judge: calls 0 (conflict 0), recorded 3, refused 0, failed 0; tokens in 43577 out 16479; booked $0.000000; dry reserve $0.000000
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_model filename=0001_cost.sql
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_model filename=0002_cost_owner.sql
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_model filename=0003_cost_settle.sql
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_model filename=0004_cost_denomination.sql
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_model filename=0005_cost_quote.sql
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_model filename=0006_cost_settle_once.sql
+2026/10/15 23:31:16 INFO sqlitestore: opened namespace=cost_model limit=1000000000000 denomination="" expired_reservations=0 expired_quotes=0
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_tavily filename=0001_cost.sql
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_tavily filename=0002_cost_owner.sql
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_tavily filename=0003_cost_settle.sql
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_tavily filename=0004_cost_denomination.sql
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_tavily filename=0005_cost_quote.sql
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_tavily filename=0006_cost_settle_once.sql
+2026/10/15 23:31:16 INFO sqlitestore: opened namespace=cost_tavily limit=1000000 denomination=tavily.credit expired_reservations=0 expired_quotes=0
 diagnose Minecraft age 9 verdict unclear findings 259 (conflict pass replaced the conflicted areas)
   contact  risks 66 mitigations 8 other 1
     judge ok_with_setting setting "friends only" cited 2 [f_14ad19cd96f10974 f_d3937e99a98f8280]
@@ -77,6 +107,22 @@ diagnose Minecraft age 9 verdict unclear findings 259 (conflict pass replaced th
     card unknown setting ""
     check stood
     reason We don’t have enough evidence to assess this area. Don’t assume it is safe.
+live Minecraft reader: calls 0 (conflict 0), recorded 45, refused 0, failed 0; tokens in 167562 out 45567; booked $0.000000; dry reserve $0.000000
+live Minecraft judge: calls 0 (conflict 0), recorded 6, refused 0, failed 0; tokens in 51010 out 9557; booked $0.000000; dry reserve $0.000000
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_model filename=0001_cost.sql
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_model filename=0002_cost_owner.sql
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_model filename=0003_cost_settle.sql
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_model filename=0004_cost_denomination.sql
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_model filename=0005_cost_quote.sql
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_model filename=0006_cost_settle_once.sql
+2026/10/15 23:31:16 INFO sqlitestore: opened namespace=cost_model limit=1000000000000 denomination="" expired_reservations=0 expired_quotes=0
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_tavily filename=0001_cost.sql
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_tavily filename=0002_cost_owner.sql
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_tavily filename=0003_cost_settle.sql
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_tavily filename=0004_cost_denomination.sql
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_tavily filename=0005_cost_quote.sql
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_tavily filename=0006_cost_settle_once.sql
+2026/10/15 23:31:16 INFO sqlitestore: opened namespace=cost_tavily limit=1000000 denomination=tavily.credit expired_reservations=0 expired_quotes=0
 diagnose Roblox age 9 verdict no findings 165 (conflict pass unusable (no grades); first pass kept)
   contact  risks 22 mitigations 11 other 1
     judge flag setting "" cited 3 [f_13ef933f57ca74df f_d42c00ffd7a27c3e f_e42142508f0e6c8a]
@@ -132,3 +178,5 @@ diagnose Roblox age 9 verdict no findings 165 (conflict pass unusable (no grades
     quote f_936fa34c97679429 risk forum: Following safety concerns, Roblox is rolling out new protections for under-13 users in November and December 2024. These updates include mandatory age ratings for games, limits on social spaces, and restrictions on unmoderated content. Since these changes are new and won't be fully enforced until 2025, we're not sure what their impact will be.
     quote f_def610c472adb7ff risk news: Los Angeles County filed a civil lawsuit against Roblox Corporation alleging the company falsely marketed its online gaming platform as safe for children while knowingly allowing it to become a “hunting ground for predators.”
     quote f_e6456ac7986e1e75 risk news: The report discloses active investigations into online platforms affecting children and teens, including messaging apps, gaming platforms, and AI chatbots.
+live Roblox reader: calls 0 (conflict 0), recorded 36, refused 0, failed 0; tokens in 134885 out 31774; booked $0.000000; dry reserve $0.000000
+live Roblox judge: calls 1 (conflict 0), recorded 12, refused 0, failed 0; tokens in 46969 out 17103; booked $0.000378; dry reserve $0.000000

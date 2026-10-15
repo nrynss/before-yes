@@ -1,0 +1,8 @@
+{
+  "text": "{\"reason_supported\": false, \"explanation\": \"The explanation 'The comparison guide describes Scratch as MIT's free, block-based coding platform' contains no reference to any monetary aspect—no loot box, pay-to-win mechanism, subscription, or completed child spending event. Since the area is money and the explanation focus requires a quoted monetization-related element, the explanation fails to address the required topic entirely.\"}",
+  "input_tokens": 1147,
+  "output_tokens": 87,
+  "price_nano": 422400,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

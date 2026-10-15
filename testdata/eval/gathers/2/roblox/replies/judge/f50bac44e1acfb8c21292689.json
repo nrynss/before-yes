@@ -1,0 +1,8 @@
+{
+  "text": "{\"reasons\": [{\"area\": \"money\", \"reason\": \"A review reports attempting to upgrade the game in the App Store requiring a payment option, leading to a $46 charge after adding card information.\"}]}",
+  "input_tokens": 1391,
+  "output_tokens": 47,
+  "price_nano": 459600,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

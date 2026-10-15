@@ -1,0 +1,8 @@
+{
+  "text": "{\"reason_supported\": false, \"explanation\": \"The Reason states 'children's verification images are used by third parties for advertising,' but the Quote says nothing about advertising—it only mentions processing by third-party providers and no public guarantee on retention. Advertising is an unsupported addition.\"}",
+  "input_tokens": 1123,
+  "output_tokens": 61,
+  "price_nano": 391800,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

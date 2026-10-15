@@ -12,7 +12,7 @@ diagnose Roblox age 9 verdict no findings 187 (conflict pass replaced the confli
     card flag setting ""
     check stood
     entail meets_definition=true reason_supported=true
-    reason A review reports being forced to add payment information to play, resulting in a $46 charge despite adding a card with no money, and a news article states a parent reported their 10-year-old daughter spent over $7,000 in two months despite purchase limits.
+    reason A review reports opening the game prompted them to upgrade, requiring adding a payment option in the App Store, which resulted in a $46 charge after entering card details.
     quote f_ef55d9331aff6121 risk review: Kinda good! I do not like the updates and but also no chat so but I like. The games that you can still play I still like the AI I like the fun
     quote f_783661ae59b066c7 risk news: A parent said their 10-year-old daughter spent more than $7,000 (£5,200) in two months despite attempts to limit purchases.
     quote f_1368a2c5a6fe539a risk review: I don’t know if anyone else has been having the same problem but it will not let me play without paying. When I open up the game it tells me to upgrade it, when I try to upgrade it in the App Store it tells me e that I need to add a payment option. So I go to add my card info, thankfully I added the one with no money, and I looked to see that I got a $46 charge. This is unacceptable when you guys advertise the game as free.

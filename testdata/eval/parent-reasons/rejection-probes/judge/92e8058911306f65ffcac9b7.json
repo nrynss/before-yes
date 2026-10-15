@@ -1,0 +1,8 @@
+{
+  "text": "{\"reason_supported\": false, \"explanation\": \"The explanation states 'despite purchase limits' but the source quote says 'despite attempts to limit purchases.' Attempts to limit purchases do not confirm that effective purchase limits were actually in place or working; this adds an unsupported claim about the existence or effectiveness of limits.\"}",
+  "input_tokens": 1120,
+  "output_tokens": 69,
+  "price_nano": 398100,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

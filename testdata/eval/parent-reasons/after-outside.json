@@ -136,7 +136,7 @@
         "findings": [
           "f_outside_scratch"
         ],
-        "reason": "The comparison guide reports Scratch is free."
+        "reason": "The comparison guide calls Scratch MIT's free, block-based coding platform."
       },
       {
         "area": "data",
@@ -185,7 +185,7 @@
         "agree": false,
         "found": null,
         "missed": null,
-        "got_reason": "The comparison guide reports Scratch is free."
+        "got_reason": "The comparison guide calls Scratch MIT's free, block-based coding platform."
       },
       {
         "area": "data",
@@ -241,6 +241,6 @@
     "missing_kinds": null,
     "tavily_credits": 0,
     "read_cost_nano": 0,
-    "judge_cost_nano": 2279100
+    "judge_cost_nano": 2344500
   }
 ]

@@ -1028,8 +1028,13 @@ func (j *Judge) parentReasons(ctx context.Context, title string, age int, ref st
 	return out, price
 }
 
+const parentPurchaseQualification = "Preserve the difference between attempts or intentions and implemented controls: an attempt to limit spending does not establish that purchase limits were in place, worked, or were bypassed. Reject prose that drops that qualification."
+
 func (j *Judge) checkParentReason(ctx context.Context, title string, age int, ref string, g checklist.Grade, fs []finding.Finding) (bool, string, cost.Price) {
 	user := parentReasonUser(title, age, []checklist.Grade{g}, fs) + "\nReason: " + g.Reason
+	if g.Area == checklist.Money {
+		user += "\n" + parentPurchaseQualification
+	}
 	r, p, err := chat(ctx, j.Meter, j.Entail, "reason_check", ref, []model.Message{{Role: "system", Content: parentReasonCheckSystem()}, {Role: "user", Content: user}}, model.Options{JSON: true, Extra: j.Fast, MaxTokens: 1024})
 	if err != nil {
 		return false, "The support check did not complete.", p

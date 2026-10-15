@@ -1213,6 +1213,9 @@ func TestCheckedReasonsSnapshotBeforeParentProse(t *testing.T) {
 }
 
 func TestParentReasonRemediationRules(t *testing.T) {
+	if !strings.Contains(parentPurchaseQualification, "an attempt to limit spending does not establish") {
+		t.Fatal("purchase qualification missing")
+	}
 	for _, rule := range []string{"explicit actual and assigned ages", "two events joined by", "concrete encounter", "preserving qualifications", "does not verify its practices", "Never list risks"} {
 		if !strings.Contains(parentReasonSystem(), rule) {
 			t.Errorf("writer missing %q", rule)
@@ -1237,6 +1240,7 @@ func TestParentReasonRejectsRecordedUnsupportedProse(t *testing.T) {
 		{"age_wrong_group_cause", checklist.AgeGating, KindReview, "The new app updates age group ideas are completely broken plus my child got put in the 28th group.", "A review reports the child was placed in the wrong age group (28th group) due to broken age group updates."},
 		{"content_possibility", checklist.Content, KindForum, "Extreme violence, inappropriate language, and sexually explicit content is possible (and quite likely) within the user-created games.", "A forum post states extreme violence, inappropriate language, and sexually explicit content is possible and likely within user-created games."},
 		{"ok_omission_checklist", checklist.Money, "comparison guide", "It's MIT's free, block-based coding platform, and kids genuinely learn programming concepts like loops and variables while building.", "The comparison guide states Scratch is MIT's free, block-based coding platform with no mention of purchases, loot boxes, pay-to-win pressure, subscription traps, or any way for a child to spend money within the title."},
+		{"attempted_purchase_limits", checklist.Money, KindNews, "A parent said their 10-year-old daughter spent more than $7,000 (£5,200) in two months despite attempts to limit purchases.", "A news article reports a parent said their 10-year-old daughter spent over $7,000 in two months despite purchase limits."},
 		{"data_extra_use", checklist.Data, KindForum, "Images used for age verification may be processed by third-party providers, but Roblox does not publicly guarantee a fixed retention period for the images of children.", "A forum post reports children's verification images are used by third parties for advertising."},
 	}
 	for _, c := range cases {

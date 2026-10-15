@@ -1,0 +1,8 @@
+{
+  "text": "{\"reason_supported\": true, \"explanation\": \"A news article states that 'a kid who wants to dodge all of the above can simply enter any birthdate before September 2007,' directly supporting the claim of a reported bypass via falsified birthdate entry.\"}",
+  "input_tokens": 1241,
+  "output_tokens": 60,
+  "price_nano": 426300,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

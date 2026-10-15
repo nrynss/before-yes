@@ -294,7 +294,7 @@
     ],
     "tavily_credits": 7,
     "read_cost_nano": 13780620,
-    "judge_cost_nano": 19654200
+    "judge_cost_nano": 19610100
   },
   {
     "title": "Roblox",
@@ -316,7 +316,7 @@
           "f_783661ae59b066c7",
           "f_1368a2c5a6fe539a"
         ],
-        "reason": "A review reports being forced to add payment information to play, resulting in a $46 charge despite adding a card with no money, and a news article states a parent reported their 10-year-old daughter spent over $7,000 in two months despite purchase limits."
+        "reason": "A review reports opening the game prompted them to upgrade, requiring adding a payment option in the App Store, which resulted in a $46 charge after entering card details."
       },
       {
         "area": "data",
@@ -414,7 +414,7 @@
             "quote": "I got Robux and I got only 246 Robux instead of 1800"
           }
         ],
-        "got_reason": "A review reports being forced to add payment information to play, resulting in a $46 charge despite adding a card with no money, and a news article states a parent reported their 10-year-old daughter spent over $7,000 in two months despite purchase limits."
+        "got_reason": "A review reports opening the game prompted them to upgrade, requiring adding a payment option in the App Store, which resulted in a $46 charge after entering card details."
       },
       {
         "area": "data",
@@ -485,6 +485,6 @@
     "missing_kinds": [],
     "tavily_credits": 8,
     "read_cost_nano": 17948820,
-    "judge_cost_nano": 32921400
+    "judge_cost_nano": 33732600
   }
 ]
