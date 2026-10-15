@@ -12,7 +12,7 @@ diagnose Minecraft age 9 verdict no findings 142 (conflict pass replaced the con
     card flag setting ""
     check stood
     entail meets_definition=true reason_supported=true
-    reason The game pushes in-app purchases through Minecoins, and children can complete purchases without parental approval, as shown by reports of kids spending birthday money and being scammed.
+    reason the title pushes purchases at children
     quote f_4f0d24b3b6bb0948 risk review: i bought 10,000 minecoins and im litterly a kid im only 10 and i got scammed i litterly used all my birthday money! FRICK YOU MINECRAFT
     quote f_52134516877ae723 risk rating: In your child’s spending settings, turn on “Ask a parent to buy things” so every Marketplace purchase (paid for with Minecoins) or Realms subscription needs your approval, or remove the saved payment method from the account entirely.
   data  risks 8 mitigations 2 other 5

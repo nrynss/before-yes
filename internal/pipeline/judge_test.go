@@ -787,9 +787,9 @@ func replayDemo(t *testing.T, d demo, age int) Card {
 
 // T3.10, fault 3, and the definition rule of fault 1: a standing grade whose
 // cited findings do not meet its area's flag definition falls to unknown
-// (meets_definition=false), and a standing grade whose reason goes beyond the
-// cited quotes falls too (reason_supported=false). A grade that passes both
-// stands, its setting and citations intact.
+// (meets_definition=false). An ok_with_setting whose reason goes beyond the
+// cited quotes falls too (reason_supported=false). A flag whose quotes meet
+// the definition stands, and its reason is the area definition.
 // Entailment is a short check. It uses the judge's thinking-off switch so
 // a thinking pass is not a different, larger call.
 func TestEntailmentUsesTheFastSwitch(t *testing.T) {
@@ -855,8 +855,8 @@ func TestEntailmentFallsToUnknown(t *testing.T) {
 	if g := by[checklist.Money]; g.Level != checklist.Unknown || g.Setting != "" || g.Reason != UnsupportedReason || len(g.Findings) != 0 {
 		t.Errorf("money = %+v, want unknown, setting cleared, unsupported reason", g)
 	}
-	if g := by[checklist.Content]; g.Level != checklist.Flag || len(g.Findings) != 1 || g.Findings[0] != "f_content" {
-		t.Errorf("content = %+v, want the flag to stand on its citation", g)
+	if g := by[checklist.Content]; g.Level != checklist.Flag || g.Reason != standingReason(checklist.Content) || len(g.Findings) != 1 || g.Findings[0] != "f_content" {
+		t.Errorf("content = %+v, want the flag to stand on its citation with the area definition", g)
 	}
 	if want := []checklist.Area{checklist.Contact, checklist.Money}; !reflect.DeepEqual(got.Thin, want) {
 		t.Errorf("thin %v, want %v", got.Thin, want)
@@ -887,6 +887,88 @@ func TestEntailmentFallsToUnknown(t *testing.T) {
 	}
 	if !strings.Contains(entail.users[1], "Setting: Ask to Buy") {
 		t.Errorf("entail prompt misses the setting:\n%s", entail.users[1])
+	}
+}
+
+// A flag whose recorded entailment is meets_definition true and
+// reason_supported false stands, and its reason is the area definition.
+// An ok_with_setting with reason_supported false does not stand. A setting
+// that passes both keeps the area definition too, not the model's sentence.
+func TestFlagStandsWhenTheReasonRunsPastTheQuotes(t *testing.T) {
+	fs := []finding.Finding{
+		{ID: "f_content", Area: checklist.Content, Stance: finding.Risk,
+			Quote:  "sexually explicit games and a punching tutorial",
+			Source: finding.Source{Kind: KindReview, Index: 1}},
+		{ID: "f_money", Area: checklist.Money, Stance: finding.Risk,
+			Quote:  "a child spent more than $7,000 in two months",
+			Source: finding.Source{Kind: KindReview, Index: 2}},
+		{ID: "f_mit", Area: checklist.Money, Stance: finding.Mitigation,
+			Quote:  "Parents can turn on Ask to Buy so every purchase needs approval",
+			Source: finding.Source{Kind: KindStore}},
+		{ID: "f_data", Area: checklist.Data, Stance: finding.Risk,
+			Quote:  "A partner stores the child's photos and does not say for how long.",
+			Source: finding.Source{Kind: KindPolicy}},
+	}
+	reply := gradesJSON(t,
+		checklist.Grade{Area: checklist.Content, Level: checklist.Flag, Findings: []string{"f_content"},
+			Reason: "Reviewers report children encountering sexual content, realistic violence, horror, harassment, and self-harm."},
+		checklist.Grade{Area: checklist.Money, Level: checklist.OKWithSetting, Setting: "Ask to Buy", Findings: []string{"f_money", "f_mit"},
+			Reason: "The game pushes loot boxes and pay-to-win mechanics."},
+		checklist.Grade{Area: checklist.Data, Level: checklist.Flag, Findings: []string{"f_data"},
+			Reason: "Roblox collects and shares children's data for ads."},
+	)
+	entail := &superRecorder{replies: []any{
+		`{"meets_definition": true, "reason_supported": false}`, // money setting: drops
+		`{"meets_definition": true, "reason_supported": false}`, // data flag: stands
+		`{"meets_definition": true, "reason_supported": false}`, // content flag: stands
+	}}
+	got, err := (&Judge{Model: &superRecorder{replies: []any{reply}}, Meter: openTestMeter(t), Entail: entail}).
+		Judge(context.Background(), "Roblox", 9, "c", fs, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(entail.users) != 3 {
+		t.Fatalf("%d entail calls, want 3", len(entail.users))
+	}
+	by := map[checklist.Area]checklist.Grade{}
+	for _, g := range got.Grades {
+		by[g.Area] = g
+	}
+	content := by[checklist.Content]
+	if content.Level != checklist.Flag || content.Reason != standingReason(checklist.Content) || len(content.Findings) != 1 {
+		t.Errorf("content = %+v, want the flag on the area definition", content)
+	}
+	for _, w := range []string{"horror", "self-harm"} {
+		if strings.Contains(content.Reason, w) {
+			t.Errorf("content reason says %q: %q", w, content.Reason)
+		}
+	}
+	data := by[checklist.Data]
+	if data.Level != checklist.Flag || data.Reason != standingReason(checklist.Data) || len(data.Findings) != 1 {
+		t.Errorf("data = %+v, want the flag on the area definition", data)
+	}
+	if strings.Contains(data.Reason, "ads") {
+		t.Errorf("data reason says ads: %q", data.Reason)
+	}
+	money := by[checklist.Money]
+	if money.Level != checklist.Unknown || money.Setting != "" || money.Reason != UnsupportedReason || len(money.Findings) != 0 {
+		t.Errorf("money = %+v, want the setting dropped", money)
+	}
+	if !strings.HasPrefix(areaDefs[checklist.Content], content.Reason) || !strings.HasPrefix(areaDefs[checklist.Data], data.Reason) {
+		t.Errorf("reasons are not the area definitions: %q %q", content.Reason, data.Reason)
+	}
+	rules := map[checklist.Area]string{}
+	for _, d := range got.Demotions {
+		rules[d.Area] = d.Rule
+	}
+	if rules[checklist.Money] != RuleReasonUnsupported {
+		t.Errorf("money rule %q, want %s", rules[checklist.Money], RuleReasonUnsupported)
+	}
+	if _, dropped := rules[checklist.Content]; dropped {
+		t.Errorf("content was demoted: %s", rules[checklist.Content])
+	}
+	if _, dropped := rules[checklist.Data]; dropped {
+		t.Errorf("data was demoted: %s", rules[checklist.Data])
 	}
 }
 

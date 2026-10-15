@@ -1,10 +1,10 @@
-diagnose Roblox age 9 verdict unclear findings 200 (conflict pass replaced the conflicted areas)
+diagnose Roblox age 9 verdict no findings 200 (conflict pass replaced the conflicted areas)
   contact  risks 46 mitigations 14 other 2
     judge ok_with_setting setting "parental controls" cited 2 [f_8b34dcd067352227 f_2bbf8633ef6c9b47]
     card ok_with_setting setting "parental controls"
     check stood
     entail meets_definition=true reason_supported=true
-    reason Strangers can message or voice chat with a 9‑year‑old, but parental controls can disable direct messages and party chats to shut that door.
+    reason strangers can reach this child by message, chat or voice, and no control a parent can set shuts that door
     quote f_8b34dcd067352227 risk news: Roblox’s default settings, including unverified accounts, no age verification, and open communication channels, repeatedly exposed minors to sexual exploitation.
     quote f_2bbf8633ef6c9b47 mitigation forum: Direct messages and party chats can be disabled with parental controls.
   money  risks 22 mitigations 4 other 6
@@ -25,10 +25,10 @@ diagnose Roblox age 9 verdict unclear findings 200 (conflict pass replaced the c
     quote f_802f58b0fea298fe mitigation forum: You can turn off ad personalization and data selling. You can also turn off data sharing.
   age_gating  risks 15 mitigations 6 other 5
     judge flag setting "" cited 1 [f_3e1e4d584522e5a9]
-    card unknown setting ""
-    check entail: reason_unsupported
+    card flag setting ""
+    check stood
     entail meets_definition=true reason_supported=false
-    reason Changed to unknown: the reason says more than the cited quotes support.
+    reason the age gate fails in practice
     quote f_3e1e4d584522e5a9 risk news: A kid who wants to dodge all of the above can simply enter any birthdate before September 2007.
   content  risks 28 mitigations 1 other 1
     judge flag setting "" cited 1 [f_7bfc294c87ff4e36]
