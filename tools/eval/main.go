@@ -269,9 +269,8 @@ func runOne(root, models string, e Expectation) Result {
 		Gatherer: &pipeline.Gatherer{Store: publicFeed{appstore.New(srv.URL, "us"), appstore.New("", "us")}, Search: tc, Meter: meter, Now: now},
 		Reader:   &pipeline.Reader{Model: reader, Meter: meter},
 		// Entailment runs on the judge model, thinking off. The reader model
-		// accepted quotes the area definitions exclude (Minecraft gather 1:
-		// a feature request as a failed age gate, "scary but in the good
-		// way", "BAN YOUR STUPID GAME"). The server's wiring is T4's.
+		// accepted quotes the area definitions exclude. The server wires
+		// the same judge client in cmd/before-yes/build.go.
 		Judge: &pipeline.Judge{Model: judge, Meter: meter, Fast: fast, Think: think, Entail: entailChatter(judge)},
 		Now:   now,
 	}

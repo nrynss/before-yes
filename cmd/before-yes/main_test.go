@@ -108,8 +108,9 @@ func code(t *testing.T, b []byte) string {
 	return env.Error.Code
 }
 
-// serve and check both build a judge whose entailment check is set, and
-// it is the reader's (Nano) client (T3.10).
+// serve and check both build a judge whose entailment client is the judge
+// client, not the reader. The reader accepted grades the area definitions
+// exclude (T3.11). The entail call still uses JudgeFast, thinking off.
 func TestServeAndCheckWireEntail(t *testing.T) {
 	a, _ := serveApp(t, "", noEnv)
 	e := writeSettings(t, "")
@@ -128,11 +129,17 @@ func TestServeAndCheckWireEntail(t *testing.T) {
 			t.Errorf("%s: Judge.Entail is nil", name)
 			continue
 		}
-		if j.Entail != p.Pipeline.Reader.Model {
-			t.Errorf("%s: Judge.Entail is not the reader's client", name)
+		if j.Entail != j.Model {
+			t.Errorf("%s: Judge.Entail is not the judge client", name)
 		}
-		if j.Entail.Settings().Model != "reader-model" {
-			t.Errorf("%s: entail model %q", name, j.Entail.Settings().Model)
+		if j.Entail == p.Pipeline.Reader.Model {
+			t.Errorf("%s: Judge.Entail is the reader's client", name)
+		}
+		if j.Entail.Settings().Model != "judge-model" {
+			t.Errorf("%s: entail model %q, want the judge", name, j.Entail.Settings().Model)
+		}
+		if p.Pipeline.Reader.Model.Settings().Model != "reader-model" {
+			t.Errorf("%s: reader model %q", name, p.Pipeline.Reader.Model.Settings().Model)
 		}
 	}
 }

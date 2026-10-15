@@ -17,9 +17,9 @@ diagnose Khan Academy Kids age 5 verdict unclear findings 226 (conflict pass unu
   age_gating  risks 28 mitigations 3 other 13
     judge flag setting "" cited 19 [f_c130cb709d7b6d05 f_d977c3d7c01daf8a f_5421e924b05d7ba7 f_6f92f0d977c76a50 f_a6928887eae37273 f_2ed72bf5cc14d74b f_de1f59b2e76eefb6 f_4bd8df2d54f82513 f_f241abebe59760c7 f_c63eb2084df56d40 f_1fa09bf014966950 f_f31ccecec31b4c6c f_b95573267eabed03 f_ea2bd4d42dd675c5 f_d79b70a1dd1aa8c2 f_3ea7cb6813dacd99 f_a69e194698f6b29b f_23986f12276e87dd f_ccc2d027a266e5eb]
     card unknown setting ""
-    check entail: flag_not_earned
-    entail meets_definition=false reason_supported=false
-    reason Changed to unknown: the cited quotes do not meet this area's flag definition.
+    check entail: reason_unsupported
+    entail meets_definition=true reason_supported=false
+    reason Changed to unknown: the reason says more than the cited quotes support.
     quote f_c130cb709d7b6d05 risk review: Good but limited Good for 5 YEAR OLDS it only goes up to second grade and I am going to third grade so I need something more advanced but it is still a very good kid learning app
     quote f_d977c3d7c01daf8a risk review: Terrible for my kid My kid is a fifth grader and it only went to second grade will be pressed 8+ and it didn’t even go up the grade It only stayed at second grade and down.
     quote f_5421e924b05d7ba7 risk review: Up to 2nd grade?! I am 10 years old and the app literally lets you choose your grade from pre-k to 2nd grade. Where is 5th grade?! You need to change this “age thing” immediately or I will delete the app.

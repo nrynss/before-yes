@@ -18,22 +18,22 @@ diagnose Minecraft age 9 verdict unclear findings 221 (conflict pass replaced th
   data  risks 21 mitigations 2 other 10
     judge flag setting "" cited 1 [f_62d7413616ee25d9]
     card unknown setting ""
-    check entail: flag_not_earned
-    entail meets_definition=false reason_supported=false
-    reason Changed to unknown: the cited quotes do not meet this area's flag definition.
+    check entail: reason_unsupported
+    entail meets_definition=true reason_supported=false
+    reason Changed to unknown: the reason says more than the cited quotes support.
     quote f_62d7413616ee25d9 risk store: App Tracking: To deliver personalized ads and improve application experience
   age_gating  risks 10 mitigations 2 other 8
     judge flag setting "" cited 1 [f_88d325d4c1d10860]
     card unknown setting ""
     check entail: flag_not_earned
-    entail meets_definition=false reason_supported=true
+    entail meets_definition=false reason_supported=false
     reason Changed to unknown: the cited quotes do not meet this area's flag definition.
     quote f_88d325d4c1d10860 risk review: Can you make the game available for +5 year-old?
   content  risks 18 mitigations 2 other 15
     judge ok_with_setting setting "block access to games based on the ESRB-assigned rating information" cited 2 [f_3cad9aec44591175 f_81363ff213c488f0]
     card unknown setting ""
     check entail: flag_not_earned
-    entail meets_definition=false reason_supported=true
+    entail meets_definition=false reason_supported=false
     reason Changed to unknown: the cited quotes do not meet this area's flag definition.
     quote f_3cad9aec44591175 risk review: it was scary but in the good way
     quote f_81363ff213c488f0 mitigation rating: block access to games based on the ESRB-assigned rating information
