@@ -776,6 +776,19 @@ Minecraft gather 2, age 9, verdict no. Same verdict as gather 1. Tavily 7 credit
 | content | unknown (judge had ok_with_setting) | Risk, in area: "Racist It called me the n word". The other citation is a contact mitigation about preset chat words. | the harassment quote is earned. The grade does not stand. | checkCitations: citation outside the area. One bad id voided the fitting citation. ThinReason. |
 | developer_record | unknown (judge had flagged) | A store tracking line, and "Microsoft will pay a fine of $20 million to settle Federal Trade Commission charges that it illegally collected and retained the data of children who signed up", which the reader filed under data. | the Microsoft fine may name this title's developer. It was not a developer_record finding, so the citation was out of area. The grade does not stand. | checkCitations: citation outside the area. ThinReason. |
 
+Khan Academy Kids gather 2, age 5, verdict no. Tavily 8 credits. Read $0.015596, judge $0.028643. 226 findings, 33 chunks, 0 failed chunks, missing source: terms. Ledger after this gather: $0.236605. Both gathers say no. Gather 1's no includes an earned content flag (a child met devil faces and men tied up during math). Gather 2's no is only an age_gating flag, and its content grade is unknown because the judge graded ok and cited nothing, with 28 content risks on the table.
+
+| Area | Card grade | Cited quote | Earned | Check |
+|---|---|---|---|---|
+| contact | unknown | none (judge graded ok and cited nothing) | n/a | ok_without_finding |
+| money | unknown | none (judge graded ok and cited nothing), with 8 risk findings on the table | n/a | ok_without_finding |
+| data | unknown | none (judge graded ok and cited nothing) | n/a | ok_without_finding |
+| age_gating | flag | Reviews that the lessons stop at 2nd grade ("Good for 5 YEAR OLDS it only goes up to second grade and I am going to third grade"). Nineteen citations, the same shape. | not earned: a curriculum ceiling, not an age gate that failed | stood (entail true/true) |
+| content | unknown | none (judge graded ok and cited nothing) | n/a | ok_without_finding |
+| developer_record | unknown | none (judge graded ok and cited nothing) | n/a | ok_without_finding |
+
+**Cause, after both gathers and the fixture replay.** The checks do not share one failure. checkCitations voided Minecraft gather 2's content grade, which cited an earned harassment quote, because the judge also cited a contact id, and it voided the developer_record grade because the FTC fine was filed under data. That one-bad-id rule stays. Entailment is the check that accepts quotes that do not meet `areaDefs` (Minecraft gather 1's age_gating feature request, its "scary but in the good way" content quote, and "BAN YOUR STUPID GAME"; Khan's curriculum-ceiling age flags on both gathers; the fixture Minecraft settings whose risk quotes are off the definition) and that refuses a quote that does (Roblox gather 2 contact: a child threatened by an adult in a game). The judge prompt is not the change. A standing flag's reason on the fixture recordings is still the area definition, and changing that prompt would re-record every judge call.
+
 Fixture recordings, replayed offline.
 
 | Title | Area | Card grade | Cited quote | Earned | Check |

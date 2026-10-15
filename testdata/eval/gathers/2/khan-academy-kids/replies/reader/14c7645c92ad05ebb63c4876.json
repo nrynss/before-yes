@@ -1,0 +1,8 @@
+{
+  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"D512\",\n      \"area\": \"money\",\n      \"claim\": \"It may not be a good idea to use brilliant.org and Khan Academy together.\",\n      \"stance\": \"neutral\",\n      \"quote\": \"I am planning on using brilliant.org and Khan academy together. If this is not a good idea what is the best idea to build a strong mathematical\"\n    },\n    {\n      \"ref\": \"D513\",\n      \"area\": \"content\",\n      \"claim\": \"Kumon instructors are not allowed to talk or tutor the kids.\",\n      \"stance\": \"neutral\",\n      \"quote\": \"ALSO there is a policy that the instructors should not talk or tutor the kids in Kumon. Their philosophy is to let the kids figure it out\"\n    },\n    {\n      \"ref\": \"D514\",\n      \"area\": \"content\",\n      \"claim\": \"A child’s weak math skills persisted despite doing about 150 sums a day in Kumon.\",\n      \"stance\": \"risk\",\n      \"quote\": \"My child’s weak in maths, and after doing Kumon math for two years (grade 3-5) he’s still quite weak at it despite doing about 150 sums a day. You\"\n    }\n  ]\n}",
+  "input_tokens": 614,
+  "output_tokens": 281,
+  "price_nano": 104280,
+  "measured": true,
+  "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B"
+}
