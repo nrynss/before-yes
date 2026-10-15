@@ -1,0 +1,8 @@
+{
+  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D520]\",\n      \"area\": \"content\",\n      \"claim\": \"A parent reports that the app includes content that models helping behaviors or kindness.\",\n      \"stance\": \"neutral\",\n      \"quote\": \"screen media being a source for positive content, such as content that role-models helping behaviors or kindness.\"\n    }\n  ]\n}",
+  "input_tokens": 5722,
+  "output_tokens": 86,
+  "price_nano": 363960,
+  "measured": true,
+  "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B"
+}

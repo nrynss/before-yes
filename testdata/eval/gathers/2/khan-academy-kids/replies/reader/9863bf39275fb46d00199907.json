@@ -1,0 +1,8 @@
+{
+  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D531]\",\n      \"area\": \"age_gating\",\n      \"claim\": \"The app is intended for children ages 2-8.\",\n      \"stance\": \"neutral\",\n      \"quote\": \"Khan Academy Kids is a free, fun, educational app with thousands of activities and books that will inspire a lifetime of learning and discovery for young children ages 2-8.\"\n    }\n  ]\n}",
+  "input_tokens": 1938,
+  "output_tokens": 100,
+  "price_nano": 140280,
+  "measured": true,
+  "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B"
+}
