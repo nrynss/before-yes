@@ -919,3 +919,29 @@ func TestCapturedTableHeaderNotAPick(t *testing.T) {
 		}
 	}
 }
+
+// The round-1 L1 probes: a candidate whose name contains the reviewing
+// host's label is still a title — "Duolingo Kids" on lingokids.com,
+// "Minecraft Dungeons" on minecraft.net — while the captured site names stay
+// rejected and the review's control stays clean.
+func TestSiteNameNotSharedSubstring(t *testing.T) {
+	for _, c := range []struct{ name, title, url string }{
+		{"Duolingo Kids", "Best learning apps", "https://www.lingokids.com/blog/best-apps"},
+		{"Minecraft Dungeons", "Games Like Minecraft", "https://www.minecraft.net/en-us/article/like-minecraft"},
+		{"RaceCraft - Build & Race", "Games Like Minecraft", "https://racecraftgames.com/best"},
+	} {
+		if isSiteName(c.name, c.title, c.url) {
+			t.Errorf("isSiteName(%q, …, %q) = true, want false (a title sharing the host's letters)", c.name, c.url)
+		}
+	}
+	for _, c := range []struct{ name, title, url string }{
+		{"Medium", "Medium", "https://sa-liberty.medium.com/your-kids-love-video-games-which-are-the-safest-ones-to-play-8ba311f201c6"},
+		{"Mysh", "Safe Games Like Roblox for Kids: 8 Picks (2026) | Mysh Blog", "https://playmysh.com/blog/the-best-games-like-roblox-for-kids-in-2026"},
+		{"Samio Learning", "Best learning apps for elementary students 2026 — 5 tested, the honest verdict — Sami", "https://samiolearning.com/best-learning-apps-for-kids"},
+		{"TruPlay", "7 Alternatives to Roblox for Kids (2026 Parent Guide) | TruPlay", "https://www.truplaygames.com/blog/safe-alternatives-to-roblox-for-kids"},
+	} {
+		if !isSiteName(c.name, c.title, c.url) {
+			t.Errorf("isSiteName(%q, …, %q) = false, want true (the site's own name)", c.name, c.url)
+		}
+	}
+}

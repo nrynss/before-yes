@@ -485,7 +485,11 @@ var platformNames = map[string]bool{
 // rather than a title: the hit URL's registrable domain and its label
 // ("Medium" on sa-liberty.medium.com, "Samio Learning" on samiolearning.com,
 // "Mysh" inside playmysh.com), a known platform, or the brand in the page
-// title's tail ("… 8 Picks (2026) | Mysh Blog").
+// title's tail ("… 8 Picks (2026) | Mysh Blog"). The domain rule is one-way:
+// a candidate is the site when its name is the label or sits inside it. A
+// name that merely contains the label is a title the site shares letters
+// with — "Duolingo Kids" on lingokids.com, "Minecraft Dungeons" on
+// minecraft.net — and stays a candidate.
 func isSiteName(name, hitTitle, hitURL string) bool {
 	fold := nameFold(name)
 	if fold == "" {
@@ -496,7 +500,7 @@ func isSiteName(name, hitTitle, hitURL string) bool {
 	}
 	if dom := registrable(hitURL); dom != "" {
 		d := nameFold(label(dom))
-		if d != "" && (fold == d || len(fold) >= 4 && len(d) >= 4 && (strings.Contains(fold, d) || strings.Contains(d, fold))) {
+		if d != "" && (fold == d || len(fold) >= 4 && len(d) >= 4 && strings.Contains(d, fold)) {
 			return true
 		}
 	}
