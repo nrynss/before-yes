@@ -147,7 +147,7 @@ requires:   T5.6, T5.7
 fixture-ok: yes
 size:       S · mid
 owns:       web/src/lib/ask/, web/src/lib/progress/Progress.svelte, web/src/lib/progress/progress.spec.ts, web/src/lib/card/Card.svelte, web/src/lib/card/card.spec.ts
-status:     in-review
+status:     done
 note:       Ask, progress and the card show the T5.6 situation and next step. A spent cap opens the keys dialog with the question kept and that budget sentence still readable. Example ages are 3 to 17. Compare still has its own unknown-area sentence; it was outside owns.
 ```
 T5.6 and T5.7 built the messages and the keys dialog inside their own folders, and nothing uses them yet: their file lists stopped short of the pages. As merged, a parent never sees the keys dialog, and the pages keep their own older messages.
@@ -163,8 +163,8 @@ T5.6 and T5.7 built the messages and the keys dialog inside their own folders, a
 
 ## Exit Criteria
 
-- [ ] Ask, progress and card views work end to end against the examples and a mock stream.
-- [ ] The "no" card leads with its deciding quote.
-- [ ] The side-by-side renders on desktop and phone.
-- [ ] Both themes pass Chaaya's contrast and accessibility gates.
-- [ ] No third-party logo or artwork anywhere in the UI.
+- [x] Ask, progress and card views work end to end against the examples and a mock stream. (T5.2–T5.4; refusals and visitor keys wired by T5.8)
+- [x] The "no" card leads with its deciding quote. (`card.spec.ts`: the `.lead` quote is the deciding finding, before the areas, at 22px or more)
+- [x] The side-by-side renders on desktop and phone. (`compare.spec.ts`: 360, 899, 900 and 1440 px)
+- [x] Both themes pass Chaaya's contrast and accessibility gates. (every page's spec runs the gate in light and dark)
+- [x] No third-party logo or artwork anywhere in the UI. (no image, SVG or logo in `web/src`, and no `static/` folder)

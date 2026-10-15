@@ -178,12 +178,12 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 
 | Phase | Tasks complete | Status |
 |---|---|---|
-| P0 | 9 / 9 | Done. Two exit criteria wait on later tasks: a live Nano call (T2.1b) and the config check (T4.4). CI is green. |
-| P1 | 4 / 4 | Done. The `job.Failure` exit criterion waits on T4.1. The main-checkout pins and `.env` leak check, waived at landing, ran at the P1–P2 integration and passed. |
+| P0 | 9 / 9 | Done. One exit criterion open: the Token Factory credit balance is unrecorded (the user reads it from the dashboard). Nano completions and `config` resolving every secret are proven. CI is green. |
+| P1 | 4 / 4 | Done. All exit criteria met; the `job.Failure` criterion was proven by T4.1. |
 | P2 | 12 / 12 | Done. All six exit criteria are met. Measured model cost is $0.0309 per check. Tavily is 7–8 credits per check, from fixtures, not a live run. |
 | P3 | 13 / 13 | Done. Every standing flag and setting now meets its area's own definition, enforced by a per-grade entailment check (T3.10). Verdicts: Roblox **no** (four earned flags), Minecraft **yes_with_settings** (matches T0.5, with a recorded caveat on two settings), Khan Academy Kids **unclear**. Re-pick is the user's call. |
 | P4 | 6 / 6 | Done. `serve` runs the whole server: check jobs and the stream, the card store and caches, the gate, passcode and live switch, visitor keys and the daily cap on one meter (its own `spend.db`), `Judge.Entail` wired, and a double click joining the running check. Smoke-tested from the main checkout with live off. |
-| P5 | 7 / 8 | T5.1–T5.7 are done: the shell, Ask with free examples, progress, the card, side by side, messages for every error code, and the visitor keys dialog. T5.8 (filed) wires the messages and the keys dialog into Ask, Progress and the card; until then a parent never sees the keys dialog. Exit criteria are checked after T5.8. |
+| P5 | 8 / 8 | Done. Ask with free examples, progress, the card, side by side, a message with a next step for every error code, and the visitor keys dialog when the daily cap is spent. All five exit criteria are met. |
 | P6 | 0 / 6 | Not started. |
 
 ---
@@ -192,6 +192,11 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 
 Newest first. One entry per closed task, finding, or split.
 
+- **T5.8 closed (PR #31); P5 is done.** The frontend orchestrator implemented it; round 1 approved with no findings. The gate passed on main after the merge: 172 browser tests, none skipped.
+  - **What landed:** Ask shows T5.6's message for every refusal; on `budget_exhausted` it opens the T5.7 keys dialog with the title and age kept, and a visitor-key `202` goes to the progress view. On `live_checks_off` no keys are offered. Progress shows the T5.6 message for a failed check, the card shows it for a missing card, and an `unknown` area says it is unanswered, not a pass. The example list accepts ages 3 to 17.
+  - **Reviewer pins:** a headless browser at 360px drove each code, the keys flow (both headers on the wire, keys absent from storage, cookies, the URL, history and the console), and passcode-then-keys in one request.
+  - **Seam left:** `Compare.svelte` keeps its own wording for an unknown area with no reason. It was outside T5.8's owns; harmless.
+  - **Exit criteria ticked** by the orchestrator: all five in P5 (evidence beside each), P1's `job.Failure` criterion (T4.1), and P0's `config` criterion (`config` against the example's references resolves all three secrets, prints sources only, and a scan of its output finds no key). P0's credit balance stays open for the user.
 - **T5.5, T5.6 and T5.7 closed (PRs #28, #29 and #30).** The frontend orchestrator implemented all three; each round 1 approved with no findings. The gate passed on main after each merge: browser tests 107 → 120 → 145 → 155, none skipped.
   - **T5.5:** `/compare/[a]/[b]` puts two cards area by area in one grid, one row per area on a phone.
   - **T5.6:** `web/src/lib/errors/`: a message with a next step for each of the eight codes, never a raw code or a stack trace, and the not-enough-evidence note for an `unknown` area.

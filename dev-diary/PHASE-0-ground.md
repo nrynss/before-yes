@@ -209,8 +209,8 @@ Record credits per call. Then answer the T0.4a inspection questions again for th
 ## Exit Criteria
 
 - [x] First commit on `main`, with `scratch/` and `.env` ignored.
-- [ ] A successful Nano completion on Token Factory, with the credit balance recorded.
-- [ ] Every secret resolves through `before-yes config`, and no key is in git.
+- [ ] A successful Nano completion on Token Factory, with the credit balance recorded. (Completions proven from T2.1b on, about $0.41 spent live in all; the account's credit balance is still unrecorded and needs the user to read it from the dashboard.)
+- [x] Every secret resolves through `before-yes config`, and no key is in git. (`config` against the example's references: all three secrets resolve from `.env`, output shows sources only; the key check finds no value tracked or in the tree)
 - [x] Three demo titles and one alternative chosen.
 - [x] Fixtures for all three titles committed, with Tavily credits per title recorded.
 - [x] `tools/check.sh` green locally.
