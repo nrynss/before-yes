@@ -16,6 +16,7 @@ import (
 	"github.com/nrynss/before-yes/internal/appstore"
 	"github.com/nrynss/before-yes/internal/checklist"
 	"github.com/nrynss/before-yes/internal/finding"
+	"github.com/nrynss/before-yes/internal/model"
 	"github.com/nrynss/before-yes/internal/pipeline"
 	"github.com/nrynss/before-yes/internal/spend"
 	"github.com/nrynss/before-yes/internal/tavily"
@@ -25,6 +26,31 @@ import (
 // server with no further upstream call, and the documents match, including
 // a quote that carries characters JSON would escape. The sentinel key is
 // forwarded and never written.
+// Entailment runs on the judge client. A reply whose system prompt is the
+// entailment check must not be stored as a judge pass, or diagnosis reads
+// it as a conflict pass.
+func TestEntailTraceIsNotAJudgePass(t *testing.T) {
+	tr := &callTrace{}
+	c := &tracingChatter{inner: keywordReader{}, role: "judge", tr: tr}
+	_, err := c.Chat(context.Background(), []model.Message{
+		{Role: "system", Content: "Answer meets_definition"},
+		{Role: "user", Content: "Area: contact\n"},
+	}, model.Options{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(tr.judge) != 0 || len(tr.entail) != 1 {
+		t.Fatalf("judge traces %d, entail traces %d", len(tr.judge), len(tr.entail))
+	}
+}
+
+func TestEntailmentRunsOnTheJudgeModel(t *testing.T) {
+	judge := &replayer{role: "judge", model: "recorded-judge"}
+	if got := entailChatter(judge); got != judge {
+		t.Fatalf("entail chatter = %v, want the judge model", got)
+	}
+}
+
 func TestLiveGatherReplaysOffline(t *testing.T) {
 	const key = "SENTINEL-KEY-t3-11"
 	var hits atomic.Int64
