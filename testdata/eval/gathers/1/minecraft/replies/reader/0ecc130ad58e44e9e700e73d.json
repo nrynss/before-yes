@@ -1,0 +1,8 @@
+{
+  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D531]\",\n      \"area\": \"money\",\n      \"claim\": \"A parent reports that the app may push in-app purchases or subscription traps.\",\n      \"stance\": \"risk\",\n      \"quote\": \"Adobe agrees to 150 million settlement and injunction resolve alleged violations restore online\"\n    }\n  ]\n}",
+  "input_tokens": 997,
+  "output_tokens": 84,
+  "price_nano": 79980,
+  "measured": true,
+  "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B"
+}

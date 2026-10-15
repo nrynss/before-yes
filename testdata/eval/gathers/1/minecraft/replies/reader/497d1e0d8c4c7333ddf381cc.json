@@ -1,0 +1,8 @@
+{
+  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D524]\",\n      \"area\": \"age_gating\",\n      \"claim\": \"A parent reports that there is no real age verification and teens can bypass protections by entering a fake birth date.\",\n      \"stance\": \"risk\",\n      \"quote\": \"There's no real age verification. Teens can bypass protections by entering a fake birth date.\"\n    }\n  ]\n}",
+  "input_tokens": 4479,
+  "output_tokens": 93,
+  "price_nano": 291060,
+  "measured": true,
+  "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B"
+}

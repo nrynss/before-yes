@@ -1,0 +1,8 @@
+{
+  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D525]\",\n      \"area\": \"contact\",\n      \"claim\": \"A parent reports that chat options are limited and closing the app can be tricky at first.\",\n      \"stance\": \"neutral\",\n      \"quote\": \"limits on chat options helps make that more annoying than unsafe. Closing out of the app is tricky the first time, but kids just need to swipe from the line at the bottom of the screen.\"\n    },\n    {\n      \"ref\": \"[D525]\",\n      \"area\": \"money\",\n      \"claim\": \"The app is free to try, but it may include in-app purchases.\",\n      \"stance\": \"neutral\",\n      \"quote\": \"App Details: Pricing structure: Free to try\"\n    }\n  ]\n}",
+  "input_tokens": 1287,
+  "output_tokens": 173,
+  "price_nano": 118740,
+  "measured": true,
+  "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B"
+}

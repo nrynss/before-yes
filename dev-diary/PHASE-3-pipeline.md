@@ -728,6 +728,19 @@ Roblox gather 1, age 9, verdict no.
 
 Ten developer_record risks were verified. One is verbatim in the news page the reader named and the judge did not cite: "Los Angeles County filed a civil lawsuit against Roblox Corporation alleging the company falsely marketed its online gaming platform as safe for children while knowingly allowing it to become a “hunting ground for predators.”" The entailment refusal of the four citations the judge did make is the definition check working. The miss is which finding the judge cited. Age gating and content still stand, and both are earned, so the verdict is no.
 
+Minecraft gather 1, age 9, verdict no. The fixture recordings for this title are yes_with_settings. Tavily 7 credits. Read $0.020038, judge $0.021718. 221 findings, 48 chunks, 1 failed chunk, missing source: policy. Ledger after this gather: $0.078809.
+
+| Area | Card grade | Cited quote | Earned | Check |
+|---|---|---|---|---|
+| contact | ok_with_setting, setting "Restrict Communication" | A locked-account review ("as I put my email in it says account has been locked"). Mitigation quote is the words "Restrict Communication". | not earned: the risk quote is not strangers reaching the child, and the mitigation quote does not say the control closes that door | stood (entail true/true) |
+| money | ok_with_setting, setting "Control Spending" | "i bought 10,000 minecoins and im litterly a kid im only 10 and i got scammed i litterly used all my birthday money!" Mitigation quote is the words "Control Spending". | earned: a child completed a purchase, and the mitigation names a spending control | stood (entail true/true) |
+| data | unknown (judge flagged) | "App Tracking: To deliver personalized ads and improve application experience" | not earned: the line does not say a parent cannot control collection aimed at children | entail: flag_not_earned |
+| age_gating | flag | "Can you make the game available for +5 year-old?" | not earned: a feature request, not a report that the age gate failed | stood (entail true/true). This unearned flag is why the verdict is no. |
+| content | ok_with_setting, setting "block access to games based on the ESRB-assigned rating information" | "it was scary but in the good way". Mitigation names blocking games by ESRB rating. | not earned: the risk quote names no harm on the content list | stood (entail true/true) |
+| developer_record | flag | "BAN YOUR STUPID GAME" and a Microsoft age-assurance FAQ citation. The judge's reason says the developer has faced regulatory fines and lawsuits. | not earned: neither quote is an enforcement record, and the reason says what the quotes do not | stood (entail true/true) |
+
+checkCitations did not void any of these grades. Entailment refused the data flag and accepted the age_gating flag, the content setting, the contact setting, and the developer_record flag.
+
 Fixture recordings, replayed offline.
 
 | Title | Area | Card grade | Cited quote | Earned | Check |

@@ -1,0 +1,8 @@
+{
+  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D538]\",\n      \"area\": \"age_gating\",\n      \"claim\": \"A parent reports that the age gate is not effective in practice.\",\n      \"stance\": \"risk\",\n      \"quote\": \"your child to play on multiplayer servers.\"\n    },\n    {\n      \"ref\": \"[D538]\",\n      \"area\": \"content\",\n      \"claim\": \"A parent reports that the game can be played on multiplayer servers.\",\n      \"stance\": \"neutral\",\n      \"quote\": \"your child to play on multiplayer servers.\"\n    }\n  ]\n}",
+  "input_tokens": 1544,
+  "output_tokens": 136,
+  "price_nano": 125280,
+  "measured": true,
+  "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B"
+}
