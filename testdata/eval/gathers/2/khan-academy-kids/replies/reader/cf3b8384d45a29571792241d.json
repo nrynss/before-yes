@@ -1,0 +1,8 @@
+{
+  "text": "{\n  \"findings\": []\n}",
+  "input_tokens": 3223,
+  "output_tokens": 9,
+  "price_nano": 195540,
+  "measured": true,
+  "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B"
+}

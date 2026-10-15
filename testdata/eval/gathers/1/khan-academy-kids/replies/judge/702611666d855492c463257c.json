@@ -1,0 +1,8 @@
+{
+  "text": "{\"reason_supported\": true, \"explanation\": \"A review reports a grid of scary devil faces and men tied up with mouths taped shut appeared for about 15 seconds while a child worked on math.\"}",
+  "input_tokens": 1123,
+  "output_tokens": 46,
+  "price_nano": 378300,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

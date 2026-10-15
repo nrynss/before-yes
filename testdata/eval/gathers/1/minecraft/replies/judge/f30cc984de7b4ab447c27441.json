@@ -1,0 +1,8 @@
+{
+  "text": "{\"reason_supported\": false, \"explanation\": \"The explanation states 'A rating notes there is no drinking, drugs, or sexual content, and fighting is bloodless.' This describes general content characteristics, not a concrete reported encounter with unsuitable material. The area requires a specific instance where unsuitable material was experienced or reached, but the quotes only provide a general assessment of the game's content (violence being bloodless, absence of certain themes). No actual encounter—such as a child seeing or interacting with inappropriate content—is reported in the source.\"}",
+  "input_tokens": 1074,
+  "output_tokens": 113,
+  "price_nano": 423900,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

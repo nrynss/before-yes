@@ -527,7 +527,6 @@ func (r *recordedReplies) Settings() model.Settings {
 // entailment replays cover the definition rule: a standing grade also
 // survives the area's flag definition and its own reason.
 func TestRecordedRepliesGradesRestOnVerifiedQuotes(t *testing.T) {
-	t.Skip(staleRecordings)
 	L := func(ls ...checklist.Level) []checklist.Level { return ls }
 	const (
 		ok, set, flag, unk = checklist.OK, checklist.OKWithSetting, checklist.Flag, checklist.Unknown
@@ -539,21 +538,25 @@ func TestRecordedRepliesGradesRestOnVerifiedQuotes(t *testing.T) {
 		levels  []checklist.Level // in card order, after every demotion
 		thin    []checklist.Area
 	}{
-		// Roblox: money, age_gating and developer_record stand (the LA County
-		// suit is filed against the developer). contact, data and content
-		// are flag_not_earned and land thin. Verdict no.
-		{demos[0], 9, checklist.No, L(unk, flag, unk, flag, unk, flag), []checklist.Area{"contact", "data", "content"}},
-		// Minecraft: contact, money, age_gating and content are
-		// flag_not_earned. The contact grade was a gameplay paragraph plus
-		// a friends-only chat setting; it does not stand. data and
-		// developer_record are the judge's own unknowns, so they are not
-		// thin. Content unknown makes the verdict unclear.
-		{demos[1], 9, checklist.Unclear, L(unk, unk, unk, unk, unk, unk), []checklist.Area{"contact", "money", "age_gating", "content"}},
-		// Khan: the judge graded four areas ok citing nothing (Enforce's
-		// ok_without_finding), age_gating named a setting no cited quote
-		// names, and the content flag's quotes do not meet the definition
-		// (flag_not_earned). All six unknown make the verdict unclear.
-		{demos[2], 5, checklist.Unclear, L(unk, unk, unk, unk, unk, unk), []checklist.Area{"age_gating", "content"}},
+		// Roblox (re-recorded with the data-flag definition, the App Store
+		// fact findings and the first-pass fallback): money, age_gating,
+		// content and developer_record stand. money's flag rests in part on
+		// the listing's "Loot Boxes" advisory (a store fact). contact and
+		// data are flag_not_earned and land thin. Verdict no.
+		// (Before: content was thin too, so content unknown.)
+		{demos[0], 9, checklist.No, L(unk, flag, unk, flag, flag, flag), []checklist.Area{"contact", "data"}},
+		// Minecraft (re-recorded): contact stands as ok_with_setting
+		// (multiplayer off by default on child accounts) and money stands as
+		// a flag. data and age_gating are flag_not_earned and land thin;
+		// content and developer_record are the judge's own unknowns. Money
+		// flagged makes the verdict no. (Before: contact, money, age_gating
+		// and content were all thin, and the verdict was unclear.)
+		{demos[1], 9, checklist.No, L(set, flag, unk, unk, unk, unk), []checklist.Area{"data", "age_gating"}},
+		// Khan (re-recorded): money is ok on the listing's price line and the
+		// developer's own words; contact, data, age_gating and content are
+		// thin or unknown. Four unknown areas make the verdict unclear.
+		// (Before: money unknown and thin areas were age_gating and content.)
+		{demos[2], 5, checklist.Unclear, L(unk, ok, unk, unk, unk, unk), []checklist.Area{"contact", "data", "age_gating", "content"}},
 	}
 	tokenFactory := func(on bool) map[string]any {
 		return map[string]any{"chat_template_kwargs": map[string]any{"enable_thinking": on}}
@@ -887,7 +890,6 @@ func TestJudgeSystemAreaDefinitions(t *testing.T) {
 // captured review. The fixture replay must not keep a grade whose risk quote
 // is a gameplay paragraph, or a setting whose mitigation is only a label.
 func TestEntailSystemHoldsAFittingQuote(t *testing.T) {
-	t.Skip(staleRecordings)
 	s := entailSystem()
 	for _, w := range []string{
 		"Scary in a good way",
@@ -926,8 +928,27 @@ func TestEntailSystemHoldsAFittingQuote(t *testing.T) {
 	for _, g := range card.Grades {
 		by[g.Area] = g
 	}
-	if by[checklist.Contact].Level == checklist.OKWithSetting {
-		t.Errorf("fixture contact stayed ok_with_setting %q; the risk quote is a gameplay paragraph", by[checklist.Contact].Setting)
+	// Re-recorded: the first recording kept no Minecraft contact setting
+	// (its risk quote was a gameplay paragraph). The re-recorded judge cites
+	// the Common Sense passage that says contact is possible only when
+	// multiplayer and communication are on, and the control that starts
+	// them off, and the entailment check accepts that pair. The pin is
+	// that a standing setting rests on that pair, not on a gameplay list.
+	if c := by[checklist.Contact]; c.Level == checklist.OKWithSetting {
+		if c.Setting != "multiplayer off by default on child accounts" {
+			t.Errorf("contact setting = %q, want the quoted control", c.Setting)
+		}
+		var risk string
+		for _, f := range card.Findings {
+			for _, id := range c.Findings {
+				if f.ID == id && f.Stance == finding.Risk {
+					risk = f.Quote
+				}
+			}
+		}
+		if !strings.Contains(risk, "Only if multiplayer and communication are turned on") {
+			t.Errorf("contact ok_with_setting cites the risk quote %q, want the multiplayer-and-communication passage", risk)
+		}
 	}
 	if by[checklist.Money].Level == checklist.OKWithSetting {
 		t.Errorf("label-only money setting stood: %q", by[checklist.Money].Setting)
@@ -1469,12 +1490,3 @@ func TestParentWriterUsesValidatedAgeEventFocus(t *testing.T) {
 		t.Fatal("prose pass must not re-run grade thresholds")
 	}
 }
-
-// staleRecordings is why the tests that replay recorded model replies are
-// skipped. Their recordings are keyed on the exact request text, and the
-// data area's definition (areaDefs, read by the judge and the entailment
-// step), the App Store fact findings in the judge's evidence, and the
-// shorter-sibling filter's change to what Khan Academy Kids reads all change
-// that text. The recordings are kept; the live re-record writes ones that
-// match, and these tests are enabled again then.
-const staleRecordings = "recordings predate the data-flag definition, the App Store fact findings and the shorter-sibling filter: re-record live, then enable"

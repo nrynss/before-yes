@@ -1,49 +1,56 @@
-diagnose Minecraft age 9 verdict no findings 142 (conflict pass replaced the conflicted areas)
+diagnose Minecraft age 9 verdict no findings 148 (conflict pass replaced the conflicted areas (an area the checks then made unknown may fall back to its first-pass grade))
   contact  risks 26 mitigations 7 other 0
-    judge ok_with_setting setting "Multiplayer is off by default on child accounts in both Java Edition and Bedrock Edition" cited 2 [f_a204ed94e6ffcd86 f_1e24b73e7fa966bc]
+    judge ok_with_setting setting "Multiplayer is off by default on child accounts in both Java Edition and Bedrock Edition" cited 2 [f_10ea2db645489ab8 f_1e24b73e7fa966bc]
     card unknown setting ""
     check entail: flag_not_earned
     entail meets_definition=false reason_supported=false
     reason We don’t have enough evidence to assess this area. Don’t assume it is safe.
-    quote f_a204ed94e6ffcd86 risk store: Local Network: To find other devices on the same Wi‑Fi network for multiplayer gameplay.
+    quote f_10ea2db645489ab8 risk rating: To make sure they have the best and safest experience possible, we have several resources and tools that you can utilize to tailor your child’s multiplayer experience.
     quote f_1e24b73e7fa966bc mitigation rating: Multiplayer is off by default on child accounts in both Java Edition and Bedrock Edition.
-  money  risks 30 mitigations 0 other 7
-    judge flag setting "" cited 2 [f_4f0d24b3b6bb0948 f_52134516877ae723]
+  money  risks 31 mitigations 0 other 7
+    judge flag setting "" cited 5 [f_bbdd451071f6eabc f_4f0d24b3b6bb0948 f_5adae5391d64ec0f f_197d5537975444c2 f_52134516877ae723]
     card flag setting ""
     check stood
     entail meets_definition=true reason_supported=true
-    reason A reviewer who says they are 10 years old reports buying 10,000 Minecoins using birthday money and feeling scammed.
+    reason Multiple reviewers report being scammed while attempting purchases: one paid $1.09 for a mod but received nothing and had to pay $15.99 more, another aged 10 spent all birthday money on 10,000 Minecoins feeling scammed, a third was repeatedly charged $40 total for a failed $6.99 villager add-on purchase, and a fourth states 'I Bought Minecoins it scam me'.
+    quote f_bbdd451071f6eabc risk review: Scam This dumb Mining game spent me 1.09$ for a mod thean because I got 0 mine coins I have to pay 15.99$ so my mom got scammed 1.09$
     quote f_4f0d24b3b6bb0948 risk review: i bought 10,000 minecoins and im litterly a kid im only 10 and i got scammed i litterly used all my birthday money! FRICK YOU MINECRAFT
+    quote f_5adae5391d64ec0f risk review: okay so basically i was trying to purchase the new villager add on for 6.99 last night and every single time it said i didn’t have enough “minecoins” i tried buying them separately too which still didn’t work and i thought this all was really weird because every single time it said the purchase was successful and i tried it again tonight and just got charged 40 dollars. i still don’t have the add on btw.
+    quote f_197d5537975444c2 risk review: I Bought Minecoins it scam me he is a scammer
     quote f_52134516877ae723 risk rating: In your child’s spending settings, turn on “Ask a parent to buy things” so every Marketplace purchase (paid for with Minecoins) or Realms subscription needs your approval, or remove the saved payment method from the account entirely.
-  data  risks 8 mitigations 2 other 5
+  data  risks 9 mitigations 2 other 6
     judge ok_with_setting setting "child accounts automatically provide guardrails against the collection of some data" cited 2 [f_62d7413616ee25d9 f_7bff118ec684f6e0]
     card unknown setting ""
     check entail: flag_not_earned
-    entail meets_definition=false reason_supported=false
+    entail meets_definition=false reason_supported=false; entail meets_definition=false reason_supported=false
     reason We don’t have enough evidence to assess this area. Don’t assume it is safe.
     quote f_62d7413616ee25d9 risk store: App Tracking: To deliver personalized ads and improve application experience
     quote f_7bff118ec684f6e0 mitigation rating: child accounts automatically provide guardrails against the collection of some data
   age_gating  risks 11 mitigations 4 other 6
-    judge ok_with_setting setting "Players younger than 16 will automatically have a \"child account,\" which must be linked to an adult account." cited 2 [f_e9731cf660fbf00c f_ee415e54d7a54a34]
+    judge ok_with_setting setting "Players younger than 16 will automatically have a 'child account,' which must be linked to an adult account" cited 2 [f_e9731cf660fbf00c f_ee415e54d7a54a34]
     card unknown setting ""
-    check entail: reason_unsupported
-    entail meets_definition=true reason_supported=false
+    check entail: flag_not_earned
+    entail meets_definition=false reason_supported=false; entail meets_definition=false reason_supported=false
     reason We don’t have enough evidence to assess this area. Don’t assume it is safe.
     quote f_e9731cf660fbf00c risk forum: When setting up an account it checks to verify age requirements, but it's pretty easy for a savvy kid to fake their birthdate to gain access.
     quote f_ee415e54d7a54a34 mitigation forum: Players younger than 16 will automatically have a "child account," which must be linked to an adult account.
-  content  risks 11 mitigations 1 other 8
-    judge ok_with_setting setting "The chat option is pre-set: Kids have to choose from certain words or phrases, or use emojis." cited 2 [f_c9072b9921500c3f f_1a136a5457e77c50]
-    citation citation outside the area: f_1a136a5457e77c50 is in contact
-    card unknown setting ""
-    check checkCitations: citation outside the area: f_1a136a5457e77c50 is in contact
-    reason We don’t have enough evidence to assess this area. Don’t assume it is safe.
+  content  risks 13 mitigations 1 other 9
+    conflict pass ok_with_setting setting "The chat option is pre-set: Kids have to choose from certain words or phrases, or use emojis" cited 2 [f_9a4e2614f4dde78a f_1a136a5457e77c50]
+    first-pass fallback: the conflict pass's grade was made unknown by the checks, so the first pass's grade stands
+    judge (first pass) flag setting "" cited 1 [f_c9072b9921500c3f]
+    card flag setting ""
+    check stood
+    entail meets_definition=true reason_supported=true
+    reason A reviewer reports the game called them the n word, which is a racist slur.
     quote f_c9072b9921500c3f risk review: Racist It called me the n word
-    quote f_1a136a5457e77c50 mitigation forum: The chat option is pre-set: Kids have to choose from certain words or phrases, or use emojis.
   developer_record  risks 12 mitigations 0 other 4
-    judge flag setting "" cited 2 [f_de8b2f2e9b3dc91e f_796e7220c1a87086]
+    judge flag setting "" cited 4 [f_de8b2f2e9b3dc91e f_67deee1afa40eb39 f_796e7220c1a87086 f_c5ec48a6801685f6]
     citation citation outside the area: f_796e7220c1a87086 is in data
     card unknown setting ""
-    check checkCitations: citation outside the area: f_796e7220c1a87086 is in data
+    check entail: flag_not_earned
+    entail meets_definition=false reason_supported=false
     reason We don’t have enough evidence to assess this area. Don’t assume it is safe.
     quote f_de8b2f2e9b3dc91e risk store: App Tracking: To deliver personalized ads and improve application experience
+    quote f_67deee1afa40eb39 risk terms: The Microsoft Privacy Statement applies to all Minecraft Services. The sole exception is the Minecraft Shop, which is managed by our friends at Snow Commerce, who are not part of us or Microsoft.
     quote f_796e7220c1a87086 risk news: Microsoft will pay a fine of $20 million to settle Federal Trade Commission charges that it illegally collected and retained the data of children who signed up
+    quote f_c5ec48a6801685f6 risk rating: Microsoft, which owns Minecraft, has started asking some account holders to verify their age. Its age assurance FAQ says users in the United Kingdom, Australia, Brazil and Singapore can verify now, with a selfie-based age estimate, an ID document or a government login.

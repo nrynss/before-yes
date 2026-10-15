@@ -1,0 +1,8 @@
+{
+  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D512]\",\n      \"area\": \"contact\",\n      \"claim\": \"A parent reports that parental controls are accessed by tapping “For Parents” at the bottom of the user select page in the app.\",\n      \"stance\": \"neutral\",\n      \"quote\": \"Open the Khan Academy Kids app on your device. Tap “For Parents” at the bottom of the user select page in the app. Follow instructions to\"\n    }\n  ]\n}",
+  "input_tokens": 6113,
+  "output_tokens": 107,
+  "price_nano": 392460,
+  "measured": true,
+  "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B"
+}

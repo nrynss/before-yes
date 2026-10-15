@@ -1,41 +1,45 @@
-diagnose Khan Academy Kids age 5 verdict no findings 155 (conflict pass unusable (no grades); first pass kept)
-  contact  risks 12 mitigations 2 other 2
-    judge ok setting "" cited 0 []
-    card unknown setting ""
-    check ok_without_finding
-    reason We don’t have enough evidence to assess this area. Don’t assume it is safe.
-  money  risks 4 mitigations 4 other 12
-    judge ok setting "" cited 3 [f_fafdd7902651ab6c f_2b5396534308f22c f_1da121f28cdd8761]
-    card ok setting ""
-    check stood
-    reason A review reports 'ACTUALLY FREE YOU DONT NEED TO PAY' and describes using the app for school work without payment.
-    quote f_fafdd7902651ab6c mitigation review: ACTUALLY FREE YOU DONT NEED TO PAY Thank goodness I use khan academy for school work so when I found out they had a learning games for kids I was so happy and I thought “ they teach fee videos on YouTube “ and it absolutely was free glad to know someone cares for our youth
-    quote f_2b5396534308f22c mitigation store: Khan Academy Kids is 100% free with no ads or subscriptions.
-    quote f_1da121f28cdd8761 mitigation reddit: It is free. It includes learning games that give rewards in the game like musical instruments, or clothes to play dress up on one of the characters, or (my son's favourite) bugs to add to a bug house. It also includes drawing/colouring in. There are no adverts either.
-  data  risks 9 mitigations 6 other 6
-    judge ok setting "" cited 1 [f_03a93704589b927b]
-    card ok setting ""
-    check stood
-    reason The store listing states the app is 'COPPA-compliant' and created with education experts, though this quote does not verify actual practices.
-    quote f_03a93704589b927b mitigation store: Created in partnership with the Stanford Graduate School of Education by education experts, aligned with Head Start and Common Core Standards, COPPA-compliant, and 100% free—no ads, no subscriptions.
-  age_gating  risks 16 mitigations 2 other 7
-    judge flag setting "" cited 4 [f_582dc2075d52845a f_6f92f0d977c76a50 f_fc4866d088d95f5a f_526f10b42a2d62c5]
+diagnose Khan Academy Kids age 5 verdict no findings 146 (conflict pass replaced the conflicted areas (an area the checks then made unknown may fall back to its first-pass grade))
+  contact  risks 7 mitigations 1 other 5
+    judge flag setting "" cited 2 [f_e54d9aeff8acb9f4 f_60d4826ad9d69d44]
     card unknown setting ""
     check entail: flag_not_earned
-    age-gate event=none witness="" actual_age="" assigned_age=""; age-gate event=none witness="" actual_age="" assigned_age=""; age-gate event=none witness="" actual_age="" assigned_age=""; age-gate event=none witness="" actual_age="" assigned_age=""
+    entail meets_definition=false reason_supported=false
     reason We don’t have enough evidence to assess this area. Don’t assume it is safe.
-    quote f_582dc2075d52845a risk review: I am 10 years old and the app literally lets you choose your grade from pre-k to 2nd grade. Where is 5th grade?! You need to change this “age thing” immediately or I will delete the app.
-    quote f_6f92f0d977c76a50 risk review: So the game is really fun but the age range is to small I like it and I’m 11 so the highest it goes is 2nd grade even though older kids like it too. Just try to put the age range a little higher like maybe up to middle school, thats all I’m asking.
-    quote f_fc4866d088d95f5a risk review: My child is in 3rd grade and the app only has pre-k to 2nd grade. she loved it last year but now it’s not as fun anymore because it is not her level anymore.
-    quote f_526f10b42a2d62c5 risk review: I gave the review four stars solely for the reason that this fantastic app sadly cuts off learning for children above second grade. My daughter absolutely loves this app for learning through fun and games. She has been playing this app for years and sadly it cannot take her any further.
-  content  risks 23 mitigations 3 other 36
+    quote f_e54d9aeff8acb9f4 risk forum: Parents must allow access to their device's microphone for some activities to work fully.
+    quote f_60d4826ad9d69d44 risk rating: My 4-year old is working on Khan Academy Kids app this morning and loving it. The combo of school facts along with social/emotional content is outstanding.
+  money  risks 3 mitigations 4 other 10
+    conflict pass ok setting "" cited 2 [f_1743367afa774fb8 f_b42defec3738fd8b]
+    first-pass fallback: the conflict pass's grade was made unknown by the checks, so the first pass's grade stands
+    judge (first pass) ok setting "" cited 0 []
+    card ok setting ""
+    check stood
+    reason The rating states the mobile app is 100% free with no ads or subscriptions.
+    quote f_1743367afa774fb8 mitigation rating: Is Khan Academy Kids really free? Yes — the mobile app is 100% free, with no ads or subscriptions.
+    quote f_b42defec3738fd8b mitigation store: Reading & Math Learning Games Free
+  data  risks 10 mitigations 8 other 7
+    judge flag setting "" cited 3 [f_b677ef9f38aa3b5b f_cf3c5c65071d1c6e f_73d64adad97808eb]
+    card flag setting ""
+    check stood
+    entail meets_definition=true reason_supported=true
+    reason Regulators allege the app collected children's names, email addresses, and birth dates without parental consent.
+    quote f_b677ef9f38aa3b5b risk forum: Read the developer's [privacy policy](https://www.khanacademy.org/about/privacy-policy) for details on how your (or your kids') information is collected, used, and shared and any choices you may have in the matter, and note that privacy policies and terms of service frequently change.
+    quote f_cf3c5c65071d1c6e risk news: regulators allege that the app collected children's names, email addresses and birth dates without their parents' consent.
+    quote f_73d64adad97808eb risk rating: Parents must provide an email address and confirm the address through their email account to begin using the app. Once in, parents can create multiple user accounts with name, avatar, and age. Kids can follow a learning path, which automatically presents varied activities based on age and past performance, or browse the database for videos, games, books, songs, and more. Parents must allow access to their device's microphone for some activities to work fully. Read the developer's [privacy policy…
+  age_gating  risks 14 mitigations 1 other 5
+    judge ok setting "" cited 2 [f_41c741e625336937 f_44b2975820f1807f]
+    card ok setting ""
+    check stood
+    reason No source quote reports how age is collected, verified, or circumvented during sign-up or use.
+    quote f_41c741e625336937 mitigation forum: Parents must provide an email address and confirm the address through their email account to begin using the app.
+    quote f_44b2975820f1807f neutral store: Packed with fun, standards-aligned reading games, math games, phonics lessons, and interactive storybooks, the app has helped over 21 million preschool and elementary students learn at home, at school, and on the go. Join Kodi the Bear and friends on exciting educational adventures that spark curiosity, build confidence, and inspire a lifelong love of learning.
+  content  risks 19 mitigations 3 other 38
     judge flag setting "" cited 1 [f_0fcffd8da2e19a5b]
     card flag setting ""
     check stood
     entail meets_definition=true reason_supported=true
-    reason A review reports that 'a grid of scary devil faces and men tied up with their mouth taped shut popped up for about 15 seconds while my kid was working on math.'
+    reason A review reports a grid of scary devil faces and men tied up with mouths taped shut appeared for about 15 seconds while a child worked on math.
     quote f_0fcffd8da2e19a5b risk review: A grid of scary devil faces and men tied up with their mouth taped shut popped up for about 15 seconds while my kid was working on math. Very disturbing and disappointing since this is such a widely advertised app for homeschooling
-  developer_record  risks 1 mitigations 0 other 10
+  developer_record  risks 0 mitigations 1 other 10
     judge ok setting "" cited 0 []
     card unknown setting ""
     check ok_without_finding

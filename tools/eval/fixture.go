@@ -178,6 +178,22 @@ func (f *fixture) extract(w http.ResponseWriter, r *http.Request) {
 		_, _ = w.Write(b)
 		return
 	}
+	// The gatherer extracts the listing page on every gather; the frozen
+	// fixtures answer that one call from their own capture of the page.
+	if len(req.URLs) == 1 {
+		if b, err := os.ReadFile(filepath.Join(f.dir, "tavily-extract-storepage.json")); err == nil {
+			var page struct {
+				Results []struct {
+					URL string `json:"url"`
+				} `json:"results"`
+			}
+			if json.Unmarshal(b, &page) == nil && len(page.Results) > 0 && page.Results[0].URL == req.URLs[0] {
+				w.Header().Set("Content-Type", "application/json")
+				_, _ = w.Write(b)
+				return
+			}
+		}
+	}
 	var rec struct {
 		Results []map[string]any `json:"results"`
 		Usage   map[string]any   `json:"usage"`

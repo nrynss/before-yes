@@ -1,51 +1,51 @@
-diagnose Khan Academy Kids age 5 verdict unclear findings 226 (conflict pass unusable (no grades); first pass kept)
-  contact  risks 14 mitigations 6 other 3
+diagnose Khan Academy Kids age 5 verdict unclear findings 195 (conflict pass unusable (no grades); first pass kept)
+  contact  risks 7 mitigations 3 other 3
     judge ok setting "" cited 0 []
     card unknown setting ""
     check ok_without_finding
     reason We don’t have enough evidence to assess this area. Don’t assume it is safe.
-  money  risks 8 mitigations 6 other 23
+  money  risks 6 mitigations 4 other 22
     judge ok setting "" cited 0 []
     card unknown setting ""
     check ok_without_finding
     reason We don’t have enough evidence to assess this area. Don’t assume it is safe.
-  data  risks 9 mitigations 8 other 8
+  data  risks 5 mitigations 13 other 5
     judge ok setting "" cited 0 []
     card unknown setting ""
     check ok_without_finding
     reason We don’t have enough evidence to assess this area. Don’t assume it is safe.
-  age_gating  risks 28 mitigations 3 other 13
-    judge flag setting "" cited 19 [f_c130cb709d7b6d05 f_d977c3d7c01daf8a f_5421e924b05d7ba7 f_6f92f0d977c76a50 f_a6928887eae37273 f_2ed72bf5cc14d74b f_de1f59b2e76eefb6 f_4bd8df2d54f82513 f_f241abebe59760c7 f_c63eb2084df56d40 f_1fa09bf014966950 f_f31ccecec31b4c6c f_b95573267eabed03 f_ea2bd4d42dd675c5 f_d79b70a1dd1aa8c2 f_3ea7cb6813dacd99 f_a69e194698f6b29b f_23986f12276e87dd f_ccc2d027a266e5eb]
+  age_gating  risks 26 mitigations 2 other 7
+    judge flag setting "" cited 16 [f_c130cb709d7b6d05 f_d977c3d7c01daf8a f_2ed72bf5cc14d74b f_de1f59b2e76eefb6 f_a6928887eae37273 f_4bd8df2d54f82513 f_a69e194698f6b29b f_3ea7cb6813dacd99 f_c63eb2084df56d40 f_1fa09bf014966950 f_f31ccecec31b4c6c f_b95573267eabed03 f_ea2bd4d42dd675c5 f_d79b70a1dd1aa8c2 f_ccc2d027a266e5eb f_a38e580fc7e48feb]
     card unknown setting ""
     check entail: flag_not_earned
-    age-gate event=none witness="" actual_age="" assigned_age=""; age-gate event=none witness="" actual_age="" assigned_age=""; age-gate event=none witness="" actual_age="" assigned_age=""; age-gate event=none witness="" actual_age="" assigned_age=""; age-gate event=none witness="" actual_age="" assigned_age=""; age-gate event=none witness="" actual_age="" assigned_age=""; age-gate event=none witness="" actual_age="" assigned_age=""; age-gate event=none witness="" actual_age="" assigned_age=""; age-gate event=none witness="" actual_age="" assigned_age=""; age-gate event=none witness="" actual_age="" assigned_age=""; age-gate event=none witness="" actual_age="" assigned_age=""; age-gate event=none witness="" actual_age="" assigned_age=""; age-gate event=none witness="" actual_age="" assigned_age=""; age-gate event=none witness="" actual_age="" assigned_age=""; age-gate event=none witness="" actual_age="" assigned_age=""; age-gate event=none witness="" actual_age="" assigned_age=""; age-gate event=none witness="" actual_age="" assigned_age=""; age-gate event=none witness="" actual_age="" assigned_age=""; age-gate event=none witness="" actual_age="" assigned_age=""
+    age-gate event=none witness="" actual_age="" assigned_age=""; age-gate event=none witness="" actual_age="" assigned_age=""; age-gate event=none witness="" actual_age="" assigned_age=""; age-gate event=none witness="" actual_age="" assigned_age=""; age-gate event=none witness="" actual_age="" assigned_age=""; age-gate event=none witness="" actual_age="" assigned_age=""; age-gate event=none witness="" actual_age="" assigned_age=""; age-gate event=none witness="" actual_age="" assigned_age=""; age-gate event=none witness="" actual_age="" assigned_age=""; age-gate event=none witness="" actual_age="" assigned_age=""; age-gate event=none witness="" actual_age="" assigned_age=""; age-gate event=none witness="" actual_age="" assigned_age=""; age-gate event=none witness="" actual_age="" assigned_age=""; age-gate event=none witness="" actual_age="" assigned_age=""; age-gate event=none witness="" actual_age="" assigned_age=""; age-gate event=none witness="" actual_age="" assigned_age=""
     reason We don’t have enough evidence to assess this area. Don’t assume it is safe.
     quote f_c130cb709d7b6d05 risk review: Good but limited Good for 5 YEAR OLDS it only goes up to second grade and I am going to third grade so I need something more advanced but it is still a very good kid learning app
     quote f_d977c3d7c01daf8a risk review: Terrible for my kid My kid is a fifth grader and it only went to second grade will be pressed 8+ and it didn’t even go up the grade It only stayed at second grade and down.
-    quote f_5421e924b05d7ba7 risk review: Up to 2nd grade?! I am 10 years old and the app literally lets you choose your grade from pre-k to 2nd grade. Where is 5th grade?! You need to change this “age thing” immediately or I will delete the app.
-    quote f_6f92f0d977c76a50 risk review: So the game is really fun but the age range is to small I like it and I’m 11 so the highest it goes is 2nd grade even though older kids like it too. Just try to put the age range a little higher like maybe up to middle school, thats all I’m asking.
-    quote f_a6928887eae37273 risk review: My daughter is 4, but she is autistic. She reads on a 1st/2nd grade level, can add, subtract up to digit numbers, tells time by a digital and analog clock— and because of that, this game is far too easy for her. She gets bored and starts answering the questions wrong just to see what will happen. Maybe update with a skills test, and then match the child up with curriculum that is in their skill range rather than age level
     quote f_2ed72bf5cc14d74b risk review: I can’t give my older kid any harder challenges because it will not gosse up to second grade
     quote f_de1f59b2e76eefb6 risk review: My kid is a. 4th greater And I put that AND IT GIVES HER ABC's.LIKE.
+    quote f_a6928887eae37273 risk review: My daughter is 4, but she is autistic. She reads on a 1st/2nd grade level, can add, subtract up to digit numbers, tells time by a digital and analog clock— and because of that, this game is far too easy for her. She gets bored and starts answering the questions wrong just to see what will happen. Maybe update with a skills test, and then match the child up with curriculum that is in their skill range rather than age level
     quote f_4bd8df2d54f82513 risk review: Does not have third,fourth,or,fifth grade on it
-    quote f_f241abebe59760c7 risk review: For way to little kids
+    quote f_a69e194698f6b29b risk review: I gave the review four stars solely for the reason that this fantastic app sadly cuts off learning for children above second grade. My daughter absolutely loves this app for learning through fun and games. She has been playing this app for years and sadly it cannot take her any further. I can’t seem to find anything like it for her educational level and it’s sad. PLEASE PLEASE PLEASE AT LEAST GO UP TO GRADE 5!
+    quote f_3ea7cb6813dacd99 risk review: So I was looking for math games for my ten year old and this popped up. I went though and it had super easy questions. I looked and it was ages two though eight. Not saying this is bad but third grade and up should not play.
     quote f_c63eb2084df56d40 risk review: Kids can play this they have to have like ideas and stuff. Why would they know that my five-year-old son can’t even play it so I had to tell him his IDs and he could never get on this and once he got on it, he hated it.
     quote f_1fa09bf014966950 risk review: I’m eight years old so there’s a eight plus thing when you make account I clicked but it’s still so easy please make it harder but overall it’s pretty good, totally recommend it and for kindergarten and lower grades awesome but first grade second a little easy and above way too easy just please make it harder
     quote f_f31ccecec31b4c6c risk review: Is this app good for 5th grade students? I am a fifth grader in middle school and I have ADHD. My sister is in first grade and she has this app so I was wondering if I could learn from it too because she was improving her grades a lot more and it made me want to try it. I would really appreciate an answer as soon as possible because I don’t want a bad grade on my report card. Thank you for reading this!
     quote f_b95573267eabed03 risk review: Hi. Developers. I’m 8 I like the app just one thing can you make the highest grade 3 please
     quote f_ea2bd4d42dd675c5 risk review: Amazing! I wish I would have found this app sooner its so easy to use and when my daughter goes intk 3rd grade im going to be sad cause it only goes up to 2nd
     quote f_d79b70a1dd1aa8c2 risk review: Four star review Very fun and educational there are books that you can read or it can read for you there are NO adds I don’t know if it goes up to third grade but if it doesn’t than please make this amazing educational game have third grade work please buy this educational game awesome game
-    quote f_3ea7cb6813dacd99 risk review: So I was looking for math games for my ten year old and this popped up. I went though and it had super easy questions. I looked and it was ages two though eight. Not saying this is bad but third grade and up should not play.
-    quote f_a69e194698f6b29b risk review: I gave the review four stars solely for the reason that this fantastic app sadly cuts off learning for children above second grade. My daughter absolutely loves this app for learning through fun and games. She has been playing this app for years and sadly it cannot take her any further. I can’t seem to find anything like it for her educational level and it’s sad. PLEASE PLEASE PLEASE AT LEAST GO UP TO GRADE 5!
-    quote f_23986f12276e87dd risk review: Too easy My child can’t learn much because Khan Academy Kids is so easy
     quote f_ccc2d027a266e5eb risk review: Love this app! Hoping it could be more challenging one day….maybe some AI learning for kids who excel quicker in different areas? Still a great app!
-  content  risks 28 mitigations 7 other 51
-    judge ok setting "" cited 0 []
+    quote f_a38e580fc7e48feb risk reddit: Quiero probar "Khan Academy Kids" para nuestros pequeños, pero me preocupa el tiempo de pantalla.
+  content  risks 24 mitigations 7 other 51
+    judge ok_with_setting setting "Parental control over which holiday themes they want to expose their child to" cited 3 [f_9d6c0e4c5638b99b f_5fab2037293141c8 f_a5a18337beca7677]
     card unknown setting ""
-    check ok_without_finding
+    check ground: setting_without_quote
     reason We don’t have enough evidence to assess this area. Don’t assume it is safe.
-  developer_record  risks 1 mitigations 2 other 8
-    judge ok setting "" cited 0 []
+    quote f_9d6c0e4c5638b99b risk review: Instead of just standard kids' games or exercises, the app features and pushes yoga routines. Yoga carries specific spiritual intentions that conflict entirely with our Catholic beliefs, and I do not want this introduced to my daughter. App developers need to be transparent when blending spiritual practices into children's entertainment. Uninstalled immediately.
+    quote f_5fab2037293141c8 risk review: Out of nowhere it will talk and ask her to record her voice. Each time it startles my child who then gets quiet and runs to whispers to me what it said. This is inappropriate, and it’s always in the coloring app.
+    quote f_a5a18337beca7677 mitigation review: I wish it was mindful on what families do and do not celebrate in terms of holidays. I hope that in the near future it allows parents the opportunity to control which holiday themes they want to expose their child to (or withhold) depending on the family’s preferences and values.
+  developer_record  risks 2 mitigations 1 other 7
+    judge (not in the reply)
     card unknown setting ""
-    check ok_without_finding
+    check skipped_area
     reason We don’t have enough evidence to assess this area. Don’t assume it is safe.

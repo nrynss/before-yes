@@ -1,0 +1,8 @@
+{
+  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D512]\",\n      \"area\": \"age_gating\",\n      \"claim\": \"A parent reports that the age gate does not work in practice.\",\n      \"stance\": \"risk\",\n      \"quote\": \"Eerie, cool coding puzzler pushes too hard for contact info.\"\n    }\n  ]\n}",
+  "input_tokens": 1472,
+  "output_tokens": 79,
+  "price_nano": 107280,
+  "measured": true,
+  "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B"
+}

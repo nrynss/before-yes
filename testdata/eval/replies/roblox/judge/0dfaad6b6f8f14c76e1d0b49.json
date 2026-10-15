@@ -1,0 +1,8 @@
+{
+  "text": "{\"reasons\": [{\"area\": \"money\", \"reason\": \"A reviewer reports their money taken and account hacked, resulting in over 2,000 dollars in costs.\"}]}",
+  "input_tokens": 1369,
+  "output_tokens": 42,
+  "price_nano": 448500,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

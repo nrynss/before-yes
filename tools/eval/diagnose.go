@@ -33,6 +33,9 @@ type tracingChatter struct {
 type traced struct {
 	user  string
 	reply string
+	// err is the call's error, for an entailment call that failed: the
+	// judge then keeps the grade unchecked.
+	err string
 }
 
 type callTrace struct {
@@ -66,7 +69,7 @@ func (t *tracingChatter) Estimate(msgs []model.Message, o model.Options) cost.Pr
 
 func (t *tracingChatter) Chat(ctx context.Context, msgs []model.Message, o model.Options) (model.Reply, error) {
 	r, err := t.inner.Chat(ctx, msgs, o)
-	if err != nil || t.tr == nil {
+	if t.tr == nil {
 		return r, err
 	}
 	var system, user string
@@ -83,7 +86,13 @@ func (t *tracingChatter) Chat(ctx context.Context, msgs []model.Message, o model
 	case strings.Contains(system, "meets_definition") || strings.HasPrefix(system, "Classify the observed event in one source quote about age checks."):
 		// Entailment can run on the judge client. Classify it before the
 		// role, or its JSON is read as a second judge pass.
-		t.tr.entail = append(t.tr.entail, traced{user: user, reply: r.Text})
+		c := traced{user: user, reply: r.Text}
+		if err != nil {
+			c.err = err.Error()
+		}
+		t.tr.entail = append(t.tr.entail, c)
+	case err != nil:
+		// A failed grading call leaves no reply to read.
 	case strings.HasPrefix(system, "Write explanations for a parent") || strings.HasPrefix(system, "You check the exact explanation a parent"):
 		// Prose-only calls cannot replace a grading pass in the diagnosis.
 	case t.role == "judge":
@@ -125,33 +134,35 @@ func parseReplyGrades(reply string) ([]rawGrade, error) {
 
 // judgeGrades is the grade list the checks saw: the first pass, with the
 // conflict pass swapped in for the areas it answered.
-func judgeGrades(tr *callTrace, conflicted []checklist.Area) (map[checklist.Area]rawGrade, string) {
+func judgeGrades(tr *callTrace, conflicted []checklist.Area) (map[checklist.Area]rawGrade, map[checklist.Area]rawGrade, string) {
 	if tr == nil {
-		return nil, "no judge reply captured"
+		return nil, nil, "no judge reply captured"
 	}
 	tr.mu.Lock()
 	replies := append([]traced{}, tr.judge...)
 	tr.mu.Unlock()
 	if len(replies) == 0 {
-		return nil, "no judge reply captured"
+		return nil, nil, "no judge reply captured"
 	}
 	first, err := parseReplyGrades(replies[0].reply)
 	if err != nil {
-		return nil, "first pass: " + err.Error()
+		return nil, nil, "first pass: " + err.Error()
 	}
 	use := map[checklist.Area]rawGrade{}
+	firsts := map[checklist.Area]rawGrade{}
 	for _, g := range first {
 		a := checklist.Area(strings.ToLower(strings.TrimSpace(g.Area)))
 		g.Level = strings.ToLower(strings.TrimSpace(g.Level))
 		use[a] = g
+		firsts[a] = g
 	}
 	note := "first pass"
 	if len(replies) == 1 {
-		return use, note
+		return use, firsts, note
 	}
 	second, err := parseReplyGrades(replies[len(replies)-1].reply)
 	if err != nil {
-		return use, "conflict pass unusable (" + err.Error() + "); first pass kept"
+		return use, firsts, "conflict pass unusable (" + err.Error() + "); first pass kept"
 	}
 	answered := false
 	for _, g := range second {
@@ -162,7 +173,7 @@ func judgeGrades(tr *callTrace, conflicted []checklist.Area) (map[checklist.Area
 		}
 	}
 	if !answered {
-		return use, "conflict pass graded none of the conflicted areas; first pass kept"
+		return use, firsts, "conflict pass graded none of the conflicted areas; first pass kept"
 	}
 	for _, g := range second {
 		a := checklist.Area(strings.ToLower(strings.TrimSpace(g.Area)))
@@ -171,7 +182,7 @@ func judgeGrades(tr *callTrace, conflicted []checklist.Area) (map[checklist.Area
 			use[a] = g
 		}
 	}
-	return use, "conflict pass replaced the conflicted areas"
+	return use, firsts, "conflict pass replaced the conflicted areas (an area the checks then made unknown may fall back to its first-pass grade)"
 }
 
 // citationFault is checkCitations' first reason to void a flag or a
@@ -248,6 +259,10 @@ func entailNote(tr *callTrace, area checklist.Area) string {
 		if !strings.Contains(c.user, mark) {
 			continue
 		}
+		if c.err != "" {
+			notes = append(notes, "entail ERROR: "+c.err+" (the grade is kept unchecked)")
+			continue
+		}
 		v, ok := parseEntailReply(c.reply)
 		if !ok {
 			var w struct {
@@ -290,7 +305,7 @@ func diagnose(w io.Writer, card pipeline.Card, ev pipeline.Evidence, tr *callTra
 		}
 		counts[f.Area] = c
 	}
-	given, pass := judgeGrades(tr, card.Stats.ConflictedAreas)
+	given, firsts, pass := judgeGrades(tr, card.Stats.ConflictedAreas)
 	fmt.Fprintf(w, "diagnose %s age %d verdict %s findings %d (%s)\n", card.Title, card.Age, card.Verdict, len(ev.Findings), pass)
 	got := map[checklist.Area]checklist.Grade{}
 	for _, g := range card.Grades {
@@ -299,13 +314,29 @@ func diagnose(w io.Writer, card pipeline.Card, ev pipeline.Evidence, tr *callTra
 	for _, a := range checklist.Areas() {
 		g := got[a.ID]
 		in, has := given[a.ID]
+		// A conflicted area whose card grade is not the conflict pass's, and
+		// is the first pass's, took the first-pass fallback: the conflict
+		// pass's grade was made unknown by the checks and the first pass's
+		// grade stood in its place.
+		fallback, cpLine := false, ""
+		if has && slices.Contains(card.Stats.ConflictedAreas, a.ID) && g.Level != checklist.Unknown {
+			if fg, ok := firsts[a.ID]; ok && string(g.Level) == fg.Level && (in.Level != fg.Level || !withinIDs(g.Findings, in.Findings)) {
+				fallback = true
+				cpLine = fmt.Sprintf("    conflict pass %s setting %q cited %d %v\n", in.Level, in.Setting, len(in.Findings), in.Findings)
+				in = fg
+			}
+		}
 		fault := ""
 		if has {
 			fault = citationFault(in, byID)
 		}
 		c := counts[a.ID]
 		fmt.Fprintf(w, "  %s  risks %d mitigations %d other %d\n", a.ID, c[0], c[1], c[2])
-		if has {
+		if has && fallback {
+			fmt.Fprint(w, cpLine)
+			fmt.Fprintf(w, "    first-pass fallback: the conflict pass's grade was made unknown by the checks, so the first pass's grade stands\n")
+			fmt.Fprintf(w, "    judge (first pass) %s setting %q cited %d %v\n", in.Level, in.Setting, len(in.Findings), in.Findings)
+		} else if has {
 			fmt.Fprintf(w, "    judge %s setting %q cited %d %v\n", in.Level, in.Setting, len(in.Findings), in.Findings)
 			if fault != "" {
 				fmt.Fprintf(w, "    citation %s\n", fault)
@@ -378,4 +409,15 @@ func oneLine(s string) string {
 		return s[:500] + "…"
 	}
 	return s
+}
+
+// withinIDs reports whether every id in sub is in all (a card grade keeps
+// the ids of the pass it came from, minus any the checks removed).
+func withinIDs(sub, all []string) bool {
+	for _, id := range sub {
+		if !slices.Contains(all, id) {
+			return false
+		}
+	}
+	return true
 }

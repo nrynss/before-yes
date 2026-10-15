@@ -1,0 +1,8 @@
+{
+  "text": "{\"reasons\": [{\"area\": \"money\", \"reason\": \"The rating states the mobile app is 100% free with no ads or subscriptions.\"}, {\"area\": \"data\", \"reason\": \"Regulators allege the app collected children's names, email addresses, and birth dates without parental consent.\"}, {\"area\": \"age_gating\", \"reason\": \"Parents must provide and confirm an email address to begin using the app.\"}, {\"area\": \"content\", \"reason\": \"A review reports a grid of scary devil faces and men tied up with mouths taped shut appeared for about 15 seconds while a child worked on math.\"}]}",
+  "input_tokens": 1680,
+  "output_tokens": 140,
+  "price_nano": 630000,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

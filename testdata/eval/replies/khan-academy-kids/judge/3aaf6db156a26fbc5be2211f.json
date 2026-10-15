@@ -1,0 +1,8 @@
+{
+  "text": "{\"reasons\": [{\"area\": \"money\", \"reason\": \"Multiple reviews and the store listing confirm the app is completely free with no ads, subscriptions, or in-app purchases.\"}]}",
+  "input_tokens": 1245,
+  "output_tokens": 41,
+  "price_nano": 410400,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

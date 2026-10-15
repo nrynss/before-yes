@@ -1,0 +1,8 @@
+{
+  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D523]\",\n      \"area\": \"age_gating\",\n      \"claim\": \"A parent reports that the app requires a parent email address to create an account.\",\n      \"stance\": \"mitigation\",\n      \"quote\": \"open the app to sign up with a parent email address\"\n    },\n    {\n      \"ref\": \"[D523]\",\n      \"area\": \"data\",\n      \"claim\": \"The app collects a parent email address during account creation.\",\n      \"stance\": \"neutral\",\n      \"quote\": \"sign up with a parent email address\"\n    },\n    {\n      \"ref\": \"[D523]\",\n      \"area\": \"contact\",\n      \"claim\": \"A parent reports that strangers cannot message or voice chat with the child.\",\n      \"stance\": \"neutral\",\n      \"quote\": \"Kodi, our guide character, who is always available to help\"\n    },\n    {\n      \"ref\": \"[D523]\",\n      \"area\": \"money\",\n      \"claim\": \"A parent reports that the app does not push in-app purchases, loot boxes, pay-to-win, or subscription traps.\",\n      \"stance\": \"neutral\",\n      \"quote\": \"free, fun, educational app with thousands of activities and books\"\n    },\n    {\n      \"ref\": \"[D523]\",\n      \"area\": \"content\",\n      \"claim\": \"A parent reports that the app contains educational videos, interactive activities, and storybooks appropriate for ages 2-8.\",\n      \"stance\": \"neutral\",\n      \"quote\": \"thousands of activities and books that will inspire a lifetime of learning and discovery for young children ages 2-8\"\n    }\n  ]\n}",
+  "input_tokens": 1938,
+  "output_tokens": 371,
+  "price_nano": 205320,
+  "measured": true,
+  "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B"
+}

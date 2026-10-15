@@ -1,0 +1,8 @@
+{
+  "text": "{\"reason_supported\": true, \"explanation\": \"A reviewer reports the game called them the n word, which is a racist slur.\"}",
+  "input_tokens": 1070,
+  "output_tokens": 32,
+  "price_nano": 349800,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

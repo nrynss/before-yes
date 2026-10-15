@@ -1,0 +1,8 @@
+{
+  "text": "{\"reason_supported\": true, \"explanation\": \"From the news source: 'regulators allege that the app collected children's names, email addresses and birth dates without their parents' consent.' This directly supports the claim that regulators allege the app collected children's personal information—names, email addresses, and birth dates—without parental consent.\"}",
+  "input_tokens": 1312,
+  "output_tokens": 73,
+  "price_nano": 459300,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

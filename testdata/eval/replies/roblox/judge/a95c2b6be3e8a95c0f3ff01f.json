@@ -1,0 +1,8 @@
+{
+  "text": "{\"reasons\": [{\"area\": \"content\", \"reason\": \"A news report states that Los Angeles County alleges Roblox hosted sexually explicit content.\"}]}",
+  "input_tokens": 1217,
+  "output_tokens": 35,
+  "price_nano": 396600,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

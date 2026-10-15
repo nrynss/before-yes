@@ -1,0 +1,8 @@
+{
+  "text": "{\"reason_supported\": true, \"explanation\": \"Multiple reviews describe completed child spending events where users felt scammed: one review states they paid $1.09 for a mod but received nothing and had to pay $15.99 more; another review from a 10-year-old says they spent all birthday money on 10,000 Minecoins and felt scammed; a third review describes repeated charges totaling $40 for a failed $6.99 villager add-on purchase; a fourth review states 'I Bought Minecoins it scam me'. Each claim is directly supported by the cited review quotes, preserving the qualification that these are reports of feeling scammed during purchase attempts, not proof of intent or systemic fraud.\"}",
+  "input_tokens": 1435,
+  "output_tokens": 161,
+  "price_nano": 575400,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

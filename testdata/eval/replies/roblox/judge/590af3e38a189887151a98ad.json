@@ -1,0 +1,8 @@
+{
+  "text": "{\"reason_supported\": false, \"explanation\": \"The explanation includes 'enabled sharing' but the quoted source says 'thousands of users shared', not that Roblox enabled it. This adds causal agency not present in the quote.\"}",
+  "input_tokens": 1092,
+  "output_tokens": 50,
+  "price_nano": 372600,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

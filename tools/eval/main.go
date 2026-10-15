@@ -181,8 +181,12 @@ func evaluate(root, models string) ([]Result, error) {
 
 var evalNow = time.Date(2026, 10, 13, 19, 0, 0, 0, time.UTC)
 
-func runOne(root, models string, e Expectation) Result {
-	res := Result{Title: e.Title, Age: e.Age, WantVerdict: e.Verdict}
+func runOne(root, models string, e Expectation) (res Result) {
+	// res is the named result so the deferred checks below (replay misses,
+	// live refusals) change what the caller receives. With an unnamed result
+	// the deferred assignment was lost and a replay with unrecorded calls
+	// reported none.
+	res = Result{Title: e.Title, Age: e.Age, WantVerdict: e.Verdict}
 	ctx := context.Background()
 	var f *fixture
 	var rec *gatherRecorder

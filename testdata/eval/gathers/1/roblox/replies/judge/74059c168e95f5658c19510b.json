@@ -1,0 +1,8 @@
+{
+  "text": "{\"reason_supported\": true, \"explanation\": \"A news quote reports that Los Angeles County filed a civil lawsuit against Roblox Corporation alleging the company falsely marketed its platform as safe for children while knowingly allowing it to become a 'hunting ground for predators.'\"}",
+  "input_tokens": 1727,
+  "output_tokens": 58,
+  "price_nano": 570300,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}
