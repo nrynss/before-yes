@@ -182,8 +182,8 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 | P1 | 4 / 4 | Done. All exit criteria met; the `job.Failure` criterion was proven by T4.1. |
 | P2 | 12 / 12 | Done. All six exit criteria are met. Measured model cost is $0.0309 per check. Tavily is 7–8 credits per check, from fixtures, not a live run. |
 | P3 | 13 / 15 | Reopened after the first live end-to-end run. T3.11 calibrates the judge on live evidence (Roblox read unclear live from 191 verified findings; Minecraft read no). T3.12 reads alternatives from real list pages (the live search gave only "Medium"). Both need `.env`; they own different files. |
-| P4 | 6 / 7 | `serve` runs the whole server, smoke-tested and run end to end live. T4.7 makes progress visible during a check and logs alternatives failures. |
-| P5 | 8 / 9 | Every page is built and wired. T5.9 is an interactive copy pass with the user, screen by screen, after T4.7. |
+| P4 | 7 / 7 | Done. `serve` runs the whole server, run end to end live. Progress now shows during a check, and a page opened late catches up from `GET /api/checks/{id}` (T4.7). |
+| P5 | 8 / 9 | Every page is built and wired. T5.9, the interactive copy pass with the user, can start (T4.7 is done). |
 | P6 | 0 / 6 | Not started. |
 
 ---
@@ -192,6 +192,11 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 
 Newest first. One entry per closed task, finding, or split.
 
+- **T4.7 closed (PR #32).** A remote orchestrator implemented it; round 2 approved with no Critical, High or Medium findings. The gate passed on main after the merge: 175 browser tests, none skipped.
+  - **What landed:** a progress hook on `Pipeline.Collect`: gather reports what it fetches, and read reports `current` of `total` source sections as they finish. `GET /api/checks/{id}` carries the latest `stage`, `message`, `current` and `total` while queued or running (additive; `get-check-running.json` and `docs/api.md` updated), and the progress view shows them on load and after a reconnect. A failed alternatives search is logged by cause, without its text, and the card is stored without alternatives. Out of owns: `internal/pipeline/progress_test.go`, the hook's own test.
+  - **Keel gap (feedback.md):** `stream.Broker` replays only a retained terminal event to a subscriber with no `Last-Event-ID`; the latest progress event is not retained. T4.7 covers it with the progress snapshot `job.Runner` already stores. Issue text: retain the latest progress event per topic and replay it to a new subscriber.
+  - **Accepted lows:** a panic inside the progress hook is swallowed, so the only sign is progress that stops moving; a check that joins another check's evidence collect shows the starting message until the judge step.
+  - **For T5.9:** the fixture reads "reading 14 sources" beside 3 of 9, because the count is sections. Noted in T5.9.
 - **Filed after the live end-to-end run:** T3.11 (live judge calibration; needs `.env`, about $0.30 to $0.50), T3.12 (alternatives from real list pages; one capture, then offline), T4.7 (progress during a check, and logging alternatives failures; no `.env`), and T5.9 (interface copy: an interactive pass where the user and one agent go through every screen and string, writing `docs/voice.md`). T5.9 waits for T4.7 so the progress messages are final. T3.11, T3.12 and T4.7 can run at once; they own different files.
 - **Finding: the first live end-to-end run.** The orchestrator ran `serve` from main on this machine with live checks on, real keys and a scratch data folder, and drove it in a browser.
   - **What works:** Ask → `202` → progress → the card opened on its own when the check finished. A repeat ask ("roblox " in lower case) returned the stored card with a `200` in under a millisecond. A visitor-key check (`X-Token-Factory-Key`, `X-Tavily-Key`, sent through the API, not typed into the dialog) ran to a card and drew nothing from our pools or the daily cap. No key value in the log, either database or the WAL files.

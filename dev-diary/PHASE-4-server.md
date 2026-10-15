@@ -236,7 +236,7 @@ requires:   T4.6
 fixture-ok: yes
 size:       M · mid
 owns:       internal/server/checks.go (work and getCheck), internal/server/checks_test.go, internal/pipeline/pipeline.go (a progress hook on Collect), internal/pipeline/read.go (chunk counts only), internal/pipeline/gather.go (stage reports only), docs/api.md and testdata/contracts/api/get-check-running.json (the stage fields), web/src/lib/progress/
-status:     in-review
+status:     done
 ```
 On the first live run, the progress page showed only its static list of stages for most of a check. `work` reports `gather` once, at the start; gather and read run as one `Collect` call, and `read` with its count is sent only after reading ends. A page that subscribes after the first event receives no replay, and `GET /api/checks/{id}` carries no stage.
 

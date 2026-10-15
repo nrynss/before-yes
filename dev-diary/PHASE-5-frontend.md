@@ -174,6 +174,7 @@ The interface text reads as machine-written: taglines and paired slogans ("A lit
 - **Setup:** serve the built app against the T1.4 fixtures (no `.env`, no paid call), and step through each state at 360 px and desktop: the home page and Ask form, the example list, the passcode dialog, the visitor keys dialog, progress (each stage and each failure), the card (verdict, each area, settings, unknown areas, sources, alternatives, sharing, the small print), side by side, and every error and empty state. Page titles too.
 - **Per string:** show it in place, propose a plain replacement or a deletion, and apply only what the user accepts. Words a parent would use; say what happened and what to do next; no slogans, no rhetorical pairs, no filler adjectives.
 - **Write the rules down:** the decisions become `docs/voice.md`, a short list of rules with before and after examples, so later text follows it.
+- **Known case:** progress reads "reading 14 sources" beside a count of 3 of 9, because the count is source sections (T4.7). Pick wording where the message and the count agree.
 - **Out of scope:** the reasons on a card are written by the judge model (T3.11 and the pending reasons decision), not the interface.
 
 **Done when:** the user has signed off each screen, `docs/voice.md` exists, the specs assert the new text, and the gate passes.
