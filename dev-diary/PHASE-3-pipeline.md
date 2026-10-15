@@ -723,7 +723,7 @@ requires:   T3.5
 fixture-ok: no (one capture, then offline)
 size:       S · mid
 owns:       internal/pipeline/alternatives.go, internal/pipeline/alternatives_test.go, testdata/alternatives/
-status:     in-review
+status:     done
 ```
 On live search, the alternatives step finds nothing usable. Replaying the live results for `safer app like Minecraft for a 9 year old` through `FindAlternatives` gave one candidate, "Medium" (the blogging site's name), and no name from Common Sense Media's "Games Like Minecraft" list (21k characters of page text) or any other list page.
 
@@ -744,12 +744,30 @@ On live search, the alternatives step finds nothing usable. Replaying the live r
 
 ---
 
+### T3.13: Alternatives outside the platform
+```yaml
+requires:   T3.12
+fixture-ok: no (offline on the T3.12 captures, then one live run)
+size:       S · mid
+owns:       internal/pipeline/alternatives.go, internal/pipeline/alternatives_test.go, internal/appstore/ (genre only), testdata/alternatives/
+status:     not-started
+```
+T3.12's live run: Roblox (9) read **no**, and its three candidates were Roblox experiences. Each carried the platform's own risks, so none beat the "no" and the card shows no alternative. The user decided that a "no" on a platform suggests other products, not other experiences on the same platform.
+
+1. **Drop same-platform candidates.** A candidate that runs on the title's own platform (a Roblox experience for Roblox, a Minecraft map or server for Minecraft) is not an alternative. Decide it from the captured pages' evidence (the hit's domain, the page's wording, the App Store seller), not a hard-coded list of titles.
+2. **Fill in the genre.** `AppInfo.Genre` is declared and read by the alternatives query but never set, so the query always says "app". Set it from the App Store lookup (its primary genre), so the query asks for "safer games like Roblox" when Roblox is a game.
+3. **Show it live.** The clause moved from T3.12: one live run of a "no" title shows a checked alternative on its card.
+
+**Done when:** tests on the T3.12 captures drop same-platform candidates and keep other products; the App Store client sets the genre (pinned on the captured lookups); one live "no" card shows a checked alternative, reported to the user with its spend.
+
+---
+
 ## Exit Criteria
 
 - [x] Review 312 decides the card end to end, by test. (Review 355, the captures' equivalent: `TestReview355DecidesTheCard`.)
 - [x] No finding reaches a card without a verified quote. (`finding.Verify` in the reader; the invented R356 quote never reaches the card in `TestReview355DecidesTheCard`.)
 - [x] A second age on cached evidence makes no Tavily or reader call. (`TestReview355DecidesTheCard`: the second age books only the judge.)
-- [ ] Alternatives found with Tavily and checked the same way.
+- [x] Alternatives found with Tavily and checked the same way. (T3.12: live Roblox (9) found three candidates and checked each like any title. None beat the "no", so no live card shows one yet; that clause moved to T3.13 by user decision.)
 - [x] Offline eval baseline and live Token Factory results recorded. (T3.6b recorded the first live run; T3.9b and T3.10 re-recorded after each prompt change, and every replay pins the numbers.)
 - [x] All four kinds of title handled. (T3.7: ios, android, console_pc and youtube, plus the user-decided unknown kind; one fixture per kind pins each plan.)
 - [x] App Store page reviews stand in when the review feed is empty (T3.8). (Pinned on all four captured pages; a feed error falls back too, by user decision.)

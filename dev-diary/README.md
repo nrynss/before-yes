@@ -181,7 +181,7 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 | P0 | 9 / 9 | Done. All exit criteria met: the Token Factory balance ($29.00) is recorded, Nano completions and `config` resolving every secret are proven. CI is green. |
 | P1 | 4 / 4 | Done. All exit criteria met; the `job.Failure` criterion was proven by T4.1. |
 | P2 | 12 / 12 | Done. All six exit criteria are met. Measured model cost is $0.0309 per check. Tavily is 7–8 credits per check, from fixtures, not a live run. |
-| P3 | 13 / 15 | Reopened after the first live end-to-end run. T3.11 calibrates the judge on live evidence (Roblox read unclear live from 191 verified findings; Minecraft read no). T3.12 reads alternatives from real list pages (the live search gave only "Medium"). Both need `.env`; they own different files. |
+| P3 | 14 / 16 | T3.12 is done: alternatives come from real list pages and are checked live. T3.11 (live judge calibration, claimed) and T3.13 (alternatives outside the platform, and the App Store genre) are open. All exit criteria are ticked. |
 | P4 | 7 / 7 | Done. `serve` runs the whole server, run end to end live. Progress now shows during a check, and a page opened late catches up from `GET /api/checks/{id}` (T4.7). |
 | P5 | 8 / 9 | Every page is built and wired. T5.9, the interactive copy pass with the user, can start (T4.7 is done). |
 | P6 | 0 / 6 | Not started. |
@@ -192,6 +192,7 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 
 Newest first. One entry per closed task, finding, or split.
 
+- **T3.12 closed by user decision; T3.13 filed.** The user decided that a "no" on a platform suggests other products, and that T3.12 closes with its "shown on a card" clause moved to T3.13. P3's last exit criterion is ticked: live Roblox found three candidates and checked each. T3.13 drops same-platform candidates, sets `AppInfo.Genre` from the App Store lookup, and shows a checked alternative on one live "no" card.
 - **T3.12 merged (PR #33), status held at `in-review` for a user decision.** A remote orchestrator ran it: three review rounds, round 3 APPROVE (C 0 · H 0 · M 0 · L 4) with zero residue against rounds 1 and 2. The gate passed on main after the merge (175 browser tests, none skipped). Spend: 41 Tavily credits, about $0.14 model.
   - **What landed:** `FindAlternatives` reads names from the list layouts the captured pages use, and rejects the publishing site's own name by the hit's domain (the "Medium" bug). Captures for the three demo titles under `testdata/alternatives/`; replays give real names (Minecraft: Blox 3D Junior, Pango Build Safari, RaceCraft, from Common Sense Media). Out of owns: a capture kind in `tools/capture/` (additive). Four Tavily entries in `feedback.md`.
   - **Accepted residuals (round 3):** title-cased advice steps ("1. Set Limits Before Bed") can pass as names; a pure shape rule cannot tell them from real titles without losing real picks, so a test pins current behaviour. Three more are bounded and unobserved in any capture. A junk candidate costs one capped fresh check and never reaches a card unearned.
