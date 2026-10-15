@@ -1,0 +1,8 @@
+{
+  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D517]\",\n      \"area\": \"contact\",\n      \"claim\": \"A parent reports that strangers can message or voice chat with your child in YouTube Kids.\",\n      \"stance\": \"risk\",\n      \"quote\": \"YouTube Kids allows you to create individual user profiles for each of your kids, so they can each log in and watch videos geared toward their age.\"\n    }\n  ]\n}",
+  "input_tokens": 4401,
+  "output_tokens": 99,
+  "price_nano": 287820,
+  "measured": true,
+  "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B"
+}

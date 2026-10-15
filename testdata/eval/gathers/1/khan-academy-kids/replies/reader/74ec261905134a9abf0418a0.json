@@ -1,0 +1,8 @@
+{
+  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D519]\",\n      \"area\": \"age_gating\",\n      \"claim\": \"The age gate does not work in practice; parents report it is ineffective.\",\n      \"stance\": \"risk\",\n      \"quote\": \"The report highlights the convergence of early childhood and technology. Screen time is no longer just a mainstay of children's entertainment and education—it's now an integral part of daily activities for many families.\"\n    }\n  ]\n}",
+  "input_tokens": 4922,
+  "output_tokens": 108,
+  "price_nano": 321240,
+  "measured": true,
+  "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B"
+}

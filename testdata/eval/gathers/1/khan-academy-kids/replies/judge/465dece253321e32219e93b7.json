@@ -1,0 +1,8 @@
+{
+  "text": "{\"grades\": [{\"area\": \"contact\", \"level\": \"ok\", \"reason\": \"No findings show strangers can message or voice chat with the child.\", \"setting\": \"\", \"findings\": []}, {\"area\": \"money\", \"level\": \"ok\", \"reason\": \"The app is free with no in-app purchases, loot boxes, or subscriptions.\", \"setting\": \"\", \"findings\": [\"f_fafdd7902651ab6c\", \"f_2b5396534308f22c\", \"f_1da121f28cdd8761\"]}, {\"area\": \"data\", \"level\": \"ok\", \"reason\": \"The app is COPPA-compliant and collects no personally identifiable information.\", \"setting\": \"\", \"findings\": [\"f_03a93704589b927b\"]}, {\"area\": \"age_gating\", \"level\": \"flag\", \"reason\": \"Multiple parents report the app only goes up to 2nd grade, making it unsuitable for older children despite the stated age range.\", \"setting\": \"\", \"findings\": [\"f_582dc2075d52845a\", \"f_6f92f0d977c76a50\", \"f_fc4866d088d95f5a\", \"f_526f10b42a2d62c5\"]}, {\"area\": \"content\", \"level\": \"flag\", \"reason\": \"Parents report disturbing Halloween-themed content (scary devil faces, men tied up) appearing unexpectedly during use.\", \"setting\": \"\", \"findings\": [\"f_0fcffd8da2e19a5b\"]}, {\"area\": \"developer_record\", \"level\": \"ok\", \"reason\": \"No findings indicate the developer has fines, breaches, lawsuits, or regulatory actions.\", \"setting\": \"\", \"findings\": []}]}",
+  "input_tokens": 16345,
+  "output_tokens": 443,
+  "price_nano": 5302200,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

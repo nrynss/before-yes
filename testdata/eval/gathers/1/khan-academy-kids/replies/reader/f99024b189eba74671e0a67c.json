@@ -1,0 +1,8 @@
+{
+  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D515]\",\n      \"area\": \"age_gating\",\n      \"claim\": \"The app is intended for children aged 3 and up.\",\n      \"stance\": \"neutral\",\n      \"quote\": \"age 3+\"\n    },\n    {\n      \"ref\": \"[D515]\",\n      \"area\": \"content\",\n      \"claim\": \"A parent reports that the app contains no in-app purchases.\",\n      \"stance\": \"mitigation\",\n      \"quote\": \"Free\"\n    },\n    {\n      \"ref\": \"[D515]\",\n      \"area\": \"data\",\n      \"claim\": \"A parent reports that the app does not collect personal data.\",\n      \"stance\": \"mitigation\",\n      \"quote\": \"Free\"\n    },\n    {\n      \"ref\": \"[D515]\",\n      \"area\": \"contact\",\n      \"claim\": \"A parent reports that there is no ability for strangers to message or voice chat with the child.\",\n      \"stance\": \"mitigation\",\n      \"quote\": \"Free\"\n    }\n  ]\n}",
+  "input_tokens": 5073,
+  "output_tokens": 238,
+  "price_nano": 361500,
+  "measured": true,
+  "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B"
+}

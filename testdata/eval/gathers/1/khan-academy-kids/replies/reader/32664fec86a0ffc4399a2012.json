@@ -1,0 +1,8 @@
+{
+  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D517]\",\n      \"area\": \"age_gating\",\n      \"claim\": \"Common Sense Media recommends YouTube Kids for kids 7 and older\",\n      \"stance\": \"neutral\",\n      \"quote\": \"Common Sense Media recommends it for kids 7 and older.\"\n    },\n    {\n      \"ref\": \"[D517]\",\n      \"area\": \"content\",\n      \"claim\": \"Disturbing videos may use familiar characters from kids' TV shows such as Caillou or Peppa Pig\",\n      \"stance\": \"risk\",\n      \"quote\": \"These videos may use familiar characters from kids' TV shows, such as Caillou or Peppa Pig, or they may use cartoon graphics such as cars and trucks.\"\n    },\n    {\n      \"ref\": \"[D517]\",\n      \"area\": \"content\",\n      \"claim\": \"Disturbing videos can include content like suicide instructions spliced into cartoon videos\",\n      \"stance\": \"risk\",\n      \"quote\": \"including a well-publicized incident of [\\\"suicide instructions\\\" spliced in a cartoon video]\"\n    },\n    {\n      \"ref\": \"[D517]\",\n      \"area\": \"contact\",\n      \"claim\": \"YouTube Kids allows strangers to message or voice chat with your child\",\n      \"stance\": \"neutral\",\n      \"quote\": \"The app store says YouTube Kids is for 4 and older\"\n    },\n    {\n      \"ref\": \"[D517]\",\n      \"area\": \"money\",\n      \"claim\": \"YouTube Kids may include in-app purchases or loot boxes\",\n      \"stance\": \"neutral\",\n      \"quote\": \"In addition to the ads, the commercialism, and the potential to see inappropriate videos\"\n    }\n  ]\n}",
+  "input_tokens": 1579,
+  "output_tokens": 387,
+  "price_nano": 187620,
+  "measured": true,
+  "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B"
+}
