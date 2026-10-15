@@ -96,13 +96,15 @@ requires:   T5.4
 fixture-ok: yes
 size:       M · mid
 owns:       web/src/routes/compare/, web/src/lib/compare/
-status:     not-started
+status:     in-review
 ```
 Two cards, area by area, in one grid. The fixed checklist is what makes two titles comparable. This view shows that, and it closes the demo.
 
 On a phone the grid becomes one row per area, holding both grades.
 
 **Done when:** Comparing the "no" example card with its alternative renders correctly on desktop and at 360 px.
+
+The page calls `parseCard` only when both addresses are `c_` plus 32 lowercase hex. Any other id is not requested, and neither is its pair. Each loaded card keeps its own verdict and its own grades, in checklist order, not the order the payload lists them. Roblox's alternative summary says `yes_with_settings`; the loaded alternative (`c_` + 32 hex ending in `4`) is `unclear`, and that is what the grid shows. A malformed card or a failed load shows a next step and no grades, server text, or error code. The rows use the theme's compare-row grid: under 900 px the area name sits above the row and the row holds both grades; at 900 px and up the area name joins that row, top-aligned with both grades.
 
 ---
 

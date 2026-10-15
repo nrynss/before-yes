@@ -1,3 +1,5 @@
-<script lang="ts">import { resolve } from '$app/paths';</script>
-<svelte:head><title>Two titles, the same questions — Before Yes</title></svelte:head>
-<a class="back" href={resolve('/')}>← Ask about a title</a><p class="eyebrow">Side by side</p><h1>The same questions.<br />Two titles.</h1><p class="intro">A shared checklist makes room for a clearer choice.</p><p class="quiet-note">No cards are loaded in this preview.</p><div class="comparison">{#each ['Contact','Money','Data','Age gating','Content','Developer record'] as area (area)}<section class="compare-row"><h2>{area}</h2><div class="compare-cell"><h3>First card</h3><p>Not loaded</p></div><div class="compare-cell"><h3>Second card</h3><p>Not loaded</p></div></section>{/each}</div>
+<script lang="ts">
+ import { page } from '$app/state';
+ import Compare from '$lib/compare/Compare.svelte';
+</script>
+{#key `${page.params.a}/${page.params.b}`}<Compare a={page.params.a ?? ''} b={page.params.b ?? ''} />{/key}
