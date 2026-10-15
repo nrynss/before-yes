@@ -1,0 +1,8 @@
+{
+  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D537]\",\n      \"area\": \"money\",\n      \"claim\": \"A parent can purchase 400 Robux for $4.99.\",\n      \"stance\": \"neutral\",\n      \"quote\": \"amount you can purchase is 400 Robux for $4.99.\"\n    },\n    {\n      \"ref\": \"[D537]\",\n      \"area\": \"money\",\n      \"claim\": \"A paid monthly subscription to Roblox Premium includes a monthly deposit of Robux.\",\n      \"stance\": \"neutral\",\n      \"quote\": \"a paid monthly subscription to [*Roblox* Premium](https://www.roblox.com/premium/membership) includes a monthly deposit of Robux along with a variety of bonus features.\"\n    },\n    {\n      \"ref\": \"[D537]\",\n      \"area\": \"money\",\n      \"claim\": \"A parent should set parental controls to manage or block spending.\",\n      \"stance\": \"mitigation\",\n      \"quote\": \"don’t forget to set parental controls to manage how much your kids are allowed to spend (or block spending entirely).\"\n    },\n    {\n      \"ref\": \"[D537]\",\n      \"area\": \"contact\",\n      \"claim\": \"A parent reports that strangers can message or voice chat with the child.\",\n      \"stance\": \"risk\",\n      \"quote\": \"While [Allowed Experiences](https://en.help.roblox.com/hc/en-us/articles/8863284850196-Allowed-Experiences-Controls) and parental controls offer parents many great choices, there are always more steps you can take to ensure that your kids have appropriate video game experiences.\"\n    }\n  ]\n}",
+  "input_tokens": 1388,
+  "output_tokens": 378,
+  "price_nano": 174000,
+  "measured": true,
+  "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B"
+}

@@ -1,0 +1,8 @@
+{
+  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D529]\",\n      \"area\": \"contact\",\n      \"claim\": \"A parent reports that strangers can message or voice chat with your child.\",\n      \"stance\": \"risk\",\n      \"quote\": \"A parent puts Roblox on blast for her first-hand experiences of troubling games and failed content filtering\"\n    }\n  ]\n}",
+  "input_tokens": 5098,
+  "output_tokens": 85,
+  "price_nano": 326280,
+  "measured": true,
+  "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B"
+}

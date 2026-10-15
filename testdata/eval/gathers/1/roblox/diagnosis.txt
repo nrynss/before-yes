@@ -1,0 +1,49 @@
+diagnose Roblox age 9 verdict no findings 200 (conflict pass replaced the conflicted areas)
+  contact  risks 46 mitigations 14 other 2
+    judge ok_with_setting setting "parental controls" cited 2 [f_8b34dcd067352227 f_2bbf8633ef6c9b47]
+    card ok_with_setting setting "parental controls"
+    check stood
+    entail meets_definition=true reason_supported=true
+    reason Strangers can message or voice chat with a 9‑year‑old, but parental controls can disable direct messages and party chats to shut that door.
+    quote f_8b34dcd067352227 risk news: Roblox’s default settings, including unverified accounts, no age verification, and open communication channels, repeatedly exposed minors to sexual exploitation.
+    quote f_2bbf8633ef6c9b47 mitigation forum: Direct messages and party chats can be disabled with parental controls.
+  money  risks 22 mitigations 4 other 6
+    judge ok_with_setting setting "parental controls" cited 2 [f_1f8ad057919885d2 f_5c944121c4fbb0b1]
+    card ok_with_setting setting "parental controls"
+    check stood
+    entail meets_definition=true reason_supported=true
+    reason Roblox pushes in‑app purchases and loot boxes that a child could buy, yet parental controls can manage or block spending.
+    quote f_1f8ad057919885d2 risk store: Games may contain optional in-game purchases, including lootboxes and other items
+    quote f_5c944121c4fbb0b1 mitigation rating: don’t forget to set parental controls to manage how much your kids are allowed to spend (or block spending entirely).
+  data  risks 24 mitigations 1 other 12
+    judge ok_with_setting setting "turn off ad personalization and data selling" cited 2 [f_81873d6371e5c237 f_802f58b0fea298fe]
+    card ok_with_setting setting "turn off ad personalization and data selling"
+    check stood
+    entail meets_definition=true reason_supported=true
+    reason Roblox collects children’s data for ads and shares it with third parties, but parents can turn off ad personalization and data sharing to stop the flow.
+    quote f_81873d6371e5c237 risk policy: Data will now be sold
+    quote f_802f58b0fea298fe mitigation forum: You can turn off ad personalization and data selling. You can also turn off data sharing.
+  age_gating  risks 15 mitigations 6 other 5
+    judge flag setting "" cited 1 [f_3e1e4d584522e5a9]
+    card flag setting ""
+    check stood
+    entail meets_definition=true reason_supported=true
+    reason The age gate can be bypassed (e.g., by entering any birthdate before September 2007) and no parent‑set control locks the account to the correct age band.
+    quote f_3e1e4d584522e5a9 risk news: A kid who wants to dodge all of the above can simply enter any birthdate before September 2007.
+  content  risks 28 mitigations 1 other 1
+    judge flag setting "" cited 1 [f_7bfc294c87ff4e36]
+    card flag setting ""
+    check stood
+    entail meets_definition=true reason_supported=true
+    reason Reviewers report sexual content, violence, horror, harassment accessible to children, and no setting is shown that keeps such material away.
+    quote f_7bfc294c87ff4e36 risk review: god theres so many preds so i do NOT recommend this game for children/teens because there is some bad games where yk so yeah one star
+  developer_record  risks 10 mitigations 0 other 3
+    judge flag setting "" cited 4 [f_36d826992acf4266 f_b4bf19322a6df69d f_005ff9ce800de2bf f_7124f060b141bae7]
+    card unknown setting ""
+    check entail: flag_not_earned
+    entail meets_definition=false reason_supported=false
+    reason Changed to unknown: the cited quotes do not meet this area's flag definition.
+    quote f_36d826992acf4266 risk review: Genuinely the most money-hungry game I have ever seen This game supports child predators. That’s all I need to say.
+    quote f_b4bf19322a6df69d risk review: Good ig I got my whole acc suspended after years of playing but it was a very wonderful game!!
+    quote f_005ff9ce800de2bf risk review: You need to immediately terminate your partnership with VNG; we Vietnamese players have seen a multitude of game titles disappear due to issues that remain unresolved to this day.
+    quote f_7124f060b141bae7 risk terms: If you are a rights holder and want to report UGC that infringes your intellectual property rights (such as copyright or trademark), refer to Section 10.2.

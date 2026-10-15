@@ -1,0 +1,8 @@
+{
+  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D539]\",\n      \"area\": \"age_gating\",\n      \"claim\": \"A parent reports that the ESRB rating system includes Interactive Elements which highlight online features such as user interaction, location sharing, in-app purchases, and unrestricted internet access.\",\n      \"stance\": \"neutral\",\n      \"quote\": \"Interactive Elements highlight interactive or online features that may be of interest or concern but do not influence the rating assignment of a product. This includes users’ ability to interact with each other, the sharing of users’ location with other users, if purchases of digital goods or services are offered, and/or if unrestricted internet access is provided.\"\n    }\n  ]\n}",
+  "input_tokens": 2921,
+  "output_tokens": 153,
+  "price_nano": 211980,
+  "measured": true,
+  "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B"
+}
