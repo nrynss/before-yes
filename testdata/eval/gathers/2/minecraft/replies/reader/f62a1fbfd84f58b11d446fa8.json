@@ -1,0 +1,8 @@
+{
+  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D181]\",\n      \"area\": \"developer_record\",\n      \"claim\": \"A parent reports that Adobe has faced regulatory scrutiny and a settlement related to hidden fees and subscription cancellations.\",\n      \"stance\": \"risk\",\n      \"quote\": \"Adobe agrees to 150 million settlement and injunction resolve alleged violations restore online\"\n    }\n  ]\n}",
+  "input_tokens": 997,
+  "output_tokens": 91,
+  "price_nano": 81660,
+  "measured": true,
+  "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B"
+}

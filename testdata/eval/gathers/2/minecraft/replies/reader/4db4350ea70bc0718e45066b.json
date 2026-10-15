@@ -1,0 +1,8 @@
+{
+  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D183]\",\n      \"area\": \"money\",\n      \"claim\": \"A parent reports that the app pushes in-app purchases and a 30% revenue cut is taken by the platform.\",\n      \"stance\": \"risk\",\n      \"quote\": \"Apple has argued that the 30% cut it takes through In-App Purchases (IAP) \\\"reflects the immense value of the App Store\\\" and beyond the visible features it offers developers, that cut covers \\\"Apple's technology, tools, software for app development and testing, marketing efforts, platinum-level customer service, and distribution of developers' apps and digital content.\\\"\"\n    }\n  ]\n}",
+  "input_tokens": 4187,
+  "output_tokens": 155,
+  "price_nano": 288420,
+  "measured": true,
+  "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B"
+}

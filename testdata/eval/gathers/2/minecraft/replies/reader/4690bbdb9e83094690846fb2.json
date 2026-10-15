@@ -1,0 +1,8 @@
+{
+  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D183]\",\n      \"area\": \"developer_record\",\n      \"claim\": \"A parent reports that Epic Games was involved in a high‑profile antitrust lawsuit with Apple and Google over app store policies.\",\n      \"stance\": \"neutral\",\n      \"quote\": \"Epic Games v. Apple - Wikipedia\"\n    }\n  ]\n}",
+  "input_tokens": 3972,
+  "output_tokens": 85,
+  "price_nano": 258720,
+  "measured": true,
+  "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B"
+}

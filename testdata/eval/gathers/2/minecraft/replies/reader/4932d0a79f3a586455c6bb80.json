@@ -1,0 +1,8 @@
+{
+  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D179]\",\n      \"area\": \"money\",\n      \"claim\": \"A parent reports that the app uses fake urgency timers in the Item Shop.\",\n      \"stance\": \"risk\",\n      \"quote\": \"the countdown timers created fake urgency\"\n    }\n  ]\n}",
+  "input_tokens": 940,
+  "output_tokens": 75,
+  "price_nano": 74400,
+  "measured": true,
+  "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B"
+}

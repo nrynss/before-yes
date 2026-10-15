@@ -1,0 +1,8 @@
+{
+  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D177]\",\n      \"area\": \"data\",\n      \"claim\": \"A parent reports that Microsoft illegally collected and retained children's data.\",\n      \"stance\": \"risk\",\n      \"quote\": \"Microsoft will pay a fine of $20 million to settle Federal Trade Commission charges that it illegally collected and retained the data of children who signed up\"\n    }\n  ]\n}",
+  "input_tokens": 6100,
+  "output_tokens": 93,
+  "price_nano": 388320,
+  "measured": true,
+  "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B"
+}
