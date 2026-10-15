@@ -27,7 +27,7 @@ diagnose Roblox age 9 verdict no findings 200 (conflict pass replaced the confli
     judge flag setting "" cited 1 [f_3e1e4d584522e5a9]
     card flag setting ""
     check stood
-    age-gate event=access_bypass witness="A kid who wants to dodge all of the above can simply enter any birthdate before September 2007."
+    age-gate event=access_bypass witness="A kid who wants to dodge all of the above can simply enter any birthdate before September 2007." actual_age="" assigned_age=""
     reason the age gate fails in practice
     quote f_3e1e4d584522e5a9 risk news: A kid who wants to dodge all of the above can simply enter any birthdate before September 2007.
   content  risks 28 mitigations 1 other 1

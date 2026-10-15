@@ -1,0 +1,8 @@
+{
+  "text": "{\"criterion\": \"none\", \"quote\": \"\", \"actual_age\": \"\", \"assigned_age\": \"\"}",
+  "input_tokens": 387,
+  "output_tokens": 23,
+  "price_nano": 136800,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

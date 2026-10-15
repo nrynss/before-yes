@@ -16,21 +16,21 @@ Model figures are **measured**: the T3.11 fixture replay on Token Factory (reade
 | Model lifetime ceiling | **$20** of the $25 credit | `model`, lifetime (`cost.None`) | Leaves $5 (20%) for re-runs (T3.9), demo pre-computation and measurement error. |
 | Tavily monthly ceiling | **900 credits** of the 1,000 free | `tavily`, monthly UTC (`cost.MonthlyUTC`) | 100 credits (10%) kept for a live check above the measured 7 to 8. |
 | Daily cap on fresh checks, judging | **5 checks per UTC day** | `checks_daily`, daily UTC | Confirmed by the rule: 5 x 15 x 8 = 600 credits, under 900. |
-| Cost per fresh check | **$0.042536 model** (fixture replay after T3.11, mean of three titles; $0.039498 to $0.044894 by title; T3.10 measured $0.040580, T3.9b $0.035349, T3.6b $0.030861). **7 to 8 Tavily credits** (fixture-measured, and the same range on T3.11's six live gathers). | not a ceiling | Input to every ceiling above. |
-| Checks covered | **470** by the model ceiling (492 at T3.10, 565 at T3.9b, 648 at T3.6b); **112 to 128 a month** by Tavily | derived | Tavily binds, as it did at the estimate. |
+| Cost per fresh check | **$0.042598 model** (fixture replay after T3.11, mean of three titles; $0.039498 to $0.044894 by title; T3.10 measured $0.040580, T3.9b $0.035349, T3.6b $0.030861). **7 to 8 Tavily credits** (fixture-measured, and the same range on T3.11's six live gathers). | not a ceiling | Input to every ceiling above. |
+| Checks covered | **469** by the model ceiling (492 at T3.10, 565 at T3.9b, 648 at T3.6b); **112 to 128 a month** by Tavily | derived | Tavily binds, as it did at the estimate. |
 
-No ceiling or the cap changed. The per-check model cost rose 14.8% at T3.10 ($0.035349 to $0.040580: the definitions and the reader's larger finding sets made the judge prompt longer, two conflict passes ran to their cap, and the entailment check added Nano calls), which cut the checks the $20 ceiling covers from 565 to 492 and the reserve's fresh checks from 141 to 123. T3.11 runs that check on Super instead of Nano. The fixture replay mean is $0.042536, which cuts the model pool from 492 checks to 470 and the reserve's fresh checks from 123 to 117. Neither forces a change: Tavily still binds by a wide margin, and the settings file needs no change.
+No ceiling or the cap changed. The per-check model cost rose 14.8% at T3.10 ($0.035349 to $0.040580: the definitions and the reader's larger finding sets made the judge prompt longer, two conflict passes ran to their cap, and the entailment check added Nano calls), which cut the checks the $20 ceiling covers from 565 to 492 and the reserve's fresh checks from 141 to 123. T3.11 runs that check on Super instead of Nano. The fixture replay mean is $0.042598, which cuts the model pool from 492 checks to 469 and the reserve's fresh checks from 123 to 117. Neither forces a change: Tavily still binds by a wide margin, and the settings file needs no change.
 
 ## Model pool: lifetime ceiling and reserve
 
 **Ceiling: $20.** The Token Factory credit is $25 in total and is not renewed (the Devpost FAQ and the brief's Budget section). The $20 ceiling is 80% of it.
 
 **Reserve: $5.** It covers:
-- re-runs of the live eval on real Nano and Super, which book their spend through the same meter. A three-title run costs $0.127608 on the T3.11 fixture replay (T3.10: $0.121741, T3.9b: $0.1060, T3.6b: $0.0926), so $5 covers about 39 such runs (`5 / 0.127608`). Reader output alone, at the 8,192-token reply cap, bounds a three-title run at $0.197 (100 reader calls x 8,192 x $0.24 per million), so even that worst case leaves about 25 runs (`5 / 0.196608`);
-- pre-computing the demo titles and alternatives. At the measured mean, $5 pays for about 117 fresh checks (`5 / 0.042536`);
+- re-runs of the live eval on real Nano and Super, which book their spend through the same meter. A three-title run costs $0.127795 on the T3.11 fixture replay (T3.10: $0.121741, T3.9b: $0.1060, T3.6b: $0.0926), so $5 covers about 39 such runs (`5 / 0.127795`). Reader output alone, at the 8,192-token reply cap, bounds a three-title run at $0.197 (100 reader calls x 8,192 x $0.24 per million), so even that worst case leaves about 25 runs (`5 / 0.196608`);
+- pre-computing the demo titles and alternatives. At the measured mean, $5 pays for about 117 fresh checks (`5 / 0.042598`);
 - error in the per-check figure. The figure is the T3.11 fixture replay, so this error is small. A reader or judge prompt change re-opens it (see the T3.11 section).
 
-**Spent so far.** About $0.7718 of the $20 ceiling: about $0.0018 across the three T2.1b live runs (handoff log; the probe alone booked $0.00060618, `dev-diary/live/t2.1b-transcript.txt`), $0.092584 for the three titles in T3.6b, $0.106048 for the T3.9b re-record of the same three titles, $0.209723 for T3.10's re-record rounds (the task's live ledger; the final recordings those rounds ended with replay at $0.121741, the rest paid for superseded rounds and the entailment clarification), and $0.361607 on T3.11's ledger (six live gathers at $0.236605, then entailment re-records and round-3 classification attempts on the judge model, including superseded paid replies). The rest is unspent headroom.
+**Spent so far.** About $0.7778 of the $20 ceiling: about $0.0018 across the three T2.1b live runs (handoff log; the probe alone booked $0.00060618, `dev-diary/live/t2.1b-transcript.txt`), $0.092584 for the three titles in T3.6b, $0.106048 for the T3.9b re-record of the same three titles, $0.209723 for T3.10's re-record rounds (the task's live ledger; the final recordings those rounds ended with replay at $0.121741, the rest paid for superseded rounds and the entailment clarification), and $0.367638 on T3.11's ledger (six live gathers at $0.236605, then entailment re-records and round-3 and round-4 classification attempts on the judge model, including superseded paid replies). The rest is unspent headroom.
 
 **Why a lifetime pool and not a monthly one.** The credit is one lump sum. A monthly window on the model pool would let the account spend $20 a month, which the credit cannot pay for. `cost.None` is the right period for this pool, and it is the default when `PoolConfig.Period` is unset.
 
@@ -82,12 +82,12 @@ From the T3.11 fixture replay on Token Factory (the recorded replies in `testdat
 
 | Title | Reader calls | Reader tokens in / out | Judge calls (conflict) | Judge tokens in / out | Entail calls (Super) | Entail tokens in / out | Model $ | Tavily credits (fixture) |
 |---|---|---|---|---|---|---|---|---|
-| Roblox | 36 | 134,885 / 31,774 | 2 (1) | 30,802 / 16,680 | 6 | 10,451 / 121 | 0.043216 | 8 |
+| Roblox | 36 | 134,885 / 31,774 | 2 (1) | 30,802 / 16,680 | 7 | 10,977 / 153 | 0.043402 | 8 |
 | Minecraft | 45 | 167,562 / 45,567 | 2 (1) | 42,995 / 9,493 | 4 | 8,015 / 64 | 0.044894 | 7 |
 | Khan Academy Kids | 19 | 76,765 / 29,118 | 2 (1) | 41,472 / 16,463 | 1 | 2,105 / 16 | 0.039498 | 7 |
-| **Mean per check** | 33.3 | **126,404 / 35,486** | 2 (1) | **38,423 / 14,212** | 3.7 | **6,857 / 67** | **0.042536** | 7.3 (range 7 to 8) |
+| **Mean per check** | 33.3 | **126,404 / 35,486** | 2 (1) | **38,423 / 14,212** | 4 | **7,032 / 78** | **0.042598** | 7.3 (range 7 to 8) |
 
-The entailment check's Super calls are shown apart from the judge pass because they are a separate step with its own count; the judge column is the two grade calls only, and the reader column is read calls only. Entailment tokens are the live judge totals minus those two grade calls (Roblox 41,253 in / 16,801 out on 6 entailment calls plus 2 recorded grade calls, Minecraft 51,010 / 9,557 on 4, Khan 43,577 / 16,479 on 1). The event-extraction reply length varies; other entailment replies here have 16 output tokens. Both conflict passes that hit their 16,000-token cap (Roblox, Khan Academy Kids) were discarded by the parser, so their output tokens bought no grade change; Minecraft's conflict pass answered inside the cap and its grades are its second pass's. T3.11's six live gathers, a different evidence set, averaged $0.041781 model after the entailment re-record (Roblox $0.039979 and $0.045552, Minecraft $0.044645 and $0.032604, Khan Academy Kids $0.041805 and $0.046104) and 7 or 8 Tavily credits. The re-record made no Tavily call.
+The entailment check's Super calls are shown apart from the judge pass because they are a separate step with its own count; the judge column is the two grade calls only, and the reader column is read calls only. Entailment tokens are the live judge totals minus those two grade calls (Roblox 41,779 in / 16,833 out on 7 entailment calls plus 2 recorded grade calls, Minecraft 51,010 / 9,557 on 4, Khan 43,577 / 16,479 on 1). The event-extraction reply length varies; other entailment replies here have 16 output tokens. Both conflict passes that hit their 16,000-token cap (Roblox, Khan Academy Kids) were discarded by the parser, so their output tokens bought no grade change; Minecraft's conflict pass answered inside the cap and its grades are its second pass's. T3.11's six live gathers, a different evidence set, averaged $0.042011 model after the entailment re-record (Roblox $0.040024 and $0.045821, Minecraft $0.044690 and $0.032604, Khan Academy Kids $0.041987 and $0.046940) and 7 or 8 Tavily credits. The re-record made no Tavily call.
 
 ### Per-check arithmetic
 
@@ -95,13 +95,13 @@ The entailment check's Super calls are shown apart from the judge pass because t
 |---|---|---|---|
 | Reader input | 126,404 | 0.06 | 0.007584 |
 | Reader output | 35,486 | 0.24 | 0.008517 |
-| Entail input (Super) | 6,857 | 0.30 | 0.002057 |
-| Entail output (Super) | 67 | 0.90 | 0.000060 |
+| Entail input (Super) | 7,032 | 0.30 | 0.002110 |
+| Entail output (Super) | 78 | 0.90 | 0.000070 |
 | Judge input | 38,423 | 0.30 | 0.011527 |
 | Judge output | 14,212 | 0.90 | 0.012791 |
-| **Total** | | | **0.042536** |
+| **Total** | | | **0.042598** |
 
-The doc uses **$0.042536**, rounded from the measured $0.04253606 mean. Exact fixture totals are $0.04321566, $0.04489410 and $0.03949842; their sum is $0.12760818. Displayed token rows are rounded. Entailment averages $0.00211740, about 5% of the check. Age-gating flag classification checks cited risks independently and stops on the first verified event; the count therefore varies with the citations, rather than being bounded to one call per area.
+The doc uses **$0.042598**, rounded from the measured $0.04259826 mean. Exact fixture totals are $0.04340226, $0.04489410 and $0.03949842; their sum is $0.12779478. Displayed token rows are rounded. Entailment averages $0.00217960, about 5% of the check. Age-gating flag classification checks cited risks independently and stops on the first verified event; the count therefore varies with the citations, rather than being bounded to one call per area.
 
 Tavily: **7 to 8 credits per check, fixture-measured**. The doc uses 8 for the worst case, and 7 where the best case is shown.
 
@@ -111,14 +111,14 @@ With the measured figures, and the lower of the two pools binding:
 
 | Limit | Arithmetic | Checks |
 |---|---|---|
-| Model, $20 ceiling, mean check | 20 / 0.042536 | **470** |
+| Model, $20 ceiling, mean check | 20 / 0.042598 | **469** |
 | Model, $20 ceiling, Minecraft-sized check | 20 / 0.044894 | 445 |
 | Model, $20 ceiling, Khan-sized check | 20 / 0.039498 | 505 |
-| Model, full $25 credit, mean check | 25 / 0.042536 | 587 |
+| Model, full $25 credit, mean check | 25 / 0.042598 | 586 |
 | Tavily, 900 a month, 8 credits per check | 900 / 8 = 112.5 | **112 a month** |
 | Tavily, 900 a month, 7 credits per check | 900 / 7 = 128.6 | 128 a month |
 
-Tavily binds at both per-check costs, so the monthly figure is 112 to 128 checks. The model pool does not bind for a month of checks: 470 checks is more than four months at 112 a month.
+Tavily binds at both per-check costs, so the monthly figure is 112 to 128 checks. The model pool does not bind for a month of checks: 469 checks is more than four months at 112 a month.
 
 Checks in the table are fresh checks. Cache hits (`card_max_age_hours`, `evidence_max_age_hours` in the settings) add none to either pool.
 
@@ -132,7 +132,7 @@ Checks in the table are fresh checks. Cache hits (`card_max_age_hours`, `evidenc
 - Largest cap the rule allows: `floor(900 / (15 x C_tavily))`. At 8 credits, `900 / 120 = 7.5`, so 7. At 7 credits, `900 / 105 = 8.6`, so 8.
 - The cap of 5 at the worst measured figure: `5 x 15 x 8 = 600` credits, under 900, with **300 credits spare** for the month.
 - Whole window at 5 a day: 75 checks, 600 credits at 8 each (525 at 7).
-- Model side: 75 x $0.042536 = **$3.19** at the mean, or 75 x $0.044894 = **$3.37** at Minecraft size. Both far under the $20 ceiling. The model pool is not the reason for the cap.
+- Model side: 75 x $0.042598 = **$3.19** at the mean, or 75 x $0.044894 = **$3.37** at Minecraft size. Both far under the $20 ceiling. The model pool is not the reason for the cap.
 - The cap holds for any live per-check Tavily cost up to 12 credits (`5 x 15 x 12 = 900`).
 
 **Why not 7.** The rule allows 7 at 8 credits, and 840 of 900 credits would go to judging. That leaves 60 credits for a check above the measured 7 to 8, and for any re-run in the month. T3.11's six live gathers stayed at 7 or 8. 5 holds with 300 to spare. If a live check measures above 8 credits, lower the cap to `floor(900 / (15 x C_tavily))`.
@@ -141,7 +141,7 @@ Checks in the table are fresh checks. Cache hits (`card_max_age_hours`, `evidenc
 
 ### A separate counter, not a daily model-dollar pool
 
-A daily model-dollar pool would be the wrong unit. The limit that binds is checks, or Tavily credits. Daily model spend at the cap is about $0.21 (5 x $0.042536), so a daily dollar cap would never trip and would not express "5 checks a day".
+A daily model-dollar pool would be the wrong unit. The limit that binds is checks, or Tavily credits. Daily model spend at the cap is about $0.21 (5 x $0.042598), so a daily dollar cap would never trip and would not express "5 checks a day".
 
 The counter is built in T2.4b: `Meter.BeginCheck(ctx, ref)` returns a `*Check`, which is ended with `Done()` (books one check) or `Fail()` (releases it). `Open` pins `checks_daily` to `cost.DailyUTC`. A cache hit never calls `BeginCheck`. Tests: `internal/spend/checks_test.go`.
 
@@ -158,7 +158,7 @@ The counter is built in T2.4b: `Meter.BeginCheck(ctx, ref)` returns a `*Check`, 
 
 Minecraft is the costliest title: 45 reader calls, $0.044894 per check, and 7 Tavily credits. If every check is Minecraft-sized:
 
-- **Model:** 20 / 0.044894 = **445 checks** in the $20 ceiling (5% fewer than the 470 at the mean), 556 of the $25 credit. The $5 reserve covers 111 such checks (`5 / 0.044894`).
+- **Model:** 20 / 0.044894 = **445 checks** in the $20 ceiling (5% fewer than the 469 at the mean), 556 of the $25 credit. The $5 reserve covers 111 such checks (`5 / 0.044894`).
 - **Tavily:** Minecraft's fixture figure is 7 credits, and its two live gathers were 7 as well, so 900 / 7 = **128 a month**. Tavily still binds, and the monthly ceiling does not change.
 - **Daily cap:** 75 checks x $0.044894 = **$3.37** over the 15-day window, under $20. The cap is unchanged.
 
@@ -190,9 +190,9 @@ T3.10 gave the judge each area's own flag and ok definitions, added the entailme
 T3.11 kept the reader and judge recordings and re-recorded entailment on Super, thinking off. The fixture replay is the table above. Against T3.10 (mean $0.040580):
 
 - **Reader and judge passes.** Unchanged. Their recordings were replayed.
-- **Entailment.** The current fixture replay uses 3.7 Super calls a check at the mean (6 Roblox, 4 Minecraft, 1 Khan), $0.002117 a check, 5% of the check after the canonical-claim/source-only prompt (6,857 in / 67 out). Nano had been $0.000162. The mean went from $0.040580 to $0.042536.
-- **Live gathers.** Six separate gathers (two each of Roblox, Minecraft, and Khan Academy Kids) cost $0.236605 of model spend before the entailment re-records. After the re-records the six replay at $0.041781 mean. The whole task ledger is $0.361607. Tavily reported 8, 7, and 8 credits, twice each. The re-record made no Tavily call.
-- **No ceiling changed.** The model pool has 470 checks at the mean and 445 at Minecraft size, against a Tavily limit of 112 to 128 a month. The reserve covers 117 mean checks. The $20, 900, and 5 ceilings are unchanged.
+- **Entailment.** The current fixture replay uses 4 Super calls a check at the mean (7 Roblox, 4 Minecraft, 1 Khan), $0.002180 a check, 5% of the check after the canonical-claim/source-only prompt (7,032 in / 78 out). Nano had been $0.000162. The mean went from $0.040580 to $0.042598.
+- **Live gathers.** Six separate gathers (two each of Roblox, Minecraft, and Khan Academy Kids) cost $0.236605 of model spend before the entailment re-records. After the re-records the six replay at $0.042011 mean. The whole task ledger is $0.367638. Tavily reported 8, 7, and 8 credits, twice each. The re-record made no Tavily call.
+- **No ceiling changed.** The model pool has 469 checks at the mean and 445 at Minecraft size, against a Tavily limit of 112 to 128 a month. The reserve covers 117 mean checks. The $20, 900, and 5 ceilings are unchanged.
 
 ## Open items
 

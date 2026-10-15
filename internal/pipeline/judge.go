@@ -510,7 +510,8 @@ An age gate restricts access by age or assigns an account's age. Choose one crit
 - wrong_age_assignment: the source reports a displayed or recorded age or age band inconsistent with the person's stated age. Non-overlapping reported ranges suffice; neither an exact birthday nor an explanation of the verification mechanism is required.
 - none: the source reports neither failure.
 A school grade, course selection, curriculum's intended age range, lessons below a child's ability, an age recommendation, or inability to enter is not an age-gate failure. A generic opinion that age limits do not suffice does not report an observed failure.
-Return one JSON object with criterion and quote strings. For a failure, quote an exact source span containing the reported event and the age mismatch or bypass. For none, quote is empty. Do not invent or paraphrase source text.`
+For wrong_age_assignment, also extract actual_age and assigned_age: two different exact source spans giving the person's actual age or band and the account's recorded age or band. Each must state a concrete value or age band, not a variable, a hypothetical condition, or a reference to an unspecified correct age. If either value is not stated, criterion is none. Education or school-grade levels are not account age bands.
+Return one JSON object with criterion, quote, actual_age and assigned_age strings. Use empty age strings for other criteria. For a failure, quote an exact source span containing the assertion that the failure happened or the bypass works, together with the age mismatch or bypass. A span describing only a conditional correction procedure is not a witness. For none, quote is empty. Do not invent or paraphrase source text.`
 }
 
 // entailUser shows one grade and the findings it cites. It mirrors judgeUser's
@@ -557,19 +558,29 @@ type entailVerdict struct {
 }
 
 type ageGateWitness struct {
-	Criterion string `json:"criterion"`
-	Quote     string `json:"quote"`
+	ActualAge   string `json:"actual_age"`
+	AssignedAge string `json:"assigned_age"`
+	Criterion   string `json:"criterion"`
+	Quote       string `json:"quote"`
 }
 
 // An age-gate acceptance must expose its supporting source span. The model
 // chooses the semantic criterion; code verifies its witness is source text,
 // in an in-area cited risk, rather than another generated assertion.
+// Wrong-age assignment must also expose both actual and assigned age spans
+// from that same risk; an unspecified correct age supplies neither side.
 func witnessedAgeGate(g checklist.Grade, fs []finding.Finding, w *ageGateWitness) bool {
 	if w == nil || (w.Criterion != "access_bypass" && w.Criterion != "wrong_age_assignment") || len(strings.Fields(w.Quote)) < 5 {
 		return false
 	}
+	if w.Criterion == "wrong_age_assignment" && (w.ActualAge == "" || w.AssignedAge == "" || w.ActualAge == w.AssignedAge) {
+		return false
+	}
 	for _, f := range fs {
 		if f.Area == checklist.AgeGating && f.Stance == finding.Risk && slices.Contains(g.Findings, f.ID) && strings.Contains(f.Quote, w.Quote) {
+			if w.Criterion == "wrong_age_assignment" && (!strings.Contains(f.Quote, w.ActualAge) || !strings.Contains(f.Quote, w.AssignedAge)) {
+				continue
+			}
 			return true
 		}
 	}

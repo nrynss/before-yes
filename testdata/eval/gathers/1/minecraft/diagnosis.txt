@@ -26,7 +26,7 @@ diagnose Minecraft age 9 verdict unclear findings 221 (conflict pass replaced th
     judge flag setting "" cited 1 [f_88d325d4c1d10860]
     card unknown setting ""
     check entail: flag_not_earned
-    age-gate event=none witness=""
+    age-gate event=none witness="" actual_age="" assigned_age=""
     reason Changed to unknown: the cited quotes do not meet this area's flag definition.
     quote f_88d325d4c1d10860 risk review: Can you make the game available for +5 year-old?
   content  risks 18 mitigations 2 other 15

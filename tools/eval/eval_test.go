@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"github.com/nrynss/before-yes/internal/checklist"
 	"os"
 	"path/filepath"
@@ -320,5 +321,80 @@ func TestGatherFlagsRequireTheirOwnDefinition(t *testing.T) {
 		if rs[0].GotVerdict != tc.verdict {
 			t.Errorf("%s/%d verdict=%s want %s", tc.slug, tc.gather, rs[0].GotVerdict, tc.verdict)
 		}
+	}
+}
+
+// Remove the independent bypass citation, keeping the actual recorded model
+// answer on the conditional correction source. This catches a false flag that
+// an unchanged verdict in the complete fixture would otherwise conceal.
+func TestConditionalCorrectionAloneDoesNotEarnAgeFlag(t *testing.T) {
+	prevG, prevOnly, prevDiagnosis := *gatherN, *liveOnly, *diagnoseOn
+	t.Cleanup(func() { *gatherN = prevG; *liveOnly = prevOnly; *diagnoseOn = prevDiagnosis })
+	*gatherN, *liveOnly = 0, "roblox"
+	*diagnoseOn = true
+	ablation := t.TempDir()
+	for _, dir := range []string{"testdata/eval", "testdata/titles/roblox"} {
+		if err := os.CopyFS(filepath.Join(ablation, dir), os.DirFS(filepath.Join(root, dir))); err != nil {
+			t.Fatal(err)
+		}
+	}
+	path := filepath.Join(ablation, "testdata/eval/replies/roblox/judge/676482d61df7c5506c686663.json")
+	b, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var rec Recording
+	if err := json.Unmarshal(b, &rec); err != nil {
+		t.Fatal(err)
+	}
+	var reply struct {
+		Grades []rawGrade `json:"grades"`
+	}
+	if err := json.Unmarshal([]byte(rec.Text), &reply); err != nil {
+		t.Fatal(err)
+	}
+	changed := false
+	for i := range reply.Grades {
+		if reply.Grades[i].Area == "age_gating" {
+			reply.Grades[i].Findings = []string{"f_3832ce49d8ba54a2"}
+			changed = true
+		}
+	}
+	if !changed {
+		t.Fatal("recorded age grade not found")
+	}
+	b, err = json.Marshal(reply)
+	if err != nil {
+		t.Fatal(err)
+	}
+	rec.Text = string(b)
+	b, err = json.Marshal(rec)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(path, b, 0600); err != nil {
+		t.Fatal(err)
+	}
+	log, err := os.CreateTemp(t.TempDir(), "diagnosis")
+	if err != nil {
+		t.Fatal(err)
+	}
+	previousStderr := os.Stderr
+	os.Stderr = log
+	t.Cleanup(func() { os.Stderr = previousStderr; _ = log.Close() })
+	rs, err := evaluate(ablation, "replay")
+	os.Stderr = previousStderr
+	if err != nil || len(rs) != 1 || rs[0].Err != "" {
+		t.Fatalf("replay: %+v %v", rs, err)
+	}
+	if a := areaGot(t, rs[0], checklist.AgeGating); a.Got != checklist.Unknown {
+		t.Fatalf("conditional correction alone earned %s", a.Got)
+	}
+	trace, err := os.ReadFile(log.Name())
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(string(trace), `age-gate event=none witness=""`) {
+		t.Fatalf("actual saved none reply was not replayed: %s", trace)
 	}
 }

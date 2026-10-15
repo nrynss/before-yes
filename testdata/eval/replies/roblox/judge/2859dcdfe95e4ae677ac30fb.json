@@ -1,0 +1,8 @@
+{
+  "text": "{\"assertion_mode\": \"reported_failure\", \"criterion\": \"wrong_age_assignment\", \"quote\": \"if the estimation isn't not you're age\"}",
+  "input_tokens": 586,
+  "output_tokens": 36,
+  "price_nano": 208200,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

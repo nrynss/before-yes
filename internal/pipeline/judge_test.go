@@ -1068,12 +1068,16 @@ func TestAgeGateWitnessMustComeFromCitedRisk(t *testing.T) {
 		w    *ageGateWitness
 		want bool
 	}{
-		{"source paraphrase of failure", &ageGateWitness{"wrong_age_assignment", q}, true},
+		{"source paraphrase of failure", &ageGateWitness{Criterion: "wrong_age_assignment", Quote: q, ActualAge: "eleven", AssignedAge: "34"}, true},
+		{"missing actual age", &ageGateWitness{Criterion: "wrong_age_assignment", Quote: q, AssignedAge: "34"}, false},
+		{"invented actual age", &ageGateWitness{Criterion: "wrong_age_assignment", Quote: q, ActualAge: "seven", AssignedAge: "34"}, false},
+		{"invented assigned age", &ageGateWitness{Criterion: "wrong_age_assignment", Quote: q, ActualAge: "eleven", AssignedAge: "40"}, false},
+		{"same age both sides", &ageGateWitness{Criterion: "wrong_age_assignment", Quote: q, ActualAge: "eleven", AssignedAge: "eleven"}, false},
 		{"no witness", nil, false},
-		{"invented source words", &ageGateWitness{"wrong_age_assignment", "The check incorrectly says she is an adult."}, false},
-		{"uncited source", &ageGateWitness{"access_bypass", fs[1].Quote}, false},
-		{"educational criterion", &ageGateWitness{"curriculum_level", q}, false},
-		{"context-free fragment", &ageGateWitness{"wrong_age_assignment", "age as 34"}, false},
+		{"invented source words", &ageGateWitness{Criterion: "wrong_age_assignment", Quote: "The check incorrectly says she is an adult.", ActualAge: "eleven", AssignedAge: "34"}, false},
+		{"uncited source", &ageGateWitness{Criterion: "access_bypass", Quote: fs[1].Quote}, false},
+		{"educational criterion", &ageGateWitness{Criterion: "curriculum_level", Quote: q}, false},
+		{"context-free fragment", &ageGateWitness{Criterion: "wrong_age_assignment", Quote: "age as 34", ActualAge: "eleven", AssignedAge: "34"}, false},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			if got := witnessedAgeGate(g, fs, tc.w); got != tc.want {
@@ -1082,7 +1086,7 @@ func TestAgeGateWitnessMustComeFromCitedRisk(t *testing.T) {
 		})
 	}
 	fs[0].Stance = finding.Mitigation
-	if witnessedAgeGate(g, fs, &ageGateWitness{"wrong_age_assignment", q}) {
+	if witnessedAgeGate(g, fs, &ageGateWitness{Criterion: "wrong_age_assignment", Quote: q, ActualAge: "eleven", AssignedAge: "34"}) {
 		t.Fatal("mitigation supplied risk witness")
 	}
 }
@@ -1096,7 +1100,7 @@ func TestAgeGateChecksEachRiskAndStopsAtVerifiedEvent(t *testing.T) {
 	}
 	g := checklist.Grade{Area: checklist.AgeGating, Level: checklist.Flag, Findings: []string{"lesson", "event", "later"}, Reason: "invented interpretation"}
 	for _, initial := range []any{`{"criterion":"none","quote":""}`, `{"criterion":"wrong_age_assignment","quote":"made up source span"}`, `not JSON`, errors.New("unavailable")} {
-		r := &superRecorder{price: 10, replies: []any{initial, fmt.Sprintf(`{"criterion":"wrong_age_assignment","quote":%q}`, q)}}
+		r := &superRecorder{price: 10, replies: []any{initial, fmt.Sprintf(`{"criterion":"wrong_age_assignment","quote":%q,"actual_age":"eleven year old","assigned_age":"thirty year old"}`, q)}}
 		j := &Judge{Meter: openTestMeter(t), Entail: r}
 		out, dem, thin, err, price := j.entail(context.Background(), "An arbitrary title", 8, "ref", []checklist.Grade{g}, fs)
 		if err != nil || len(dem) != 0 || len(thin) != 0 || out[0].Level != checklist.Flag || out[0].Reason != standingReason(checklist.AgeGating) || len(r.users) != 2 {

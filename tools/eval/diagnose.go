@@ -239,11 +239,13 @@ func entailNote(tr *callTrace, area checklist.Area) string {
 		v, ok := parseEntailReply(c.reply)
 		if !ok {
 			var w struct {
-				Criterion string `json:"criterion"`
-				Quote     string `json:"quote"`
+				Criterion   string `json:"criterion"`
+				Quote       string `json:"quote"`
+				ActualAge   string `json:"actual_age"`
+				AssignedAge string `json:"assigned_age"`
 			}
 			if json.Unmarshal([]byte(c.reply), &w) == nil && w.Criterion != "" {
-				notes = append(notes, fmt.Sprintf("age-gate event=%s witness=%q", w.Criterion, w.Quote))
+				notes = append(notes, fmt.Sprintf("age-gate event=%s witness=%q actual_age=%q assigned_age=%q", w.Criterion, w.Quote, w.ActualAge, w.AssignedAge))
 			} else {
 				notes = append(notes, "entail reply unparsed")
 			}
