@@ -1,0 +1,18 @@
+{
+  "SourceURL": "https://www.kidssapiens.com/en/blog/minecraft-alternatives-for-kids.html",
+  "Page": {
+    "title": "Best Minecraft Alternatives for Kids in 2026 (That Build ...",
+    "url": "https://www.kidssapiens.com/en/blog/minecraft-alternatives-for-kids.html",
+    "content": "A 9-year-old. KidsSapiens is the best cognitive alternative to Minecraft for children ages 5–15. through adaptive mini-games.",
+    "raw_content": "",
+    "score": 0.74273956,
+    "published_date": ""
+  },
+  "Reply": {
+    "Text": "{\n  \"products\": [\n    {\n      \"name\": \"KidsSapiens\",\n      \"line\": \"A 9-year-old. KidsSapiens is the best cognitive alternative to Minecraft for children ages 5–15. through adaptive mini-games.\",\n      \"requires_original_platform\": false\n    }\n  ]\n}",
+    "InputTokens": 300,
+    "OutputTokens": 73,
+    "Price": 35520,
+    "Measured": true
+  }
+}

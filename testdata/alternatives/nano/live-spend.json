@@ -1,0 +1,15 @@
+{
+  "db": "/tmp/t313-nano-live/spend.db",
+  "old_model_nano": 323763000,
+  "old_tavily_credits": 66,
+  "revised_model": {
+    "Limit": 676237000,
+    "Spent": 141463680,
+    "Remaining": 534773320
+  },
+  "revised_tavily": {
+    "Limit": 84000,
+    "Spent": 43000,
+    "Remaining": 41000
+  }
+}

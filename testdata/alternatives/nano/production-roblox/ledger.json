@@ -1,0 +1,584 @@
+{
+  "source": "/tmp/t313-nano-production/data/spend.db",
+  "tables": {
+    "cost_model_charge": {
+      "schema": "CREATE TABLE cost_model_charge (\n    id         INTEGER PRIMARY KEY AUTOINCREMENT,\n    kind       TEXT    NOT NULL,\n    units      INTEGER NOT NULL,\n    unit_price INTEGER NOT NULL,\n    ref        TEXT    NOT NULL DEFAULT '',\n    created_at INTEGER NOT NULL\n, denomination TEXT NOT NULL DEFAULT '')",
+      "rows": [
+        {
+          "id": 1,
+          "kind": "tokenfactory:read",
+          "units": 1,
+          "unit_price": 298140,
+          "ref": "7e47d296a1dcbf6786a4b66d0adc4867",
+          "created_at": 1792089697693,
+          "denomination": ""
+        },
+        {
+          "id": 2,
+          "kind": "tokenfactory:read",
+          "units": 1,
+          "unit_price": 353940,
+          "ref": "7e47d296a1dcbf6786a4b66d0adc4867",
+          "created_at": 1792089698004,
+          "denomination": ""
+        },
+        {
+          "id": 3,
+          "kind": "tokenfactory:read",
+          "units": 1,
+          "unit_price": 386220,
+          "ref": "7e47d296a1dcbf6786a4b66d0adc4867",
+          "created_at": 1792089703608,
+          "denomination": ""
+        },
+        {
+          "id": 4,
+          "kind": "tokenfactory:read",
+          "units": 1,
+          "unit_price": 685080,
+          "ref": "7e47d296a1dcbf6786a4b66d0adc4867",
+          "created_at": 1792089704809,
+          "denomination": ""
+        },
+        {
+          "id": 5,
+          "kind": "tokenfactory:read",
+          "units": 1,
+          "unit_price": 188460,
+          "ref": "7e47d296a1dcbf6786a4b66d0adc4867",
+          "created_at": 1792089708081,
+          "denomination": ""
+        },
+        {
+          "id": 6,
+          "kind": "tokenfactory:read",
+          "units": 1,
+          "unit_price": 805740,
+          "ref": "7e47d296a1dcbf6786a4b66d0adc4867",
+          "created_at": 1792089708219,
+          "denomination": ""
+        },
+        {
+          "id": 7,
+          "kind": "tokenfactory:read",
+          "units": 1,
+          "unit_price": 255720,
+          "ref": "7e47d296a1dcbf6786a4b66d0adc4867",
+          "created_at": 1792089712914,
+          "denomination": ""
+        },
+        {
+          "id": 8,
+          "kind": "tokenfactory:read",
+          "units": 1,
+          "unit_price": 549960,
+          "ref": "7e47d296a1dcbf6786a4b66d0adc4867",
+          "created_at": 1792089714423,
+          "denomination": ""
+        },
+        {
+          "id": 9,
+          "kind": "tokenfactory:read",
+          "units": 1,
+          "unit_price": 299640,
+          "ref": "7e47d296a1dcbf6786a4b66d0adc4867",
+          "created_at": 1792089715665,
+          "denomination": ""
+        },
+        {
+          "id": 10,
+          "kind": "tokenfactory:read",
+          "units": 1,
+          "unit_price": 249900,
+          "ref": "7e47d296a1dcbf6786a4b66d0adc4867",
+          "created_at": 1792089716797,
+          "denomination": ""
+        },
+        {
+          "id": 11,
+          "kind": "tokenfactory:read",
+          "units": 1,
+          "unit_price": 370200,
+          "ref": "7e47d296a1dcbf6786a4b66d0adc4867",
+          "created_at": 1792089719838,
+          "denomination": ""
+        },
+        {
+          "id": 12,
+          "kind": "tokenfactory:read",
+          "units": 1,
+          "unit_price": 345120,
+          "ref": "7e47d296a1dcbf6786a4b66d0adc4867",
+          "created_at": 1792089721192,
+          "denomination": ""
+        },
+        {
+          "id": 13,
+          "kind": "tokenfactory:read",
+          "units": 1,
+          "unit_price": 1128600,
+          "ref": "7e47d296a1dcbf6786a4b66d0adc4867",
+          "created_at": 1792089722838,
+          "denomination": ""
+        },
+        {
+          "id": 14,
+          "kind": "tokenfactory:read",
+          "units": 1,
+          "unit_price": 349560,
+          "ref": "7e47d296a1dcbf6786a4b66d0adc4867",
+          "created_at": 1792089725566,
+          "denomination": ""
+        },
+        {
+          "id": 15,
+          "kind": "tokenfactory:read",
+          "units": 1,
+          "unit_price": 281460,
+          "ref": "7e47d296a1dcbf6786a4b66d0adc4867",
+          "created_at": 1792089725972,
+          "denomination": ""
+        },
+        {
+          "id": 16,
+          "kind": "tokenfactory:read",
+          "units": 1,
+          "unit_price": 416760,
+          "ref": "7e47d296a1dcbf6786a4b66d0adc4867",
+          "created_at": 1792089727442,
+          "denomination": ""
+        },
+        {
+          "id": 17,
+          "kind": "tokenfactory:read",
+          "units": 1,
+          "unit_price": 416160,
+          "ref": "7e47d296a1dcbf6786a4b66d0adc4867",
+          "created_at": 1792089730744,
+          "denomination": ""
+        },
+        {
+          "id": 18,
+          "kind": "tokenfactory:read",
+          "units": 1,
+          "unit_price": 278400,
+          "ref": "7e47d296a1dcbf6786a4b66d0adc4867",
+          "created_at": 1792089731541,
+          "denomination": ""
+        },
+        {
+          "id": 19,
+          "kind": "tokenfactory:read",
+          "units": 1,
+          "unit_price": 352380,
+          "ref": "7e47d296a1dcbf6786a4b66d0adc4867",
+          "created_at": 1792089732942,
+          "denomination": ""
+        },
+        {
+          "id": 20,
+          "kind": "tokenfactory:read",
+          "units": 1,
+          "unit_price": 401520,
+          "ref": "7e47d296a1dcbf6786a4b66d0adc4867",
+          "created_at": 1792089733340,
+          "denomination": ""
+        },
+        {
+          "id": 21,
+          "kind": "tokenfactory:read",
+          "units": 1,
+          "unit_price": 91980,
+          "ref": "7e47d296a1dcbf6786a4b66d0adc4867",
+          "created_at": 1792089734845,
+          "denomination": ""
+        },
+        {
+          "id": 22,
+          "kind": "tokenfactory:read",
+          "units": 1,
+          "unit_price": 293160,
+          "ref": "7e47d296a1dcbf6786a4b66d0adc4867",
+          "created_at": 1792089737081,
+          "denomination": ""
+        },
+        {
+          "id": 23,
+          "kind": "tokenfactory:read",
+          "units": 1,
+          "unit_price": 460620,
+          "ref": "7e47d296a1dcbf6786a4b66d0adc4867",
+          "created_at": 1792089740155,
+          "denomination": ""
+        },
+        {
+          "id": 24,
+          "kind": "tokenfactory:read",
+          "units": 1,
+          "unit_price": 522840,
+          "ref": "7e47d296a1dcbf6786a4b66d0adc4867",
+          "created_at": 1792089740650,
+          "denomination": ""
+        },
+        {
+          "id": 25,
+          "kind": "tokenfactory:read",
+          "units": 1,
+          "unit_price": 411060,
+          "ref": "7e47d296a1dcbf6786a4b66d0adc4867",
+          "created_at": 1792089741077,
+          "denomination": ""
+        },
+        {
+          "id": 26,
+          "kind": "tokenfactory:read",
+          "units": 1,
+          "unit_price": 278820,
+          "ref": "7e47d296a1dcbf6786a4b66d0adc4867",
+          "created_at": 1792089744930,
+          "denomination": ""
+        },
+        {
+          "id": 27,
+          "kind": "tokenfactory:read",
+          "units": 1,
+          "unit_price": 395700,
+          "ref": "7e47d296a1dcbf6786a4b66d0adc4867",
+          "created_at": 1792089745134,
+          "denomination": ""
+        },
+        {
+          "id": 28,
+          "kind": "tokenfactory:read",
+          "units": 1,
+          "unit_price": 407580,
+          "ref": "7e47d296a1dcbf6786a4b66d0adc4867",
+          "created_at": 1792089747609,
+          "denomination": ""
+        },
+        {
+          "id": 29,
+          "kind": "tokenfactory:read",
+          "units": 1,
+          "unit_price": 142260,
+          "ref": "7e47d296a1dcbf6786a4b66d0adc4867",
+          "created_at": 1792089747763,
+          "denomination": ""
+        },
+        {
+          "id": 30,
+          "kind": "tokenfactory:read",
+          "units": 1,
+          "unit_price": 291060,
+          "ref": "7e47d296a1dcbf6786a4b66d0adc4867",
+          "created_at": 1792089748810,
+          "denomination": ""
+        },
+        {
+          "id": 31,
+          "kind": "tokenfactory:read",
+          "units": 1,
+          "unit_price": 370620,
+          "ref": "7e47d296a1dcbf6786a4b66d0adc4867",
+          "created_at": 1792089753243,
+          "denomination": ""
+        },
+        {
+          "id": 32,
+          "kind": "tokenfactory:read",
+          "units": 1,
+          "unit_price": 386340,
+          "ref": "7e47d296a1dcbf6786a4b66d0adc4867",
+          "created_at": 1792089754243,
+          "denomination": ""
+        },
+        {
+          "id": 33,
+          "kind": "tokenfactory:read",
+          "units": 1,
+          "unit_price": 500640,
+          "ref": "7e47d296a1dcbf6786a4b66d0adc4867",
+          "created_at": 1792089755737,
+          "denomination": ""
+        },
+        {
+          "id": 34,
+          "kind": "tokenfactory:read",
+          "units": 1,
+          "unit_price": 254580,
+          "ref": "7e47d296a1dcbf6786a4b66d0adc4867",
+          "created_at": 1792089757187,
+          "denomination": ""
+        },
+        {
+          "id": 35,
+          "kind": "tokenfactory:read",
+          "units": 1,
+          "unit_price": 430380,
+          "ref": "7e47d296a1dcbf6786a4b66d0adc4867",
+          "created_at": 1792089759852,
+          "denomination": ""
+        },
+        {
+          "id": 36,
+          "kind": "tokenfactory:read",
+          "units": 1,
+          "unit_price": 287760,
+          "ref": "7e47d296a1dcbf6786a4b66d0adc4867",
+          "created_at": 1792089760418,
+          "denomination": ""
+        },
+        {
+          "id": 37,
+          "kind": "tokenfactory:read",
+          "units": 1,
+          "unit_price": 2344380,
+          "ref": "7e47d296a1dcbf6786a4b66d0adc4867",
+          "created_at": 1792089764086,
+          "denomination": ""
+        },
+        {
+          "id": 38,
+          "kind": "tokenfactory:read",
+          "units": 1,
+          "unit_price": 198960,
+          "ref": "7e47d296a1dcbf6786a4b66d0adc4867",
+          "created_at": 1792089764883,
+          "denomination": ""
+        },
+        {
+          "id": 39,
+          "kind": "tokenfactory:read",
+          "units": 1,
+          "unit_price": 494700,
+          "ref": "7e47d296a1dcbf6786a4b66d0adc4867",
+          "created_at": 1792089766819,
+          "denomination": ""
+        },
+        {
+          "id": 40,
+          "kind": "tokenfactory:read",
+          "units": 1,
+          "unit_price": 453240,
+          "ref": "7e47d296a1dcbf6786a4b66d0adc4867",
+          "created_at": 1792089767420,
+          "denomination": ""
+        },
+        {
+          "id": 41,
+          "kind": "tokenfactory:read",
+          "units": 1,
+          "unit_price": 552120,
+          "ref": "7e47d296a1dcbf6786a4b66d0adc4867",
+          "created_at": 1792089772587,
+          "denomination": ""
+        },
+        {
+          "id": 42,
+          "kind": "tokenfactory:judge",
+          "units": 1,
+          "unit_price": 8201400,
+          "ref": "7e47d296a1dcbf6786a4b66d0adc4867",
+          "created_at": 1792089787273,
+          "denomination": ""
+        },
+        {
+          "id": 43,
+          "kind": "tokenfactory:judge_think",
+          "units": 1,
+          "unit_price": 12630600,
+          "ref": "7e47d296a1dcbf6786a4b66d0adc4867",
+          "created_at": 1792089824487,
+          "denomination": ""
+        },
+        {
+          "id": 44,
+          "kind": "tokenfactory:entail",
+          "units": 1,
+          "unit_price": 608100,
+          "ref": "7e47d296a1dcbf6786a4b66d0adc4867",
+          "created_at": 1792089825220,
+          "denomination": ""
+        },
+        {
+          "id": 45,
+          "kind": "tokenfactory:entail",
+          "units": 1,
+          "unit_price": 611400,
+          "ref": "7e47d296a1dcbf6786a4b66d0adc4867",
+          "created_at": 1792089825934,
+          "denomination": ""
+        },
+        {
+          "id": 46,
+          "kind": "tokenfactory:entail",
+          "units": 1,
+          "unit_price": 625800,
+          "ref": "7e47d296a1dcbf6786a4b66d0adc4867",
+          "created_at": 1792089826455,
+          "denomination": ""
+        },
+        {
+          "id": 47,
+          "kind": "tokenfactory:entail",
+          "units": 1,
+          "unit_price": 610800,
+          "ref": "7e47d296a1dcbf6786a4b66d0adc4867",
+          "created_at": 1792089827414,
+          "denomination": ""
+        }
+      ]
+    },
+    "cost_model_budget": {
+      "schema": "CREATE TABLE cost_model_budget (\n    id       INTEGER PRIMARY KEY CHECK (id = 1),\n    limit_nd INTEGER NOT NULL,\n    spent_nd INTEGER NOT NULL DEFAULT 0\n, denomination TEXT NOT NULL DEFAULT '', minor_units INTEGER NOT NULL DEFAULT 0)",
+      "rows": [
+        {
+          "id": 1,
+          "limit_nd": 534773320,
+          "spent_nd": 41269860,
+          "denomination": "",
+          "minor_units": 0
+        }
+      ]
+    },
+    "cost_model_reservation": {
+      "schema": "CREATE TABLE cost_model_reservation (\n    id         TEXT    PRIMARY KEY,\n    amount_nd  INTEGER NOT NULL,\n    expires_at INTEGER NOT NULL,\n    created_at INTEGER NOT NULL\n, owner TEXT NOT NULL DEFAULT '')",
+      "rows": []
+    },
+    "cost_model_owner_budget": {
+      "schema": "CREATE TABLE cost_model_owner_budget (\n    owner    TEXT    PRIMARY KEY,\n    limit_nd INTEGER NOT NULL,\n    spent_nd INTEGER NOT NULL DEFAULT 0\n)",
+      "rows": []
+    },
+    "cost_tavily_charge": {
+      "schema": "CREATE TABLE cost_tavily_charge (\n    id         INTEGER PRIMARY KEY AUTOINCREMENT,\n    kind       TEXT    NOT NULL,\n    units      INTEGER NOT NULL,\n    unit_price INTEGER NOT NULL,\n    ref        TEXT    NOT NULL DEFAULT '',\n    created_at INTEGER NOT NULL\n, denomination TEXT NOT NULL DEFAULT '')",
+      "rows": [
+        {
+          "id": 1,
+          "kind": "tavily:search",
+          "units": 1,
+          "unit_price": 1000,
+          "ref": "7e47d296a1dcbf6786a4b66d0adc4867",
+          "created_at": 1792089681332,
+          "denomination": "tavily.credit"
+        },
+        {
+          "id": 2,
+          "kind": "tavily:search",
+          "units": 1,
+          "unit_price": 1000,
+          "ref": "7e47d296a1dcbf6786a4b66d0adc4867",
+          "created_at": 1792089681576,
+          "denomination": "tavily.credit"
+        },
+        {
+          "id": 3,
+          "kind": "tavily:search",
+          "units": 1,
+          "unit_price": 1000,
+          "ref": "7e47d296a1dcbf6786a4b66d0adc4867",
+          "created_at": 1792089682281,
+          "denomination": "tavily.credit"
+        },
+        {
+          "id": 4,
+          "kind": "tavily:search",
+          "units": 1,
+          "unit_price": 1000,
+          "ref": "7e47d296a1dcbf6786a4b66d0adc4867",
+          "created_at": 1792089682975,
+          "denomination": "tavily.credit"
+        },
+        {
+          "id": 5,
+          "kind": "tavily:search",
+          "units": 1,
+          "unit_price": 1000,
+          "ref": "7e47d296a1dcbf6786a4b66d0adc4867",
+          "created_at": 1792089684191,
+          "denomination": "tavily.credit"
+        },
+        {
+          "id": 6,
+          "kind": "tavily:search",
+          "units": 1,
+          "unit_price": 1000,
+          "ref": "7e47d296a1dcbf6786a4b66d0adc4867",
+          "created_at": 1792089684419,
+          "denomination": "tavily.credit"
+        },
+        {
+          "id": 7,
+          "kind": "tavily:search",
+          "units": 1,
+          "unit_price": 1000,
+          "ref": "7e47d296a1dcbf6786a4b66d0adc4867",
+          "created_at": 1792089685123,
+          "denomination": "tavily.credit"
+        },
+        {
+          "id": 8,
+          "kind": "tavily:extract",
+          "units": 1,
+          "unit_price": 1000,
+          "ref": "7e47d296a1dcbf6786a4b66d0adc4867",
+          "created_at": 1792089692796,
+          "denomination": "tavily.credit"
+        }
+      ]
+    },
+    "cost_tavily_budget": {
+      "schema": "CREATE TABLE cost_tavily_budget (\n    id       INTEGER PRIMARY KEY CHECK (id = 1),\n    limit_nd INTEGER NOT NULL,\n    spent_nd INTEGER NOT NULL DEFAULT 0\n, denomination TEXT NOT NULL DEFAULT '', minor_units INTEGER NOT NULL DEFAULT 0)",
+      "rows": [
+        {
+          "id": 1,
+          "limit_nd": 41000,
+          "spent_nd": 8000,
+          "denomination": "tavily.credit",
+          "minor_units": 1000
+        }
+      ]
+    },
+    "cost_tavily_reservation": {
+      "schema": "CREATE TABLE cost_tavily_reservation (\n    id         TEXT    PRIMARY KEY,\n    amount_nd  INTEGER NOT NULL,\n    expires_at INTEGER NOT NULL,\n    created_at INTEGER NOT NULL\n, owner TEXT NOT NULL DEFAULT '')",
+      "rows": []
+    },
+    "cost_tavily_owner_budget": {
+      "schema": "CREATE TABLE cost_tavily_owner_budget (\n    owner    TEXT    PRIMARY KEY,\n    limit_nd INTEGER NOT NULL,\n    spent_nd INTEGER NOT NULL DEFAULT 0\n)",
+      "rows": []
+    },
+    "cost_checks_daily_charge": {
+      "schema": "CREATE TABLE cost_checks_daily_charge (\n    id         INTEGER PRIMARY KEY AUTOINCREMENT,\n    kind       TEXT    NOT NULL,\n    units      INTEGER NOT NULL,\n    unit_price INTEGER NOT NULL,\n    ref        TEXT    NOT NULL DEFAULT '',\n    created_at INTEGER NOT NULL\n, denomination TEXT NOT NULL DEFAULT '')",
+      "rows": [
+        {
+          "id": 1,
+          "kind": "check",
+          "units": 1,
+          "unit_price": 1,
+          "ref": "7e47d296a1dcbf6786a4b66d0adc4867",
+          "created_at": 1792089827415,
+          "denomination": "check"
+        }
+      ]
+    },
+    "cost_checks_daily_budget": {
+      "schema": "CREATE TABLE cost_checks_daily_budget (\n    id       INTEGER PRIMARY KEY CHECK (id = 1),\n    limit_nd INTEGER NOT NULL,\n    spent_nd INTEGER NOT NULL DEFAULT 0\n, denomination TEXT NOT NULL DEFAULT '', minor_units INTEGER NOT NULL DEFAULT 0)",
+      "rows": [
+        {
+          "id": 1,
+          "limit_nd": 5,
+          "spent_nd": 1,
+          "denomination": "check",
+          "minor_units": 1
+        }
+      ]
+    },
+    "cost_checks_daily_reservation": {
+      "schema": "CREATE TABLE cost_checks_daily_reservation (\n    id         TEXT    PRIMARY KEY,\n    amount_nd  INTEGER NOT NULL,\n    expires_at INTEGER NOT NULL,\n    created_at INTEGER NOT NULL\n, owner TEXT NOT NULL DEFAULT '')",
+      "rows": []
+    },
+    "cost_checks_daily_owner_budget": {
+      "schema": "CREATE TABLE cost_checks_daily_owner_budget (\n    owner    TEXT    PRIMARY KEY,\n    limit_nd INTEGER NOT NULL,\n    spent_nd INTEGER NOT NULL DEFAULT 0\n)",
+      "rows": []
+    }
+  }
+}

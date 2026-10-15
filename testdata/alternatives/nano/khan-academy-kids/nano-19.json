@@ -1,0 +1,18 @@
+{
+  "SourceURL": "https://www.learningresources.com/age/5-7-years",
+  "Page": {
+    "title": "Learning Toys | Fun Activities & Crafts for 5-7 Year Olds",
+    "url": "https://www.learningresources.com/age/5-7-years",
+    "content": "From building fine motor skills to introducing colors, shapes and numbers, these hands-on toys help your child get ready for life in the",
+    "raw_content": "",
+    "score": 0.22159523,
+    "published_date": ""
+  },
+  "Reply": {
+    "Text": "{\n  \"products\": [\n    {\n      \"name\": \"Khan Academy Kids\",\n      \"line\": \"Khan Academy Kids is a fun, free, educational program that helps children build early math, reading, social-emotional, and motor skills through engaging activities, games, and lessons.\",\n      \"requires_original_platform\": false\n    }\n  ]\n}",
+    "InputTokens": 289,
+    "OutputTokens": 76,
+    "Price": 35580,
+    "Measured": true
+  }
+}

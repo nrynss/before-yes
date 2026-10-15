@@ -1,0 +1,33 @@
+budget.daily_fresh_checks	file	path=/tmp/t313-nano-production/config.toml	resolved
+budget.model_usd	file	path=/tmp/t313-nano-production/config.toml	resolved
+budget.tavily_credits_monthly	file	path=/tmp/t313-nano-production/config.toml	resolved
+card_max_age_hours	file	path=/tmp/t313-nano-production/config.toml	resolved
+country	file	path=/tmp/t313-nano-production/config.toml	resolved
+data_dir	file	path=/tmp/t313-nano-production/config.toml	resolved
+evidence_max_age_hours	file	path=/tmp/t313-nano-production/config.toml	resolved
+gate.passcode	none		unresolved
+judge.base_url	file	path=/tmp/t313-nano-production/config.toml	resolved
+judge.extra	default		resolved
+judge.input_per_m	file	path=/tmp/t313-nano-production/config.toml	resolved
+judge.max_tokens	file	path=/tmp/t313-nano-production/config.toml	resolved
+judge.model	file	path=/tmp/t313-nano-production/config.toml	resolved
+judge.output_per_m	file	path=/tmp/t313-nano-production/config.toml	resolved
+judge.per_minute	file	path=/tmp/t313-nano-production/config.toml	resolved
+judge.provider	file	path=/tmp/t313-nano-production/config.toml	resolved
+judge_fast	default		resolved
+judge_think	default		resolved
+listen	file	path=/tmp/t313-nano-production/config.toml	resolved
+live	file	path=/tmp/t313-nano-production/config.toml	resolved
+reader.base_url	file	path=/tmp/t313-nano-production/config.toml	resolved
+reader.extra	default		resolved
+reader.input_per_m	file	path=/tmp/t313-nano-production/config.toml	resolved
+reader.max_tokens	file	path=/tmp/t313-nano-production/config.toml	resolved
+reader.model	file	path=/tmp/t313-nano-production/config.toml	resolved
+reader.output_per_m	file	path=/tmp/t313-nano-production/config.toml	resolved
+reader.per_minute	file	path=/tmp/t313-nano-production/config.toml	resolved
+reader.provider	file	path=/tmp/t313-nano-production/config.toml	resolved
+review_pages	file	path=/tmp/t313-nano-production/config.toml	resolved
+secrets.judge	env_file	path=/home/nryn/work/before-yes/.env var=NEBIUS_KEY	resolved
+secrets.reader	env_file	path=/home/nryn/work/before-yes/.env var=NEBIUS_KEY	resolved
+secrets.tavily	env_file	path=/home/nryn/work/before-yes/.env var=TAVILY_KEY	resolved
+web_dir	file	path=/tmp/t313-nano-production/config.toml	resolved

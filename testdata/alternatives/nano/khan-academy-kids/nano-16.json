@@ -1,0 +1,18 @@
+{
+  "SourceURL": "https://www.quora.com/Which-education-plan-is-better-for-my-5-years-old-son",
+  "Page": {
+    "title": "Which education plan is better for my 5 year's old son?",
+    "url": "https://www.quora.com/Which-education-plan-is-better-for-my-5-years-old-son",
+    "content": "I would say CBSC. But my grandkids are in IGCSC . They love the way they are taught and it's very different from the regular way .",
+    "raw_content": "",
+    "score": 0.62824833,
+    "published_date": ""
+  },
+  "Reply": {
+    "Text": "{\n  \"products\": [\n    {\n      \"name\": \"IGCSC\",\n      \"line\": \"They love the way they are taught and it's very different from the regular way .\",\n      \"requires_original_platform\": true\n    }\n  ]\n}",
+    "InputTokens": 303,
+    "OutputTokens": 56,
+    "Price": 31620,
+    "Measured": true
+  }
+}

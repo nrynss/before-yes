@@ -1,0 +1,2013 @@
+{
+  "id": "c_ErbtxPAf1pS1ZMtv9LvcSr",
+  "title": "Roblox",
+  "kind": "ios",
+  "kind_label": "iOS app",
+  "age": 9,
+  "checklist_version": "v7",
+  "checked_at": "2026-10-15T18:31:24.666153619Z",
+  "collected_at": "2026-10-15T18:30:32.549923751Z",
+  "verdict": "no",
+  "grades": [
+    {
+      "area": "contact",
+      "level": "ok_with_setting",
+      "setting": "Select ‘No one’ under the “Who can chat with me?” option",
+      "findings": [
+        "f_ac2eb7da6a842d59",
+        "f_5866c6d0c5acd9f0"
+      ],
+      "reason": "A parent reports strangers can message or voice chat with their child, but parents can turn off chat via the ‘Who can chat with me?’ setting set to ‘No one’."
+    },
+    {
+      "area": "money",
+      "level": "ok_with_setting",
+      "setting": "don’t forget to set parental controls to manage how much your kids are allowed to spend (or block spending entirely)",
+      "findings": [
+        "f_1368a2c5a6fe539a",
+        "f_5c944121c4fbb0b1"
+      ],
+      "reason": "A parent reports the game forced a payment to play, but parents can manage or block spending using parental controls."
+    },
+    {
+      "area": "data",
+      "level": "unknown",
+      "findings": [],
+      "reason": "Changed to unknown: the evidence was thin. No verified quote backs the reason the judge gave."
+    },
+    {
+      "area": "age_gating",
+      "level": "flag",
+      "findings": [
+        "f_28a5022bf07f924c"
+      ],
+      "reason": "A parent reports the age verification system placed their child in the wrong group (28th), indicating the age gate can fail."
+    },
+    {
+      "area": "content",
+      "level": "unknown",
+      "findings": [],
+      "reason": "Changed to unknown: the evidence was thin. No verified quote backs the reason the judge gave."
+    },
+    {
+      "area": "developer_record",
+      "level": "unknown",
+      "findings": [],
+      "reason": "Changed to unknown: the evidence was thin. No verified quote backs the reason the judge gave."
+    }
+  ],
+  "thin_areas": [
+    "data",
+    "content",
+    "developer_record"
+  ],
+  "settings": [
+    "Select ‘No one’ under the “Who can chat with me?” option",
+    "don’t forget to set parental controls to manage how much your kids are allowed to spend (or block spending entirely)"
+  ],
+  "findings": [
+    {
+      "id": "f_3ef5c9130122d49b",
+      "area": "contact",
+      "claim": "A parent reports that strangers can message or voice chat with their child and it is not safe.",
+      "stance": "risk",
+      "quote": "My child. Likes. It but its just. Not safe cause they could be bad people. On there and ai guessing your. Age is. Not good",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=1/id=431946152/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Ehh",
+        "index": 4,
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_a93bc4b7c5976c29",
+      "area": "contact",
+      "claim": "A parent reports that after an update all of their child's friends are blocked from chatting, causing the child to quit Roblox.",
+      "stance": "risk",
+      "quote": "It made my kid all his friends are now blocked from chatting with him Roblox made. A feather at 10:08 and he got off the second he got on it wouldn’t let him chat with annyone and now he’s quitting Roblox and his 100 friends are to",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=2/id=431946152/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "It made my kid all his friends are now blocked from chatting with him",
+        "index": 70,
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_28a5022bf07f924c",
+      "area": "age_gating",
+      "claim": "A parent reports that the age verification system placed their child in an inappropriate group (28th) and they want it fixed.",
+      "stance": "risk",
+      "quote": "The new app updates age group ideas are completely broken plus my child got put in the 28th group. Please fix your game.",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=1/id=431946152/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Just why?",
+        "index": 32,
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_633a1da6b2371586",
+      "area": "age_gating",
+      "claim": "A parent reports that age verification is broken and makes no sense for kids playing Roblox kids games.",
+      "stance": "risk",
+      "quote": "Roblox has made horrible uptades. I know it’s trying to protect us somehow but it’s just making stuff worse. Age verification? Girl we’re playing Roblox kids games. Even if there is some weird pdf Roblox’s chat won’t alow anything weird. There is no point in Roblox kids, select or normal Roblox bro",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=2/id=431946152/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Roblox is “good”",
+        "index": 71,
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_d6e3416203f2118a",
+      "area": "content",
+      "claim": "A parent reports that games can be inappropriate, scary, and contain unsuitable outfits, and that the age gate did not prevent exposure.",
+      "stance": "risk",
+      "quote": "When i was a little kid my cousin played this so much and i begged my mom to get me the app, and now i think i should not have been playing this at that age, the game was fine at first but then the outfits are inappropriate and the games are as well! If you have like 13+ then thats fine but a 4 year old?        -ps some of the games are scary! And for some reason it hashtags everything I put and now they have a face verification…if a four year old does it and it says that they are twenty five then what do they do…plus it doesn’t take away the scary games or inappropriate games or avatars or people it just makes them not talk but they can dress weird or play weird games so in my opinion they didn’t fix anything, it might be popular but it doesn’t mean its safe plus kids spend way too much time and money to buy robux on it.",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=1/id=431946152/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Would NOT recommend for little kids!!",
+        "index": 22,
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_2000063e152c83b5",
+      "area": "data",
+      "claim": "A parent reports that purchased items do not appear in all game modes, raising concerns about data tracking and loss of purchased content.",
+      "stance": "risk",
+      "quote": "Ive bought items and they dont show in certain game modes. Maybe an update to make items universal because this is real money spent.",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=1/id=431946152/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Customization",
+        "index": 41,
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_1368a2c5a6fe539a",
+      "area": "money",
+      "claim": "A parent reports that the game forces payment to play, charging $46 after attempting to add payment info for a supposedly free game.",
+      "stance": "risk",
+      "quote": "I don’t know if anyone else has been having the same problem but it will not let me play without paying. When I open up the game it tells me to upgrade it, when I try to upgrade it in the App Store it tells me e that I need to add a payment option. So I go to add my card info, thankfully I added the one with no money, and I looked to see that I got a $46 charge. This is unacceptable when you guys advertise the game as free.",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=2/id=431946152/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Fix your game!!",
+        "index": 62,
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_9482395eb71aa20a",
+      "area": "money",
+      "claim": "A parent reports that age verification updates are being used as a monetization trap and they hate the updates.",
+      "stance": "risk",
+      "quote": "Stop adding stupid updates age verification like I REALLY hate those so please fix it",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=1/id=431946152/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Bad updates",
+        "index": 16,
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_a8ef6e887203f7cd",
+      "area": "contact",
+      "claim": "A parent reports strangers can message or voice chat with a child and it can be turned off.",
+      "stance": "risk",
+      "quote": "There are child predators in this game, it allows your child to interact with adults and my kids has been threatened by a person in adopt me and has been scared to play. The police have come and taken the predators under custody but Roblox owner wanted them on there. DO NOT GET THIS APP ESPECIALLY IF YOUR 16 AND UNDER!!!!",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=3/id=431946152/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "DONT get this",
+        "index": 105,
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_70b24c17e919468e",
+      "area": "contact",
+      "claim": "A parent reports permanent bans were issued without clear reasons, causing loss of Robux and friends.",
+      "stance": "risk",
+      "quote": "This is absolutely sad, now that Roblox added updates, it’s gotten worse. I’ve gotten banned for saying “hi”, for talking to my friends, and now, today, I’ve gotten a PERMANENT ban. This is absolutely saddening. This makes be so disappointed in this app, all of my Robux and friends are now gone and now I have to redo everything? Hell no.",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=3/id=431946152/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Bans",
+        "index": 125,
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_c83d32d1a22f9418",
+      "area": "money",
+      "claim": "A player reports losing 200 Robux due to a game error.",
+      "stance": "risk",
+      "quote": "There was a error in game that took 200 of my Robux because there was an error with my animation",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=4/id=431946152/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Lost Robux",
+        "index": 172,
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_99d787be8d0bf74c",
+      "area": "content",
+      "claim": "A player reports seeing harassment and online dating in games like Brookhaven.",
+      "stance": "risk",
+      "quote": "So much hackers and online dating like 1 because like Roblox’s has harassment in games such as Brookhaven or many rol plays games like I don’t know why and Roblox please ban these online daters/hackers",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=3/id=431946152/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "So much hackers and online dating like",
+        "index": 102,
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_009e2a74f677d412",
+      "area": "content",
+      "claim": "A player reports frequent slapping and bullying in games, causing distress.",
+      "stance": "risk",
+      "quote": "THEY SLAP YOU OFF AGAIN BEFORE YOU CAN RUN AND TEASE YOU ABOUT IT AND YOUR USERNAME IN THE COMMENTS!",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=3/id=431946152/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Fun but…",
+        "index": 149,
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_1b3b4560a7fa74a5",
+      "area": "developer_record",
+      "claim": "A user reports being permanently banned without explanation, indicating poor developer oversight.",
+      "stance": "risk",
+      "quote": "This makes be so disappointed in this app, all of my Robux and friends are now gone and now I have to redo everything? Hell no. This has gotten way to far how this app has gotten worse over the years. And my permanent ban makes no sense because it’s not giving me a reason why I got banned. All it said was that I broke “too many rules” and now I have nothing.",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=3/id=431946152/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Bans",
+        "index": 125,
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_f96b271e3765562b",
+      "area": "contact",
+      "claim": "A parent reports strangers can message or voice chat with children and age verification is ineffective.",
+      "stance": "risk",
+      "quote": "Ive been on this game for as long as i can remember(2017) and throughout all of my experience when i report someone for doing something against the rules roblox never takes it into their own hands to ban them. Ive been called the n word on this game for absolutely no reason. also most people on this game are very sexist. Also the age groups do nothing to keep predators to lie abt their age to groom little children.",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=4/id=431946152/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "This game is NOT worth it",
+        "index": 193,
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_d8950f2c1e34a1ef",
+      "area": "age_gating",
+      "claim": "A parent reports age verification works poorly in practice.",
+      "stance": "risk",
+      "quote": "Sooooo with the face age check it is good way but like u guys now know what we look they it is kinda oooooopp so yea and it is very fun and just wish I could chat with my real life friends on here but that is it",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=5/id=431946152/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Great but ngl it is kinda unsafe",
+        "index": 202,
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_061b3f292ae6a6fa",
+      "area": "age_gating",
+      "claim": "A parent reports age verification is not foolproof and adults lie about age.",
+      "stance": "risk",
+      "quote": "I used to play this game all the time not in this phone tho but ever since all the updates it’s just so hard to find anything good to play. Another thing is it can be dangerous I. Understand the age verification it’s a good idea but it’s not full proof grown adults are in the 9-12 age group and those kid including me wouldn’t know.",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=5/id=431946152/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "It’s just bit the same anymore",
+        "index": 246,
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_08f1157eb8532858",
+      "area": "content",
+      "claim": "A parent reports the platform is unsafe due to predators and scams.",
+      "stance": "risk",
+      "quote": "very bad because Roblox make horrible updates that everyone hates so not recommend so if you want to download do not DO NO IT IS HORRIBLE THEY SCAM PEOPLE FOR ADDRESS THERE ARE PREDATORS I ABSOLUTELY DO NOT RECOMMEND",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=6/id=431946152/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "very bad",
+        "index": 277,
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_fff3017bd323adf8",
+      "area": "money",
+      "claim": "A parent reports the app pushes in-app purchases and loot boxes.",
+      "stance": "risk",
+      "quote": "Make more good updates, but not bad\nI miss the old stuff if you bring back the old stuff that means I’ll leave a five out of five every review if you make it very nice for players make sure the player guess what they want the players everyone wants to get the old update updates",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=6/id=431946152/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Make more good updates, but not bad",
+        "index": 287,
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_04856f9461885e58",
+      "area": "money",
+      "claim": "A parent reports the app encourages pay-to-win mechanics.",
+      "stance": "risk",
+      "quote": "Super fun I love it\nBest game is called steal a brainrot I’m scared my brain is gonna rot or if someone is gonna steal my brain",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=6/id=431946152/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Super fun I love it",
+        "index": 288,
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_49eef24c00f2a4f4",
+      "area": "contact",
+      "claim": "A parent reports that swearing is allowed in voice chat, which could expose young children to inappropriate language.",
+      "stance": "risk",
+      "quote": "Why are you seriously allowing swearing in voice chat imagine if there were little kids playing and then all of a sudden starts hearing the swearing at such a young age",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=6/id=431946152/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "What the heck?",
+        "index": 297,
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_32868f83584390e8",
+      "area": "contact",
+      "claim": "A user reports that Roblox requires showing one's face to enable chat, which feels invasive and unusual for a child-friendly platform.",
+      "stance": "risk",
+      "quote": "The app is so fun! There are many games to play, but also there’s the fact that you have to take a picture of your face, just to get chat! That is so dumb \u0026 weird, because we have to show our faces just to get some dumb chat to talk with other players.",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=7/id=431946152/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "This is so dumb",
+        "index": 306,
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_4bf52c070dc137f9",
+      "area": "contact",
+      "claim": "A user complains that age verification requirements are blocking chat functionality, preventing communication in games they enjoy.",
+      "stance": "risk",
+      "quote": "Give the chat back. All these stupid age reviews is killing me,",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=7/id=431946152/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Give the chat back.",
+        "index": 323,
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_984749ba8671edf1",
+      "area": "content",
+      "claim": "A user states that Roblox supports child predators, implying the platform fails to protect children from inappropriate interactions.",
+      "stance": "risk",
+      "quote": "Genuinely the most money-hungry game I have ever seen\nThis game supports child predators. That’s all I need to say.",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=7/id=431946152/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Genuinely the most money-hungry game I have ever seen",
+        "index": 341,
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_019eb0d46f381617",
+      "area": "content",
+      "claim": "A user claims that Roblox allows kidnapping and murder of players, suggesting the platform enables harmful roleplay scenarios that could normalize violence against children.",
+      "stance": "risk",
+      "quote": "The worst game you can die because of the game\nDon’t get this game playing this game could kill you people kidnap kids and kill . Why because there are bad people in the world I don’t know why they are bad people. Fix the problem who ever made the game you are killing people maybe you are the bad person",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=7/id=431946152/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "The worst game you can die because of the game",
+        "index": 340,
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_547b1391cf50b698",
+      "area": "money",
+      "claim": "A user reports being charged for an item they previously purchased, with Roblox removing it without refund, constituting a pay-to-win or subscription trap.",
+      "stance": "risk",
+      "quote": "Roblox did me wrong\nThey want me to pay for something I already paid for and they won’t allow me to update my stuff without paying so now I can’t play my game",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=7/id=431946152/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Roblox did me wrong",
+        "index": 337,
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_200d681481990e7d",
+      "area": "money",
+      "claim": "A user states their purchased Robux balance was reduced unexpectedly, indicating possible loss of purchased virtual currency without explanation or refund.",
+      "stance": "risk",
+      "quote": "I got a bone to pick with you Roblox\nI had 1000 Robux exactly 1K and the next day it’s at 700 LIKE WHAT THE HECK why did my Robux go down??   Im ticked off.",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=7/id=431946152/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "I got a bone to pick with you Roblox",
+        "index": 345,
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_4cd7c931d30342ce",
+      "area": "developer_record",
+      "claim": "A user alleges Roblox uses AI moderation that makes frequent errors, including falsely banning players, indicating poor developer oversight and accountability.",
+      "stance": "risk",
+      "quote": "Fun, but bad moderation\nMost games are fun, except slop games like steal a brainrot or ai made games, also the moderation isn’t even human, they are ai that make mistakes all the time and falsely ban people, and also most updates aren’t even good, like that face scan update, or the update where they removed classic faces and replaced them with creepy 3d ones",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=8/id=431946152/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Fun, but bad moderation",
+        "index": 372,
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_ac2eb7da6a842d59",
+      "area": "contact",
+      "claim": "A parent reports that a 40-50 year old man tried to meet up with her daughter using the app and do incredibly disgusting things to her.",
+      "stance": "risk",
+      "quote": "A 40-50 year old man tried to meet up with her using the app and do incredibly disgusting things to her keep children away.",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=8/id=431946152/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Best game ever",
+        "index": 397,
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_f53af0e76646df3b",
+      "area": "content",
+      "claim": "A parent reports that the platform does not handle predator situations well.",
+      "stance": "risk",
+      "quote": "The platform is well made but they dont know hot to handle situations well such as the predator situation.",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=10/id=431946152/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Good and bad",
+        "index": 483,
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_efd1e6ea1283446b",
+      "area": "age_gating",
+      "claim": "A parent reports that the age-based chat restriction update prevents socializing with friends of different ages.",
+      "stance": "risk",
+      "quote": "I don’t like the way you can’t chat will all players depending on the age I hate that update Roblox was so much better before I’m disappointed",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=10/id=431946152/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Roblox",
+        "index": 475,
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_2b62e80fe9022a3f",
+      "area": "developer_record",
+      "claim": "A parent reports that Roblox's moderation system has banned users without clear evidence and uses automated responses in appeals.",
+      "stance": "risk",
+      "quote": "So I’ve been playing Roblox for almost 8 years and I had no problems until my account gets banned for no reason at all, saying I had an alt, which I don’t, and I don’t even know the account that got me banned, Fix your ai moderation, you’re game is going to go downhill",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=10/id=431946152/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Fix your game",
+        "index": 496,
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_ea3441c0c8e925de",
+      "area": "money",
+      "claim": "A parent reports that users can be scammed out of Robux by others, and that the platform does not protect purchased items.",
+      "stance": "risk",
+      "quote": "i got hacked and i can’t join any games without having to reopen the app several times, and all my robux is gone and i have 1 now, i had 451 robux and now i have none and i didn’t buy anything. a lot of my items were removed. please can i have my robux back.",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=9/id=431946152/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "hacked",
+        "index": 417,
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_1f8ad057919885d2",
+      "area": "money",
+      "claim": "The app pushes in-app purchases and loot boxes",
+      "stance": "risk",
+      "quote": "Games may contain optional in-game purchases, including lootboxes and other items",
+      "source": {
+        "url": "https://apps.apple.com/us/app/roblox/id431946152?uo=4",
+        "kind": "store",
+        "title": "Roblox on the App Store",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_642612c1692ab232",
+      "area": "data",
+      "claim": "The app collects data for ads and shares it with third parties",
+      "stance": "risk",
+      "quote": "Advanced content filtering and age-appropriate moderation",
+      "source": {
+        "url": "https://apps.apple.com/us/app/roblox/id431946152?uo=4",
+        "kind": "store",
+        "title": "Roblox on the App Store",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_01185cdb6f5bf10f",
+      "area": "content",
+      "claim": "Reviewers report seeing horror and other mature content",
+      "stance": "risk",
+      "quote": "or dive into horror, anime, and sports games with friends worldwide",
+      "source": {
+        "url": "https://apps.apple.com/us/app/roblox/id431946152?uo=4",
+        "kind": "store",
+        "title": "Roblox on the App Store",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_051e67a4c1a52fc2",
+      "area": "contact",
+      "claim": "A parent reports that strangers can message or voice chat with your child, and it is on by default but can be turned off.",
+      "stance": "risk",
+      "quote": "Roblox communication settings allow you to control who can interact with you, for example, by only allowing interactions with friends or not allowing any interactions at all. You can also restrict your account, which turns off chat and public commenting and limits an account to certain filtered experiences on Roblox.",
+      "source": {
+        "url": "https://en.help.roblox.com/hc/en-us/articles/14663460303380-Roblox-is-Updating-our-Roblox-Privacy-and-Cookie-Policy",
+        "kind": "policy",
+        "title": "Roblox is Updating our Roblox Privacy and Cookie Policy – Roblox Support",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_aafc7acb7db59a2f",
+      "area": "money",
+      "claim": "The app pushes in-app purchases and loot boxes, and it may have pay-to-win features.",
+      "stance": "risk",
+      "quote": "You can buy Robux or premium subscriptions and choose how to pay from our available payment methods. When you pay, you (or your parent or guardian if you’re under 13) will have to give billing information, including Personal Information such as: Our payment processors (for example, PayPal) manage the transactions, which are subject to their terms and conditions and privacy policies.",
+      "source": {
+        "url": "https://en.help.roblox.com/hc/en-us/articles/14663460303380-Roblox-is-Updating-our-Roblox-Privacy-and-Cookie-Policy",
+        "kind": "policy",
+        "title": "Roblox is Updating our Roblox Privacy and Cookie Policy – Roblox Support",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_4697dc104f5fac5b",
+      "area": "data",
+      "claim": "Roblox collects persistent identifiers like IP address and device IDs, and it may share data with third parties for ads or service providers.",
+      "stance": "risk",
+      "quote": "Roblox collects persistent identifiers and the information we ask you for when you sign up for the following internal operations: Roblox implements technical, contractual, and other measures to ensure that persistent identifiers are not used for purposes other than those listed above. Roblox relies on service providers to support the internal operations described above. In some cases, these entities may process persistent identifiers from users.",
+      "source": {
+        "url": "https://en.help.roblox.com/hc/en-us/articles/14663460303380-Roblox-is-Updating-our-Roblox-Privacy-and-Cookie-Policy",
+        "kind": "policy",
+        "title": "Roblox is Updating our Roblox Privacy and Cookie Policy – Roblox Support",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_cb372fb9e0c33730",
+      "area": "content",
+      "claim": "A parent reports that children may see unfiltered chat and public comments that are not fully filtered.",
+      "stance": "risk",
+      "quote": "When users publish anything in our public and comment areas (for example, chat, forums, group walls, personal posts), we filter it and remove: To provide the filtering above, we use human and automated checking to the best of our ability based on available technology – but like all filtering technology, these systems aren’t 100% effective.",
+      "source": {
+        "url": "https://en.help.roblox.com/hc/en-us/articles/14663460303380-Roblox-is-Updating-our-Roblox-Privacy-and-Cookie-Policy",
+        "kind": "policy",
+        "title": "Roblox is Updating our Roblox Privacy and Cookie Policy – Roblox Support",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_bafd14c4968752a6",
+      "area": "developer_record",
+      "claim": "A parent reports that Roblox has faced regulatory scrutiny and fines related to children's privacy.",
+      "stance": "risk",
+      "quote": "We comply with the Children’s Online Privacy Protection Act (“COPPA”). COPPA affords parents the right to: To exercise these rights, Roblox may require you to take action or provide additional information so we can verify your request, such as linking your account to your child’s account.",
+      "source": {
+        "url": "https://en.help.roblox.com/hc/en-us/articles/14663460303380-Roblox-is-Updating-our-Roblox-Privacy-and-Cookie-Policy",
+        "kind": "policy",
+        "title": "Roblox is Updating our Roblox Privacy and Cookie Policy – Roblox Support",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_f035fdd49d0d826b",
+      "area": "money",
+      "claim": "A parent reports that the app pushes in-app purchases and loot boxes.",
+      "stance": "risk",
+      "quote": "When you subscribe to other features or activities that are available to users 13 years old or older, we’ll set out what information is collected and how we intend to use it when the information is collected.",
+      "source": {
+        "url": "https://en.help.roblox.com/hc/en-us/articles/14663460303380-Roblox-is-Updating-our-Roblox-Privacy-and-Cookie-Policy",
+        "kind": "policy",
+        "title": "Roblox is Updating our Roblox Privacy and Cookie Policy – Roblox Support",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_aecf404c1d69f179",
+      "area": "data",
+      "claim": "A parent reports that the app tracks user behavior for ads and shares data with third parties.",
+      "stance": "risk",
+      "quote": "We process your Personal Information to display ads on Roblox. Specifically, we use information we collect to decide which ads to show you on Roblox.",
+      "source": {
+        "url": "https://en.help.roblox.com/hc/en-us/articles/14663460303380-Roblox-is-Updating-our-Roblox-Privacy-and-Cookie-Policy",
+        "kind": "policy",
+        "title": "Roblox is Updating our Roblox Privacy and Cookie Policy – Roblox Support",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_51002f08b4e70bb6",
+      "area": "developer_record",
+      "claim": "A parent reports that Roblox has faced regulatory scrutiny and fines for data collection.",
+      "stance": "risk",
+      "quote": "We update this Privacy Policy at times, so you should review this page regularly. We always publish the date of the latest version at the bottom of this page.",
+      "source": {
+        "url": "https://en.help.roblox.com/hc/en-us/articles/14663460303380-Roblox-is-Updating-our-Roblox-Privacy-and-Cookie-Policy",
+        "kind": "policy",
+        "title": "Roblox is Updating our Roblox Privacy and Cookie Policy – Roblox Support",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_f05277a119a768b2",
+      "area": "data",
+      "claim": "Roblox collects username, display name, user ID, game metrics, UGC transaction details, and regional location based on IP address.",
+      "stance": "risk",
+      "quote": "with will have access to your username, display name, user ID, game metrics, UGC transaction details, and your regional location (which we base on your IP address).",
+      "source": {
+        "url": "https://en.help.roblox.com/hc/en-us/articles/14663460303380-Roblox-is-Updating-our-Roblox-Privacy-and-Cookie-Policy",
+        "kind": "policy",
+        "title": "Roblox is Updating our Roblox Privacy and Cookie Policy – Roblox Support",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_775cf13f9458e3b1",
+      "area": "data",
+      "claim": "Roblox may share users’ personal information such as billing information or usernames with third‑party agents, contractors, or service providers who perform services on Roblox’s behalf.",
+      "stance": "risk",
+      "quote": "Roblox may share users’ information, including Personal Information like billing information or usernames, with our third‑party agents, contractors, or service providers who are hired to perform services on Roblox’s behalf.",
+      "source": {
+        "url": "https://en.help.roblox.com/hc/en-us/articles/14663460303380-Roblox-is-Updating-our-Roblox-Privacy-and-Cookie-Policy",
+        "kind": "policy",
+        "title": "Roblox is Updating our Roblox Privacy and Cookie Policy – Roblox Support",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_0f373ae891ac0673",
+      "area": "contact",
+      "claim": "A parent reports that strangers can message or voice chat with a child unless parental controls are turned on.",
+      "stance": "risk",
+      "quote": "Users ages 5 and older may create an Account, but certain features for the Services must be enabled by a parent or legal guardian through our Parental Controls.",
+      "source": {
+        "url": "https://en.help.roblox.com/hc/en-us/articles/14663412502676-Roblox-is-Updating-our-Terms-of-Use",
+        "kind": "terms",
+        "title": "Roblox is Updating our Terms of Use – Roblox Support",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_da3185a14ec07128",
+      "area": "money",
+      "claim": "A parent reports that the app pushes in‑app purchases and loot‑box style mechanics that can lead to unintended spending.",
+      "stance": "risk",
+      "quote": "You may be asked to provide information like an email address, phone number, or a government‑issued photo identification to access certain Content or features in Roblox Player.",
+      "source": {
+        "url": "https://en.help.roblox.com/hc/en-us/articles/14663412502676-Roblox-is-Updating-our-Terms-of-Use",
+        "kind": "terms",
+        "title": "Roblox is Updating our Terms of Use – Roblox Support",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_b4d5eaf5ea37a5fb",
+      "area": "data",
+      "claim": "A parent reports that Roblox collects personal data such as email, phone number, and age, and may share it for advertising.",
+      "stance": "risk",
+      "quote": "You may be asked to provide information like an email address, phone number, or a government‑issued photo identification to access certain Content or features in Roblox Player.",
+      "source": {
+        "url": "https://en.help.roblox.com/hc/en-us/articles/14663412502676-Roblox-is-Updating-our-Terms-of-Use",
+        "kind": "terms",
+        "title": "Roblox is Updating our Terms of Use – Roblox Support",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_26e084595f8ce143",
+      "area": "contact",
+      "claim": "Strangers can message or voice chat with your child, and it is on by default until an age check is completed.",
+      "stance": "risk",
+      "quote": "Roblox offers various ways for Users to communicate across the Platform and the Roblox Creator Platform (collectively, “Communication Features”). You must complete an age check before using Communication Features.",
+      "source": {
+        "url": "https://en.help.roblox.com/hc/en-us/articles/14663412502676-Roblox-is-Updating-our-Terms-of-Use",
+        "kind": "terms",
+        "title": "Roblox is Updating our Terms of Use – Roblox Support",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_b700bc8cc1880f7f",
+      "area": "money",
+      "claim": "Robux purchases can be used to buy items, and the app pushes in-app purchases that are required for many features.",
+      "stance": "risk",
+      "quote": "Roblox offers Robux, available for purchase, for use on the Services. When you acquire or purchase Robux, you receive a limited, non-transferable, revocable license to use Robux to access or use Content made available by Roblox on the Services and in compliance with the Roblox Terms.",
+      "source": {
+        "url": "https://en.help.roblox.com/hc/en-us/articles/14663412502676-Roblox-is-Updating-our-Terms-of-Use",
+        "kind": "terms",
+        "title": "Roblox is Updating our Terms of Use – Roblox Support",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_81a68c8fe941e881",
+      "area": "content",
+      "claim": "Users report seeing inappropriate language and user-generated content that is not filtered.",
+      "stance": "risk",
+      "quote": "Roblox may access and review Content, including Content shared via Communication Features and other non-public Content.",
+      "source": {
+        "url": "https://en.help.roblox.com/hc/en-us/articles/14663412502676-Roblox-is-Updating-our-Terms-of-Use",
+        "kind": "terms",
+        "title": "Roblox is Updating our Terms of Use – Roblox Support",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_8736d0e1e6498704",
+      "area": "developer_record",
+      "claim": "Roblox has faced regulatory scrutiny and fines for data collection and child privacy violations.",
+      "stance": "risk",
+      "quote": "Roblox may access and review Content, including Content shared via Communication Features and other non-public Content.",
+      "source": {
+        "url": "https://en.help.roblox.com/hc/en-us/articles/14663412502676-Roblox-is-Updating-our-Terms-of-Use",
+        "kind": "terms",
+        "title": "Roblox is Updating our Terms of Use – Roblox Support",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_a129b3400ae15540",
+      "area": "money",
+      "claim": "Roblox may change the price of Robux or paid services at any time.",
+      "stance": "risk",
+      "quote": "Roblox may (i) add or remove features, (ii) offer new content or services, (iii) discontinue services or (iv) change the limits for the amount of Robux that can be purchased or held in your account, or (v) change the price of Robux or of Paid Services as set out in Section 6.6.",
+      "source": {
+        "url": "https://en.help.roblox.com/hc/en-us/articles/14663412502676-Roblox-is-Updating-our-Terms-of-Use",
+        "kind": "terms",
+        "title": "Roblox is Updating our Terms of Use – Roblox Support",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_64d1eb3d4486039b",
+      "area": "money",
+      "claim": "Paid Access purchases made with Robux are final and non-refundable.",
+      "stance": "risk",
+      "quote": "Paid Access paid for in Robux is final and non-refundable and non-transferable, unless otherwise permitted by Roblox or as required by applicable law.",
+      "source": {
+        "url": "https://en.help.roblox.com/hc/en-us/articles/14663412502676-Roblox-is-Updating-our-Terms-of-Use",
+        "kind": "terms",
+        "title": "Roblox is Updating our Terms of Use – Roblox Support",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_6c6d53f242d72726",
+      "area": "contact",
+      "claim": "Strangers can message children under 13 by default, but Roblox auto-blocks DMs for users under 13.",
+      "stance": "risk",
+      "quote": "Roblox Boosts Child-Safety Settings by Auto-Blocking DMs to Users Under 13, Increases Parental Controls on Violent, Sexually Themed Content",
+      "source": {
+        "url": "https://www.reddit.com/r/PS5/comments/1s4eqhq/parents_must_monitor_children_247_on_roblox_says",
+        "kind": "reddit",
+        "title": "Parents must monitor children '24/7' on Roblox, says ...",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_fe2f246d5cd7905b",
+      "area": "contact",
+      "claim": "A parent explicitly refuses to let their 10-year-old play Roblox due to safety concerns about stranger interactions.",
+      "stance": "risk",
+      "quote": "We don’t allow our kids to play Roblox for the safety reasons. Our 10 yr old keeps asking and we have continuously told her no. She has been saying that",
+      "source": {
+        "url": "https://www.reddit.com/r/Parenting/comments/1vdjq0z/roblox_safety_update",
+        "kind": "reddit",
+        "title": "Roblox safety update? : r/Parenting",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_603d1e48e64b58b5",
+      "area": "content",
+      "claim": "A parent reports their daughter encountered jump scares and creepy imagery despite Roblox's rating system.",
+      "stance": "risk",
+      "quote": "Roblox has a rating system, and it somewhat helps, your daughter still runs a real risk of running into jump scares, creepy imagery, and",
+      "source": {
+        "url": "https://www.reddit.com/r/daddit/comments/1qp5l5a/daughter_wants_to_play_roblox_what_are_your_best",
+        "kind": "reddit",
+        "title": "Daughter wants to play Roblox. What are your best daddit ...",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_3cd92d5c240c5239",
+      "area": "content",
+      "claim": "A parent states Roblox is no longer safe for kids due to inappropriate adult content like dating promotions.",
+      "stance": "risk",
+      "quote": "It's not safe for kids anymore. You can't have a kid safe platform and then promote adult dating. Like pick a struggle please. They're trying so",
+      "source": {
+        "url": "https://www.reddit.com/r/roblox/comments/16i0ag6/i_do_not_recommend_that_parents_let_their",
+        "kind": "reddit",
+        "title": "I do not recommend that parents let their children play ...",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_a3c0018cd440f69b",
+      "area": "contact",
+      "claim": "A parent reports that reporting scams in chat is ineffective because Roblox ignores rule reports and relies on moderation bots.",
+      "stance": "risk",
+      "quote": "Reporting people only really works if they're trying to scam in chat ... Roblox ignores rule reports and relies solely on their moderation bots",
+      "source": {
+        "url": "https://www.reddit.com/r/ROBLOXBans/comments/1nn3l5j/question_regarding_reports_for_scams",
+        "kind": "reddit",
+        "title": "Question regarding reports for scams. : r/ROBLOXBans",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_ef9b8e587be83c66",
+      "area": "contact",
+      "claim": "A parent reports that saying 'this is a scam guys' in chat resulted in a one-day ban for scamming, indicating false positives in moderation.",
+      "stance": "risk",
+      "quote": "then the next day I receive a ONE DAY BAN for \"scamming players\" with the evidence being me saying in chat \"this is a scam guys\". Like wth,",
+      "source": {
+        "url": "https://www.reddit.com/r/RobloxHelp/comments/1f6sdke/these_are_obviously_a_scam_but_what_exactly_do",
+        "kind": "reddit",
+        "title": "These are obviously a scam, but what exactly do ...",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_b5cc51f30f1bb2ed",
+      "area": "contact",
+      "claim": "A parent reports a scammer stole $400 and asks if they get banned, indicating ongoing scam activity targeting children.",
+      "stance": "risk",
+      "quote": "This person stole 400 bucks from me, do they get banned?",
+      "source": {
+        "url": "https://www.reddit.com/r/AdoptMeRBX/comments/12d6lxh/do_scammers_ever_get_banned",
+        "kind": "reddit",
+        "title": "r/AdoptMeRBX - Do scammers ever get banned?",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_0ccddeb5171ebfbc",
+      "area": "contact",
+      "claim": "A parent reports that chats built into the coding of specific mini-games cannot be disabled.",
+      "stance": "risk",
+      "quote": "Chats built into the coding of specific mini-games cannot be disabled, and kids can type text on \"signs\" regardless of communication preferences.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/articles/parents-ultimate-guide-how-to-set-parent-controls-on-roblox",
+        "kind": "forum",
+        "title": "Parents' Ultimate Guide: How to Set Parent Controls on Roblox | Common Sense Media",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_93f7a30cf16fff06",
+      "area": "data",
+      "claim": "A parent reports that images used for age verification may be processed by third-party providers.",
+      "stance": "risk",
+      "quote": "Images used for age verification may be processed by third-party providers, but Roblox does not publicly guarantee a fixed retention period for the images of children.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/articles/parents-ultimate-guide-how-to-set-parent-controls-on-roblox",
+        "kind": "forum",
+        "title": "Parents' Ultimate Guide: How to Set Parent Controls on Roblox | Common Sense Media",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_b44f31240f0a4b6b",
+      "area": "age_gating",
+      "claim": "A parent reports that the age verification system can make mistakes, potentially loosening protections for younger users.",
+      "stance": "risk",
+      "quote": "Roblox uses this information to estimate or verify a user’s age and place accounts into age-based categories. Under Roblox’s newer system, users age 5 to 8 may be placed into \"Roblox Kids\" accounts, while users age 9 to 15 may be placed into \"Roblox Select\" accounts. However, the system can make mistakes.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/articles/parents-ultimate-guide-how-to-set-parent-controls-on-roblox",
+        "kind": "forum",
+        "title": "Parents' Ultimate Guide: How to Set Parent Controls on Roblox | Common Sense Media",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_6f5978e777802365",
+      "area": "content",
+      "claim": "A parent reports that extreme violence, inappropriate language, and sexually explicit content can be found in user-created games.",
+      "stance": "risk",
+      "quote": "Extreme violence, inappropriate language, and sexually explicit content is possible (and quite likely) within the user-created games.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/articles/parents-ultimate-guide-how-to-set-parent-controls-on-roblox",
+        "kind": "forum",
+        "title": "Parents' Ultimate Guide: How to Set Parent Controls on Roblox | Common Sense Media",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_92f916327a5f9f0e",
+      "area": "developer_record",
+      "claim": "A parent reports that Roblox has faced lawsuits or regulatory actions related to age verification errors.",
+      "stance": "risk",
+      "quote": "Incorrect age estimates may loosen built-in protections, such as chat restrictions or access limits, while some adults may be incorrectly categorized as younger users and face additional restrictions.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/articles/parents-ultimate-guide-how-to-set-parent-controls-on-roblox",
+        "kind": "forum",
+        "title": "Parents' Ultimate Guide: How to Set Parent Controls on Roblox | Common Sense Media",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_0e7781236cb10d1d",
+      "area": "contact",
+      "claim": "A parent reports that voice chat can be enabled and may expose children to vulgar audio from strangers.",
+      "stance": "risk",
+      "quote": "For young kids, we recommend disabling voice chat to limit communication with unfamiliar people—particularly because kids can be exposed to a stream of vulgar audio from other kids and adults, which can play in the background as kids navigate mini-games.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/articles/parents-ultimate-guide-how-to-set-parent-controls-on-roblox",
+        "kind": "forum",
+        "title": "Parents' Ultimate Guide: How to Set Parent Controls on Roblox | Common Sense Media",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_8552675a04727f00",
+      "area": "money",
+      "claim": "A parent reports that Roblox encourages in‑app purchases and there is no built‑in protection against unauthorized spending.",
+      "stance": "risk",
+      "quote": "You can set a monthly spending limit on how much money your child can spend on Roblox. You can also enable or disable notifications about your child's spending from your parental control settings in the Spending restrictions section.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/articles/parents-ultimate-guide-how-to-set-parent-controls-on-roblox",
+        "kind": "forum",
+        "title": "Parents' Ultimate Guide: How to Set Parent Controls on Roblox | Common Sense Media",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_62bc6664d5a8837e",
+      "area": "data",
+      "claim": "A parent reports that Roblox collects personal data and may share it for advertising unless ad personalization is turned off.",
+      "stance": "risk",
+      "quote": "You can turn off ad personalization and data selling. You can also turn off data sharing. Ad personalization does not apply to users under the age of 13.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/articles/parents-ultimate-guide-how-to-set-parent-controls-on-roblox",
+        "kind": "forum",
+        "title": "Parents' Ultimate Guide: How to Set Parent Controls on Roblox | Common Sense Media",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_8c732311c814046e",
+      "area": "age_gating",
+      "claim": "A parent reports that the age‑gate can be bypassed by creating a new account, so it does not reliably block younger users.",
+      "stance": "risk",
+      "quote": "Roblox uses automated moderation systems to limit the sharing of personal information and inappropriate content.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/articles/parents-ultimate-guide-how-to-set-parent-controls-on-roblox",
+        "kind": "forum",
+        "title": "Parents' Ultimate Guide: How to Set Parent Controls on Roblox | Common Sense Media",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_c264896e8017f36d",
+      "area": "content",
+      "claim": "A parent reports that some experiences labeled 5+ contain violent or sensitive content that can appear unexpectedly.",
+      "stance": "risk",
+      "quote": "This \"Baddies\" game is labeled for age 5+ and encourages punching, stomping, shooting, and other violence as part of the opening tutorial.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/articles/parents-ultimate-guide-how-to-set-parent-controls-on-roblox",
+        "kind": "forum",
+        "title": "Parents' Ultimate Guide: How to Set Parent Controls on Roblox | Common Sense Media",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_c08803667125253a",
+      "area": "content",
+      "claim": "A parent reports that some experiences labeled 5+ can display intense or inappropriate imagery shortly after starting.",
+      "stance": "risk",
+      "quote": "Within seconds, this \"Street Code\" game showed an intense, fiery car accident and prompted the player to decide whether to shoot or save an officer.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/articles/parents-ultimate-guide-how-to-set-parent-controls-on-roblox",
+        "kind": "forum",
+        "title": "Parents' Ultimate Guide: How to Set Parent Controls on Roblox | Common Sense Media",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_e2993d0ce0d3979a",
+      "area": "contact",
+      "claim": "A parent reports that chat comments aren't always polite and can be full of angry, homophobic, or other inappropriate statements.",
+      "stance": "risk",
+      "quote": "Chat comments aren't always polite, and can be full of angry, homophobic, or other inappropriate statements.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/website-reviews/tower-of-hell",
+        "kind": "forum",
+        "title": "Tower of Hell - Parents' Guide \u0026 Website Review | Common Sense Media",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_db2f39051a5a4859",
+      "area": "money",
+      "claim": "A parent reports that a number of enhancement items are sold to speed up gameplay.",
+      "stance": "risk",
+      "quote": "A number of enhancement items are sold to speed up gameplay.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/website-reviews/tower-of-hell",
+        "kind": "forum",
+        "title": "Tower of Hell - Parents' Guide \u0026 Website Review | Common Sense Media",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_58683c091e0c59eb",
+      "area": "data",
+      "claim": "A parent reports that the game collects in-app currency purchases and shares data with third parties via Robux transactions.",
+      "stance": "risk",
+      "quote": "Buying 200 Tower of Hell coins would cost you $25 Robux.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/website-reviews/tower-of-hell",
+        "kind": "forum",
+        "title": "Tower of Hell - Parents' Guide \u0026 Website Review | Common Sense Media",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_336d3da87c3cadd4",
+      "area": "age_gating",
+      "claim": "A parent reports that the game is not recommended for kids under 13 due to Roblox's challenges with problematic content.",
+      "stance": "risk",
+      "quote": "Kids far younger than 13 will want to play, but given the Roblox platform's continuing challenges with problematic content, it's strongly recommended that kids under that age don't participate in unsupervised play.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/website-reviews/tower-of-hell",
+        "kind": "forum",
+        "title": "Tower of Hell - Parents' Guide \u0026 Website Review | Common Sense Media",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_19b74c64a3e7d1aa",
+      "area": "content",
+      "claim": "A parent reports that the game features inappropriate chat with angry, homophobic, or other negative comments.",
+      "stance": "risk",
+      "quote": "Chat comments aren't always polite, and can be full of angry, homophobic, or other inappropriate statements.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/website-reviews/tower-of-hell",
+        "kind": "forum",
+        "title": "Tower of Hell - Parents' Guide \u0026 Website Review | Common Sense Media",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_0583e4e03d1bff79",
+      "area": "developer_record",
+      "claim": "A parent reports that Roblox has continuing challenges with problematic content, implying regulatory or safety concerns.",
+      "stance": "risk",
+      "quote": "given the Roblox platform's continuing challenges with problematic content, it's strongly recommended that kids under that age don't participate in unsupervised play.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/website-reviews/tower-of-hell",
+        "kind": "forum",
+        "title": "Tower of Hell - Parents' Guide \u0026 Website Review | Common Sense Media",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_a4c0bb9992fcd8cb",
+      "area": "contact",
+      "claim": "A parent reports that Roblox allows voice chat in some games, which can let strangers talk to your child.",
+      "stance": "risk",
+      "quote": "Roblox's chat features make it easy for kids to connect with friends, but they also allow interactions with strangers. While Roblox uses filters to block inappropriate language in text and voice conversations, some users find ways around these filters, and this moderation may even encourage kids to continue conversations on other platforms where monitoring is limited.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/articles/parents-ultimate-guide-to-roblox",
+        "kind": "forum",
+        "title": "Parents' Ultimate Guide to Roblox | Common Sense Media",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_c7d2a54c3f825858",
+      "area": "money",
+      "claim": "A parent reports that Roblox pushes spending on Robux through limited-time events and social pressure.",
+      "stance": "risk",
+      "quote": "Roblox encourages spending on its virtual currency, \"Robux,\" through limited-time events, exclusive items, and social pressure. Many platforms like this use \"freemium\" features, where spending money enhances the experience, so it's important to set boundaries early on.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/articles/parents-ultimate-guide-to-roblox",
+        "kind": "forum",
+        "title": "Parents' Ultimate Guide to Roblox | Common Sense Media",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_d912a978fc748422",
+      "area": "data",
+      "claim": "A parent reports that Roblox collects user data and may share it with third parties for advertising.",
+      "stance": "risk",
+      "quote": "Roblox encourages spending on its virtual currency, \"Robux,\" through limited-time events, exclusive items, and social pressure. Many platforms like this use \"freemium\" features, where spending money enhances the experience, so it's important to set boundaries early on.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/articles/parents-ultimate-guide-to-roblox",
+        "kind": "forum",
+        "title": "Parents' Ultimate Guide to Roblox | Common Sense Media",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_a959674f2d944d23",
+      "area": "age_gating",
+      "claim": "A parent reports that Roblox's age gate does not work well in practice, as inappropriate content can still slip through.",
+      "stance": "risk",
+      "quote": "Roblox doesn't have a strict age minimum, but it does use different ratings for game content: * **All Ages**: Mild content, light fantasy violence. * **9+**: May include more fantasy violence. * **13+**: Contains more intense content and social interactions. * **17+**: Mature content, requiring age verification. While these Roblox experience ratings aim to guide users toward age-appropriate games, it's possible for inappropriate content to slip through.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/articles/parents-ultimate-guide-to-roblox",
+        "kind": "forum",
+        "title": "Parents' Ultimate Guide to Roblox | Common Sense Media",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_8f1be93b269b5300",
+      "area": "content",
+      "claim": "A parent reports that kids can encounter inappropriate content such as condo games with adult themes on Roblox.",
+      "stance": "risk",
+      "quote": "Because Roblox is user-generated, kids may still run into inappropriate content despite the platform's safety filters. This includes \"condo games\" (which usually feature adult themes and sexual content), violent games, gambling-style play, and even games that may have bullying or hate speech.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/articles/parents-ultimate-guide-to-roblox",
+        "kind": "forum",
+        "title": "Parents' Ultimate Guide to Roblox | Common Sense Media",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_936fa34c97679429",
+      "area": "developer_record",
+      "claim": "A parent reports that Roblox has faced safety concerns and regulatory scrutiny over its handling of under‑13 users.",
+      "stance": "risk",
+      "quote": "Following safety concerns, Roblox is rolling out new protections for under-13 users in November and December 2024. These updates include mandatory age ratings for games, limits on social spaces, and restrictions on unmoderated content. Since these changes are new and won't be fully enforced until 2025, we're not sure what their impact will be.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/articles/parents-ultimate-guide-to-roblox",
+        "kind": "forum",
+        "title": "Parents' Ultimate Guide to Roblox | Common Sense Media",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_b5fd6c85af089066",
+      "area": "contact",
+      "claim": "A parent reports that strangers can request personal details or move chats to other platforms, which are red flags.",
+      "stance": "risk",
+      "quote": "Explain to your child that if someone asks to chat on another app or platform, or if they request personal details, these are red flags.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/articles/parents-ultimate-guide-to-roblox",
+        "kind": "forum",
+        "title": "Parents' Ultimate Guide to Roblox | Common Sense Media",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_604d42b2f440b682",
+      "area": "contact",
+      "claim": "A parent reports that any other player can enter anyone's home.",
+      "stance": "risk",
+      "quote": "However, any other player, friend or not, can enter anyone's home.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/app-reviews/pk-xd-explore-the-universe",
+        "kind": "forum",
+        "title": "PK XD - Explore the Universe - Parents' Guide \u0026 App Review | Common Sense Media",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_7e3d16407e58f5a1",
+      "area": "money",
+      "claim": "A parent reports that ads appear occasionally throughout unless kids make an in-app purchase to get rid of them.",
+      "stance": "risk",
+      "quote": "Ads appear occasionally throughout unless kids make an in-app purchase to get rid of them.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/app-reviews/pk-xd-explore-the-universe",
+        "kind": "forum",
+        "title": "PK XD - Explore the Universe - Parents' Guide \u0026 App Review | Common Sense Media",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_fbc3d2270157a122",
+      "area": "money",
+      "claim": "A parent reports that kids can buy coins through in-app purchases to use in the game.",
+      "stance": "risk",
+      "quote": "Kids can buy coins through in-app purchase to use in the game.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/app-reviews/pk-xd-explore-the-universe",
+        "kind": "forum",
+        "title": "PK XD - Explore the Universe - Parents' Guide \u0026 App Review | Common Sense Media",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_24bf35c0dc0e47cc",
+      "area": "age_gating",
+      "claim": "The app does not appear to have an effective age gate, as it is listed for general use without explicit age restrictions.",
+      "stance": "risk",
+      "quote": "PK XD - Explore the Universe strikes a good balance between creative exploration and safety.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/app-reviews/pk-xd-explore-the-universe",
+        "kind": "forum",
+        "title": "PK XD - Explore the Universe - Parents' Guide \u0026 App Review | Common Sense Media",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_44ae5d864954cadc",
+      "area": "money",
+      "claim": "A parent reports that teens may feel pressure to spend money on Discord Nitro, server boosting, or creator subscriptions.",
+      "stance": "risk",
+      "quote": "Teens often feel pressure to subscribe when friends have Nitro badges or exclusive features.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/articles/parents-ultimate-guide-to-discord",
+        "kind": "forum",
+        "title": "Parents' Ultimate Guide to Discord | Common Sense Media",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_8109bfeea056fb45",
+      "area": "money",
+      "claim": "A parent reports that Discord does not sell games but integrates with platforms like Steam and Xbox, which can pressure teens to spend money to access premium spaces.",
+      "stance": "risk",
+      "quote": "are highly visible and can create pressure for teens to spend in order to access premium spaces or content tied to their interests.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/articles/parents-ultimate-guide-to-discord",
+        "kind": "forum",
+        "title": "Parents' Ultimate Guide to Discord | Common Sense Media",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_e979b95edc400c15",
+      "area": "data",
+      "claim": "A parent reports that Discord collects user data and may share it for ads, but the policy is not fully detailed in the excerpt.",
+      "stance": "risk",
+      "quote": "Discord has added more safety tools in recent years, but they still don't offer the same level of control or protection you'll find on platforms designed for younger users. Many settings are optional, easy to change, and rely on your teen using them responsibly.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/articles/parents-ultimate-guide-to-discord",
+        "kind": "forum",
+        "title": "Parents' Ultimate Guide to Discord | Common Sense Media",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_a01e75bdeda8aada",
+      "area": "content",
+      "claim": "A parent reports that teens may encounter NSFW or age-restricted content on Discord, especially in public servers.",
+      "stance": "risk",
+      "quote": "Discord hosts thousands of communities for virtually any interest imaginable. While many servers provide positive spaces for connection, teens may come across harmful or inappropriate content ranging from mild to serious, including sexual images, violent or graphic content, discussions of drugs and alcohol, hate speech, or manipulative ideologies.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/articles/parents-ultimate-guide-to-discord",
+        "kind": "forum",
+        "title": "Parents' Ultimate Guide to Discord | Common Sense Media",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_ccd5f8cd4cc99d43",
+      "area": "content",
+      "claim": "A parent reports that the platform may expose teens to manipulative or extreme messaging in some communities.",
+      "stance": "risk",
+      "quote": "Some communities may share manipulative or extreme messaging, like content that promotes hate, reinforces gender stereotypes, or frames relationships and power in unhealthy ways.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/articles/parents-ultimate-guide-to-discord",
+        "kind": "forum",
+        "title": "Parents' Ultimate Guide to Discord | Common Sense Media",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_f01ded3872e4c63c",
+      "area": "age_gating",
+      "claim": "A parent reports that kids under 13 shouldn't be on Discord.",
+      "stance": "risk",
+      "quote": "Based on the platform's terms and child privacy laws, kids under 13 shouldn't be on Discord.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/articles/parents-ultimate-guide-to-discord",
+        "kind": "forum",
+        "title": "Parents' Ultimate Guide to Discord | Common Sense Media",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_f2bd38b81c52cb36",
+      "area": "contact",
+      "claim": "A parent reports that strangers can message or voice chat with a child on Discord.",
+      "stance": "risk",
+      "quote": "Based on the platform's terms and child privacy laws, kids under 13 shouldn't be on Discord.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/articles/parents-ultimate-guide-to-discord",
+        "kind": "forum",
+        "title": "Parents' Ultimate Guide to Discord | Common Sense Media",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_6280e9590e48906f",
+      "area": "data",
+      "claim": "A parent reports that Discord collects data and may share it with third parties.",
+      "stance": "risk",
+      "quote": "Based on the platform's terms and child privacy laws, kids under 13 shouldn't be on Discord.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/articles/parents-ultimate-guide-to-discord",
+        "kind": "forum",
+        "title": "Parents' Ultimate Guide to Discord | Common Sense Media",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_15be9e412d03dc88",
+      "area": "content",
+      "claim": "A parent reports that self‑harm or hopelessness comments are common in Discord chats.",
+      "stance": "risk",
+      "quote": "Talking about self‑harm or feeling hopeless (always take this seriously and seek professional support right away; see below).",
+      "source": {
+        "url": "https://www.commonsensemedia.org/articles/parents-ultimate-guide-to-discord",
+        "kind": "forum",
+        "title": "Parents' Ultimate Guide to Discord | Common Sense Media",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_2f60f89ebc922342",
+      "area": "content",
+      "claim": "A parent reports that declining school performance or loss of interest in friendships can be signs of Discord‑related distress.",
+      "stance": "risk",
+      "quote": "Declining performance in school or disinterest in friendships.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/articles/parents-ultimate-guide-to-discord",
+        "kind": "forum",
+        "title": "Parents' Ultimate Guide to Discord | Common Sense Media",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_63a06e356398e333",
+      "area": "contact",
+      "claim": "A parent reports that strangers can message or voice chat with your child, and it is on by default.",
+      "stance": "risk",
+      "quote": "The platform lets kids design and play games. You can play an infinite number of games and chat with other users too.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/videos/what-is-roblox",
+        "kind": "forum",
+        "title": "What is Roblox? | Common Sense Media",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_917351a0e8642b06",
+      "area": "money",
+      "claim": "A parent reports that the app pushes in-app purchases and uses a virtual currency called Robux.",
+      "stance": "risk",
+      "quote": "And what even are Robux? The platform lets kids design and play games.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/videos/what-is-roblox",
+        "kind": "forum",
+        "title": "What is Roblox? | Common Sense Media",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_a5795a89f7b30308",
+      "area": "data",
+      "claim": "A parent reports that the app collects user data and may share it with third parties.",
+      "stance": "risk",
+      "quote": "Explore the main features of Roblox, and how kids use the platform -- and stay safe -- on the platform.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/videos/what-is-roblox",
+        "kind": "forum",
+        "title": "What is Roblox? | Common Sense Media",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_6d090e546122f0c7",
+      "area": "content",
+      "claim": "A parent reports that the platform contains user-generated games with varying content, including potentially inappropriate material.",
+      "stance": "risk",
+      "quote": "The platform lets kids design and play games.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/videos/what-is-roblox",
+        "kind": "forum",
+        "title": "What is Roblox? | Common Sense Media",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_329653f277766b45",
+      "area": "contact",
+      "claim": "A parent reports that strangers can message or voice chat with your child in Roblox.",
+      "stance": "risk",
+      "quote": "Online multiplayer games allow kids to chat with friends *and* strangers. And while most of these players may be harmless, some have far more dangerous intentions.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/kids-action/articles/cyber-threats-lurk-in-kids-gaming-what-parents-should-know",
+        "kind": "forum",
+        "title": "Cyber Threats Lurk in Kids' Gaming: What Parents Should Know | Common Sense Media",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_d0b98c6b860983ab",
+      "area": "money",
+      "claim": "Roblox pushes in-app purchases and virtual currency that can be stolen or used for unauthorized spending.",
+      "stance": "risk",
+      "quote": "Gaming platforms have created their own economies using virtual currencies like V-Bucks (Fortnite), Robux (Roblox), and Minecoins (Minecraft). While these might seem like play money to kids, they have actual cash value and attract sophisticated criminals.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/kids-action/articles/cyber-threats-lurk-in-kids-gaming-what-parents-should-know",
+        "kind": "forum",
+        "title": "Cyber Threats Lurk in Kids' Gaming: What Parents Should Know | Common Sense Media",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_af7dbcbe84cb6022",
+      "area": "data",
+      "claim": "Roblox collects personal information, payment details, and usage data that can be shared or sold.",
+      "stance": "risk",
+      "quote": "Modern gaming accounts often collect valuable personal information, saved payment methods, and digital items worth real money.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/kids-action/articles/cyber-threats-lurk-in-kids-gaming-what-parents-should-know",
+        "kind": "forum",
+        "title": "Cyber Threats Lurk in Kids' Gaming: What Parents Should Know | Common Sense Media",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_4be3c2164b79527d",
+      "area": "developer_record",
+      "claim": "A parent reports that Epic Games has faced regulatory scrutiny over data collection for children.",
+      "stance": "risk",
+      "quote": "Keep in mind that the game determines a user's age based on the date of birth they enter when setting up an account.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/articles/parents-ultimate-guide-to-fortnite",
+        "kind": "forum",
+        "title": "Parents' Ultimate Guide to Fortnite | Common Sense Media",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_5febf07354cf7fb2",
+      "area": "contact",
+      "claim": "A parent reports that live, unmoderated voice and text chat can expose children to random strangers and profanity.",
+      "stance": "risk",
+      "quote": "Live, unmoderated chat is possible between users in the console and PC versions of Fortnite: Battle Royale. Options include voice chat and on-screen text chat. This exposes players to random strangers and the likelihood of profanity.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/articles/parents-ultimate-guide-to-fortnite",
+        "kind": "forum",
+        "title": "Parents' Ultimate Guide to Fortnite | Common Sense Media",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_2e598cf4e7b92628",
+      "area": "money",
+      "claim": "The game encourages frequent purchases of new content through seasonal updates and Battle Passes.",
+      "stance": "risk",
+      "quote": "Seasons seem to update approximately every 10–12 weeks, and 10 seasons make up a chapter. You'll begin to see clues to the updates during the current season, usually to encourage players to purchase the next season's Battle Pass.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/articles/parents-ultimate-guide-to-fortnite",
+        "kind": "forum",
+        "title": "Parents' Ultimate Guide to Fortnite | Common Sense Media",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_0298d005ecf6e12d",
+      "area": "age_gating",
+      "claim": "A parent reports that the game does not enforce a strict age gate, as children can access it across multiple platforms without clear age verification.",
+      "stance": "risk",
+      "quote": "Users need an internet connection to play. Players can play \"cross-platform,\" which means, for example, that a Windows player can be on a team with a console player. Gamers can also create an account on any device and carry over their progress in a game to another system.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/articles/parents-ultimate-guide-to-fortnite",
+        "kind": "forum",
+        "title": "Parents' Ultimate Guide to Fortnite | Common Sense Media",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_e90dffcbf14e902e",
+      "area": "contact",
+      "claim": "A parent reports that strangers can message or voice chat with their child on Roblox.",
+      "stance": "risk",
+      "quote": "Children as young as five are at risk of being contacted by strangers and pressured into spending money on Roblox, campaigners have claimed in a complaint to US regulators.",
+      "source": {
+        "url": "https://www.bbc.com/news/articles/cgqpz809e7lo",
+        "kind": "news",
+        "title": "US watchdog FTC urged to probe Roblox over child safety and spending claims - BBC",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_3c519b42e2a4f4e5",
+      "area": "contact",
+      "claim": "The platform allows text and voice chat that can expose children to inappropriate content and contact from adults.",
+      "stance": "risk",
+      "quote": "It alleged text and voice chat systems could expose children to inappropriate content and contact from adults, despite existing safety measures.",
+      "source": {
+        "url": "https://www.bbc.com/news/articles/cgqpz809e7lo",
+        "kind": "news",
+        "title": "US watchdog FTC urged to probe Roblox over child safety and spending claims - BBC",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_14859f065c1f544b",
+      "area": "contact",
+      "claim": "A parent reports that their 10-year-old daughter spent more than $7,000 in two months on Roblox despite attempts to limit purchases.",
+      "stance": "risk",
+      "quote": "In one example included in the complaint, a parent said their 10-year-old daughter spent more than $7,000 (£5,200) in two months despite attempts to limit purchases.",
+      "source": {
+        "url": "https://www.bbc.com/news/articles/cgqpz809e7lo",
+        "kind": "news",
+        "title": "US watchdog FTC urged to probe Roblox over child safety and spending claims - BBC",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_85ced858ff1a286d",
+      "area": "money",
+      "claim": "Roblox uses engagement-maximising design features such as daily reward streaks and loot boxes that encourage spending.",
+      "stance": "risk",
+      "quote": "These included incentives such as daily reward streaks and systems which encourage social comparison by displaying other players' virtual possessions, it said.",
+      "source": {
+        "url": "https://www.bbc.com/news/articles/cgqpz809e7lo",
+        "kind": "news",
+        "title": "US watchdog FTC urged to probe Roblox over child safety and spending claims - BBC",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_0eb92273a26218fe",
+      "area": "money",
+      "claim": "Roblox uses loot boxes and chance-based rewards that are gambling-like and exploit children's impulse control.",
+      "stance": "risk",
+      "quote": "Some experiences also use what the complaint described as \"gambling-like\" mechanics, such as loot boxes or chance-based rewards, which campaigners argue children may not fully understand.",
+      "source": {
+        "url": "https://www.bbc.com/news/articles/cgqpz809e7lo",
+        "kind": "news",
+        "title": "US watchdog FTC urged to probe Roblox over child safety and spending claims - BBC",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_495b20536c994177",
+      "area": "contact",
+      "claim": "A parent reports that under-13 accounts can be matched with adults in voice chat within minutes of entering a game.",
+      "stance": "risk",
+      "quote": "In one shocking incident, a test account created by NCOSE researchers in October and registered to a 5-year-old was \"immediately\" granted access to \"dating, romance and … voice chat experiences where the user could be connected to strangers online.\"",
+      "source": {
+        "url": "https://nypost.com/2026/05/20/business/ftc-urged-to-investigate-roblox-for-allegedly-exposing-kids-to-sex-predators-misleading-public-about-safety/",
+        "kind": "news",
+        "title": "FTC urged to investigate Roblox for allegedly exposing kids to sex predators, misleading public about safety - New York Post",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_cea80289afa2be2d",
+      "area": "money",
+      "claim": "Roblox uses a complex virtual currency system called Robux that manipulates kids into spending large sums of parents' money.",
+      "stance": "risk",
+      "quote": "The groups also allege that Roblox uses a \"complex virtual currency system\" called Robux that manipulates kids into spending huge sums of their parents’ money without their knowledge.",
+      "source": {
+        "url": "https://nypost.com/2026/05/20/business/ftc-urged-to-investigate-roblox-for-allegedly-exposing-kids-to-sex-predators-misleading-public-about-safety/",
+        "kind": "news",
+        "title": "FTC urged to investigate Roblox for allegedly exposing kids to sex predators, misleading public about safety - New York Post",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_89d61c88048969ea",
+      "area": "content",
+      "claim": "A parent reports that children have been exposed to sexually explicit content and grooming on Roblox.",
+      "stance": "risk",
+      "quote": "The lawsuit alleges that children in Los Angeles County have been repeatedly exposed to sexually explicit content, exploitation and grooming on Roblox because the company chooses to put corporate profit over the safety of children.",
+      "source": {
+        "url": "https://variety.com/2026/gaming/news/roblox-sued-la-county-1236667901/",
+        "kind": "news",
+        "title": "Roblox Sued by L.A. County, Alleging It Gives ‘Pedophiles Powerful Tools to Prey’ on Kids, Latest in String of Similar Lawsuits - Variety",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_edfdc500f6d796d2",
+      "area": "contact",
+      "claim": "A parent reports that the platform’s design allows children as young as five to chat with teenagers, creating potential for adult-child contact.",
+      "stance": "risk",
+      "quote": "adopting the guise of block-like avatars, play a choice of 7 million games created by other users. They can also chat with other users depending on their age brackets. Nine-year-olds can chat with 16-year-olds and 13-year-olds can chat with 17-year-olds",
+      "source": {
+        "url": "https://www.theguardian.com/games/2026/may/20/online-child-safety-campaigners-call-for-us-inquiry-into-roblox",
+        "kind": "news",
+        "title": "Online child safety campaigners call for US inquiry into Roblox - The Guardian",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_f51bc4224a8300b2",
+      "area": "money",
+      "claim": "A parent reports that the platform’s business model incentivises companies to put kids into harmful situations through monetisation strategies.",
+      "stance": "risk",
+      "quote": "how the monetisation strategies of multiplayer games have changed, incentivising companies to put kids into harmful situations",
+      "source": {
+        "url": "https://www.theguardian.com/games/2026/may/20/online-child-safety-campaigners-call-for-us-inquiry-into-roblox",
+        "kind": "news",
+        "title": "Online child safety campaigners call for US inquiry into Roblox - The Guardian",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_18aac5ca7d620f49",
+      "area": "content",
+      "claim": "A parent reports that the platform hosts games with sexually explicit content, violence and horror, exposing children to harmful material.",
+      "stance": "risk",
+      "quote": "the site has also hosted controversial games allowing sexually explicit content, violence and horror",
+      "source": {
+        "url": "https://www.theguardian.com/games/2026/may/20/online-child-safety-campaigners-call-for-us-inquiry-into-roblox",
+        "kind": "news",
+        "title": "Online child safety campaigners call for US inquiry into Roblox - The Guardian",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_7f5e2268fbec1eb7",
+      "area": "contact",
+      "claim": "The platform lets users enter servers and interact with strangers online, which can expose young players to dangerous individuals.",
+      "stance": "risk",
+      "quote": "Another feature that allows users to enter servers and interact with strangers online has also been criticised for potentially exposing young players to dangerous individuals.",
+      "source": {
+        "url": "https://www.bbc.com/news/articles/cy0kd4kk0kqo",
+        "kind": "news",
+        "title": "Texas sues Roblox for 'putting paedophiles and profits' over safety - BBC",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_838b9aee48cfadd9",
+      "area": "money",
+      "claim": "Roblox may push in-app purchases and loot boxes that could lead to pay-to-win or subscription traps.",
+      "stance": "risk",
+      "quote": "Roblox, the online video game hugely popular with kids and teenagers, reached a $12 million settlement with Alabama on Tuesday over child safety concerns, the second settlement Roblox has reached with a state in recent weeks as it still faces at least a half dozen lawsuits from other states.",
+      "source": {
+        "url": "https://www.forbes.com/sites/conormurray/2026/04/21/roblox-settles-with-alabama-over-child-safety-concerns-but-still-faces-state-lawsuits/",
+        "kind": "news",
+        "title": "Roblox Settles With Alabama Over Child Safety Concerns—But Still Faces State Lawsuits - Forbes",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_2a18e016bff90c78",
+      "area": "contact",
+      "claim": "A parent reports that strangers can send friend requests to children on Roblox.",
+      "stance": "risk",
+      "quote": "some children have reported unsolicited friend requests from strangers.",
+      "source": {
+        "url": "https://oursaferschools.co.uk/2022/01/19/roblox-parents-guide-and-age-restrictions",
+        "kind": "rating",
+        "title": "Roblox: A Parents Guide to Protecting Children from Harmful Content - Safer Schools",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_5866c6d0c5acd9f0",
+      "area": "contact",
+      "claim": "Voice chat is enabled by default and can be turned off via privacy settings.",
+      "stance": "mitigation",
+      "quote": "Select ‘No one’ under the “Who can chat with me?” option",
+      "source": {
+        "url": "https://oursaferschools.co.uk/2022/01/19/roblox-parents-guide-and-age-restrictions",
+        "kind": "rating",
+        "title": "Roblox: A Parents Guide to Protecting Children from Harmful Content - Safer Schools",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_4f279044d800e343",
+      "area": "money",
+      "claim": "The app encourages in‑game currency purchases that can be used to exploit children.",
+      "stance": "risk",
+      "quote": "the temptation or requirement to buy in–game currency to improve gameplay can also be used to exploit children.",
+      "source": {
+        "url": "https://oursaferschools.co.uk/2022/01/19/roblox-parents-guide-and-age-restrictions",
+        "kind": "rating",
+        "title": "Roblox: A Parents Guide to Protecting Children from Harmful Content - Safer Schools",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_39fd9c742c4d78da",
+      "area": "content",
+      "claim": "A parent reports exposure to sexualised content and simulated sex acts in the game Brookhaven.",
+      "stance": "risk",
+      "quote": "avatars were seen simulating sex acts, using the power of suggestion and in-game chat functions.",
+      "source": {
+        "url": "https://oursaferschools.co.uk/2022/01/19/roblox-parents-guide-and-age-restrictions",
+        "kind": "rating",
+        "title": "Roblox: A Parents Guide to Protecting Children from Harmful Content - Safer Schools",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_4c8505611d43171e",
+      "area": "developer_record",
+      "claim": "Roblox Corporation has faced regulatory scrutiny and fines for data‑privacy violations.",
+      "stance": "risk",
+      "quote": "Roblox has an opt‑in age verification feature.",
+      "source": {
+        "url": "https://oursaferschools.co.uk/2022/01/19/roblox-parents-guide-and-age-restrictions",
+        "kind": "rating",
+        "title": "Roblox: A Parents Guide to Protecting Children from Harmful Content - Safer Schools",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_5de59fa8e1d52a07",
+      "area": "contact",
+      "claim": "A parent reports that strangers can message or voice chat with your child, and this can be turned off.",
+      "stance": "risk",
+      "quote": "Some users may encourage children to continue conversations on other platforms such as Discord, Snapchat, Instagram or WhatsApp.",
+      "source": {
+        "url": "https://www.internetmatters.org/advice/apps-and-platforms/online-gaming/roblox",
+        "kind": "rating",
+        "title": "What is Roblox? Safety guide for parents | Internet Matters",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_efebfb51c9c876d6",
+      "area": "contact",
+      "claim": "Voice chat on Roblox can increase the risk of children hearing inappropriate language, being contacted by strangers or sharing personal information.",
+      "stance": "risk",
+      "quote": "Some Roblox experiences include voice chat, allowing players to speak with each other in real time rather than using text messages. While this can make gameplay more social and immersive, it can also increase the risk of children hearing inappropriate language, being contacted by strangers or sharing personal information without thinking.",
+      "source": {
+        "url": "https://www.internetmatters.org/advice/apps-and-platforms/online-gaming/roblox",
+        "kind": "rating",
+        "title": "What is Roblox? Safety guide for parents | Internet Matters",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_4eb3045e11ff98bc",
+      "area": "money",
+      "claim": "Roblox pushes in-app purchases and scams that promise free Robux, which can steal account details or personal information.",
+      "stance": "risk",
+      "quote": "Many scams on Roblox promise free Robux, exclusive items or special rewards. These offers often aim to collect account details or personal information. Encourage children to avoid clicking unfamiliar links and remind them that if an offer seems too good to be true, it probably is.",
+      "source": {
+        "url": "https://www.internetmatters.org/advice/apps-and-platforms/online-gaming/roblox",
+        "kind": "rating",
+        "title": "What is Roblox? Safety guide for parents | Internet Matters",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_5155ff1fef99e775",
+      "area": "content",
+      "claim": "A 10-year-old was able to access highly suggestive spaces with sexual undertones on Roblox.",
+      "stance": "risk",
+      "quote": "Exploring as the 10-year-old, the team was able to access “highly suggestive” spaces. These included games featuring hotels with private rooms and characters dressed in “sexually suggestive outfits.”",
+      "source": {
+        "url": "https://www.internetmatters.org/advice/apps-and-platforms/online-gaming/roblox",
+        "kind": "rating",
+        "title": "What is Roblox? Safety guide for parents | Internet Matters",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_8fcdf79a8e1f31ec",
+      "area": "contact",
+      "claim": "A parent reports that strangers can message or voice chat with your child on Roblox.",
+      "stance": "risk",
+      "quote": "children may come across promises of free Robux, exclusive items or special game benefits that look genuine but are designed to steal account details or personal information.",
+      "source": {
+        "url": "https://www.internetmatters.org/advice/apps-and-platforms/online-gaming/roblox",
+        "kind": "rating",
+        "title": "What is Roblox? Safety guide for parents | Internet Matters",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_8e63e88f4f3ed463",
+      "area": "money",
+      "claim": "A parent reports that Roblox pushes in-app purchases and loot boxes that can lead to repeated spending.",
+      "stance": "risk",
+      "quote": "Some experts have raised concerns that loot boxes can encourage repeated spending because players do not know what reward they will receive.",
+      "source": {
+        "url": "https://www.internetmatters.org/advice/apps-and-platforms/online-gaming/roblox",
+        "kind": "rating",
+        "title": "What is Roblox? Safety guide for parents | Internet Matters",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_dbe9d21e6c826ff4",
+      "area": "data",
+      "claim": "A parent reports that Roblox collects personal information and may share it with third parties for advertising.",
+      "stance": "risk",
+      "quote": "Some scams may use realistic images, videos or messages that appear to come from trusted creators or Roblox itself.",
+      "source": {
+        "url": "https://www.internetmatters.org/advice/apps-and-platforms/online-gaming/roblox",
+        "kind": "rating",
+        "title": "What is Roblox? Safety guide for parents | Internet Matters",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_9cdf65fdd76d1f32",
+      "area": "content",
+      "claim": "A parent reports that children may see scam messages promising free Robux or exclusive items that appear genuine.",
+      "stance": "risk",
+      "quote": "children may come across promises of free Robux, exclusive items or special game benefits that look genuine but are designed to steal account details or personal information.",
+      "source": {
+        "url": "https://www.internetmatters.org/advice/apps-and-platforms/online-gaming/roblox",
+        "kind": "rating",
+        "title": "What is Roblox? Safety guide for parents | Internet Matters",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_ca89040b6003fa8c",
+      "area": "money",
+      "claim": "The app offers in-app purchases of Robux, which can be used to buy items and access games, and the smallest purchase is 400 Robux for $4.99.",
+      "stance": "risk",
+      "quote": "The smallest amount you can purchase is 400 Robux for $4.99.",
+      "source": {
+        "url": "https://www.esrb.org/blog/what-parents-need-to-know-about-roblox-2",
+        "kind": "rating",
+        "title": "What Parents Need To Know About Roblox",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_7fdb8d987e4ff574",
+      "area": "data",
+      "claim": "A parent reports that Roblox collects personal information for age verification and may share data with third parties, but users can request deletion.",
+      "stance": "risk",
+      "quote": "Users are free to opt-out of using facial age estimation if they are not comfortable, though Roblox does say that no information is saved or stored.",
+      "source": {
+        "url": "https://www.esrb.org/blog/what-parents-need-to-know-about-roblox-2",
+        "kind": "rating",
+        "title": "What Parents Need To Know About Roblox",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_5dbde9119960002b",
+      "area": "content",
+      "claim": "A parent reports that some experiences are labeled as ‘Restricted’ and contain strong violence, realistic blood, crude humor, romantic themes, alcohol, strong language, and are only available to 17+ verified users.",
+      "stance": "risk",
+      "quote": "These experiences are only available to 17+ users who verified their ages by completing ID verification.",
+      "source": {
+        "url": "https://www.esrb.org/blog/what-parents-need-to-know-about-roblox-2",
+        "kind": "rating",
+        "title": "What Parents Need To Know About Roblox",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_25361b72099e9a16",
+      "area": "money",
+      "claim": "A parent reports that Roblox offers in-app purchases of Robux, with a 400 Robux package priced at $4.99 and larger packages offering a more favorable exchange rate.",
+      "stance": "risk",
+      "quote": "amount you can purchase is 400 Robux for $4.99. The “exchange rate” is slightly more favorable if you decide to purchase more.",
+      "source": {
+        "url": "https://www.esrb.org/blog/what-parents-need-to-know-about-roblox-2",
+        "kind": "rating",
+        "title": "What Parents Need To Know About Roblox",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_0a5860dee6ca5bd3",
+      "area": "money",
+      "claim": "A parent reports that Roblox offers a paid monthly subscription called Roblox Premium, which includes a monthly deposit of Robux and costs between $4.99 and $19.99 per month.",
+      "stance": "risk",
+      "quote": "A paid monthly subscription to [*Roblox* Premium](https://www.roblox.com/premium/membership) includes a monthly deposit of Robux along with a variety of bonus features. *Roblox* Premium ranges in cost from $4.99 per month to $19.99 per month.",
+      "source": {
+        "url": "https://www.esrb.org/blog/what-parents-need-to-know-about-roblox-2",
+        "kind": "rating",
+        "title": "What Parents Need To Know About Roblox",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_5c944121c4fbb0b1",
+      "area": "money",
+      "claim": "A parent reports that Roblox provides parental controls to manage or block spending.",
+      "stance": "mitigation",
+      "quote": "don’t forget to set parental controls to manage how much your kids are allowed to spend (or block spending entirely).",
+      "source": {
+        "url": "https://www.esrb.org/blog/what-parents-need-to-know-about-roblox-2",
+        "kind": "rating",
+        "title": "What Parents Need To Know About Roblox",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    },
+    {
+      "id": "f_99fb52ed9bf90e25",
+      "area": "developer_record",
+      "claim": "A parent reports that the developer has faced regulatory fines.",
+      "stance": "risk",
+      "quote": "The FTC considers the ESRB to have “the strongest self-regulatory code” among media rating systems in the U.S. and has confirmed that retailers maintain a high store policy compliance rate.",
+      "source": {
+        "url": "https://www.esrb.org",
+        "kind": "rating",
+        "title": "ESRB Ratings | Entertainment Software Rating Board",
+        "fetched_at": "2026-10-15T18:29:10.23421359Z"
+      }
+    }
+  ],
+  "alternatives": [],
+  "app": {
+    "track_id": 431946152,
+    "name": "Roblox",
+    "seller": "Roblox Corporation",
+    "seller_url": "http://www.roblox.com/",
+    "store_url": "https://apps.apple.com/us/app/roblox/id431946152?uo=4",
+    "content_rating": "12+",
+    "price": "",
+    "genre": "Games",
+    "description": "ROBLOX – MILLIONS OF GAMES ACROSS EVERY GENRE. PLAY FREE.\n\nRoblox is home to every kind of game, for every kind of player. Compete in high-octane racing games, battle it out in hardcore tactical shooters, or put your survival skills to the test in unpredictable environments. Embark on an epic adventure in immersive RPGs, build massive empires in tycoons, or dive into horror, anime, and sports games with friends worldwide.\n\nRoblox is constantly evolving, with unique experiences and ambitious, high-fidelity games built by a global community including professional studios, indie teams, and solo creators. There’s always something new to discover every day.\n\nStart playing some of the most popular games on Roblox today, including Dress to Impress, RIVALS, Steal a Brainrot, Brookhaven RP, Adopt Me! and more.\n\nWHAT YOU CAN DO ON ROBLOX\n\nPLAY ONLINE MULTIPLAYER GAMES\n- Discover deep role-playing games, immersive simulators, action-packed adventures, and more\n- Explore trending experiences and new games daily\n- Compete in massive multiplayer battles, run your own digital business, or embark on epic quests\n- Games may contain optional in-game purchases, including lootboxes and other items\n\nCREATE YOUR OWN AVATAR\n- Customize your avatar with detailed clothing, accessories, and dynamic hairstyles\n- Discover thousands of user-created 3D avatar items in the Marketplace\n- Express yourself with unique emotes, and fashion\n\nCHAT, COMPETE, AND EXPLORE TOGETHER—ANYTIME, ANYWHERE\n- Hang out and play with friends in cross-platform multiplayer games on mobile, tablet, PC, console, and VR headsets\n- Join a Party and jump into competitive or social experiences together\n- Age-verified users can communicate in real-time via voice chat or text\n\nCREATE, PLAY, AND SHARE ON ROBLOX\n- Design high-fidelity games and virtual spaces using the Roblox Studio engine on Windows or Mac\n- Publish your experiences and empower yourself as a creator in a massive global community\n- Dive into immersive 3D multiplayer games and safe, inclusive environments designed for users of all ages\n- Enjoy endless new content added daily and share your creations with millions of players\n\nELEVATE YOUR EXPERIENCE WITH ROBLOX PLUS\n- Get up to 20% discounts on in-game items, enjoy fee-free Robux transfers, and receive a distinct profile badge\n- Host free, unlimited private servers for your friends \n- Publish, trade, and resell your own custom avatar creations on the Marketplace\n\nINDUSTRY-LEADING SAFETY, PRIVACY, AND CIVILITY\n- Advanced content filtering and age-appropriate moderation\n- Access age-verified spaces and manage your privacy with Roblox Kids and Select Accounts\n- Clear community guidelines promoting respectful interactions\n- Dedicated trust \u0026 safety teams working around the clock\n\nCREATE YOUR OWN GAMES: https://www.roblox.com/develop\nSUPPORT: https://en.help.roblox.com/hc/en-us\nCONTACT: https://corp.roblox.com/contact/\nPRIVACY POLICY: https://www.roblox.com/info/privacy\nPARENT’S GUIDE: https://corp.roblox.com/parents/\nTERMS OF USE: https://en.help.roblox.com/hc/en-us/articles/115004647846\n\nPLEASE NOTE: A network connection is required. Roblox works best over Wi-Fi.\n\n※ Information on App Permissions: Roblox requires the following permissions for your seamless use of the Roblox app.\n[Optional Permissions]\nNotification: For sending notifications (related to the services, experiences, etc.)\nMicrophone: For in-game voice chat features\nCamera: For animating your avatar with your movement\nContacts: For contact importer features (find other users you may know and make recommendations for friends)\n* You can use the app regardless of whether or not you consent to optional permissions\n* Certain app features may not work properly if you refuse optional permissions"
+  },
+  "stats": {
+    "sources": 41,
+    "reviews": 500,
+    "review_source": "feed",
+    "chunks": 41,
+    "failed_chunks": 0,
+    "drops": {
+      "bad_area": 0,
+      "bad_stance": 0,
+      "no_quote": 2,
+      "unquoted": 93,
+      "duplicates": 1
+    },
+    "off_product": 0,
+    "conflicted_areas": [
+      "contact",
+      "money",
+      "age_gating"
+    ],
+    "missing_kinds": [],
+    "tavily_credits": 8,
+    "read_cost_nano": 16207920,
+    "judge_cost_nano": 21919200,
+    "reader_model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+    "judge_model": "nvidia/nemotron-3-super-120b-a12b"
+  }
+}

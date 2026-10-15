@@ -1,0 +1,256 @@
+//go:build ignore
+
+// Run only with the explicitly approved T3.13 budget. Keys are loaded by an
+// external wrapper; this tool records responses, never headers or requests.
+package main
+
+import (
+	"bytes"
+	"context"
+	"encoding/json"
+	"fmt"
+	"io"
+	"net/http"
+	"os"
+	"path/filepath"
+	"strings"
+	"sync"
+	"time"
+
+	"github.com/nrynss/before-yes/internal/appstore"
+	"github.com/nrynss/before-yes/internal/checklist"
+	"github.com/nrynss/before-yes/internal/model"
+	"github.com/nrynss/before-yes/internal/pipeline"
+	"github.com/nrynss/before-yes/internal/spend"
+	"github.com/nrynss/before-yes/internal/tavily"
+)
+
+const root = "testdata/alternatives/nano"
+const db = "/tmp/t313-nano-live/spend.db"
+
+func save(path string, v any) {
+	b, e := json.MarshalIndent(v, "", "  ")
+	must(e)
+	must(os.MkdirAll(filepath.Dir(path), 0700))
+	must(os.WriteFile(path, append(b, '\n'), 0600))
+}
+func must(err error) {
+	if err != nil {
+		panic(err)
+	}
+}
+
+type responseTransport struct {
+	base http.RoundTripper
+	mu   sync.Mutex
+	n    int
+	dir  string
+}
+
+func (t *responseTransport) RoundTrip(req *http.Request) (*http.Response, error) {
+	resp, err := t.base.RoundTrip(req)
+	if err != nil {
+		return nil, err
+	}
+	b, err := io.ReadAll(resp.Body)
+	resp.Body.Close()
+	if err != nil {
+		return nil, err
+	}
+	resp.Body = io.NopCloser(bytes.NewReader(b))
+	t.mu.Lock()
+	defer t.mu.Unlock()
+	t.n++
+	// The kind and status are safe association metadata. No request query,
+	// body or headers are persisted, including for failed responses.
+	kind := "other"
+	switch {
+	case strings.Contains(req.URL.Host, "tokenfactory"):
+		kind = "model"
+	case strings.Contains(req.URL.Host, "tavily"):
+		kind = "tavily"
+	case strings.Contains(req.URL.Path, "/search"):
+		kind = "store-search"
+	default:
+		kind = "store-reviews"
+	}
+	filename := fmt.Sprintf("%04d-%s-%d.json", t.n, kind, resp.StatusCode)
+	must(os.MkdirAll(t.dir, 0700))
+	must(os.WriteFile(filepath.Join(t.dir, filename), b, 0600))
+	return resp, nil
+}
+
+type searchRecorder struct {
+	pipeline.Searcher
+	mu    sync.Mutex
+	dir   string
+	n     int
+	pages map[string]tavily.Result
+}
+
+func (s *searchRecorder) Search(ctx context.Context, q tavily.Search) ([]tavily.Result, tavily.Credits, error) {
+	hits, c, e := s.Searcher.Search(ctx, q)
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.n++
+	save(filepath.Join(s.dir, fmt.Sprintf("search-%02d.json", s.n)), struct {
+		Results []tavily.Result
+		Credits tavily.Credits
+	}{hits, c})
+	for _, h := range hits {
+		if _, exists := s.pages[h.URL]; !exists {
+			s.pages[h.URL] = h
+		}
+	}
+	return hits, c, e
+}
+
+type nanoRecord struct {
+	SourceURL string
+	Page      tavily.Result
+	Reply     model.Reply
+}
+type readerRecorder struct {
+	pipeline.Chatter
+	search *searchRecorder
+	mu     sync.Mutex
+	dir    string
+	n      int
+}
+
+func (r *readerRecorder) Chat(ctx context.Context, msgs []model.Message, o model.Options) (model.Reply, error) {
+	reply, e := r.Chatter.Chat(ctx, msgs, o)
+	user := msgs[len(msgs)-1].Content
+	if strings.HasPrefix(user, "Original title:") {
+		_, tail, _ := strings.Cut(user, "Source URL: ")
+		url, _, _ := strings.Cut(tail, "\n")
+		r.search.mu.Lock()
+		page := r.search.pages[url]
+		r.search.mu.Unlock()
+		r.mu.Lock()
+		r.n++
+		save(filepath.Join(r.dir, fmt.Sprintf("nano-%02d.json", r.n)), nanoRecord{url, page, reply})
+		r.mu.Unlock()
+	}
+	return reply, e
+}
+
+type lookupRecord struct {
+	Name string
+	Apps []appstore.App
+}
+type storeRecorder struct {
+	*appstore.Client
+	mu  sync.Mutex
+	dir string
+	n   int
+}
+
+func (s *storeRecorder) Storefront() string { return s.Country }
+func (s *storeRecorder) Find(ctx context.Context, name string, limit int) ([]appstore.App, error) {
+	apps, e := s.Client.Find(ctx, name, limit)
+	s.mu.Lock()
+	s.n++
+	save(filepath.Join(s.dir, fmt.Sprintf("lookup-%02d.json", s.n)), lookupRecord{name, apps})
+	s.mu.Unlock()
+	return apps, e
+}
+
+func main() {
+	if len(os.Args) != 2 || (os.Args[1] != "capture" && os.Args[1] != "live") {
+		panic("choose capture or live")
+	}
+	mode := os.Args[1]
+	ctx := context.Background()
+	must(os.MkdirAll(filepath.Dir(db), 0700))
+	meter, e := spend.Open(ctx, spend.Config{Path: db, ReservationTTL: 30 * time.Minute, Pools: map[spend.Pool]spend.PoolConfig{
+		spend.PoolModel: {Limit: 676237000}, spend.PoolTavily: {Limit: 84 * spend.CreditUnit}, spend.PoolChecksDaily: {Limit: 5},
+	}})
+	must(e)
+	defer meter.Close()
+	// The isolated DB is reused across captures and the single live request.
+	// Baseline old work: $0.323763 and66 credits; revised task totals <=$1/150.
+	defer func() {
+		m, _ := meter.Status(ctx, spend.PoolModel)
+		t, _ := meter.Status(ctx, spend.PoolTavily)
+		v := map[string]any{"old_model_nano": 323763000, "old_tavily_credits": 66, "revised_model": m, "revised_tavily": t, "db": db}
+		save(filepath.Join(root, mode+"-spend.json"), v)
+		fmt.Printf("model_new=$%.6f tavily_new=%.3f cumulative_model=$%.6f cumulative_tavily=%.3f\n", float64(m.Spent)/1e9, float64(t.Spent)/float64(spend.CreditUnit), float64(m.Spent+323763000)/1e9, 66+float64(t.Spent)/float64(spend.CreditUnit))
+	}()
+	key := func() (string, error) {
+		v := os.Getenv("NEBIUS_KEY")
+		if v == "" {
+			return "", fmt.Errorf("missing model key")
+		}
+		return v, nil
+	}
+	settings := model.Settings{Provider: "tokenfactory", BaseURL: "https://api.tokenfactory.nebius.com/v1", Model: "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B", InputPerM: .06, OutputPerM: .24, MaxTokens: 8192, PerMinute: 100, Extra: map[string]any{"chat_template_kwargs": map[string]any{"enable_thinking": false}}}
+	reader, e := model.New(settings, key)
+	must(e)
+	js := settings
+	js.Model = "nvidia/nemotron-3-super-120b-a12b"
+	js.InputPerM = .30
+	js.OutputPerM = .90
+	js.MaxTokens = 4096
+	js.PerMinute = 300
+	judge, e := model.New(js, key)
+	must(e)
+	titles := []struct {
+		Slug, Title string
+		Age         int
+	}{{"roblox", "Roblox", 9}, {"minecraft", "Minecraft", 9}, {"khan-academy-kids", "Khan Academy Kids", 5}}
+	if mode == "live" {
+		titles = titles[:1]
+	}
+	transport := http.DefaultTransport
+	for _, title := range titles {
+		dir := filepath.Join(root, title.Slug)
+		if mode == "live" {
+			dir = filepath.Join(root, "live-roblox")
+		}
+		if _, e := os.Stat(dir); e == nil {
+			panic("refuse overwrite existing capture: " + dir)
+		}
+		must(os.MkdirAll(dir, 0700))
+		http.DefaultTransport = &responseTransport{base: transport, dir: filepath.Join(dir, "responses")}
+		search := &searchRecorder{Searcher: tavily.New("", func() (string, error) {
+			v := os.Getenv("TAVILY_KEY")
+			if v == "" {
+				return "", fmt.Errorf("missing Tavily key")
+			}
+			return v, nil
+		}), dir: dir, pages: map[string]tavily.Result{}}
+		store := &storeRecorder{Client: appstore.New("", "us"), dir: dir}
+		rr := &readerRecorder{Chatter: reader, search: search, dir: dir}
+		p := &pipeline.Pipeline{Gatherer: &pipeline.Gatherer{Store: store, Search: search, Meter: meter}, Reader: &pipeline.Reader{Model: rr, Meter: meter}, Judge: &pipeline.Judge{Model: judge, Meter: meter, Fast: map[string]any{"chat_template_kwargs": map[string]any{"enable_thinking": false}}, Think: map[string]any{"chat_template_kwargs": map[string]any{"enable_thinking": true}}}, Cache: &pipeline.MemCache{}, Checks: meter}
+		if mode == "capture" {
+			apps, e := store.Find(ctx, title.Title, 5)
+			must(e)
+			var app *appstore.App
+			for i := range apps {
+				if strings.HasPrefix(strings.ToLower(apps[i].Name), strings.ToLower(title.Title)) {
+					app = &apps[i]
+					break
+				}
+			}
+			if app == nil {
+				panic("no original App Store match")
+			}
+			card := pipeline.Card{Title: title.Title, Age: title.Age, Kind: pipeline.KindIOS, Verdict: checklist.No, App: &pipeline.AppInfo{TrackID: app.ID, Name: app.Name, Genre: app.Genre}}
+			// Discovery's no is a request fixture, not evidence of a computed verdict.
+			alts, e := p.FindAlternatives(ctx, card, "capture-"+title.Slug)
+			must(e)
+			save(filepath.Join(dir, "pending.json"), alts)
+			fmt.Printf("capture %s: %d confirmed names, %d Nano pages\n", title.Slug, len(alts), rr.n)
+		} else {
+			card, e := p.Run(ctx, pipeline.Request{Title: title.Title, Age: title.Age}, "live-roblox")
+			must(e)
+			save(filepath.Join(dir, "main-card-before-alternatives.json"), card)
+			final, alts, e := p.WithAlternatives(ctx, card, "live-roblox")
+			must(e)
+			save(filepath.Join(dir, "card.json"), final)
+			save(filepath.Join(dir, "alternative-cards.json"), alts)
+			fmt.Printf("live %s: %s, %d checked alternatives\n", title.Slug, final.Verdict, len(final.Alternatives))
+		}
+	}
+}

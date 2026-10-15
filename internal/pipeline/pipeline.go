@@ -287,6 +287,7 @@ func (p *Pipeline) Collect(ctx context.Context, title, ref string) (ev Evidence,
 			StoreURL:      g.App.StoreURL,
 			ContentRating: g.App.AgeRating,
 			Description:   g.App.Description,
+			Genre:         g.App.Genre,
 		}
 	}
 	reviews := 0

@@ -59,6 +59,7 @@ type App struct {
 	StoreURL    string `json:"trackViewUrl"`
 	AgeRating   string `json:"trackContentRating"`
 	Description string `json:"description"`
+	Genre       string `json:"primaryGenreName"`
 }
 
 // Find searches the storefront for title and returns the hits, best first.

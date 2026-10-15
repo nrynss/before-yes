@@ -1,0 +1,18 @@
+{
+  "SourceURL": "https://www.reddit.com/r/homeschool/comments/zyx7nd/if_you_could_choose_only_3_apps",
+  "Page": {
+    "title": "If you could choose only 3 apps... : r/homeschool",
+    "url": "https://www.reddit.com/r/homeschool/comments/zyx7nd/if_you_could_choose_only_3_apps",
+    "content": "For that age, I would probably do Khan Academy Kids, Starfall, and Teach Your Monster Number Skills. raevynfyre.",
+    "raw_content": "",
+    "score": 0.69498676,
+    "published_date": ""
+  },
+  "Reply": {
+    "Text": "{\n  \"products\": [\n    {\n      \"name\": \"Khan Academy Kids\",\n      \"line\": \"Khan Academy Kids\",\n      \"requires_original_platform\": false\n    },\n    {\n      \"name\": \"Starfall\",\n      \"line\": \"Starfall\",\n      \"requires_original_platform\": false\n    },\n    {\n      \"name\": \"Teach Your Monster Number Skills\",\n      \"line\": \"Teach Your Monster Number Skills\",\n      \"requires_original_platform\": false\n    }\n  ]\n}",
+    "InputTokens": 305,
+    "OutputTokens": 112,
+    "Price": 45180,
+    "Measured": true
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "SourceURL": "https://thehomeschoolresourceroom.com/2017/03/12/top-ten-educational-media-sites-for-kindergarten-and-what-we-tried-that-failed",
+  "Page": {
+    "title": "Ten Best Apps for Kids - and what we tried that FAILED!",
+    "url": "https://thehomeschoolresourceroom.com/2017/03/12/top-ten-educational-media-sites-for-kindergarten-and-what-we-tried-that-failed",
+    "content": "Best Apps for Kids · Starfall http://www.starfall.com and on your app store · Khan Academy http://www.khanacademy.org and video viewer on your app",
+    "raw_content": "",
+    "score": 0.41620392,
+    "published_date": ""
+  },
+  "Reply": {
+    "Text": "{\n  \"products\": [\n    {\n      \"name\": \"Khan Academy\",\n      \"line\": \"Khan Academy http://www.khanacademy.org and video viewer on your app\",\n      \"requires_original_platform\": false\n    }\n  ]\n}",
+    "InputTokens": 327,
+    "OutputTokens": 57,
+    "Price": 33300,
+    "Measured": true
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "listen": "127.0.0.1:18139",
+  "data_dir": "/tmp/t313-nano-production/data",
+  "web_dir": "/tmp/before-yes-t3.13-nano/web/build",
+  "live": true,
+  "country": "us",
+  "review_pages": 10,
+  "card_max_age_hours": 168,
+  "evidence_max_age_hours": 168,
+  "judge_fast": {
+    "chat_template_kwargs": {
+      "enable_thinking": false
+    }
+  },
+  "judge_think": {
+    "chat_template_kwargs": {
+      "enable_thinking": true
+    }
+  },
+  "reader": {
+    "provider": "tokenfactory",
+    "base_url": "https://api.tokenfactory.nebius.com/v1",
+    "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+    "input_per_m": 0.06,
+    "output_per_m": 0.24,
+    "max_tokens": 8192,
+    "per_minute": 100,
+    "extra": {
+      "chat_template_kwargs": {
+        "enable_thinking": false
+      }
+    }
+  },
+  "judge": {
+    "provider": "tokenfactory",
+    "base_url": "https://api.tokenfactory.nebius.com/v1",
+    "model": "nvidia/nemotron-3-super-120b-a12b",
+    "input_per_m": 0.3,
+    "output_per_m": 0.9,
+    "max_tokens": 4096,
+    "per_minute": 300
+  },
+  "budget": {
+    "model_usd": 0.53477332,
+    "tavily_credits_monthly": 41,
+    "daily_fresh_checks": 5
+  }
+}

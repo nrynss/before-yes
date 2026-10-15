@@ -1,0 +1,35 @@
+{
+  "Name": "Gravwell",
+  "Apps": [
+    {
+      "trackId": 1124826323,
+      "trackName": "GRI",
+      "sellerName": "LLC \"GRI\"",
+      "sellerUrl": "https://itgri.ru/",
+      "trackViewUrl": "https://apps.apple.com/us/app/gri/id1124826323?uo=4",
+      "trackContentRating": "17+",
+      "description": "GRI - мобильное приложение для управления стандартами, бизнес-процессами и персоналом вашей компании.\nС его помощью можно совершать операции, не прибегая к использованию ПК и касс, таких как:\n- проведение инвентаризации\n- переоценка\n- выкладка товара и просмотр его места хранения\n- выдача подарков клиентам\n- оформление онлайн-заказов и резервов\nРеализована новостная лента с видеороликами, программа обучения и тестирования для сотрудников розничных сетей. В профиле продавцы могут отслеживать свои показатели по продажам и бонусы.",
+      "primaryGenreName": "Utilities"
+    },
+    {
+      "trackId": 6753343471,
+      "trackName": "Grubb’in",
+      "sellerName": "GRUBB'IN LTD",
+      "sellerUrl": "https://www.flipdish.com/",
+      "trackViewUrl": "https://apps.apple.com/us/app/grubbin/id6753343471?uo=4",
+      "trackContentRating": "12+",
+      "description": "Grubb'in is committed to providing the best food and drink experience in your own home. Order online here at Grubb'in or order from our app!",
+      "primaryGenreName": "Food \u0026 Drink"
+    },
+    {
+      "trackId": 6802656607,
+      "trackName": "glugluglug",
+      "sellerName": "Ken Grønnbeck",
+      "sellerUrl": "https://glugluglug.com",
+      "trackViewUrl": "https://apps.apple.com/us/app/glugluglug/id6802656607?uo=4",
+      "trackContentRating": "17+",
+      "description": "glugluglug is a wine cellar you can keep with your friends.\n\nFree, and it stays on your phone: make a place for bottles — a wine fridge, a shelf, a box in the hallway — and put wine in it. See everything you have at a glance, drink one, and watch the rack empty. No account, no sign-up, no nagging.\n\nTHE NOTEBOOK\nNot every bottle goes in the cellar. Some you drink at a bar and want to remember. Write it down: give it a verdict from \"nope\" to \"again!!\", then pick what it looked, smelled and tasted like from a proper tasting vocabulary — or just say \"went great with the pizza\" and move on. Over time, the notebook works out what you actually go for.\n\nEVERY BOTTLE, FINDABLE\nOne searchable list across every place you keep wine. Producer, grape, region, vintage — find the thing you know you have somewhere.\n\nFRIENDS, FREE\nAn account costs nothing and adds friends, so someone can share a bottle with you the day they hear about this. What they share turns up in your app straight away.\n\nGLUG PLUS\nSharing back, and everything that needs a server, is the subscription:\n\n• Sharing — split a case with a friend, half a bottle each if you like, and the count stays right without a spreadsheet or an awkward conversation\n• Shared places — the fridge you keep with the person you live with, visible to you both\n• Sync — your cellar on every phone, backed up\n• The label scanner — point the camera at a bottle, or pick a photo you already took, and get the wine\n\nFree keeps working. Your cellar just stays on this phone.\n\nWHAT IT DOESN'T DO\nNo adverts. No analytics. No scores out of 100 from someone who isn't you. Your cellar is yours, and you can export it as a spreadsheet whenever you like.\n\nGLUG PLUS, THE SUBSCRIPTION\nglug plus is an auto-renewing monthly subscription. It renews each month unless you switch it off at least 24 hours before the month is up, and you can cancel any time in your App Store settings. The free app keeps working either way.\n\nTerms of Use (EULA): https://www.apple.com/legal/internet-services/itunes/dev/stdeula/\nOur service terms: https://glugluglug.com/terms\nPrivacy policy: https://glugluglug.com/privacy\n\nnp.lol — small apps, made with care.",
+      "primaryGenreName": "Food \u0026 Drink"
+    }
+  ]
+}

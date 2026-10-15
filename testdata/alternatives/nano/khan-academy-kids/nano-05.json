@@ -1,0 +1,18 @@
+{
+  "SourceURL": "https://www.youtube.com/channel/UC2ri4rEb8abnNwXvTjg5ARw",
+  "Page": {
+    "title": "Khan Academy Kids",
+    "url": "https://www.youtube.com/channel/UC2ri4rEb8abnNwXvTjg5ARw",
+    "content": "Introducing Khan Academy Kids: A Fun, Free Educational App For Kids Ages 2-8 · Khan Academy Kids: Fun, Free, Engaging Learning App for Kids Ages 2-8 · Starting",
+    "raw_content": "",
+    "score": 0.42405477,
+    "published_date": ""
+  },
+  "Reply": {
+    "Text": "{\n  \"products\": [\n    {\n      \"name\": \"Khan Academy Kids\",\n      \"line\": \"Introducing Khan Academy Kids: A Fun, Free Educational App For Kids Ages 2-8\",\n      \"requires_original_platform\": false\n    }\n  ]\n}",
+    "InputTokens": 304,
+    "OutputTokens": 59,
+    "Price": 32400,
+    "Measured": true
+  }
+}

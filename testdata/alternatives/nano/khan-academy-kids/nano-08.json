@@ -1,0 +1,18 @@
+{
+  "SourceURL": "https://www.facebook.com/groups/Secular.Homeschool.Families/posts/10158298619811035",
+  "Page": {
+    "title": "Khan Academy vs Khan Academy Kids: Which is Better?",
+    "url": "https://www.facebook.com/groups/Secular.Homeschool.Families/posts/10158298619811035",
+    "content": "Can someone explain to me the differences between khan academy kids and khan academy. We just started using regular khan academy now that I’ve discovered",
+    "raw_content": "",
+    "score": 0.1732186,
+    "published_date": ""
+  },
+  "Reply": {
+    "Text": "{\n  \"products\": [\n    {\n      \"name\": \"Khan Academy Kids\",\n      \"line\": \"Khan Academy Kids\",\n      \"requires_original_platform\": false\n    }\n  ]\n}",
+    "InputTokens": 307,
+    "OutputTokens": 44,
+    "Price": 28980,
+    "Measured": true
+  }
+}

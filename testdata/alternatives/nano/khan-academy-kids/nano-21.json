@@ -1,0 +1,18 @@
+{
+  "SourceURL": "https://www.facebook.com/groups/TXHS101/posts/1928215634629178",
+  "Page": {
+    "title": "What online homeschooling curriculums are recommended ...",
+    "url": "https://www.facebook.com/groups/TXHS101/posts/1928215634629178",
+    "content": "Hello I'm new to trying homeschooling. My son is currently 4 and will be turning 5 in October so I know it's time to start. Is there any suggestions",
+    "raw_content": "",
+    "score": 0.0870737,
+    "published_date": ""
+  },
+  "Reply": {
+    "Text": "{\n  \"products\": [\n    {\n      \"name\": \"Khan Academy Kids\",\n      \"line\": \"Khan Academy Kids\",\n      \"requires_original_platform\": false\n    }\n  ]\n}",
+    "InputTokens": 310,
+    "OutputTokens": 44,
+    "Price": 29160,
+    "Measured": true
+  }
+}

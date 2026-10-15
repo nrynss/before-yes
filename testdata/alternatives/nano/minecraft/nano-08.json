@@ -1,0 +1,18 @@
+{
+  "SourceURL": "https://www.facebook.com/groups/558977328068750/posts/1816001539032983",
+  "Page": {
+    "title": "Games like Minecraft for kids?",
+    "url": "https://www.facebook.com/groups/558977328068750/posts/1816001539032983",
+    "content": "Anyone have any game recommendations that are similar to Minecraft for a 5 year old? Lol. (Not Roblox). He loves building bases and creating his on",
+    "raw_content": "",
+    "score": 0.2987629,
+    "published_date": ""
+  },
+  "Reply": {
+    "Text": "{\n  \"products\": [\n    {\n      \"name\": \"Minecraft\",\n      \"line\": \"Anyone have any game recommendations that are similar to Minecraft for a 5 year old? Lol. (Not Roblox). He loves building bases and creating his on\",\n      \"requires_original_platform\": false\n    }\n  ]\n}",
+    "InputTokens": 312,
+    "OutputTokens": 72,
+    "Price": 36000,
+    "Measured": true
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "baseline": {
+    "model_nano": 323763000,
+    "tavily_milli_credits": 66000
+  },
+  "discovery_and_invalid_trial": {
+    "model_nano": 141463680,
+    "tavily_milli_credits": 43000
+  },
+  "actual_production": {
+    "model_nano": 41269860,
+    "tavily_milli_credits": 8000
+  },
+  "total": {
+    "model_nano": 506496540,
+    "tavily_milli_credits": 117000
+  },
+  "approved_total": {
+    "model_nano": 1000000000,
+    "tavily_milli_credits": 150000
+  },
+  "remaining": {
+    "model_nano": 493503460,
+    "tavily_milli_credits": 33000
+  }
+}

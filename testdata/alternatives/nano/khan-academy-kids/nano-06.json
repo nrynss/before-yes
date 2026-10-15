@@ -1,0 +1,18 @@
+{
+  "SourceURL": "https://www.reddit.com/r/homeschool/comments/1irs0ld/want_to_try_khan_academy_kids_for_our_little_ones",
+  "Page": {
+    "title": "Want to try \"Khan Academy Kids\" for our little ones but ...",
+    "url": "https://www.reddit.com/r/homeschool/comments/1irs0ld/want_to_try_khan_academy_kids_for_our_little_ones",
+    "content": "My 4yo likes to play khan academy kids, but it's just a fun screen activity when we need the kids to be calm. For actual education, we're using",
+    "raw_content": "",
+    "score": 0.37882724,
+    "published_date": ""
+  },
+  "Reply": {
+    "Text": "{\n  \"products\": [\n    {\n      \"name\": \"Khan Academy Kids\",\n      \"line\": \"My 4yo likes to play khan academy kids, but it's just a fun screen activity when we need the kids to be calm. For actual education, we're using\",\n      \"requires_original_platform\": false\n    }\n  ]\n}",
+    "InputTokens": 318,
+    "OutputTokens": 76,
+    "Price": 37320,
+    "Measured": true
+  }
+}

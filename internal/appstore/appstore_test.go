@@ -225,6 +225,10 @@ func TestFindDecodesSearchFixture(t *testing.T) {
 			if err := json.Unmarshal(data, &generic); err != nil {
 				t.Fatalf("fixture: %v", err)
 			}
+			wantGenre, _ := generic.Results[0]["primaryGenreName"].(string)
+			if wantGenre == "" || got.Genre != wantGenre {
+				t.Errorf("Genre = %q, captured primaryGenreName = %q", got.Genre, wantGenre)
+			}
 			wantDescription, _ := generic.Results[0]["description"].(string)
 			if got.Description != wantDescription {
 				t.Errorf("Description = %d bytes, want the fixture's %d", len(got.Description), len(wantDescription))

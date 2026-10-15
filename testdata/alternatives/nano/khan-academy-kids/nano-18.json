@@ -1,0 +1,18 @@
+{
+  "SourceURL": "https://www.reddit.com/r/Preschoolers/comments/1iwwdzl/best_educational_youtube_channels_for_a_curious",
+  "Page": {
+    "title": "Best educational YouTube channels for a curious 5-year-old?",
+    "url": "https://www.reddit.com/r/Preschoolers/comments/1iwwdzl/best_educational_youtube_channels_for_a_curious",
+    "content": "I am looking for quality educational videos for my young son, what do you like. Ideally suitable for age 5. He is very interested, he is such a",
+    "raw_content": "",
+    "score": 0.43727133,
+    "published_date": ""
+  },
+  "Reply": {
+    "Text": "{\n  \"products\": [\n    {\n      \"name\": \"Khan Academy Kids\",\n      \"line\": \"Khan Academy Kids\",\n      \"requires_original_platform\": false\n    }\n  ]\n}",
+    "InputTokens": 308,
+    "OutputTokens": 44,
+    "Price": 29040,
+    "Measured": true
+  }
+}
