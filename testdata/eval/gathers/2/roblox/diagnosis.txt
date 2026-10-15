@@ -1,10 +1,10 @@
 diagnose Roblox age 9 verdict no findings 187 (conflict pass replaced the conflicted areas)
   contact  risks 40 mitigations 13 other 1
     judge flag setting "" cited 2 [f_a8ef6e887203f7cd f_936c4f1c94f5d7a9]
-    card unknown setting ""
-    check entail: flag_not_earned
-    entail meets_definition=false reason_supported=false
-    reason Changed to unknown: the cited quotes do not meet this area's flag definition.
+    card flag setting ""
+    check stood
+    entail meets_definition=true reason_supported=true
+    reason Strangers can message or voice chat with children, and chats built into mini‑games cannot be disabled.
     quote f_a8ef6e887203f7cd risk review: There are child predators in this game, it allows your child to interact with adults and my kids has been threatened by a person in adopt me and has been scared to play. The police have come and taken the predators under custody but Roblox owner wanted them on there. DO NOT GET THIS APP ESPECIALLY IF YOUR 16 AND UNDER!!!!
     quote f_936c4f1c94f5d7a9 risk forum: Chats built into the coding of specific mini-games cannot be disabled, and kids can type text on "signs" regardless of communication preferences.
   money  risks 29 mitigations 2 other 4
