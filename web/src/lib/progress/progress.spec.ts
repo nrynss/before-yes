@@ -48,8 +48,8 @@ test('dropped mid-read replays with Last-Event-ID and finishes', async ({page}) 
 test('page opened mid-read shows the saved stage and count at once', async ({page}) => {
  await mock(page);await page.goto(`/check/${id}`);
  const status = page.getByRole('status');
- await expect(status).toContainText('reading 14 sources');await expect(status).toContainText('3 of 9');
- await expect(page.locator('li[aria-current="step"]')).toContainText('Read');
+ await expect(status).toContainText('Reading sources');await expect(status).toContainText('3 of 9');
+ await expect(page.locator('li[aria-current="step"]')).toContainText('Check the evidence');
  await opened(page);await expect(page.getByRole('status')).toContainText('3 of 9');
 });
 test('reconnect rereads the saved stage and count', async ({page}) => {
@@ -80,17 +80,17 @@ test('replayed older read count after the snapshot never moves the count backwar
  expect(counts.slice(0,2)).toEqual([7,7]);
 });
 const shown: Record<string, [string, string]> = {
- budget_exhausted: ['The research budget is used up.', 'Open an example card, or come back later.'],
- no_sources: ['We couldn’t find writing about this title.', 'Go back to the ask page and try the full name.'],
- check_failed: ['The check stopped before it had an answer.', 'Start it again from the ask page.'],
- live_checks_off: ['Fresh checks are paused right now.', 'Open an example card while you wait.'],
- busy: ['Other checks are still in progress.', 'Wait a moment, then try this title again.'],
- rate_limited: ['Too many checks were asked for in a short time.', 'Wait a moment, then try again.'],
+ budget_exhausted: ['The research budget is used up.', 'Open a previous check or come back later.'],
+ no_sources: ['Sorry, we couldn’t research this title.', 'Check the spelling or try its full name.'],
+ check_failed: ['This check couldn’t finish.', 'Return home and try again.'],
+ live_checks_off: ['New checks are paused.', 'You can still open previous checks.'],
+ busy: ['Other checks are running.', 'Wait a moment, then try again.'],
+ rate_limited: ['Too many requests.', 'Wait a moment, then try again.'],
  passcode_required: ['This site asks for the shared passcode before starting a check.', 'Go back to the ask page and enter it there.'],
- not_found: ['Nothing matches that address.', 'Go back to the ask page and start again.'],
- internal_error: ['This check did not finish.', 'Go back to the ask page and try again.'],
- job_failed: ['This check did not finish.', 'Go back to the ask page and try again.'],
- unknown: ['This check did not finish.', 'Go back to the ask page and try again.'],
+ not_found: ['Sorry, we couldn’t find this check.', 'Check the link or return home to start again.'],
+ internal_error: ['This check couldn’t finish.', 'Return home and try again.'],
+ job_failed: ['This check couldn’t finish.', 'Return home and try again.'],
+ unknown: ['This check couldn’t finish.', 'Return home and try again.'],
 };
 for (const [code, [situation, next]] of Object.entries(shown)) {
  test(`terminal generic stream rereads specific ${code} safely`,async({page})=>{
@@ -102,14 +102,14 @@ for (const [code, [situation, next]] of Object.entries(shown)) {
   await expect(status).not.toContainText('PRIVATE');await expect(status).not.toContainText(code);
  });
 }
-for (const [pool, situation] of [['daily_checks', 'Today’s allowance of fresh checks is used up.'], ['tavily', 'The budget for searching sources is used up.']] as const) {
+for (const [pool, situation] of [['daily_checks', 'Today’s check limit has been reached.'], ['tavily', 'The budget for searching sources is used up.']] as const) {
  test(`budget pool ${pool} uses its T5.6 sentence`, async ({page}) => {
   await mock(page); await page.goto(`/check/${id}`); await opened(page);
   await state(page, {id, status:'error', code:'budget_exhausted', message:'PRIVATE', detail:{pool}});
   await push(page, `event: error\nid: 1\ndata: ${JSON.stringify({job_id:id,status:'error',error:{error:{code:'job_failed',message:'PRIVATE'}}})}`);
   const status = page.getByRole('status');
   await expect(status).toContainText(situation);
-  await expect(status).toContainText('Open an example card, or come back later.');
+  await expect(status).toContainText('Open a previous check or come back later.');
   await expect(status).not.toContainText(pool);
   await expect(status).not.toContainText('PRIVATE');
   await expect(status).not.toContainText('budget_exhausted');
@@ -118,7 +118,7 @@ for (const [pool, situation] of [['daily_checks', 'Today’s allowance of fresh 
 test('saved done on initial load goes straight to card',async({page})=> {await mock(page,fixture('get-check-done'));await page.goto(`/check/${id}`);await expect(page).toHaveURL(`/card/${card}`);});
 for(const status of ['cancelled','interrupted']) test(`${status} tells parent to restart`,async({page})=>{await mock(page,{id,status});await page.goto(`/check/${id}`);await expect(page.getByRole('status')).toContainText('start it again');});
 test('malformed snapshot retry works with keyboard',async({page})=>{
- await mock(page,{id,status:'done',card_id:'../../unsafe'});await page.goto(`/check/${id}`);await expect(page.getByRole('status')).toContainText('This check did not finish.');await state(page,fixture('get-check-done'));await page.getByRole('button',{name:'Retry following'}).focus();await page.keyboard.press('Enter');await expect(page).toHaveURL(`/card/${card}`);
+ await mock(page,{id,status:'done',card_id:'../../unsafe'});await page.goto(`/check/${id}`);await expect(page.getByRole('status')).toContainText('This check couldn’t finish.');await state(page,fixture('get-check-done'));await page.getByRole('button',{name:'Reconnect'}).focus();await page.keyboard.press('Enter');await expect(page).toHaveURL(`/card/${card}`);
 });
 for (const status of ['done','error']) test(`count-free terminal snapshot: ${status} after counted Read reconnect`,async({page})=>{
  await mock(page);await page.goto(`/check/${id}`);await opened(page);await push(page,frames[1]);await expect(page.getByRole('status')).toContainText('120 of 500');
@@ -144,7 +144,7 @@ test('route unmount closes stream and prevents further requests',async({page})=>
 for(const kind of ['404','network','malformed']) test(`${kind} load failure offers safe retry`,async({page})=>{
  let retry=false;
  await page.route(`**/api/checks/${id}`,async route=>{if(retry){await route.fulfill({json:fixture('get-check-done')});return;}if(kind==='network'){await route.abort();return;}await route.fulfill({status:kind==='404'?404:200,json:kind==='404'?fixture('get-check-404'):{id,status:'unknown',message:'PRIVATE'}});});
- await page.goto(`/check/${id}`);await expect(page.getByRole('button',{name:'Retry following'})).toBeVisible();await expect(page.getByRole('status')).not.toContainText('PRIVATE');retry=true;await page.getByRole('button',{name:'Retry following'}).click();await expect(page).toHaveURL(`/card/${card}`);
+ await page.goto(`/check/${id}`);await expect(page.getByRole('button',{name:'Reconnect'})).toBeVisible();await expect(page.getByRole('status')).not.toContainText('PRIVATE');retry=true;await page.getByRole('button',{name:'Reconnect'}).click();await expect(page).toHaveURL(`/card/${card}`);
 });
 test('leaving during a late saved result never navigates to its card',async({page})=>{
  let release!:()=>void;const pending = new Promise<void>(resolve=>{release=resolve;});let reads=0;
@@ -155,16 +155,16 @@ test('initial stream refusal offers retry with saved state',async({page})=>{
  let retry=false;
  await page.route(`**/api/checks/${id}`,route=>route.fulfill({json:retry?fixture('get-check-done'):fixture('get-check-running')}));
  await page.route(`**/api/checks/${id}/events`,route=>route.fulfill({status:503,json:{error:{code:'busy',message:'busy'}}}));
- await page.goto(`/check/${id}`);await expect(page.getByRole('status')).toContainText('connection stopped');retry=true;await page.getByRole('button',{name:'Retry following'}).click();await expect(page).toHaveURL(`/card/${card}`);
+ await page.goto(`/check/${id}`);await expect(page.getByRole('status')).toContainText('We couldn’t reconnect.');retry=true;await page.getByRole('button',{name:'Reconnect'}).click();await expect(page).toHaveURL(`/card/${card}`);
 });
 for(const result of ['nonterminal','malformed','network']) test(`terminal final GET ${result} is recoverable`,async({page})=>{
  await mock(page);await page.goto(`/check/${id}`);await opened(page);
  if(result === 'network') await page.evaluate(()=>{const prior=window.fetch;window.fetch=(input,init)=>String(input).endsWith('/events')?prior(input,init):Promise.reject(new TypeError('network'));});
  else await state(page,result === 'nonterminal'?{id,status:'running'}:{id,status:'done',card_id:'bad'});
- await push(page,frames[3]);await expect(page.getByRole('button',{name:'Retry following'})).toBeVisible();await expect(page).toHaveURL(`/check/${id}`);
+ await push(page,frames[3]);await expect(page.getByRole('button',{name:'Reconnect'})).toBeVisible();await expect(page).toHaveURL(`/check/${id}`);
 });
 test('rapid retry ignores stale failed read from the previous attempt',async({page})=>{
- await mock(page,{id,status:'invalid'});await page.goto(`/check/${id}`);await expect(page.getByRole('button',{name:'Retry following'})).toBeVisible();
+ await mock(page,{id,status:'invalid'});await page.goto(`/check/${id}`);await expect(page.getByRole('button',{name:'Reconnect'})).toBeVisible();
  await page.evaluate(({id,card})=>{
   let reads=0;const pending:{release?:()=>void}={};(window as unknown as {stale:typeof pending}).stale=pending;
   window.fetch=async(input)=>{
@@ -173,14 +173,14 @@ test('rapid retry ignores stale failed read from the previous attempt',async({pa
   };
  },{id,card});
  // Two starts in one event turn deliberately stress overlap, even before rerender removes the button.
- await page.getByRole('button',{name:'Retry following'}).evaluate(button=>{(button as HTMLButtonElement).click();(button as HTMLButtonElement).click();});
+ await page.getByRole('button',{name:'Reconnect'}).evaluate(button=>{(button as HTMLButtonElement).click();(button as HTMLButtonElement).click();});
  await expect(page).toHaveURL(`/card/${card}`);await page.evaluate(()=>(window as unknown as {stale:{release:()=>void}}).stale.release());await page.waitForTimeout(100);await expect(page).toHaveURL(`/card/${card}`);
 });
 
 for (const bad of ['j_legacy', 'j_' + 'A'.repeat(32), 'j_' + '0'.repeat(31), 'j_' + '0'.repeat(33), 'c_' + '0'.repeat(32)]) test(`invalid check ID ${bad} refuses requests`, async ({page}) => {
  const requests: string[] = []; page.on('request', request => {if(request.url().includes('/api/checks/')) requests.push(request.url());});
- await page.goto(`/check/${bad}`);await expect(page.getByRole('status')).toContainText('Nothing matches that address.');await expect(page.getByRole('status')).toContainText('Go back to the ask page and start again.');expect(requests).toEqual([]);
+ await page.goto(`/check/${bad}`);await expect(page.getByRole('status')).toContainText('Sorry, we couldn’t find this check.');await expect(page.getByRole('status')).toContainText('Check the link or return home to start again.');expect(requests).toEqual([]);
 });
 for (const bad of ['c_legacy', 'c_' + 'A'.repeat(32), 'c_' + '0'.repeat(31), 'c_' + '0'.repeat(33), 'j_' + '0'.repeat(32), 'c_' + '0'.repeat(32) + '\n']) test(`invalid saved card ID ${JSON.stringify(bad)} stays on check`, async ({page}) => {
- await mock(page,{id,status:'done',card_id:bad});await page.goto(`/check/${id}`);await expect(page.getByRole('status')).toContainText('This check did not finish.');await expect(page).toHaveURL(`/check/${id}`);
+ await mock(page,{id,status:'done',card_id:bad});await page.goto(`/check/${id}`);await expect(page.getByRole('status')).toContainText('This check couldn’t finish.');await expect(page).toHaveURL(`/check/${id}`);
 });

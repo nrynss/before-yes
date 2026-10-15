@@ -13,14 +13,14 @@ const serverSentences: Record<(typeof codes)[number], string> = {
   not_found: 'no such check',
 };
 const expects: Record<(typeof codes)[number], { situation: string; next: string }> = {
-  budget_exhausted: { situation: 'The budget for fresh checks is used up.', next: 'Open an example card, or come back later.' },
-  no_sources: { situation: 'We couldn’t find writing about this title.', next: 'Go back to the ask page and try the full name.' },
-  check_failed: { situation: 'The check stopped before it had an answer.', next: 'Start it again from the ask page.' },
-  live_checks_off: { situation: 'Fresh checks are paused right now.', next: 'Open an example card while you wait.' },
-  busy: { situation: 'Other checks are still in progress.', next: 'Wait a moment, then try this title again.' },
-  rate_limited: { situation: 'Too many checks were asked for in a short time.', next: 'Wait a moment, then try again.' },
+  budget_exhausted: { situation: 'The budget for fresh checks is used up.', next: 'Open a previous check or come back later.' },
+  no_sources: { situation: 'Sorry, we couldn’t research this title.', next: 'Check the spelling or try its full name.' },
+  check_failed: { situation: 'This check couldn’t finish.', next: 'Return home and try again.' },
+  live_checks_off: { situation: 'New checks are paused.', next: 'You can still open previous checks.' },
+  busy: { situation: 'Other checks are running.', next: 'Wait a moment, then try again.' },
+  rate_limited: { situation: 'Too many requests.', next: 'Wait a moment, then try again.' },
   passcode_required: { situation: 'This site asks for the shared passcode before starting a check.', next: 'Go back to the ask page and enter it there.' },
-  not_found: { situation: 'Nothing matches that address.', next: 'Go back to the ask page and start again.' },
+  not_found: { situation: 'Sorry, we couldn’t find this check.', next: 'Check the link or return home to start again.' },
 };
 
 let vite: ViteDevServer;
@@ -65,14 +65,14 @@ for (const code of codes) {
 }
 
 for (const [pool, situation] of [
-  ['daily_checks', 'Today’s allowance of fresh checks is used up.'],
+  ['daily_checks', 'Today’s check limit has been reached.'],
   ['token_factory', 'The research budget is used up.'],
   ['tavily', 'The budget for searching sources is used up.'],
 ] as const) {
   test(`budget_exhausted names ${pool} in parent language`, async ({ page }) => {
     const notice = await show(page, { error: { code: 'budget_exhausted', message: 'the Token Factory budget is spent', detail: { pool } } });
     await expect(notice.locator('.situation')).toHaveText(situation);
-    await expect(notice.locator('.next')).toHaveText('Open an example card, or come back later.');
+    await expect(notice.locator('.next')).toHaveText('Open a previous check or come back later.');
     const text = await rendered(notice);
     expect(text).not.toContain(pool);
     expect(text).not.toContain('budget_exhausted');
@@ -85,7 +85,7 @@ for (const [pool, situation] of [
 for (const value of [0, -1, Number.NaN, Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY, '20', null, undefined, true]) {
   test(`busy ignores a delay that is not a finite positive number (${String(value)})`, async ({ page }) => {
     const notice = await show(page, { error: { code: 'busy', message: 'retry in 20', retryAfterSeconds: value, detail: { retry_after_seconds: value } } });
-    await expect(notice.locator('.next')).toHaveText('Wait a moment, then try this title again.');
+    await expect(notice.locator('.next')).toHaveText('Wait a moment, then try again.');
     expect(await rendered(notice)).not.toMatch(/\d/);
   });
 }
@@ -99,7 +99,7 @@ test('rate_limited includes a supplied whole-second delay', async ({ page }) => 
 
 test('busy rounds a fractional delay up and prefers detail over the header field', async ({ page }) => {
   const notice = await show(page, { error: { code: 'busy', retryAfterSeconds: 99, detail: { retry_after_seconds: 20.2 } } });
-  await expect(notice.locator('.next')).toHaveText('Wait 21 seconds, then try this title again.');
+  await expect(notice.locator('.next')).toHaveText('Wait 21 seconds, then try again.');
 });
 
 test('a one-second delay is singular, and an invalid detail falls through to the header field', async ({ page }) => {
@@ -113,8 +113,8 @@ test('an unknown area says evidence was missing and does not read as a pass', as
     error: { code: 'budget_exhausted', message: 'OK Yes PRIVATE STACK TRACE', detail: { pool: 'daily_checks' } },
   });
   await expect(notice).toHaveAttribute('role', 'status');
-  await expect(notice.locator('.situation')).toHaveText('Not enough evidence was found to answer this question.');
-  await expect(notice.locator('.next')).toHaveText('Read the sources on the card before you decide. This question is unanswered, not a pass.');
+  await expect(notice.locator('.situation')).toHaveText('We don’t have enough evidence to assess this area.');
+  await expect(notice.locator('.next')).toHaveText('Don’t assume it is safe.');
   const text = await rendered(notice);
   expect(text).not.toMatch(/\bOK\b/i);
   expect(text).not.toMatch(/\bYes\b/i);
@@ -129,8 +129,8 @@ test('an unknown area says evidence was missing and does not read as a pass', as
 test('an unknown code, a thrown stack, and a hostile pool render only the fallback', async ({ page }) => {
   const attack = '<img src=x onerror=alert(1)> job_failed toString constructor';
   const notice = await show(page, { error: { code: 'job_failed', message: attack, stack: attack, detail: { pool: 'toString', retry_after_seconds: Number.MAX_VALUE } } });
-  await expect(notice.locator('.situation')).toHaveText('This check did not finish.');
-  await expect(notice.locator('.next')).toHaveText('Go back to the ask page and try again.');
+  await expect(notice.locator('.situation')).toHaveText('This check couldn’t finish.');
+  await expect(notice.locator('.next')).toHaveText('Return home and try again.');
   const html = await page.content();
   for (const secret of ['job_failed', 'onerror', '<img', 'toString', 'constructor', attack]) {
     expect(html).not.toContain(secret);

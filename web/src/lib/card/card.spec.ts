@@ -27,22 +27,22 @@ for (const { name, card } of fixtures) for (const mode of ['light', 'dark']) for
   await expect(page.locator('[data-area] h3')).toHaveText(areas.map(a => a[1]));
   for (const [area] of areas) {
    const grade = card.grades.find(g => g.area === area)!; const row = page.locator(`[data-area="${area}"]`);
-   const explanation = grade.reason?.trim() ? grade.reason : grade.level === 'unknown' ? 'Not enough evidence was found to answer this question.' : 'The supplied evidence supports this grade; no further explanation was provided.';
+   const explanation = grade.reason?.trim() ? grade.reason : grade.level === 'unknown' ? 'We don’t have enough evidence to assess this area.' : 'The supplied evidence supports this grade; no further explanation was provided.';
    await expect(row.locator('.grade')).toHaveText(levels[grade.level]); await expect(row).toContainText(explanation);
-   if (grade.level === 'unknown' && !grade.reason?.trim()) await expect(row).toContainText('This question is unanswered, not a pass.');
+   if (grade.level === 'unknown' && !grade.reason?.trim()) await expect(row).toContainText('Don’t assume it is safe.');
    if (grade.level !== 'flag' && grade.findings.length) await row.locator('summary').click();
    await expect(row.locator('figure')).toHaveCount(grade.findings.length);
    for (const id of grade.findings) { const finding = card.findings.find(f => f.id === id)!; const quote = row.locator(`[data-finding="${id}"]`); await expect(quote.locator('blockquote')).toHaveText(finding.quote); await expect(quote.locator('a')).toHaveAttribute('href', finding.source.url); }
   }
   const value = (label: string) => page.locator('dl > div').filter({has:page.locator('dt', {hasText:new RegExp(`^${label}$`)})}).locator('dd');
-  await expect(value('Kind')).toHaveText(card.kind_label); await expect(value('Model cost')).toHaveText('$0.0254 USD'); await expect(value('Tavily credits')).toHaveText('8'); await expect(value('Sources read')).toHaveText('9'); await expect(value('Reviews read')).toContainText(String(card.stats.reviews));
-  await expect(value('Unverifiable quotes dropped')).toHaveText('4'); await expect(value('Missing quotes dropped')).toHaveText('2'); await expect(value('Other findings dropped')).toHaveText('1 invalid area · 0 invalid stance · 3 duplicates');
-  await expect(value('Checklist')).toHaveText(card.checklist_version); await expect(value('Reader model')).toHaveText(card.stats.reader_model); await expect(value('Judge model')).toHaveText(card.stats.judge_model);
+  await expect(value('Title type')).toHaveText(card.kind_label); await expect(value('AI processing cost')).toHaveText('$0.0254 USD'); await expect(value('Search credits used')).toHaveText('8'); await expect(value('Sources read')).toHaveText('9'); await expect(value('Reviews read')).toContainText(String(card.stats.reviews));
+  await expect(value('Quotes that couldn’t be verified')).toHaveText('4'); await expect(value('Findings without a source quote')).toHaveText('2'); await expect(value('Other excluded findings')).toHaveText('1 unrecognised checklist area · 0 unrecognised finding category · 3 duplicates');
+  await expect(value('Checklist version')).toHaveText(card.checklist_version); await expect(value('AI model used to read sources')).toHaveText(card.stats.reader_model); await expect(value('AI model used to assess findings')).toHaveText(card.stats.judge_model);
   if (card.verdict === 'no') {
-   await expect(page.locator('.lead blockquote')).toHaveText(no.findings[0].quote); await expect(page.locator('.lead a')).toHaveText('Review 355'); await expect(page.locator('.lead h2')).toHaveText('Evidence behind the Contact flag');
+   await expect(page.locator('.lead blockquote')).toHaveText(no.findings[0].quote); await expect(page.locator('.lead a')).toHaveText('Review 355'); await expect(page.locator('.lead h2')).toHaveText('Why this is a concern');
    expect(await page.locator('.lead').evaluate(el => el.compareDocumentPosition(document.querySelector('.areas')!) & Node.DOCUMENT_POSITION_FOLLOWING)).toBeTruthy();
    expect(await page.locator('.lead blockquote').evaluate(el => parseFloat(getComputedStyle(el).fontSize))).toBeGreaterThanOrEqual(22);
-   await expect(page.getByRole('link', {name:'Open its card'})).toHaveAttribute('href', `/card/${no.alternatives[0].card_id}`); await expect(page.getByRole('link', {name:'Compare both'})).toHaveAttribute('href', `/compare/${no.id}/${no.alternatives[0].card_id}`); await expect(page.locator('.alternative-note')).toHaveText(no.alternatives_note!);
+   await expect(page.getByRole('link', {name:'View check'})).toHaveAttribute('href', `/card/${no.alternatives[0].card_id}`); await expect(page.getByRole('link', {name:'Compare titles'})).toHaveAttribute('href', `/compare/${no.id}/${no.alternatives[0].card_id}`); await expect(page.locator('.alternative-note')).toHaveText('More alternatives can be checked when the daily limit resets.');
    await expect(page.locator('[data-area="contact"] figure')).toHaveCount(3);
   }
   const h1size = await page.locator('h1').evaluate(el => parseFloat(getComputedStyle(el).fontSize)); expect(h1size).toBeGreaterThanOrEqual(44); expect(h1size).toBeLessThanOrEqual(64);
@@ -54,7 +54,7 @@ test('settings work by keyboard without changing verdict or storage; canonical c
  await mock(page, settings); await page.goto(`/card/${settings.id}?private=omit#fragment`); await expect(page.locator('h1')).toHaveText(verdicts[settings.verdict]);
  const before = await page.evaluate(() => JSON.stringify(localStorage)); const checkbox = page.getByRole('checkbox'); await checkbox.focus(); await page.keyboard.press('Space'); await expect(checkbox).toBeChecked(); await expect(page.locator('h1')).toHaveText(verdicts[settings.verdict]);
  await page.getByRole('button', {name:'Copy card link'}).click(); await expect(page.getByText('Link copied.', {exact:true})).toBeVisible(); const url = `http://127.0.0.1:4173/card/${settings.id}`;
- expect(await page.evaluate(() => (window as unknown as {copied:string}).copied)).toBe(url); await expect(page.getByLabel('This card’s address')).toHaveValue(url);
+ expect(await page.evaluate(() => (window as unknown as {copied:string}).copied)).toBe(url); await expect(page.getByLabel('Card link')).toHaveValue(url);
  await page.evaluate(() => { Object.defineProperty(navigator, 'clipboard', {value:undefined, configurable:true}); }); await page.getByRole('button', {name:'Copy card link'}).click(); await expect(page.getByText('Copy the address below to share this card.')).toBeVisible(); expect(await page.evaluate(() => JSON.stringify(localStorage))).toBe(before);
  expect(await page.getByRole('button', {name:'Copy card link'}).evaluate(el => el.getBoundingClientRect().height)).toBeGreaterThanOrEqual(48);
 });
@@ -64,7 +64,7 @@ test('pending and refused alternatives stay hidden, server verdict stays authori
 });
 for (const failure of ['404', 'network', 'malformed']) test(`${failure} loads safe error and retry recovers`, async ({page}) => {
  let first = true; await page.route(`**/api/cards/${no.id}`, async route => { if (!first) return route.fulfill({json:no}); first = false; if (failure === 'network') return route.abort(); if (failure === '404') return route.fulfill({status:404,json:{error:{code:'not_found',message:'PRIVATE SERVER MESSAGE'}}}); return route.fulfill({json:{id:no.id}}); });
- await page.goto(`/card/${no.id}`); await expect(page.locator('h1')).toHaveText(failure === '404' ? 'Nothing matches that address.' : 'The card couldn’t be opened.'); if (failure === '404') await expect(page.getByRole('alert')).toHaveText('Go back to the ask page and start again.'); await expect(page.locator('body')).not.toContainText('PRIVATE SERVER MESSAGE'); await page.getByRole('button', {name:'Try again'}).click(); await expect(page.locator('h1')).toHaveText('No');
+ await page.goto(`/card/${no.id}`); await expect(page.locator('h1')).toHaveText(failure === '404' ? 'Sorry, we couldn’t find this check.' : 'The card couldn’t be opened.'); if (failure === '404') await expect(page.getByRole('alert')).toHaveText('Check the link or return home to start again.'); await expect(page.locator('body')).not.toContainText('PRIVATE SERVER MESSAGE'); await page.getByRole('button', {name:'Try again'}).click(); await expect(page.locator('h1')).toHaveText('No');
 });
 for (const mutation of ['unsafe source', 'missing finding', 'wrong area', 'bad id', 'route mismatch']) test(`fails closed on ${mutation}`, async ({page}) => {
  const card = structuredClone(no); if (mutation === 'unsafe source') card.findings[0].source.url = 'javascript:alert(1)'; if (mutation === 'missing finding') card.findings.shift(); if (mutation === 'wrong area') card.findings[0].area = 'money'; if (mutation === 'bad id') card.id = 'abcdef1234'; if (mutation === 'route mismatch') card.id = yes.id;
@@ -73,7 +73,7 @@ for (const mutation of ['unsafe source', 'missing finding', 'wrong area', 'bad i
 test('unsafe route id requests nothing and XSS quote is plain exact text', async ({page}) => {
  let calls = 0; await page.route('**/api/cards/*', route => {calls++;return route.fulfill({json:no});});
  for (const id of ['c_1', 'c_7Hq2mXv9pK3wLr8sTn4bYe', `c_${'a'.repeat(22)}`, `c_${'a'.repeat(31)}`, `c_${'a'.repeat(33)}`, `c_${'a'.repeat(32)}\n`, `c_${'a'.repeat(31)}g`, `c_${'A'.repeat(32)}`, 'abcdef1234']) {
-  await page.goto(`/card/${encodeURIComponent(id)}`); await expect(page.locator('h1')).toHaveText('Nothing matches that address.'); await expect(page.getByRole('alert')).toHaveText('Go back to the ask page and start again.');
+  await page.goto(`/card/${encodeURIComponent(id)}`); await expect(page.locator('h1')).toHaveText('Sorry, we couldn’t find this check.'); await expect(page.getByRole('alert')).toHaveText('Check the link or return home to start again.');
  }
  expect(calls).toBe(0); await page.unroute('**/api/cards/*');
  const card = structuredClone(no); card.findings[0].quote = '<img src=x onerror="window.pwned=true">'; await open(page,card); await expect(page.locator('.lead blockquote')).toHaveText(card.findings[0].quote); await expect(page.locator('.lead img')).toHaveCount(0); expect(await page.evaluate(() => 'pwned' in window)).toBe(false);
@@ -102,18 +102,18 @@ test('an unknown area with no reason shows it is unanswered, and a real reason s
  record.reason = 'No news finding was verified.';
  await open(page, card);
  const blank = page.locator('[data-area="data"]');
- await expect(blank).toContainText('Not enough evidence was found to answer this question.');
- await expect(blank).toContainText('Read the sources on the card before you decide. This question is unanswered, not a pass.');
+ await expect(blank).toContainText('We don’t have enough evidence to assess this area.');
+ await expect(blank).toContainText('Don’t assume it is safe.');
  await expect(blank).not.toContainText('Not enough verified evidence was found to answer this question.');
  await expect(blank).not.toContainText('OK');
  const kept = page.locator('[data-area="developer_record"]');
  await expect(kept).toContainText('No news finding was verified.');
- await expect(kept).not.toContainText('This question is unanswered, not a pass.');
- await expect(kept).not.toContainText('Not enough evidence was found to answer this question.');
+ await expect(kept).not.toContainText('Don’t assume it is safe.');
+ await expect(kept).not.toContainText('We don’t have enough evidence to assess this area.');
  data.reason = '   ';
  await page.unroute(`**/api/cards/${card.id}`);
  await open(page, card);
- await expect(page.locator('[data-area="data"]')).toContainText('This question is unanswered, not a pass.');
+ await expect(page.locator('[data-area="data"]')).toContainText('Don’t assume it is safe.');
  await expect(page.locator('[data-area="developer_record"]')).toContainText('No news finding was verified.');
  await expect(page.locator('[data-area="developer_record"]')).not.toContainText('unanswered, not a pass');
 });

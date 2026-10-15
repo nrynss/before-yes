@@ -8,7 +8,7 @@ const other = read('card-unclear');
 const yes = read('card-yes');
 const settings = read('card-settings');
 const gate = readFileSync('node_modules/@nrynss/chaaya/dist/testing/a11y.js', 'utf8').replace('export async function', 'async function').replace('(await import("axe-core")).default', 'window.axe');
-const sentence = (grade: Grade) => grade.reason?.trim() || (grade.level === 'unknown' ? 'Not enough verified evidence was found to answer this question.' : 'The supplied evidence supports this grade; no further explanation was provided.');
+const sentence = (grade: Grade) => grade.reason?.trim() || (grade.level === 'unknown' ? 'We don’t have enough evidence to assess this area. Don’t assume it is safe.' : 'The supplied evidence supports this grade; no further explanation was provided.');
 
 async function mock(page: Page, ...cards: Card[]) {
   for (const card of cards) await page.route(`**/api/cards/${card.id}`, route => route.fulfill({ json: card }));
@@ -43,7 +43,7 @@ for (const mode of ['light', 'dark']) for (const width of [360, 899, 900, 1440])
     expect(reversed.grades[0].area).not.toBe('contact');
     await mock(page, reversed, other);
     await page.goto(`/compare/${no.id}/${other.id}`);
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('The same questions.');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Compare titles');
     await expect(page.locator('h1')).toHaveCount(1);
     const titles = page.locator('.titles article');
     await expect(titles).toHaveCount(2);
@@ -74,6 +74,7 @@ for (const mode of ['light', 'dark']) for (const width of [360, 899, 900, 1440])
       }
       const { name, cells: cellBoxes } = await boxes(row);
       expect(Math.abs(cellBoxes[0].top - cellBoxes[1].top)).toBeLessThan(2);
+      expect(Math.abs(cellBoxes[0].bottom - cellBoxes[1].bottom)).toBeLessThan(2);
       expect(cellBoxes[1].left - cellBoxes[0].right).toBeGreaterThan(4);
       if (width < 900) {
         expect(cellBoxes[0].top - name.bottom).toBeGreaterThan(4);
@@ -85,7 +86,7 @@ for (const mode of ['light', 'dark']) for (const width of [360, 899, 900, 1440])
         expect(Math.abs(name.top - cellBoxes[0].top)).toBeLessThan(2);
       }
     }
-    await expect(page.locator('[data-area="age_gating"] [data-side="b"] .reason')).toHaveText('Not enough verified evidence was found to answer this question.');
+    await expect(page.locator('[data-area="age_gating"] [data-side="b"] .reason')).toHaveText('We don’t have enough evidence to assess this area. Don’t assume it is safe.');
     await expect(page.locator('[data-area="money"] [data-side="b"] .setting')).toHaveText('Setting: Ask to Buy (Family Sharing)');
     await expect(page.locator('[data-area="contact"] [data-side="a"] .grade')).toHaveAttribute('data-level', 'flag');
     await fit(page);
@@ -107,8 +108,8 @@ test('invalid addresses request nothing and say what to do next', async ({ page 
   ];
   for (const [leftID, rightID] of pairs) {
     await page.goto(`/compare/${encodeURIComponent(leftID)}/${encodeURIComponent(rightID)}`);
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('The same questions.');
-    await expect(page.getByRole('alert')).toContainText('Open a card and choose Compare both');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Compare titles');
+    await expect(page.getByRole('alert')).toContainText('Open a card and choose Compare titles');
     await expect(page.locator('.compare-row')).toHaveCount(0);
     await expect(page.getByRole('button', { name: 'Try again' })).toHaveCount(0);
   }
@@ -168,7 +169,7 @@ test('open-card links are reachable from the keyboard', async ({ page }) => {
   await mock(page, no, other);
   await page.goto(`/compare/${no.id}/${other.id}`);
   await expect(page.locator('.titles h2').nth(0)).toHaveText(no.title);
-  const link = page.getByRole('link', { name: `Open ${no.title}` });
+  const link = page.getByRole('link', { name: `View ${no.title}’s check` });
   for (let i = 0; i < 12 && !(await link.evaluate(node => node === document.activeElement)); i++) await page.keyboard.press('Tab');
   await expect(link).toBeFocused();
   expect(await link.evaluate(element => element.getBoundingClientRect().height)).toBeGreaterThanOrEqual(48);

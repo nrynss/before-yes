@@ -47,18 +47,17 @@
   const blocked = $derived(left.state === 'invalid' || right.state === 'invalid');
   const waiting = $derived(left.state === 'loading' || right.state === 'loading');
   const problem = $derived(blocked
-    ? `${left.state === 'invalid' && right.state === 'invalid' ? 'These addresses are not cards' : 'One of these addresses is not a card'}. Open a card and choose Compare both, or ask about a title.`
+    ? `${left.state === 'invalid' && right.state === 'invalid' ? 'These addresses are not cards' : 'One of these addresses is not a card'}. Open a card and choose Compare titles, or ask about a title.`
     : left.state === 'missing' || right.state === 'missing'
-      ? 'One of these cards was not found. Check the address, or open a card and choose Compare both.'
+      ? 'One of these cards was not found. Check the address, or open a card and choose Compare titles.'
       : 'A card couldn’t be opened. Try again, or return to the ask page.');
-  const sentence = (grade: Grade) => grade.reason?.trim() || (grade.level === 'unknown' ? 'Not enough verified evidence was found to answer this question.' : 'The supplied evidence supports this grade; no further explanation was provided.');
+  const sentence = (grade: Grade) => grade.reason?.trim() || (grade.level === 'unknown' ? 'We don’t have enough evidence to assess this area. Don’t assume it is safe.' : 'The supplied evidence supports this grade; no further explanation was provided.');
   const gradeOf = (card: Card, area: string) => card.grades.find((grade) => grade.area === area)!;
 </script>
-<svelte:head><title>{pair ? `${pair[0].title} and ${pair[1].title}` : 'Two titles, the same questions'} — Before Yes</title></svelte:head>
+<svelte:head><title>Before Yes - {pair ? `${pair[0].title} and ${pair[1].title}` : 'Compare titles'}</title></svelte:head>
 <a class="back" href={resolve('/')}>← Ask about a title</a>
-<p class="eyebrow">Side by side</p>
-<h1>The same questions.</h1>
-<p class="intro">Two titles. One checklist.</p>
+<h1>Compare titles</h1>
+<p class="intro"><span>Compare the evidence for each title.</span><span>Check the age shown above each result.</span></p>
 {#if waiting}
   <p role="status">Opening both cards.</p>
 {:else if !pair}
@@ -72,7 +71,7 @@
         <p class="verdict" class:stop={card.verdict === 'no'} class:yes={card.verdict === 'yes'} class:caution={card.verdict === 'unclear' || card.verdict === 'yes_with_settings'}>{verdicts[card.verdict]}</p>
         <h2>{card.title}</h2>
         <p class="meta">For age {card.age}</p>
-        <a href={resolve('/card/[id]', { id: card.id })}>Open {card.title}</a>
+        <a href={resolve('/card/[id]', { id: card.id })}>View {card.title}’s check</a>
       </article>
     {/each}
   </div>
@@ -94,6 +93,7 @@
   </div>
 {/if}
 <style>
+  .intro span { display: block; }
   .titles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 14px; row-gap: 4px; }
   .titles .spacer { display: none; }
   .titles article { display: grid; grid-template-rows: subgrid; grid-row: span 4; min-width: 0; }
@@ -107,10 +107,11 @@
   .reason { margin: 0; font-size: .85rem; color: var(--dim); }
   .setting { margin: 8px 0 0; font-size: .85rem; color: var(--text); }
   button { min-height: 48px; margin-top: 16px; border: 1px solid var(--line); border-radius: var(--radius-control); background: var(--surface); color: var(--text); padding: 10px 16px; font: inherit; cursor: pointer; }
-  /* theme.css centers a desktop compare-row. Grade labels share a top edge instead. The 180px column is the theme's. */
+  /* Match each pair's height while keeping headings and content at the top. */
   @media (min-width: 900px) {
     .titles { grid-template-columns: 180px repeat(2, minmax(0, 1fr)); }
     .titles .spacer { display: block; grid-row: span 4; }
-    .compare-row { align-items: start; }
+    .compare-row { align-items: stretch; }
+    .compare-row > h2 { align-self: start; }
   }
 </style>
