@@ -258,6 +258,16 @@ T3.11 owns `judge.go` and T3.12 owns `alternatives.go`; this task touches neithe
 - The view keeps the snapshot's stage until a newer stream progress event arrives, on load and on every reconnect.
 - Outside owns: `dev-diary/feedback.md` (a Keel gap entry) and this file.
 
+**Round-1 remediation (T4.7):**
+
+| Finding | Severity | Fix | Test |
+|---|---|---|---|
+| M1: a replayed older read count could replace a newer saved snapshot after a reconnect | Medium | `Progress.svelte` lets a stream frame replace the saved snapshot only for a later stage, or the same stage with `current >=` the saved count | `replayed older read count after the snapshot never moves the count backwards` (Playwright) |
+| L1: a panic in the progress hook was not recovered | Low (accepted, hardened) | `pipeline.report` recovers a panicking hook, so a reader chunk goroutine cannot crash the process | `TestProgressHookPanicRecovered` (new `internal/pipeline/progress_test.go`, outside owns) |
+| L2: a joiner shows "starting the search" until judge | Low (accepted) | none; matches the stated decision | none |
+
+Two existing progress specs ("exact fixture…" and "reconnect rereads…") now start from a running snapshot with no stage, since under M1's rule a saved read stage correctly outranks a later gather frame.
+
 ---
 
 ## Exit Criteria

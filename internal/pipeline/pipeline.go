@@ -189,7 +189,10 @@ func WithProgress(ctx context.Context, fn func(Step)) context.Context {
 }
 
 // report sends s to ctx's progress hook, if it has one.
+// A panicking hook is recovered: progress is for display, and a reader
+// chunk's goroutine must not take the process down with it.
 func report(ctx context.Context, s Step) {
+	defer func() { _ = recover() }()
 	if fn, ok := ctx.Value(progressKey{}).(func(Step)); ok && fn != nil {
 		fn(s)
 	}

@@ -21,7 +21,17 @@
  let saved = $state<StageSnapshot | undefined>();
  let savedAt = $state(0);
  const latestIndex = $derived(stream ? stream.events.findLastIndex(event => event.name === 'progress') : -1);
- const live = $derived(latestIndex >= 0 && (!saved || latestIndex >= savedAt) ? stream?.events[latestIndex] : undefined);
+ // A stream frame replaces the saved snapshot only when it is newer: a
+ // later stage, or the same stage with a count no lower than the saved
+ // one. A replay after a reconnect can deliver older frames.
+ const rank = (name: string | undefined) => ['gather','read','judge','alternatives'].indexOf(name ?? '');
+ function newer(event: {stage?: string; current?: number}, base: StageSnapshot) {
+  const a = rank(event.stage), b = rank(base.stage);
+  if (a !== b) return a > b;
+  return base.current === undefined || (event.current !== undefined && event.current >= base.current);
+ }
+ const candidate = $derived(latestIndex >= 0 ? stream?.events[latestIndex] : undefined);
+ const live = $derived(candidate?.name === 'progress' && (!saved || (latestIndex >= savedAt && newer(candidate, saved))) ? candidate : undefined);
  const stage = $derived(live?.name === 'progress' ? live.stage : saved?.stage ?? stream?.stage);
  const detail = $derived(live?.name === 'progress' && typeof live.detail === 'object' && live.detail !== null ? live.detail as Record<string, unknown> : {});
  const message = $derived(live ? (typeof detail.message === 'string' ? detail.message : '') : saved?.message ?? '');
