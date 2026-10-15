@@ -1,0 +1,42 @@
+diagnose Khan Academy Kids age 5 verdict no findings 155 (conflict pass unusable (no grades); first pass kept)
+  contact  risks 12 mitigations 2 other 2
+    judge ok setting "" cited 0 []
+    card unknown setting ""
+    check ok_without_finding
+    reason Changed to unknown: no verified finding supports ok.
+  money  risks 4 mitigations 4 other 12
+    judge ok setting "" cited 3 [f_fafdd7902651ab6c f_2b5396534308f22c f_1da121f28cdd8761]
+    card ok setting ""
+    check stood
+    reason The app is free with no in-app purchases, loot boxes, or subscriptions.
+    quote f_fafdd7902651ab6c mitigation review: ACTUALLY FREE YOU DONT NEED TO PAY Thank goodness I use khan academy for school work so when I found out they had a learning games for kids I was so happy and I thought “ they teach fee videos on YouTube “ and it absolutely was free glad to know someone cares for our youth
+    quote f_2b5396534308f22c mitigation store: Khan Academy Kids is 100% free with no ads or subscriptions.
+    quote f_1da121f28cdd8761 mitigation reddit: It is free. It includes learning games that give rewards in the game like musical instruments, or clothes to play dress up on one of the characters, or (my son's favourite) bugs to add to a bug house. It also includes drawing/colouring in. There are no adverts either.
+  data  risks 9 mitigations 6 other 6
+    judge ok setting "" cited 1 [f_03a93704589b927b]
+    card ok setting ""
+    check stood
+    reason The app is COPPA-compliant and collects no personally identifiable information.
+    quote f_03a93704589b927b mitigation store: Created in partnership with the Stanford Graduate School of Education by education experts, aligned with Head Start and Common Core Standards, COPPA-compliant, and 100% free—no ads, no subscriptions.
+  age_gating  risks 16 mitigations 2 other 7
+    judge flag setting "" cited 4 [f_582dc2075d52845a f_6f92f0d977c76a50 f_fc4866d088d95f5a f_526f10b42a2d62c5]
+    card flag setting ""
+    check stood
+    entail meets_definition=true reason_supported=true
+    reason Multiple parents report the app only goes up to 2nd grade, making it unsuitable for older children despite the stated age range.
+    quote f_582dc2075d52845a risk review: I am 10 years old and the app literally lets you choose your grade from pre-k to 2nd grade. Where is 5th grade?! You need to change this “age thing” immediately or I will delete the app.
+    quote f_6f92f0d977c76a50 risk review: So the game is really fun but the age range is to small I like it and I’m 11 so the highest it goes is 2nd grade even though older kids like it too. Just try to put the age range a little higher like maybe up to middle school, thats all I’m asking.
+    quote f_fc4866d088d95f5a risk review: My child is in 3rd grade and the app only has pre-k to 2nd grade. she loved it last year but now it’s not as fun anymore because it is not her level anymore.
+    quote f_526f10b42a2d62c5 risk review: I gave the review four stars solely for the reason that this fantastic app sadly cuts off learning for children above second grade. My daughter absolutely loves this app for learning through fun and games. She has been playing this app for years and sadly it cannot take her any further.
+  content  risks 23 mitigations 3 other 36
+    judge flag setting "" cited 1 [f_0fcffd8da2e19a5b]
+    card flag setting ""
+    check stood
+    entail meets_definition=true reason_supported=true
+    reason Parents report disturbing Halloween-themed content (scary devil faces, men tied up) appearing unexpectedly during use.
+    quote f_0fcffd8da2e19a5b risk review: A grid of scary devil faces and men tied up with their mouth taped shut popped up for about 15 seconds while my kid was working on math. Very disturbing and disappointing since this is such a widely advertised app for homeschooling
+  developer_record  risks 1 mitigations 0 other 10
+    judge ok setting "" cited 0 []
+    card unknown setting ""
+    check ok_without_finding
+    reason Changed to unknown: no verified finding supports ok.

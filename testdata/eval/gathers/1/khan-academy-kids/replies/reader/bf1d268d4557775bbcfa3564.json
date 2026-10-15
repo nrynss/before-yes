@@ -1,0 +1,8 @@
+{
+  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D521]\",\n      \"area\": \"data\",\n      \"claim\": \"A parent reports that the app collected children's names, email addresses and birth dates without parental consent.\",\n      \"stance\": \"risk\",\n      \"quote\": \"In a complaint filed by the Department of Justice on behalf of the FTC, regulators allege that the app collected children's names, email addresses and birth dates without their parents' consent.\"\n    },\n    {\n      \"ref\": \"[D521]\",\n      \"area\": \"age_gating\",\n      \"claim\": \"A parent reports that the app allowed children to bypass the age gate by falsely claiming to be over 13.\",\n      \"stance\": \"risk\",\n      \"quote\": \"From 2014 to 2019, hundreds of users who signed up for the app claiming to be over the age of 13 later changed their birthdates on their profiles to indicate they were really under 13, according to the government's complaint.\"\n    },\n    {\n      \"ref\": \"[D521]\",\n      \"area\": \"money\",\n      \"claim\": \"A parent reports that the app used dark patterns to trick children into making unauthorized purchases.\",\n      \"stance\": \"risk\",\n      \"quote\": \"Epic Games also used dark patterns to trick children into making unintended in-game purchases. This was made possible thanks to Fortnite’s confusing button configuration that led to “hundreds of millions of dollars in unauthorized charges for consumers.”\"\n    }\n  ]\n}",
+  "input_tokens": 4426,
+  "output_tokens": 335,
+  "price_nano": 345960,
+  "measured": true,
+  "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B"
+}

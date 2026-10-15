@@ -1,0 +1,8 @@
+{
+  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D527]\",\n      \"area\": \"contact\",\n      \"claim\": \"A parent reports that strangers can message or voice chat with your child, and it is on by default.\",\n      \"stance\": \"risk\",\n      \"quote\": \"Children are connected and engaged online at an early age and parents need to stay actively involved to ensure that their kids are using technology appropriately.\"\n    }\n  ]\n}",
+  "input_tokens": 5856,
+  "output_tokens": 98,
+  "price_nano": 374880,
+  "measured": true,
+  "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B"
+}

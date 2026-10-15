@@ -1,0 +1,8 @@
+{
+  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D515]\",\n      \"area\": \"contact\",\n      \"claim\": \"A parent reports that the app requires contact info for children.\",\n      \"stance\": \"risk\",\n      \"quote\": \"Eerie, cool coding puzzler pushes too hard for contact info.\"\n    }\n  ]\n}",
+  "input_tokens": 1472,
+  "output_tokens": 76,
+  "price_nano": 106560,
+  "measured": true,
+  "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B"
+}

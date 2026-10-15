@@ -741,6 +741,17 @@ Minecraft gather 1, age 9, verdict no. The fixture recordings for this title are
 
 checkCitations did not void any of these grades. Entailment refused the data flag and accepted the age_gating flag, the content setting, the contact setting, and the developer_record flag.
 
+Khan Academy Kids gather 1, age 5, verdict no. The fixture recordings for this title are unclear. Tavily 8 credits. Read $0.016476, judge $0.024399. 155 findings, 28 chunks, 2 failed chunks, missing sources: policy, terms. Ledger after this gather: $0.119684.
+
+| Area | Card grade | Cited quote | Earned | Check |
+|---|---|---|---|---|
+| contact | unknown (judge graded ok and cited nothing) | none | n/a | ok_without_finding |
+| money | ok | "Khan Academy Kids is 100% free with no ads or subscriptions." Also a review that it is free, and a Reddit line that it is free with no adverts. | earned: the quotes show no purchase pressure | stood. An ok grade is not sent to entailment. |
+| data | ok | "COPPA-compliant, and 100% free—no ads, no subscriptions." | not earned as proof a parent can control collection: it is a store claim. It also does not show the data flag. | stood. An ok grade is not sent to entailment. |
+| age_gating | flag | Reviews that the lessons stop at 2nd grade ("I am 10 years old and the app literally lets you choose your grade from pre-k to 2nd grade."). | not earned: the quotes are about the curriculum topping out, not an age gate that failed | stood (entail true/true). This unearned flag is part of why the verdict is no. |
+| content | flag | "A grid of scary devil faces and men tied up with their mouth taped shut popped up for about 15 seconds while my kid was working on math." | earned: a child met horror and violence in the app | stood (entail true/true) |
+| developer_record | unknown (judge graded ok and cited nothing) | none | n/a | ok_without_finding |
+
 Fixture recordings, replayed offline.
 
 | Title | Area | Card grade | Cited quote | Earned | Check |
