@@ -956,66 +956,25 @@ On live search, the alternatives step finds nothing usable. Replaying the live r
 
 ---
 
-### T3.13: Alternatives outside the platform
+### T3.13: Nano reads the list pages; the App Store confirms the products
 ```yaml
 requires:   T3.12
-fixture-ok: no (offline on the T3.12 captures, then one live run)
-size:       S · mid
-owns:       internal/pipeline/alternatives.go, internal/pipeline/alternatives_test.go, internal/pipeline/pipeline.go (genre propagation only), internal/appstore/ (genre only), testdata/alternatives/
-status:     claimed:gpt-6.1-sol
-```
-T3.12's live run: Roblox (9) read **no**, and its three candidates were Roblox experiences. Each carried the platform's own risks, so none beat the "no" and the card shows no alternative. The user decided that a "no" on a platform suggests other products, not other experiences on the same platform.
-
-1. **Drop same-platform candidates.** A candidate that runs on the title's own platform (a Roblox experience for Roblox, a Minecraft map or server for Minecraft) is not an alternative. Decide it from the captured pages' evidence (the hit's domain, the page's wording, the App Store seller), not a hard-coded list of titles.
-2. **Fill in the genre.** `AppInfo.Genre` is declared and read by the alternatives query but never set, so the query always says "app". Set it from the App Store lookup (its primary genre), so the query asks for "safer games like Roblox" when Roblox is a game.
-3. **Show it live.** The clause moved from T3.12: one live run of a "no" title shows a checked alternative on its card.
-
-**Done when:** tests on the T3.12 captures drop same-platform candidates and keep other products; the App Store client sets the genre (pinned on the captured lookups); one live "no" card shows a checked alternative, reported to the user with its spend.
-
----
-
-### T3.14: Reasons a parent can read
-```yaml
-requires:   T3.11
-fixture-ok: no
-size:       M · frontier
-owns:       internal/pipeline/judge.go (the prompt and reason handling), internal/pipeline/judge_test.go, tools/eval/, testdata/eval/
-status:     done
-```
-The reasons on a card are written by the judge model. After T3.10 the judge copies the area's definition as its reason for a standing flag, so a card says why something counts as a concern in general, not what this title does. The user agreed in T5.9 that model-written text needs its own task with an evaluation (`docs/voice.md`, "Separate model-writing follow-up").
-
-- Teach the judge to write in parent-facing language: say what a source reports and attribute it, explain uncertainty, avoid internal terms ("finding", "mitigation", "stance"), and claim nothing the cited quotes do not establish.
-- Keep every T3.9b–T3.11 check: a reason still rests on verified, in-area citations, and the entailment check still reads it. Clear prose is not evidence.
-- Evaluate on varied examples: the three demo titles on the recordings and T3.11's live gathers, plus titles outside the demo set. Do not hard-code replacement reasons for the example cards.
-- Re-record with `-live-cap-usd` set; report the spend.
-
-**Done when:** a before-and-after table of reasons per title and area, judged against `docs/voice.md`; no grade or verdict changes because of the wording alone (any change is explained); tests pin the prompt's rules; the user signs off a sample of reasons.
-
-
-**Implementation for review:** Reason writing is isolated after the calibrated judge and all T3.9b–T3.11 checks. The original grading prompts, entailment rules, citation/setting grounding and independent age-event classifier remain unchanged. The new fast writer can change only reason strings; a separate metered quote-support/voice check gates each candidate, with one bounded repair and cautious fallback. Unknowns make no generated factual title claims.
-
-The complete before/after per-area voice assessment, quoted witnesses, rejected-pilot delta account, replay commands and measured costs are in [`testdata/eval/parent-reasons/report.md`](../testdata/eval/parent-reasons/report.md). Nine full demo checks and two sourced outside-demo judge probes have identical evidence hashes and unchanged grades, settings, citations and verdicts. The remediated final pass produces sixteen checked specific explanations and zero cautious fallbacks across sixteen non-unknown areas; the other fifty areas explicitly say evidence is insufficient. Runtime fallback remains for rejected prose. Final prose adds $0.01329420 across the eleven checks. Whole-task spend, including rejected pilots, superseded remediation attempts, all repairs and five independent rejection probes, is $0.24024090 against one $0.50 ledger; no fresh Tavily gathers were needed. The original calibrated age-event witness now focuses the writer without a new classification, and diagnoses preserve the actual completed-check cause independently of public prose. Round 1 remediation evidence and reproducible pins are included in the evaluation report.
-
-`./tools/check.sh` passed Go vet/race, frontend lint/check and 175 browser tests. Recorded replay tests compare every non-prose grade field and evidence hash with the original calibrated judge, including both outside-demo cases. No dependencies added. The user approved the Minecraft spending, Khan compliance-label and Scratch free-platform samples. Round 2 closes with APPROVE by explicit operator intervention after direct M4 remediation. The PR remains unmerged and the task stays in-review at the user’s request.
-
----
-
-### T3.15: Nano reads the list pages; the App Store confirms the products
-```yaml
-requires:   T3.13
 fixture-ok: no (captures and recorded replies, then one live run)
 size:       M · frontier
-owns:       internal/pipeline/alternatives.go, internal/pipeline/alternatives_test.go, internal/pipeline/pipeline.go (alternatives wiring only), testdata/alternatives/
+owns:       internal/pipeline/alternatives.go, internal/pipeline/alternatives_test.go, internal/pipeline/pipeline.go (alternatives wiring and genre propagation only), internal/appstore/ (genre only), testdata/alternatives/
 status:     not-started
 ```
-Tavily finds the right pages (Common Sense Media's "Games Like Minecraft", with its whole text), but the rule-based name parser (T3.12, T3.13) finds few names and needed three review rounds to keep junk out. The user decided: Tavily keeps finding the pages, Nemotron reads them, and the App Store confirms each name is a real product before any paid check.
+T3.12's live run: Roblox (9) read **no**, and its three candidates were Roblox experiences, so none beat the "no". Tavily finds the right pages (Common Sense Media's "Games Like Minecraft", with its whole text), but the rule-based name parser (T3.12) finds few names and needed three review rounds to keep junk out. The user decided: a "no" on a platform suggests other products, not experiences on the same platform; Tavily keeps finding the pages, Nemotron reads them, and the App Store confirms each name is a real product before any paid check.
 
-1. **More pages from Tavily.** Run two or three searches per title instead of one, for example `games like <title> for a <age> year old`, `<title> alternatives for kids` and `best <genre> for <age> year olds` (about 1 credit each, through the meter). Tavily stays load-bearing for alternatives, as the brief requires.
-2. **Nano names the products.** For each list page, one metered Nano call returns the products the page recommends, each with the exact line that names it. A name stands only if that line is a verbatim span of the page text: the same string check the reader's findings use. The rule-based parser is removed, not kept beside it.
-3. **The App Store confirms.** Look each name up with `appstore.Find` before any check. No App Store product, or one that is the title itself, the same app, or an experience on the title's platform, drops out for free. Only real, different products go on to a check.
-4. **The check stays.** Each confirmed candidate is checked like any title (about $0.05 and one daily slot), at most `MaxAlternatives`, and only one that beats the original verdict reaches the card.
+This task was first scoped as "alternatives outside the platform" with a rule-based fix; the user stood that version down and rescoped it to this one. Its branch `task-t3.13-outside-platform` holds the genre work, which can be reused.
 
-**Done when:** on captured pages for the three demo titles, the recorded Nano replies name real products, each with its verbatim line and source page; App Store lookups (recorded) drop non-products; tests pin each rule; one live run of a "no" title shows a checked alternative on its card, reported with its spend.
+1. **Fill in the genre.** `AppInfo.Genre` is declared and read by the alternatives query but never set, so the query always says "app". Set it from the App Store lookup (its primary genre).
+2. **More pages from Tavily.** Run two or three searches per title instead of one, for example `games like <title> for a <age> year old`, `<title> alternatives for kids` and `best <genre> for <age> year olds` (about 1 credit each, through the meter). Tavily stays load-bearing for alternatives, as the brief requires.
+3. **Nano names the products.** For each list page, one metered Nano call returns the products the page recommends, each with the exact line that names it. A name stands only if that line is a verbatim span of the page text: the same string check the reader's findings use. The rule-based parser is removed, not kept beside it.
+4. **The App Store confirms.** Look each name up with `appstore.Find` before any check. No App Store product, or one that is the title itself, the same app, or an experience on the title's platform, drops out for free. Only real, different products go on to a check.
+5. **The check stays.** Each confirmed candidate is checked like any title (about $0.05 and one daily slot), at most `MaxAlternatives`, and only one that beats the original verdict reaches the card.
+
+**Done when:** the App Store client sets the genre (pinned on captured lookups); on captured pages for the three demo titles, the recorded Nano replies name real products, each with its verbatim line and source page; App Store lookups (recorded) drop non-products; tests pin each rule; one live run of a "no" title shows a checked alternative on its card, reported with its spend.
 
 ---
 
