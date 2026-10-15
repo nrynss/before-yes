@@ -183,7 +183,7 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 | P2 | 12 / 12 | Done. All six exit criteria are met. Measured model cost is $0.0309 per check. Tavily is 7–8 credits per check, from fixtures, not a live run. |
 | P3 | 13 / 13 | Done. Every standing flag and setting now meets its area's own definition, enforced by a per-grade entailment check (T3.10). Verdicts: Roblox **no** (four earned flags), Minecraft **yes_with_settings** (matches T0.5, with a recorded caveat on two settings), Khan Academy Kids **unclear**. Re-pick is the user's call. |
 | P4 | 6 / 6 | Done. `serve` runs the whole server: check jobs and the stream, the card store and caches, the gate, passcode and live switch, visitor keys and the daily cap on one meter (its own `spend.db`), `Judge.Entail` wired, and a double click joining the running check. Smoke-tested from the main checkout with live off. |
-| P5 | 4 / 7 | T5.1–T5.4 are done: the shell, the Ask form with free examples, the progress view and the evidence-linked card. T5.5 and T5.6 can start; T5.7 can start (T4.5 is done; it sends `X-Token-Factory-Key` and `X-Tavily-Key`). |
+| P5 | 7 / 8 | T5.1–T5.7 are done: the shell, Ask with free examples, progress, the card, side by side, messages for every error code, and the visitor keys dialog. T5.8 (filed) wires the messages and the keys dialog into Ask, Progress and the card; until then a parent never sees the keys dialog. Exit criteria are checked after T5.8. |
 | P6 | 0 / 6 | Not started. |
 
 ---
@@ -192,6 +192,11 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 
 Newest first. One entry per closed task, finding, or split.
 
+- **T5.5, T5.6 and T5.7 closed (PRs #28, #29 and #30).** The frontend orchestrator implemented all three; each round 1 approved with no findings. The gate passed on main after each merge: browser tests 107 → 120 → 145 → 155, none skipped.
+  - **T5.5:** `/compare/[a]/[b]` puts two cards area by area in one grid, one row per area on a phone.
+  - **T5.6:** `web/src/lib/errors/`: a message with a next step for each of the eight codes, never a raw code or a stack trace, and the not-enough-evidence note for an `unknown` area.
+  - **T5.7:** `web/src/lib/keys/`: the visitor keys dialog. It says the keys are used for this one check and not stored, holds them in component state only, and sends them as `X-Token-Factory-Key` and `X-Tavily-Key`, the headers T4.5 reads. Tests confirm nothing reaches storage or the URL.
+  - **Seams left open, accepted by both reviewers:** nothing uses T5.6's messages yet, and T5.7's dialog is not mounted anywhere, because `Ask.svelte`, `Progress.svelte` and `Card.svelte` were outside those tasks' file lists (the orchestrator drew them too narrow). **T5.8 filed** to wire both in.
 - **T4.4 and T4.6 closed (PRs #26 and #27); P4 is done.** A remote orchestrator implemented both; each was approved in round 2 with zero residue. The gate passed on main after each merge.
   - **T4.4:** `GET /api/status` (live, checklist version, budget left in each pool), `GET /api/checklist`, `GET /healthz`, the static app with an `index.html` fallback for deep links, and `cmd/before-yes` with `serve`, `check` and `config`. `serve` builds the pipeline as `tools/eval` does, with `Judge.Entail` on the Nano reader, gives `Server.Checks` and `Pipeline.Checks` one `*spend.Meter`, and mounts `GatedHandler` with the passcode and the flag store. Out of owns, additive: `checklist_version` in `get-status.json` and `docs/api.md`, `/healthz` in `docs/api.md`, one comment in `before-yes.toml.example`.
   - **The meter's own file.** The meter shared `before-yes.db` at first, and two concurrent checks lost their `Done` bookings to `SQLITE_BUSY`, so the cap under-counted. The meter now lives in `data_dir/spend.db`, and `cmd/before-yes` holds an exclusive OS lock on it, so a `check` while `serve` runs refuses instead of losing bookings.

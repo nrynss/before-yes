@@ -96,7 +96,7 @@ requires:   T5.4
 fixture-ok: yes
 size:       M · mid
 owns:       web/src/routes/compare/, web/src/lib/compare/
-status:     in-review
+status:     done
 ```
 Two cards, area by area, in one grid. The fixed checklist is what makes two titles comparable. This view shows that, and it closes the demo.
 
@@ -114,7 +114,7 @@ requires:   T5.2, T5.3
 fixture-ok: yes
 size:       S · light
 owns:       web/src/lib/errors/
-status:     in-review
+status:     done
 note:       Parent copy for the eight codes, each with a next step, and an unknown-area explanation that is not a pass. Browser tests render every message. Raw codes, server sentences, and stacks stay off the page.
 ```
 One message per code in T1.4: `budget_exhausted`, `no_sources`, `check_failed`, `live_checks_off`, `busy`, `rate_limited`, `passcode_required`, `not_found`. Each tells the parent what to do next. None shows a stack trace or a raw code.
@@ -131,13 +131,32 @@ requires:   T5.2, T4.5
 fixture-ok: yes
 size:       S · mid
 owns:       web/src/lib/keys/
-status:     in-review
+status:     done
 ```
 When the daily cap is spent, offer to run the check on the visitor's own Token Factory and Tavily keys. Say plainly that the keys are used for this one check and not stored. The keys live in component state only: never in local storage, the URL, or a log.
 
 **Done when:** A check runs on pasted keys against a mock, and a test confirms nothing is written to storage or the URL.
 
 **Note (T5.7).** `Keys.svelte` posts `{title, age}` to `/api/checks` with both `X-Token-Factory-Key` and `X-Tavily-Key`, or it sends nothing. A half pair, a space, a non-printable byte, or a key over 512 bytes is refused in fixed copy that does not repeat what was typed. `200` `card_id` and `202` `check_id` open only when the id is `c_` or `j_` plus 32 lowercase hex. The default client is Keel's `api`; a parent may pass another, including the passcode-gated one. Ask.svelte does not mount the dialog because it is outside owns. A later page mounts `Keys` with the title and age it already has.
+
+---
+
+### T5.8: Wire errors and visitor keys into the pages
+```yaml
+requires:   T5.6, T5.7
+fixture-ok: yes
+size:       S · mid
+owns:       web/src/lib/ask/, web/src/lib/progress/Progress.svelte, web/src/lib/progress/progress.spec.ts, web/src/lib/card/Card.svelte, web/src/lib/card/card.spec.ts
+status:     not-started
+```
+T5.6 and T5.7 built the messages and the keys dialog inside their own folders, and nothing uses them yet: their file lists stopped short of the pages. As merged, a parent never sees the keys dialog, and the pages keep their own older messages.
+
+- **Ask:** every refusal shows its T5.6 message (replace `ask/messages.ts`). On `budget_exhausted`, mount the T5.7 dialog with the title and age kept; a `202` on visitor keys goes to the progress view as usual. Do not offer keys on `live_checks_off`: the server refuses visitor checks while live is off (a user decision, T4.3/T4.5).
+- **Progress:** a failed check shows the T5.6 message for its code.
+- **Card:** a missing card shows the T5.6 `not_found` message, and an `unknown` area shows T5.6's not-enough-evidence explanation, not something that reads as a pass.
+- The example list's age check accepts 3 to 17, matching the API (it still accepts 2).
+
+**Done when:** Browser tests drive each refusal in Ask, a failed check in Progress, and a missing card and an unknown area on the card, each showing its T5.6 text; a spent cap opens the keys dialog with the question kept, a check on pasted keys reaches the progress view against a mock, and nothing reaches storage or the URL.
 
 ---
 
