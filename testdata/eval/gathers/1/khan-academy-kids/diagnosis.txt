@@ -33,7 +33,7 @@ diagnose Khan Academy Kids age 5 verdict no findings 155 (conflict pass unusable
     card flag setting ""
     check stood
     entail meets_definition=true reason_supported=true
-    reason Parents report disturbing Halloween-themed content (scary devil faces, men tied up) appearing unexpectedly during use.
+    reason parents or reviewers report children actually meeting unsuitable material on this title
     quote f_0fcffd8da2e19a5b risk review: A grid of scary devil faces and men tied up with their mouth taped shut popped up for about 15 seconds while my kid was working on math. Very disturbing and disappointing since this is such a widely advertised app for homeschooling
   developer_record  risks 1 mitigations 0 other 10
     judge ok setting "" cited 0 []

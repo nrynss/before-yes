@@ -214,11 +214,13 @@ func mustEval(t *testing.T, models string) []Result {
 	return rs
 }
 
-// Gather 2 must not keep the two unearned settings the entailment check
-// accepted: Minecraft age gating, where a child account does not stop a
-// child who gets past the age check, and Roblox data, whose reason says
-// the data is shared for ads when no cited quote says that. Minecraft's
-// money flag is earned and the verdict stays no.
+// Gather 2 must not keep an unearned setting, and a standing reason must
+// not be an ads sentence. Minecraft age gating, where a child account does
+// not stop a child who gets past the age check, does not stand. Roblox
+// data stands on the image-retention quote; its reason is the area
+// definition and does not say ads. Content and money stay flags and do
+// not keep the model's extra harms. Minecraft's money flag is earned and
+// the verdict stays no.
 func TestGather2DoesNotKeepUnearnedSettings(t *testing.T) {
 	prevG, prevOnly := *gatherN, *liveOnly
 	t.Cleanup(func() {
@@ -247,8 +249,30 @@ func TestGather2DoesNotKeepUnearnedSettings(t *testing.T) {
 	if len(rb) != 1 || rb[0].Err != "" {
 		t.Fatalf("roblox replay: %+v", rb)
 	}
-	if g := areaGot(t, rb[0], checklist.Data); g.Got == checklist.Flag || g.Got == checklist.OKWithSetting {
-		t.Errorf("data stands (%s) on %q; no cited quote says ads", g.Got, g.GotNote)
+	data := areaGot(t, rb[0], checklist.Data)
+	if data.Got != checklist.Flag {
+		t.Errorf("data = %s, want the earned flag", data.Got)
+	}
+	if strings.Contains(strings.ToLower(data.GotNote), "ads") {
+		t.Errorf("data reason says ads: %q", data.GotNote)
+	}
+	content := areaGot(t, rb[0], checklist.Content)
+	if content.Got != checklist.Flag {
+		t.Errorf("content = %s, want the earned flag", content.Got)
+	}
+	for _, w := range []string{"horror", "self-harm"} {
+		if strings.Contains(strings.ToLower(content.GotNote), w) {
+			t.Errorf("content reason says %q: %q", w, content.GotNote)
+		}
+	}
+	money := areaGot(t, rb[0], checklist.Money)
+	if money.Got != checklist.Flag {
+		t.Errorf("money = %s, want the earned flag", money.Got)
+	}
+	for _, w := range []string{"loot boxes", "pay-to-win", "pay‑to‑win"} {
+		if strings.Contains(strings.ToLower(money.GotNote), w) {
+			t.Errorf("money reason says %q: %q", w, money.GotNote)
+		}
 	}
 	if rb[0].GotVerdict != checklist.No {
 		t.Errorf("roblox verdict %s, want no", rb[0].GotVerdict)

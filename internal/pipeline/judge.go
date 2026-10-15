@@ -33,6 +33,21 @@ var areaDefs = map[checklist.Area]string{
 	checklist.DeveloperRecord: "this title's developer has a record of enforcement over how it treats children or their data: fines, data breaches, lawsuits or regulatory actions naming this developer. Another company's enforcement, or the developer's own marketing about its values, is not a record. A setting cannot answer a record.",
 }
 
+// standingReason is the card reason for a grade that stands. It is the area
+// definition's opening claim: the words of areaDefs before the colon that
+// lists examples, or the first sentence when the definition has no colon.
+// The example list stays in the prompt. It is not the card reason, because
+// that list names harms and practices a cited quote may not show. A model's
+// sentence is never the card reason.
+func standingReason(area checklist.Area) string {
+	def := areaDefs[area]
+	if head, _, ok := strings.Cut(def, ":"); ok {
+		return strings.TrimSpace(head)
+	}
+	head, _, _ := strings.Cut(def, ".")
+	return strings.TrimSpace(head)
+}
+
 func judgeSystem() string {
 	var b strings.Builder
 	b.WriteString(`You grade an app, game or channel for one child against a fixed parent checklist, using only the findings you are given. Every finding has an id, a stance, and a verbatim quote from a named source.
@@ -340,8 +355,9 @@ const (
 	// setting: no cited mitigation actually answers the cited concern). The
 	// definition rule of T3.10, fault 1, enforced through fault 3.
 	RuleNotEarned = "flag_not_earned"
-	// RuleReasonUnsupported: a standing grade whose reason says something
-	// the cited quotes do not support (T3.10, fault 3; T3.9's L1).
+	// RuleReasonUnsupported: an ok_with_setting whose reason says something
+	// the cited quotes do not support (T3.10, fault 3; T3.9's L1). A flag
+	// whose quotes meet the definition stands; its reason is standingReason.
 	RuleReasonUnsupported = "reason_unsupported"
 )
 
@@ -543,15 +559,16 @@ func parseEntail(reply string) (entailVerdict, error) {
 }
 
 // entail holds every standing flag and ok_with_setting grade to its area's
-// flag definition and its own reason, one call per grade through the judge
-// model (Entail), thinking off via Fast, metered like any other call (T3.10,
-// fault 3). Either false drops the grade to unknown with no setting and no
-// citations, a demotion (RuleNotEarned or RuleReasonUnsupported) and its
-// area in thin. A failed or
-// unparseable call keeps the grade: the reason is returned as entailErr and
-// never sinks a standing grade, so a rate limit or a bad reply cannot turn
-// earned flags into unclear cards. The calls' price is returned for the
-// judgement's cost. The input is not modified.
+// flag definition, one call per grade through the judge model (Entail),
+// thinking off via Fast, metered like any other call (T3.10, fault 3).
+// meets_definition false drops the grade to unknown (RuleNotEarned). An
+// ok_with_setting whose reason the quotes do not support also drops
+// (RuleReasonUnsupported). A flag whose quotes meet the definition stands
+// even then, and a grade that stands keeps standingReason, not the model's
+// sentence. A failed or unparseable call keeps the grade: the reason is
+// returned as entailErr and never sinks a standing grade, so a rate limit
+// or a bad reply cannot turn earned flags into unclear cards. The calls'
+// price is returned for the judgement's cost. The input is not modified.
 func (j *Judge) entail(ctx context.Context, title string, age int, ref string, grades []checklist.Grade, fs []finding.Finding) (out []checklist.Grade, dem []checklist.Demotion, thin []checklist.Area, entailErr error, price cost.Price) {
 	byID := make(map[string]finding.Finding, len(fs))
 	for _, f := range fs {
@@ -575,16 +592,16 @@ func (j *Judge) entail(ctx context.Context, title string, age int, ref string, g
 			var v entailVerdict
 			if v, err = parseEntail(reply.Text); err == nil {
 				switch {
-				case v.Meets && v.Reason:
-					// The grade stands.
 				case !v.Meets:
 					dem = append(dem, checklist.Demotion{Area: g.Area, Rule: RuleNotEarned, Detail: string(g.Level) + ": " + string(g.Area)})
 					thin = append(thin, g.Area)
 					g.Level, g.Setting, g.Reason, g.Findings = checklist.Unknown, "", NotEarnedReason, []string{}
-				default:
+				case g.Level == checklist.OKWithSetting && !v.Reason:
 					dem = append(dem, checklist.Demotion{Area: g.Area, Rule: RuleReasonUnsupported, Detail: string(g.Level) + ": " + string(g.Area)})
 					thin = append(thin, g.Area)
 					g.Level, g.Setting, g.Reason, g.Findings = checklist.Unknown, "", UnsupportedReason, []string{}
+				default:
+					g.Reason = standingReason(g.Area)
 				}
 				out[i] = g
 				continue
