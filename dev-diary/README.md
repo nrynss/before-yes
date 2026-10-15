@@ -181,9 +181,9 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 | P0 | 9 / 9 | Done. All exit criteria met: the Token Factory balance ($29.00) is recorded, Nano completions and `config` resolving every secret are proven. CI is green. |
 | P1 | 4 / 4 | Done. All exit criteria met; the `job.Failure` criterion was proven by T4.1. |
 | P2 | 12 / 12 | Done. All six exit criteria are met. Measured model cost is $0.0309 per check. Tavily is 7–8 credits per check, from fixtures, not a live run. |
-| P3 | 14 / 16 | T3.12 is done: alternatives come from real list pages and are checked live. T3.11 (live judge calibration, claimed) and T3.13 (alternatives outside the platform, and the App Store genre) are open. All exit criteria are ticked. |
+| P3 | 14 / 17 | T3.11 (live judge calibration) is in review as PR #34. T3.13 (alternatives outside the platform, and the App Store genre) is ready. T3.14 (reasons a parent can read) follows T3.11. All exit criteria are ticked. |
 | P4 | 7 / 7 | Done. `serve` runs the whole server, run end to end live. Progress now shows during a check, and a page opened late catches up from `GET /api/checks/{id}` (T4.7). |
-| P5 | 8 / 9 | Every page is built and wired. T5.9, the interactive copy pass with the user, can start (T4.7 is done). |
+| P5 | 9 / 9 | Done. Every page is built and wired, and its text was rewritten with the user (T5.9); the rules are in `docs/voice.md`. |
 | P6 | 0 / 6 | Not started. |
 
 ---
@@ -192,6 +192,11 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 
 Newest first. One entry per closed task, finding, or split.
 
+- **T5.9 closed; P5 is done.** The user and one agent went through every screen and string, and the user decided each change. A fresh reviewer approved with no findings: the gate passed in the task checkout and on main (175 browser tests each), a browser probe measured the pages at 360 to 1440 px, and backend, fixtures and model-written text are unchanged. The gate passed again on main after the merge.
+  - **What landed:** new text on every page, plain area labels ("Contact with strangers", "Purchases and spending", ...), the headline "Research first. Yes next.", an icon-only theme button that cycles System, Light and Dark, an animated ellipsis on progress (still under reduced motion), the title in the progress tab, and comparison cells of equal height. Progress counts "sections read", which settles T4.7's "14 sources, 3 of 9" wording. Out of owns, by the user's request during the session: `routes/+layout.svelte` (the theme button) and `card/contract.ts`.
+  - **The rules:** `docs/voice.md`, with before and after examples.
+  - **Known limitation:** reloading the progress page drops the title from the tab title; the check's status has no title.
+  - **T3.14 filed:** the user agreed in the session that model-written reasons need their own task with an evaluation. This settles the open decision on generic reasons. It follows T3.11, which owns the same file.
 - **T3.12 closed by user decision; T3.13 filed.** The user decided that a "no" on a platform suggests other products, and that T3.12 closes with its "shown on a card" clause moved to T3.13. P3's last exit criterion is ticked: live Roblox found three candidates and checked each. T3.13 drops same-platform candidates, sets `AppInfo.Genre` from the App Store lookup, and shows a checked alternative on one live "no" card.
 - **T3.12 merged (PR #33), status held at `in-review` for a user decision.** A remote orchestrator ran it: three review rounds, round 3 APPROVE (C 0 · H 0 · M 0 · L 4) with zero residue against rounds 1 and 2. The gate passed on main after the merge (175 browser tests, none skipped). Spend: 41 Tavily credits, about $0.14 model.
   - **What landed:** `FindAlternatives` reads names from the list layouts the captured pages use, and rejects the publishing site's own name by the hit's domain (the "Medium" bug). Captures for the three demo titles under `testdata/alternatives/`; replays give real names (Minecraft: Blox 3D Junior, Pango Build Safari, RaceCraft, from Common Sense Media). Out of owns: a capture kind in `tools/capture/` (additive). Four Tavily entries in `feedback.md`.

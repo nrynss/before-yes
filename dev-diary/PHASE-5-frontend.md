@@ -167,7 +167,7 @@ requires:   T5.8, T4.7
 fixture-ok: yes
 size:       M · user
 owns:       user-facing text in web/src/ (routes and lib, including errors/notice.ts and ask/messages.ts), the progress messages in internal/server/checks.go, page titles, the specs that assert exact text, docs/voice.md (new)
-status:     in-review
+status:     done
 ```
 The interface text reads as machine-written: taglines and paired slogans ("A little research. Before a big yes.", "From question to clarity.", "Good answers start with a closer look.", "Make room for an answer you can check."). This is an interactive task. The user sits with one agent and goes through every screen and every string; the user decides, the agent proposes and applies.
 

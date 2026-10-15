@@ -762,6 +762,25 @@ T3.12's live run: Roblox (9) read **no**, and its three candidates were Roblox e
 
 ---
 
+### T3.14: Reasons a parent can read
+```yaml
+requires:   T3.11
+fixture-ok: no
+size:       M · frontier
+owns:       internal/pipeline/judge.go (the prompt and reason handling), internal/pipeline/judge_test.go, tools/eval/, testdata/eval/
+status:     not-started
+```
+The reasons on a card are written by the judge model. After T3.10 the judge copies the area's definition as its reason for a standing flag, so a card says why something counts as a concern in general, not what this title does. The user agreed in T5.9 that model-written text needs its own task with an evaluation (`docs/voice.md`, "Separate model-writing follow-up").
+
+- Teach the judge to write in parent-facing language: say what a source reports and attribute it, explain uncertainty, avoid internal terms ("finding", "mitigation", "stance"), and claim nothing the cited quotes do not establish.
+- Keep every T3.9b–T3.11 check: a reason still rests on verified, in-area citations, and the entailment check still reads it. Clear prose is not evidence.
+- Evaluate on varied examples: the three demo titles on the recordings and T3.11's live gathers, plus titles outside the demo set. Do not hard-code replacement reasons for the example cards.
+- Re-record with `-live-cap-usd` set; report the spend.
+
+**Done when:** a before-and-after table of reasons per title and area, judged against `docs/voice.md`; no grade or verdict changes because of the wording alone (any change is explained); tests pin the prompt's rules; the user signs off a sample of reasons.
+
+---
+
 ## Exit Criteria
 
 - [x] Review 312 decides the card end to end, by test. (Review 355, the captures' equivalent: `TestReview355DecidesTheCard`.)
