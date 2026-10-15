@@ -933,6 +933,44 @@ func TestCapturedTableHeaderNotAPick(t *testing.T) {
 	}
 }
 
+// The round-2 L5 probes, in the reviewer's shapes.
+//
+// (a) A pick's row may bold a badge in a later cell ("**Best overall**"):
+// the row is the pick's, not a header, and its name stays a candidate. The
+// captured data rows bold the name cell alone, so no captured pick moves.
+func TestBadgeBoldRowKeepsItsPick(t *testing.T) {
+	if boldHeaderRow("| **Toca Builders** | **Best overall** | 4-7 | None |") {
+		t.Error("a badge-bold data row is taken for a header")
+	}
+	page := "| Game | Notes |\n| --- | --- |\n" +
+		"| **Toca Builders** | **Best overall** — ages 4-7, no chat |\n" +
+		"| **Block Craft 3D** | ages 6-9, builds on a phone |\n"
+	got := listNames(listHit("7 Best Building Apps for Kids", "https://www.example.com/best", page), nil, nil)
+	if strings.Join(got, "|") != "Toca Builders|Block Craft 3D" {
+		t.Errorf("badge-bold rows = %q, want [Toca Builders|Block Craft 3D]", got)
+	}
+}
+
+// (b) A header row that bolds only its first cell is still a header: its
+// label names a column ("Best For" is one of the captured header cells),
+// not a pick, with or without the delimiter row a markdown table puts under
+// its header. The data row under it still names its pick.
+func TestFirstCellOnlyHeaderNotAPick(t *testing.T) {
+	if !boldHeaderRow("| **Best For** | Ages | Cost |") {
+		t.Error("a first-cell-only header row is not taken for a header")
+	}
+	for _, c := range []struct{ what, under string }{
+		{"with the delimiter row", "| --- | --- | --- |\n"},
+		{"without the delimiter row", ""},
+	} {
+		page := "| **Best For** | Ages | Cost |\n" + c.under + "| **Toca Builders** | 4-7 | None |\n"
+		got := listNames(listHit("7 Best Building Apps for Kids", "https://www.example.com/best", page), nil, nil)
+		if strings.Join(got, "|") != "Toca Builders" {
+			t.Errorf("first-cell-only header (%s) = %q, want [Toca Builders]", c.what, got)
+		}
+	}
+}
+
 // The round-1 L1 probes: a candidate whose name contains the reviewing
 // host's label is still a title — "Duolingo Kids" on lingokids.com,
 // "Minecraft Dungeons" on minecraft.net — while the captured site names stay

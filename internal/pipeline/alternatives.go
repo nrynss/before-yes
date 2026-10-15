@@ -347,10 +347,11 @@ func pageEntries(text string) []listEntry {
 	entries := make([]listEntry, 0, len(found))
 	for _, f := range found {
 		e := f.e
-		// A table's header row bolds its later cells too ("| **App** |
-		// **Ages** | **Cost** |"); it names the page's columns, not a pick.
-		// A pick's row bolds only its name cell.
-		if e.table && boldHeaderRow(e.raw) {
+		// A table's header row names the page's columns, not a pick: the
+		// captured headers either bold every cell ("| **App** | **Ages** |
+		// **Cost** |"), or the table's delimiter row follows. A pick's row
+		// bolds only its name cell.
+		if e.table && (boldHeaderRow(e.raw) || delimiterFollows(text, e.pos+len(e.raw))) {
 			continue
 		}
 		// A lead marked on the whole line ("**1) Theme Park Tycoon 2**") or
@@ -368,21 +369,92 @@ func pageEntries(text string) []listEntry {
 	return entries
 }
 
-// boldHeaderRow reports whether a table row bolds a cell after its first:
-// the captured Khan blog heads its comparison with an all-bold row
-// ("| **App** | **Ages** | **Cost** | **Offline** | **Best For** |"), and a
-// row that bolds every cell names the page's columns, not a pick. A pick's
-// row bolds its name cell alone.
+// columnLabels are the folds of the captured tables' header cells: the
+// comparison tables in the captures head themselves with these labels
+// (blog.khanacademy.org's "| **App** | **Ages** | **Cost** | **Offline** |
+// **Best For** |" and "| **App** | **Best For** | **Why It’s Great** |
+// **Link** |", kidsaitools' "| Game | Age Fit | Chat/Social | In-App
+// Purchases | First Success | Best For |"). A row of them names the page's
+// columns, never a pick.
+var columnLabels = map[string]bool{
+	"app": true, "ages": true, "cost": true, "offline": true, "bestfor": true,
+	"whyitsgreat": true, "link": true, "game": true, "agefit": true,
+	"chatsocial": true, "inapppurchases": true, "firstsuccess": true,
+}
+
+// cellBold reports whether a table cell is one bold span: "**Ages**".
+func cellBold(cell string) bool {
+	return len(cell) >= 4 && strings.HasPrefix(cell, "**") &&
+		strings.HasSuffix(cell, "**") && !strings.Contains(cell[2:len(cell)-2], "**")
+}
+
+// boldHeaderRow reports whether a table row is the table's header, which
+// names the page's columns rather than a pick. Two shapes, both from the
+// captures:
+//   - every cell bold: the Khan blog heads its comparison with
+//     "| **App** | **Ages** | **Cost** | **Offline** | **Best For** |";
+//   - the first cell bold and every later cell a captured column label
+//     ("| **Best For** | Ages | Cost |"): the same header with only its
+//     first label bolded.
+//
+// A pick's row bolds its name cell alone, and its later cells are that
+// pick's values — "| **PBS Kids Games** | 2–8 | Free | Yes | …" — so a
+// bolded badge in a later cell ("| **Toca Builders** | **Best overall** |
+// 4-7 | …") or a value word ("Free", "4-7") keeps the row a pick. A header
+// that bolds no cell never becomes an entry (tableRow reads bold first
+// cells only), and one with unrecorded labels is still caught by
+// delimiterFollows when the table marks it markdown's way.
 func boldHeaderRow(raw string) bool {
-	first := strings.Index(raw, "**")
-	if first < 0 {
+	var cells []string
+	for _, c := range strings.Split(raw, "|") {
+		if c = strings.TrimSpace(c); c != "" {
+			cells = append(cells, c)
+		}
+	}
+	if len(cells) == 0 || !cellBold(cells[0]) {
 		return false
 	}
-	second := strings.Index(raw[first+2:], "**")
-	if second < 0 {
+	all, labels := true, true
+	for _, c := range cells[1:] {
+		if !cellBold(c) {
+			all = false
+		}
+		if !columnLabels[nameFold(c)] {
+			labels = false
+		}
+	}
+	return all || labels
+}
+
+// delimiterFollows reports whether a markdown table's column separator — a
+// line of only pipes, dashes, colons and spaces ("| --- | --- |") — follows
+// the row that ends at end. In markdown that separator marks the row above
+// it as the table's header; both captured tables that carry one put it
+// directly under their header rows, and no captured data row is followed by
+// one. A blank line first is no separator.
+func delimiterFollows(text string, end int) bool {
+	rest := text[end:]
+	if i := strings.IndexByte(rest, '\n'); i >= 0 {
+		rest = rest[i+1:]
+	} else {
 		return false
 	}
-	return strings.Contains(raw[first+2+second+2:], "**")
+	if i := strings.IndexByte(rest, '\n'); i >= 0 {
+		rest = rest[:i]
+	}
+	dash, pipe := false, false
+	for _, r := range rest {
+		switch {
+		case r == ' ' || r == '\t' || r == '\r' || r == ':':
+		case r == '-':
+			dash = true
+		case r == '|':
+			pipe = true
+		default:
+			return false
+		}
+	}
+	return dash && pipe
 }
 
 // entryName is an entry's name: the captured text with markdown, a lead
