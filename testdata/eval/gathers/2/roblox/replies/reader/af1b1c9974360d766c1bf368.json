@@ -1,0 +1,8 @@
+{
+  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D503]\",\n      \"area\": \"money\",\n      \"claim\": \"Roblox may change the price of Robux or Paid Services at any time.\",\n      \"stance\": \"risk\",\n      \"quote\": \"Roblox may (i) add or remove features, (ii) offer new content or services, (iii) discontinue services or (iv) change the price of Robux or of Paid Services as set out in Section 6.6.\"\n    },\n    {\n      \"ref\": \"[D503]\",\n      \"area\": \"money\",\n      \"claim\": \"Paid Access purchases in Robux are final and non-refundable.\",\n      \"stance\": \"risk\",\n      \"quote\": \"Paid Access paid for in Robux is final and non-refundable and non-transferable, unless otherwise permitted by Roblox or as required by applicable law.\"\n    },\n    {\n      \"ref\": \"[D503]\",\n      \"area\": \"money\",\n      \"claim\": \"Roblox may add or remove features or change limits on Robux purchases.\",\n      \"stance\": \"risk\",\n      \"quote\": \"Roblox may (i) add or remove features, (ii) offer new content or services, (iii) discontinue services or (iv) change the price of Robux or of Paid Services as set out in Section 6.6.\"\n    },\n    {\n      \"ref\": \"[D503]\",\n      \"area\": \"money\",\n      \"claim\": \"Roblox may discontinue services or parts of services at any time.\",\n      \"stance\": \"risk\",\n      \"quote\": \"Roblox may modify, suspend or discontinue the Services, or parts of the Services, including features that involve Robux.\"\n    }\n  ]\n}",
+  "input_tokens": 3870,
+  "output_tokens": 386,
+  "price_nano": 324840,
+  "measured": true,
+  "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B"
+}

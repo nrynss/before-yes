@@ -1,0 +1,8 @@
+{
+  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D522]\",\n      \"area\": \"contact\",\n      \"claim\": \"A parent reports that chat can happen in experience chat, limited direct messaging, group or party chat, and even via signs, and that strictest settings still allow in-game chat if coded into the game.\",\n      \"stance\": \"risk\",\n      \"quote\": \"You can adjust who can chat with your kids, who they can message, and who can invite them to play games. However, even the strictest setting (\" \n      }\n  ]\n}",
+  "input_tokens": 3668,
+  "output_tokens": 125,
+  "price_nano": 250080,
+  "measured": true,
+  "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B"
+}
