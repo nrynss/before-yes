@@ -181,9 +181,9 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 | P0 | 9 / 9 | Done. All exit criteria met: the Token Factory balance ($29.00) is recorded, Nano completions and `config` resolving every secret are proven. CI is green. |
 | P1 | 4 / 4 | Done. All exit criteria met; the `job.Failure` criterion was proven by T4.1. |
 | P2 | 12 / 12 | Done. All six exit criteria are met. Measured model cost is $0.0309 per check. Tavily is 7–8 credits per check, from fixtures, not a live run. |
-| P3 | 13 / 13 | Done. Every standing flag and setting now meets its area's own definition, enforced by a per-grade entailment check (T3.10). Verdicts: Roblox **no** (four earned flags), Minecraft **yes_with_settings** (matches T0.5, with a recorded caveat on two settings), Khan Academy Kids **unclear**. Re-pick is the user's call. |
-| P4 | 6 / 6 | Done. `serve` runs the whole server: check jobs and the stream, the card store and caches, the gate, passcode and live switch, visitor keys and the daily cap on one meter (its own `spend.db`), `Judge.Entail` wired, and a double click joining the running check. Smoke-tested from the main checkout with live off. |
-| P5 | 8 / 8 | Done. Ask with free examples, progress, the card, side by side, a message with a next step for every error code, and the visitor keys dialog when the daily cap is spent. All five exit criteria are met. |
+| P3 | 13 / 15 | Reopened after the first live end-to-end run. T3.11 calibrates the judge on live evidence (Roblox read unclear live from 191 verified findings; Minecraft read no). T3.12 reads alternatives from real list pages (the live search gave only "Medium"). Both need `.env`; they own different files. |
+| P4 | 6 / 7 | `serve` runs the whole server, smoke-tested and run end to end live. T4.7 makes progress visible during a check and logs alternatives failures. |
+| P5 | 8 / 9 | Every page is built and wired. T5.9 is an interactive copy pass with the user, screen by screen, after T4.7. |
 | P6 | 0 / 6 | Not started. |
 
 ---
@@ -192,6 +192,7 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 
 Newest first. One entry per closed task, finding, or split.
 
+- **Filed after the live end-to-end run:** T3.11 (live judge calibration; needs `.env`, about $0.30 to $0.50), T3.12 (alternatives from real list pages; one capture, then offline), T4.7 (progress during a check, and logging alternatives failures; no `.env`), and T5.9 (interface copy: an interactive pass where the user and one agent go through every screen and string, writing `docs/voice.md`). T5.9 waits for T4.7 so the progress messages are final. T3.11, T3.12 and T4.7 can run at once; they own different files.
 - **Finding: the first live end-to-end run.** The orchestrator ran `serve` from main on this machine with live checks on, real keys and a scratch data folder, and drove it in a browser.
   - **What works:** Ask → `202` → progress → the card opened on its own when the check finished. A repeat ask ("roblox " in lower case) returned the stored card with a `200` in under a millisecond. A visitor-key check (`X-Token-Factory-Key`, `X-Tavily-Key`, sent through the API, not typed into the dialog) ran to a card and drew nothing from our pools or the daily cap. No key value in the log, either database or the WAL files.
   - **Spend on our keys:** one check, $0.0489 (read $0.0209, judge $0.0280), 7 Tavily credits, 1 of 5 daily checks. The visitor check on the same account: $0.0462 and 8 credits, plus one diagnostic search.

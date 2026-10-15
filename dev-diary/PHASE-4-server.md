@@ -230,6 +230,26 @@ Join after the card cache and before the refusals (step 4 comes before `live_che
 
 ---
 
+### T4.7: Progress a parent can see
+```yaml
+requires:   T4.6
+fixture-ok: yes
+size:       M · mid
+owns:       internal/server/checks.go (work and getCheck), internal/server/checks_test.go, internal/pipeline/pipeline.go (a progress hook on Collect), internal/pipeline/read.go (chunk counts only), internal/pipeline/gather.go (stage reports only), docs/api.md and testdata/contracts/api/get-check-running.json (the stage fields), web/src/lib/progress/
+status:     not-started
+```
+On the first live run, the progress page showed only its static list of stages for most of a check. `work` reports `gather` once, at the start; gather and read run as one `Collect` call, and `read` with its count is sent only after reading ends. A page that subscribes after the first event receives no replay, and `GET /api/checks/{id}` carries no stage.
+
+1. **Report as it happens:** a progress hook on `Pipeline.Collect`, so gather reports what it is fetching and read reports `current` of `total` as chunks finish ("reading 120 of 500 reviews").
+2. **A late page catches up:** `GET /api/checks/{id}` returns the latest stage, message and counts while running (additive contract fields, fixture updated), and the progress view shows them on load and after a reconnect. If Keel's stream drops events for a late subscriber by design, record it in `feedback.md` as a Keel gap.
+3. **No silent failures:** when `FindAlternatives` fails for any reason but the budget, `work` still stores the card, and now logs the error (no key, no upstream body).
+
+T3.11 owns `judge.go` and T3.12 owns `alternatives.go`; this task touches neither. If T3.12 lands first, rebase.
+
+**Done when:** a test with a slow fake pipeline sees gather, then read with rising counts, then judge; a page opened mid-read shows the current stage and count at once; the alternatives failure is logged; the gate passes.
+
+---
+
 ## Exit Criteria
 
 - [x] A check runs through the HTTP API as a job, with progress over SSE and a typed failure code. (T4.1)

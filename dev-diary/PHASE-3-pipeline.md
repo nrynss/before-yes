@@ -696,6 +696,45 @@ Expected by T0.5: Roblox no, Minecraft yes with settings, Khan yes. Minecraft no
 
 ---
 
+### T3.11: Live judge calibration ★
+```yaml
+requires:   T3.10
+fixture-ok: no
+size:       M · frontier
+owns:       internal/pipeline/judge.go, internal/pipeline/judge_test.go, tools/eval/, testdata/eval/, docs/budget.md (re-measured figures only)
+status:     not-started
+```
+The first live end-to-end run (handoff log) showed T3.10's checks demoting earned grades on fresh evidence. Roblox (9) read **unclear** from 191 verified findings (49 content, 44 contact, 34 money, 13 developer-record risks): money, data, content and developer record fell to unknown with "No verified quote backs the reason the judge gave", and contact and age gating came out `ok_with_setting`. Minecraft (9) read **no** live against `yes_with_settings` on the recordings. A demo verdict should not depend on the day's search results.
+
+1. **Record live evidence.** Gather the three demo titles live, twice (two separate gathers), and keep each as an eval set beside the existing recordings, so calibration is measured on live-shaped evidence, not only the frozen fixtures.
+2. **Find the cause per grade.** For each demoted grade, name the check that demoted it: no citation, a citation outside the area or with the wrong stance, a setting no quote names, or an entailment refusal (`flag_not_earned`, `reason_unsupported`). Record the table before changing anything.
+3. **Fix the cause, not the symptom.** The rules stay: no grade without a verified, in-area citation, and a flag must meet its area's definition. What changes is whatever makes the judge cite nothing, or the checks refuse a fitting citation, when 34 money risks are on the table.
+4. **Re-record and re-measure,** with `-live-cap-usd` set. Budget about $0.30 to $0.50; stop and report if the cap is reached.
+
+The title-specific reason on standing flags (T3.10: the judge copies the area definition as its reason) is a pending user decision; do not change it here unless the user says so.
+
+**Done when:** a per-area table for each title on both live gathers and on the recordings (grade, cited quote, earned or not, which check acted); Roblox reads **no** on both live gathers with its earned flags; each verdict is the same on both live gathers, or the difference is explained by the evidence; tests pin each rule changed; the verdicts and the spend are reported to the user.
+
+---
+
+### T3.12: Alternatives from real list pages
+```yaml
+requires:   T3.5
+fixture-ok: no (one capture, then offline)
+size:       S · mid
+owns:       internal/pipeline/alternatives.go, internal/pipeline/alternatives_test.go, testdata/alternatives/
+status:     not-started
+```
+On live search, the alternatives step finds nothing usable. Replaying the live results for `safer app like Minecraft for a 9 year old` through `FindAlternatives` gave one candidate, "Medium" (the blogging site's name), and no name from Common Sense Media's "Games Like Minecraft" list (21k characters of page text) or any other list page.
+
+1. **Capture once:** the alternatives search, with page text, for the three demo titles at their demo ages (about 1 Tavily credit each, through the meter or a wrapper that prints no key). Save the raw results under `testdata/alternatives/`.
+2. **Read names from list pages:** numbered or headed entries, and the list layouts these pages actually use. A site or platform name (Medium, Reddit, Facebook, YouTube, a blog's own name) is never a candidate. A question post ("Alternative to Minecraft for kids?") is never a candidate.
+3. Keep T3.5's rules: no candidate equal to the title, no duplicates, at most `MaxAlternatives`, and every candidate checked like any title before it reaches a card.
+
+**Done when:** tests on the captured pages produce real game or app names for each demo title, with the source page named in the reason, and no site name; one live run of a "no" title shows checked alternatives on its card; P3's last exit criterion ("alternatives found with Tavily and checked the same way") is ticked with that evidence.
+
+---
+
 ## Exit Criteria
 
 - [x] Review 312 decides the card end to end, by test. (Review 355, the captures' equivalent: `TestReview355DecidesTheCard`.)

@@ -161,6 +161,25 @@ T5.6 and T5.7 built the messages and the keys dialog inside their own folders, a
 
 ---
 
+### T5.9: Interface copy, with the user ★
+```yaml
+requires:   T5.8, T4.7
+fixture-ok: yes
+size:       M · user
+owns:       user-facing text in web/src/ (routes and lib, including errors/notice.ts and ask/messages.ts), the progress messages in internal/server/checks.go, page titles, the specs that assert exact text, docs/voice.md (new)
+status:     not-started
+```
+The interface text reads as machine-written: taglines and paired slogans ("A little research. Before a big yes.", "From question to clarity.", "Good answers start with a closer look.", "Make room for an answer you can check."). This is an interactive task. The user sits with one agent and goes through every screen and every string; the user decides, the agent proposes and applies.
+
+- **Setup:** serve the built app against the T1.4 fixtures (no `.env`, no paid call), and step through each state at 360 px and desktop: the home page and Ask form, the example list, the passcode dialog, the visitor keys dialog, progress (each stage and each failure), the card (verdict, each area, settings, unknown areas, sources, alternatives, sharing, the small print), side by side, and every error and empty state. Page titles too.
+- **Per string:** show it in place, propose a plain replacement or a deletion, and apply only what the user accepts. Words a parent would use; say what happened and what to do next; no slogans, no rhetorical pairs, no filler adjectives.
+- **Write the rules down:** the decisions become `docs/voice.md`, a short list of rules with before and after examples, so later text follows it.
+- **Out of scope:** the reasons on a card are written by the judge model (T3.11 and the pending reasons decision), not the interface.
+
+**Done when:** the user has signed off each screen, `docs/voice.md` exists, the specs assert the new text, and the gate passes.
+
+---
+
 ## Exit Criteria
 
 - [x] Ask, progress and card views work end to end against the examples and a mock stream. (T5.2–T5.4; refusals and visitor keys wired by T5.8)
