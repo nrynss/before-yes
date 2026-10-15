@@ -980,7 +980,7 @@ requires:   T3.11
 fixture-ok: no
 size:       M · frontier
 owns:       internal/pipeline/judge.go (the prompt and reason handling), internal/pipeline/judge_test.go, tools/eval/, testdata/eval/
-status:     in-review
+status:     done
 ```
 The reasons on a card are written by the judge model. After T3.10 the judge copies the area's definition as its reason for a standing flag, so a card says why something counts as a concern in general, not what this title does. The user agreed in T5.9 that model-written text needs its own task with an evaluation (`docs/voice.md`, "Separate model-writing follow-up").
 
