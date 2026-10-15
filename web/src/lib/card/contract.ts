@@ -1,7 +1,7 @@
-export const areas = [ ['contact', 'Contact'], ['money', 'Money'], ['data', 'Data'], ['age_gating', 'Age gating'], ['content', 'Content'], ['developer_record', 'Developer record'] ] as const;
+export const areas = [ ['contact', 'Contact with strangers'], ['money', 'Purchases and spending'], ['data', 'Privacy and data'], ['age_gating', 'Age restrictions'], ['content', 'Content'], ['developer_record', 'Developer history'] ] as const;
 export type Area = typeof areas[number][0];
 export const verdicts = { yes: 'Yes', yes_with_settings: 'Yes, with these settings', no: 'No', unclear: 'Not enough evidence' };
-export const levels = { ok: 'OK', ok_with_setting: 'OK with a setting', flag: 'Flag', unknown: 'Not enough evidence' };
+export const levels = { ok: 'OK', ok_with_setting: 'Needs a setting change', flag: 'Concern', unknown: 'Not enough evidence' };
 export type Finding = { id: string; area: Area; claim: string; stance: 'risk' | 'mitigation' | 'neutral'; quote: string; source: { url: string; kind: string; index?: number; title?: string; fetched_at: string } };
 export type Grade = { area: Area; level: keyof typeof levels; findings: string[]; reason?: string; setting?: string };
 export type Card = { id: string; title: string; kind: string; kind_label: string; age: number; checklist_version: string; checked_at: string; collected_at: string; verdict: keyof typeof verdicts; grades: Grade[]; settings: string[]; findings: Finding[]; alternatives: { title: string; reason: string; card_id: string; verdict: keyof typeof verdicts; status: string }[]; alternatives_note?: string; stats: { sources: number; reviews: number; review_source: string; chunks: number; failed_chunks: number; drops: { bad_area: number; bad_stance: number; no_quote: number; unquoted: number; duplicates: number }; conflicted_areas: Area[]; missing_kinds: string[]; tavily_credits: number; read_cost_nano: number; judge_cost_nano: number; reader_model: string; judge_model: string } };

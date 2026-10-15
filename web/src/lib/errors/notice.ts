@@ -3,14 +3,14 @@
 export type Notice = { situation: string; next: string };
 
 const budgetByPool: Record<string, string> = {
-  daily_checks: 'Today’s allowance of fresh checks is used up.',
+  daily_checks: 'Today’s check limit has been reached.',
   token_factory: 'The research budget is used up.',
   tavily: 'The budget for searching sources is used up.',
 };
 
 const fallback: Notice = {
-  situation: 'This check did not finish.',
-  next: 'Go back to the ask page and try again.',
+  situation: 'This check couldn’t finish.',
+  next: 'Return home and try again.',
 };
 
 function record(value: unknown): value is Record<string, unknown> {
@@ -39,32 +39,32 @@ export function errorNotice(error: unknown): Notice {
       const pool = typeof detail.pool === 'string' && Object.hasOwn(budgetByPool, detail.pool) ? budgetByPool[detail.pool] : undefined;
       return {
         situation: pool ?? 'The budget for fresh checks is used up.',
-        next: 'Open an example card, or come back later.',
+        next: 'Open a previous check or come back later.',
       };
     }
     case 'no_sources':
       return {
-        situation: 'We couldn’t find writing about this title.',
-        next: 'Go back to the ask page and try the full name.',
+        situation: 'Sorry, we couldn’t research this title.',
+        next: 'Check the spelling or try its full name.',
       };
     case 'check_failed':
       return {
-        situation: 'The check stopped before it had an answer.',
-        next: 'Start it again from the ask page.',
+        situation: 'This check couldn’t finish.',
+        next: 'Return home and try again.',
       };
     case 'live_checks_off':
       return {
-        situation: 'Fresh checks are paused right now.',
-        next: 'Open an example card while you wait.',
+        situation: 'New checks are paused.',
+        next: 'You can still open previous checks.',
       };
     case 'busy':
       return {
-        situation: 'Other checks are still in progress.',
-        next: wait(seconds, 'try this title again.'),
+        situation: 'Other checks are running.',
+        next: wait(seconds, 'try again.'),
       };
     case 'rate_limited':
       return {
-        situation: 'Too many checks were asked for in a short time.',
+        situation: 'Too many requests.',
         next: wait(seconds, 'try again.'),
       };
     case 'passcode_required':
@@ -74,8 +74,8 @@ export function errorNotice(error: unknown): Notice {
       };
     case 'not_found':
       return {
-        situation: 'Nothing matches that address.',
-        next: 'Go back to the ask page and start again.',
+        situation: 'Sorry, we couldn’t find this check.',
+        next: 'Check the link or return home to start again.',
       };
     default:
       return fallback;
@@ -85,7 +85,7 @@ export function errorNotice(error: unknown): Notice {
 // An unknown area is unanswered. The wording must not read as a pass.
 export function unknownAreaNotice(): Notice {
   return {
-    situation: 'Not enough evidence was found to answer this question.',
-    next: 'Read the sources on the card before you decide. This question is unanswered, not a pass.',
+    situation: 'We don’t have enough evidence to assess this area.',
+    next: 'Don’t assume it is safe.',
   };
 }

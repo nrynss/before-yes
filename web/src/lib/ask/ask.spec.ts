@@ -11,7 +11,7 @@ async function gate(page: Page) {
   await page.addScriptTag({ content: a11y + '\nwindow.runAskGate = () => a11yGate(document.body);' });
   await page.evaluate(() => (window as unknown as { runAskGate: () => Promise<void> }).runAskGate());
 }
-const sentences: Record<string, string> = { invalid_request: 'Please check the title', rate_limited: 'Wait 30 seconds', busy: 'Wait 20 seconds', live_checks_off: 'Fresh checks are paused right now.' };
+const sentences: Record<string, string> = { invalid_request: 'Please check the title', rate_limited: 'Wait 30 seconds', busy: 'Wait 20 seconds', live_checks_off: 'New checks are paused.' };
 for (const fixture of fixtures) {
   test(`exact T1.4 response: ${fixture.name}`, async ({ page }) => {
     await examples(page);
@@ -19,22 +19,25 @@ for (const fixture of fixtures) {
     await page.route('**/api/checks', async route => { requests.push(route.request().postDataJSON()); await route.fulfill({ status: fixture.response.status, json: fixture.response.body }); });
     await page.goto('/');
     await fill(page, `  ${fixture.request.body.title || 'Roblox'}  `, String(fixture.request.body.age > 17 ? 9 : fixture.request.body.age));
-    await page.getByRole('button', { name: 'Check before yes' }).click();
+    await page.getByRole('button', { name: 'Check this title' }).click();
     const code = fixture.response.body.error?.code as string | undefined;
     if (fixture.response.body.card_id) await expect(page).toHaveURL(`/card/${fixture.response.body.card_id}`);
-    else if (fixture.response.body.check_id) await expect(page).toHaveURL(`/check/${fixture.response.body.check_id}`);
+    else if (fixture.response.body.check_id) {
+      await expect(page).toHaveURL(`/check/${fixture.response.body.check_id}`);
+      await expect(page).toHaveTitle(`Before Yes - Check in progress for ${fixture.request.body.title || 'Roblox'}`);
+    }
     else if (code === 'passcode_required') {
       await expect(page.getByRole('dialog')).toBeVisible();
-      await expect(page.getByRole('dialog')).toContainText('This site asks for the shared passcode before starting a check.');
-      await expect(page.getByRole('dialog')).toContainText('Go back to the ask page and enter it there.');
+      await expect(page.getByRole('dialog')).toContainText('This demo requires a passcode to start a check.');
+      await expect(page.getByRole('dialog')).toContainText('Enter the passcode');
     } else if (code === 'budget_exhausted') {
-      const situation = 'Today’s allowance of fresh checks is used up.';
+      const situation = 'Today’s check limit has been reached.';
       await expect(page.locator('form .notice')).toContainText(situation);
-      await expect(page.locator('form .notice')).toContainText('Open an example card, or come back later.');
-      const shown = page.locator('.keys-dialog [data-budget-notice]');
+      await expect(page.locator('form .notice')).toContainText('Open a previous check or come back later.');
+      const shown = page.getByRole('dialog');
       await expect(shown).toBeVisible();
-      await expect(shown).toContainText(situation);
-      await expect(shown).toContainText('Open an example card, or come back later.');
+      await expect(shown).toContainText('We’ve reached today’s limit for checks.');
+      await expect(shown).toContainText('Your keys aren’t stored.');
       await expect(page.getByRole('dialog')).toContainText(`For ${fixture.request.body.title}, age ${fixture.request.body.age}.`);
       await expect(page.getByLabel('App, game or channel')).toHaveValue(`  ${fixture.request.body.title}  `);
       await expect(page.getByLabel('Child’s age')).toHaveValue(String(fixture.request.body.age));
@@ -71,15 +74,15 @@ test('invalid ages and blank title never start a check', async ({ page }) => {
   await examples(page); let posts = 0;
   await page.route('**/api/checks', route => { posts++; return route.fulfill({ json: {} }); });
   await page.goto('/');
-  for (const value of ['2', '18', '9.5', '']) { await fill(page, 'Roblox', value); await page.getByRole('button', { name: 'Check before yes' }).click(); expect(await page.getByLabel('Child’s age').evaluate((node: HTMLInputElement) => node.validity.valid)).toBe(false); }
-  await fill(page, '   ', '9'); await page.getByRole('button', { name: 'Check before yes' }).click();
+  for (const value of ['2', '18', '9.5', '']) { await fill(page, 'Roblox', value); await page.getByRole('button', { name: 'Check this title' }).click(); expect(await page.getByLabel('Child’s age').evaluate((node: HTMLInputElement) => node.validity.valid)).toBe(false); }
+  await fill(page, '   ', '9'); await page.getByRole('button', { name: 'Check this title' }).click();
   await expect(page.getByRole('alert')).toContainText('Enter a title'); expect(posts).toBe(0);
 });
 test('pending request disables duplicate submits and fields', async ({ page }) => {
   await examples(page); let posts = 0; let release!: () => void;
   const wait = new Promise<void>(resolve => { release = resolve; });
   await page.route('**/api/checks', async route => { posts++; await wait; await route.fulfill({ status: 202, json: fixtures.find(f => f.response.status === 202).response.body }); });
-  await page.goto('/'); await fill(page); await page.getByRole('button', { name: 'Check before yes' }).click();
+  await page.goto('/'); await fill(page); await page.getByRole('button', { name: 'Check this title' }).click();
   await expect(page.getByRole('button', { name: 'Starting your check' })).toBeDisabled();
   await expect(page.getByLabel('App, game or channel')).toBeDisabled();
   await page.keyboard.press('Enter'); expect(posts).toBe(1); release(); await expect(page).toHaveURL(/\/check\/j_/);
@@ -91,7 +94,7 @@ test('passcode traps focus, rejects wrong code, retries saved question once, lea
     const passcode = route.request().headers()['x-passcode']; requests.push({ body: route.request().postDataJSON(), passcode });
     return route.fulfill(passcode === 'correct-secret' ? { json: fixtures.find(f => f.response.status === 200).response.body } : { status: refusal.status, json: refusal.body });
   });
-  await page.goto('/'); await fill(page, '  Roblox  '); await page.getByRole('button', { name: 'Check before yes' }).click();
+  await page.goto('/'); await fill(page, '  Roblox  '); await page.getByRole('button', { name: 'Check this title' }).click();
   await expect(page.getByLabel('Passcode', { exact: true })).toBeFocused();
   for (let i = 0; i < 5; i++) { await page.keyboard.press('Tab'); expect(await page.evaluate(() => !!document.activeElement?.closest('[role="dialog"]'))).toBe(true); }
   await page.getByLabel('Passcode', { exact: true }).focus(); await page.keyboard.type('wrong-secret'); await page.keyboard.press('Enter');
@@ -105,9 +108,9 @@ test('passcode traps focus, rejects wrong code, retries saved question once, lea
 test('cancel clears passcode and restores focus; reopen starts blank', async ({ page }) => {
   await examples(page); const refusal = fixtures.find(f => f.response.status === 403).response;
   await page.route('**/api/checks', route => route.fulfill({ status: refusal.status, json: refusal.body }));
-  await page.goto('/'); await fill(page); await page.getByRole('button', { name: 'Check before yes' }).click();
+  await page.goto('/'); await fill(page); await page.getByRole('button', { name: 'Check this title' }).click();
   await page.getByLabel('Passcode', { exact: true }).fill('abandoned'); await page.keyboard.press('Escape');
-  await expect(page.getByRole('dialog')).not.toBeVisible(); await expect(page.getByRole('button', { name: 'Check before yes' })).toBeFocused();
+  await expect(page.getByRole('dialog')).not.toBeVisible(); await expect(page.getByRole('button', { name: 'Check this title' })).toBeFocused();
   await page.keyboard.press('Enter'); await expect(page.getByLabel('Passcode', { exact: true })).toHaveValue('');
 });
 test('examples show all verdicts and follow a free link with no POST', async ({ page }) => {
@@ -119,17 +122,17 @@ test('examples show all verdicts and follow a free link with no POST', async ({ 
 test('loading, empty, failed and malformed list remain honest and form stays available', async ({ page }) => {
   let release!: () => void; const wait = new Promise<void>(resolve => { release = resolve; });
   await page.route('**/api/cards', async route => { await wait; await route.fulfill({ json: { cards: [] } }); });
-  await page.goto('/'); await expect(page.getByRole('status')).toContainText('Finding recent'); release(); await expect(page.getByText('No example cards are here yet.', { exact: false })).toBeVisible();
+  await page.goto('/'); await expect(page.getByRole('status')).toContainText('Loading previous checks…'); release(); await expect(page.getByText('No checks yet.', { exact: false })).toBeVisible();
   await page.unroute('**/api/cards');
   for (const response of [{ status: 500, body: 'stack SECRET' }, { status: 200, body: '{' }, { status: 200, json: { cards: [{ id: 'javascript:bad' }] } }, { status: 200, json: { cards: [recent.cards[0], recent.cards[0]] } }]) {
-    await page.route('**/api/cards', route => route.fulfill(response)); await page.reload(); await expect(page.getByText('Recent examples couldn’t be loaded.', { exact: false })).toBeVisible(); await expect(page.getByRole('button', { name: 'Check before yes' })).toBeEnabled(); await page.unroute('**/api/cards');
+    await page.route('**/api/cards', route => route.fulfill(response)); await page.reload(); await expect(page.getByText('Previous checks couldn’t be loaded.', { exact: false })).toBeVisible(); await expect(page.getByRole('button', { name: 'Check this title' })).toBeEnabled(); await page.unroute('**/api/cards');
   }
 });
 test('network, malformed success and server text are safe and actionable', async ({ page }) => {
   await examples(page);
   for (const response of ['network', 'malformed', 'unsafe', 'ambiguous']) {
     await page.route('**/api/checks', route => response === 'network' ? route.abort() : response === 'malformed' ? route.fulfill({ body: '<html>SECRET stack</html>' }) : response === 'ambiguous' ? route.fulfill({ json: { card_id: 'c_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', check_id: 'j_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb' } }) : route.fulfill({ status: 500, json: { error: { code: 'internal_error', message: 'SECRET stack trace' } } }));
-    await page.goto('/'); await fill(page); await page.getByRole('button', { name: 'Check before yes' }).click(); await expect(page.getByRole('alert')).toContainText(/try again/i); await expect(page.locator('body')).not.toContainText('SECRET'); await expect(page).toHaveURL('/'); await page.unroute('**/api/checks');
+    await page.goto('/'); await fill(page); await page.getByRole('button', { name: 'Check this title' }).click(); await expect(page.getByRole('alert')).toContainText(/try again/i); await expect(page.locator('body')).not.toContainText('SECRET'); await expect(page).toHaveURL('/'); await page.unroute('**/api/checks');
   }
 });
 for (const mode of ['light', 'dark']) test(`ask and passcode dialog at 360px: Chaaya gate in ${mode}`, async ({ page }) => {
@@ -138,9 +141,9 @@ for (const mode of ['light', 'dark']) test(`ask and passcode dialog at 360px: Ch
   await page.route('**/api/checks', route => route.fulfill({ status: refusal.status, json: refusal.body }));
   await page.goto('/'); await expect(page.getByText('Not enough evidence', { exact: true })).toBeVisible(); await gate(page);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-  expect(await page.getByRole('button', { name: 'Check before yes' }).evaluate(node => node.getBoundingClientRect().bottom <= innerHeight)).toBe(true);
+  expect(await page.getByRole('button', { name: 'Check this title' }).evaluate(node => node.getBoundingClientRect().bottom <= innerHeight)).toBe(true);
   await page.screenshot({ path: `/tmp/t5.2-ask-${mode}.png`, fullPage: true });
-  await fill(page); await page.getByRole('button', { name: 'Check before yes' }).click(); await expect(page.getByRole('dialog')).toBeVisible(); await gate(page);
+  await fill(page); await page.getByRole('button', { name: 'Check this title' }).click(); await expect(page.getByRole('dialog')).toBeVisible(); await gate(page);
   expect(await page.getByRole('dialog').evaluate(node => node.getBoundingClientRect().right <= innerWidth && node.getBoundingClientRect().left >= 0)).toBe(true);
   expect(await page.getByRole('button', { name: 'Cancel' }).evaluate(node => node.getBoundingClientRect().height)).toBeGreaterThanOrEqual(48);
   await page.screenshot({ path: `/tmp/t5.2-dialog-${mode}.png`, fullPage: true });
@@ -150,17 +153,17 @@ test('desktop form and examples fit the editorial shell', async ({ page }) => {
 });
 
 const refusals: { code: string; detail?: Record<string, unknown>; situation: string; next: string; keys?: boolean; passcode?: boolean }[] = [
-  { code: 'budget_exhausted', detail: { pool: 'daily_checks' }, situation: 'Today’s allowance of fresh checks is used up.', next: 'Open an example card, or come back later.', keys: true },
-  { code: 'budget_exhausted', detail: { pool: 'token_factory' }, situation: 'The research budget is used up.', next: 'Open an example card, or come back later.', keys: true },
-  { code: 'budget_exhausted', detail: { pool: 'tavily' }, situation: 'The budget for searching sources is used up.', next: 'Open an example card, or come back later.', keys: true },
-  { code: 'budget_exhausted', detail: {}, situation: 'The budget for fresh checks is used up.', next: 'Open an example card, or come back later.', keys: true },
-  { code: 'no_sources', situation: 'We couldn’t find writing about this title.', next: 'Go back to the ask page and try the full name.' },
-  { code: 'check_failed', situation: 'The check stopped before it had an answer.', next: 'Start it again from the ask page.' },
-  { code: 'live_checks_off', situation: 'Fresh checks are paused right now.', next: 'Open an example card while you wait.' },
-  { code: 'busy', detail: { retry_after_seconds: 20 }, situation: 'Other checks are still in progress.', next: 'Wait 20 seconds, then try this title again.' },
-  { code: 'rate_limited', detail: { retry_after_seconds: 30 }, situation: 'Too many checks were asked for in a short time.', next: 'Wait 30 seconds, then try again.' },
-  { code: 'passcode_required', situation: 'This site asks for the shared passcode before starting a check.', next: 'Go back to the ask page and enter it there.', passcode: true },
-  { code: 'not_found', situation: 'Nothing matches that address.', next: 'Go back to the ask page and start again.' },
+  { code: 'budget_exhausted', detail: { pool: 'daily_checks' }, situation: 'Today’s check limit has been reached.', next: 'Open a previous check or come back later.', keys: true },
+  { code: 'budget_exhausted', detail: { pool: 'token_factory' }, situation: 'The research budget is used up.', next: 'Open a previous check or come back later.', keys: true },
+  { code: 'budget_exhausted', detail: { pool: 'tavily' }, situation: 'The budget for searching sources is used up.', next: 'Open a previous check or come back later.', keys: true },
+  { code: 'budget_exhausted', detail: {}, situation: 'The budget for fresh checks is used up.', next: 'Open a previous check or come back later.', keys: true },
+  { code: 'no_sources', situation: 'Sorry, we couldn’t research this title.', next: 'Check the spelling or try its full name.' },
+  { code: 'check_failed', situation: 'This check couldn’t finish.', next: 'Return home and try again.' },
+  { code: 'live_checks_off', situation: 'New checks are paused.', next: 'You can still open previous checks.' },
+  { code: 'busy', detail: { retry_after_seconds: 20 }, situation: 'Other checks are running.', next: 'Wait 20 seconds, then try again.' },
+  { code: 'rate_limited', detail: { retry_after_seconds: 30 }, situation: 'Too many requests.', next: 'Wait 30 seconds, then try again.' },
+  { code: 'passcode_required', situation: 'This demo requires a passcode to start a check.', next: 'Enter the passcode', passcode: true },
+  { code: 'not_found', situation: 'Sorry, we couldn’t find this check.', next: 'Check the link or return home to start again.' },
 ];
 for (const item of refusals) {
   const pool = typeof item.detail?.pool === 'string' ? item.detail.pool : '';
@@ -170,23 +173,23 @@ for (const item of refusals) {
     await page.route('**/api/checks', route => route.fulfill({ status: 400, json: { error: { code: item.code, message: server, stack: server, detail: item.detail } } }));
     await page.goto('/');
     await fill(page, 'Fortnite', '11');
-    await page.getByRole('button', { name: 'Check before yes' }).click();
-    const scope = item.keys ? page.locator('[data-budget-notice]') : item.passcode ? page.getByRole('dialog') : page.getByRole('alert');
-    await expect(scope).toContainText(item.situation);
-    await expect(scope).toContainText(item.next);
+    await page.getByRole('button', { name: 'Check this title' }).click();
+    const scope = item.keys || item.passcode ? page.getByRole('dialog') : page.getByRole('alert');
+    await expect(scope).toContainText(item.keys ? 'We’ve reached today’s limit for checks.' : item.situation);
+    await expect(scope).toContainText(item.keys ? 'Your keys aren’t stored.' : item.next);
     if (item.keys) {
       await expect(page.locator('form .notice')).toContainText(item.situation);
       await expect(page.locator('form .notice')).toContainText(item.next);
       await expect(page.getByRole('dialog')).toContainText('For Fortnite, age 11.');
       await expect(page.getByLabel('App, game or channel')).toHaveValue('Fortnite');
       await expect(page.getByLabel('Child’s age')).toHaveValue('11');
-      await expect(page.getByText('Use your own keys for this check.')).toBeVisible();
+      await expect(page.getByText('Use your own API keys')).toBeVisible();
       if (pool) await expect(scope).not.toContainText(pool);
     } else if (item.passcode) {
-      await expect(page.getByText('Use your own keys for this check.')).toHaveCount(0);
+      await expect(page.getByText('Use your own API keys')).toHaveCount(0);
     } else {
       await expect(page.getByRole('dialog')).toHaveCount(0);
-      await expect(page.getByText('Use your own keys for this check.')).toHaveCount(0);
+      await expect(page.getByText('Use your own API keys')).toHaveCount(0);
     }
     await expect(page.locator('body')).not.toContainText('SECRET');
     await expect(page.locator('body')).not.toContainText(item.code);
@@ -197,7 +200,7 @@ test('invalid_request and network keep a next step and hide the server sentence'
   await page.route('**/api/checks', route => route.fulfill({ status: 400, json: { error: { code: 'invalid_request', message: 'title is required and age must be between 3 and 17 SECRET' } } }));
   await page.goto('/');
   await fill(page);
-  await page.getByRole('button', { name: 'Check before yes' }).click();
+  await page.getByRole('button', { name: 'Check this title' }).click();
   const alert = page.getByRole('alert');
   await expect(alert).toContainText('Please check the title and enter a whole age from 3 to 17, then try again.');
   await expect(page.locator('body')).not.toContainText('title is required');
@@ -207,7 +210,7 @@ test('invalid_request and network keep a next step and hide the server sentence'
   await page.route('**/api/checks', route => route.abort());
   await page.goto('/');
   await fill(page);
-  await page.getByRole('button', { name: 'Check before yes' }).click();
+  await page.getByRole('button', { name: 'Check this title' }).click();
   await expect(page.getByRole('alert')).toContainText('We couldn’t reach Before Yes.');
   await expect(page.getByRole('alert')).toContainText('Check your connection and try again.');
 });
@@ -218,7 +221,7 @@ test('example list accepts ages 3 to 17 and refuses 2 and 18', async ({ page }) 
     await examples(page, { cards: [{ ...base, age }] });
     await page.goto('/');
     if (shown) await expect(page.getByRole('link', { name: /Roblox/ })).toBeVisible();
-    else await expect(page.getByText('Recent examples couldn’t be loaded.', { exact: false })).toBeVisible();
+    else await expect(page.getByText('Previous checks couldn’t be loaded.', { exact: false })).toBeVisible();
   }
 });
 test('pasted keys on a spent cap reach progress and stay out of storage and the URL', async ({ page, context }) => {
@@ -247,7 +250,7 @@ test('pasted keys on a spent cap reach progress and stay out of storage and the 
   await page.route(`**/api/checks/${checkId}/events`, route => route.fulfill({ status: 200, headers: { 'content-type': 'text/event-stream' }, body: '' }));
   await page.goto('/');
   await fill(page, 'Fortnite', '11');
-  await page.getByRole('button', { name: 'Check before yes' }).click();
+  await page.getByRole('button', { name: 'Check this title' }).click();
   await expect(page.getByRole('dialog')).toContainText('For Fortnite, age 11.');
   await expect(page.getByLabel('App, game or channel')).toHaveValue('Fortnite');
   const paste = async (label: string, value: string) => {

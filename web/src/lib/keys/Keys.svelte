@@ -118,7 +118,7 @@
       if (record(response) && typeof response.check_id === 'string' && checkId.test(response.check_id) && !('card_id' in response)) {
         const id = response.check_id;
         clearKeys();
-        await goto(resolve('/check/[id]', { id }));
+        await goto(resolve('/check/[id]', { id }), { state: { checkTitle: title } });
         return;
       }
       message = 'The answer didn’t name a check or a card we can open. The keys were not stored.';
@@ -135,8 +135,8 @@
   <Dialog.Portal>
     <Dialog.Overlay class="keys-overlay" />
     <Dialog.Content class="keys-dialog" onOpenAutoFocus={(event) => { event.preventDefault(); tokenInput?.focus(); }} onEscapeKeydown={(event) => { if (pending) event.preventDefault(); }} onInteractOutside={(event) => { if (pending) event.preventDefault(); }}>
-      <Dialog.Title level={2}>Use your own keys for this check.</Dialog.Title>
-      <Dialog.Description>Today’s free checks are used up. Paste a Token Factory key and a Tavily key to run this one check on your own accounts. The keys are used for this one check and not stored.</Dialog.Description>
+      <Dialog.Title level={2}>Use your own API keys</Dialog.Title>
+      <Dialog.Description>We’ve reached today’s limit for checks. Use your Token Factory and Tavily accounts to run this check. Usage is charged to your accounts. Your keys aren’t stored.</Dialog.Description>
       <p class="subject">For {title}, age {age}.</p>
       <form method="post" autocomplete="off" novalidate onsubmit={submit} aria-busy={pending}>
         <label for="token-factory-key">Token Factory key<input id="token-factory-key" type="text" bind:value={tokenKey} bind:this={tokenInput} autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" disabled={pending} /></label>

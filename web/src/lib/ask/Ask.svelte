@@ -13,7 +13,6 @@
   const verdicts = { yes: 'Yes', yes_with_settings: 'Yes, with settings', no: 'No', unclear: 'Not enough evidence' };
   const gate = keelGate();
   const call = apiWithKeelGate(gate);
-  const passcodeNotice = refusal({ code: 'passcode_required' });
   let title = $state('');
   let age = $state<number | undefined>();
   let pending = $state(false);
@@ -63,13 +62,13 @@
       if (typeof response.card_id === 'string' && /^c_[A-Za-z0-9_-]+$/.test(response.card_id) && !('check_id' in response)) {
         await goto(resolve('/card/[id]', { id: response.card_id }));
       } else if (typeof response.check_id === 'string' && /^j_[A-Za-z0-9_-]+$/.test(response.check_id) && !('card_id' in response)) {
-        await goto(resolve('/check/[id]', { id: response.check_id }));
+        await goto(resolve('/check/[id]', { id: response.check_id }), { state: { checkTitle: saved.title } });
       } else throw new Error('Invalid answer');
     } catch (error) {
       if (controller.signal.aborted) return;
       if (error instanceof ApiError && error.code === 'passcode_required') {
         keysOpen = false;
-        if (open) passcodeError = 'That passcode wasn’t accepted. Check it and try again.';
+        if (open) passcodeError = 'That passcode wasn’t accepted. Try again.';
         gate.clear(); passcode = ''; notice = undefined; open = true;
       } else {
         notice = refusal(error);
@@ -99,63 +98,31 @@
     if (next || keepQuestion) return;
     passcode = ''; passcodeError = ''; gate.clear(); saved = undefined;
   }
-  // The keys dialog covers the page. The same budget notice is placed in the dialog so it stays readable.
-  $effect(() => {
-    if (!keysOpen || !notice) return;
-    const situation = notice.situation;
-    const next = notice.next;
-    let copy: HTMLElement | undefined;
-    const place = () => {
-      const dialog = document.querySelector('.keys-dialog');
-      if (!(dialog instanceof HTMLElement)) return;
-      if (copy?.isConnected && copy.parentElement === dialog) return;
-      copy?.remove();
-      const section = document.createElement('section');
-      section.className = 'notice';
-      section.dataset.budgetNotice = '';
-      section.setAttribute('role', 'alert');
-      const situationNode = document.createElement('p');
-      situationNode.textContent = situation;
-      const nextNode = document.createElement('p');
-      nextNode.textContent = next;
-      section.append(situationNode, nextNode);
-      dialog.insertBefore(section, dialog.firstChild);
-      copy = section;
-    };
-    place();
-    const observer = new MutationObserver(place);
-    observer.observe(document.body, { childList: true, subtree: true });
-    return () => { observer.disconnect(); copy?.remove(); };
-  });
 </script>
 
 <section class="panel ask-panel" aria-labelledby="ask-title">
-  <span class="panel-kicker">The next question</span>
   <h2 id="ask-title">What are they asking for?</h2>
-  <p class="form-intro">A little context. An answer for their age.</p>
   <form onsubmit={start} aria-busy={pending}>
     <div class="fields">
       <label class="title-field" for="asked-title">App, game or channel<input id="asked-title" name="title" bind:value={title} required disabled={pending || open || keysOpen} placeholder="What your child asked for" autocomplete="off" /></label>
       <label for="child-age">Child’s age<input id="child-age" name="age" type="number" bind:value={age} min="3" max="17" step="1" required disabled={pending || open || keysOpen} placeholder="3–17" inputmode="numeric" /></label>
     </div>
-    <button class="primary" type="submit" disabled={pending || open || keysOpen} bind:this={submitButton}>{pending ? 'Starting your check…' : 'Check before yes'}</button>
+    <button class="primary" type="submit" disabled={pending || open || keysOpen} bind:this={submitButton}>{pending ? 'Starting your check…' : 'Check this title'}</button>
     {#if notice}<section class="notice" role="alert"><p>{notice.situation}</p><p>{notice.next}</p></section>{/if}
   </form>
-  <p class="footnote">The same six questions. Sources you can follow.</p>
 </section>
 <section class="examples" id="examples" aria-labelledby="examples-title" aria-busy={list === 'loading'}>
-  <div class="examples-heading"><h2 id="examples-title">A few answers already here.</h2><span>Free to open</span></div>
-  {#if list === 'loading'}<p role="status">Finding recent examples…</p>
-  {:else if list === 'failed'}<p>Recent examples couldn’t be loaded. You can still ask above; refresh this page to try the examples again.</p>
-  {:else if !cards.length}<p>No example cards are here yet. Ask about a title above to get started.</p>
+  <div class="examples-heading"><h2 id="examples-title">Previous checks</h2></div>
+  {#if list === 'loading'}<p role="status">Loading previous checks…</p>
+  {:else if list === 'failed'}<p>Previous checks couldn’t be loaded. Refresh to try again, or enter a title above.</p>
+  {:else if !cards.length}<p>No checks yet. Enter a title above to get started.</p>
   {:else}<ul>{#each cards as item (item.id)}<li><a href={resolve('/card/[id]', { id: item.id })}><span class="example-title">{item.title}<span class="example-age">For age {item.age}</span></span><span class="verdict" class:yes={item.verdict === 'yes'} class:no={item.verdict === 'no'} class:caution={item.verdict === 'yes_with_settings' || item.verdict === 'unclear'}>{verdicts[item.verdict]}</span></a></li>{/each}</ul>{/if}
 </section>
 <Dialog.Root bind:open onOpenChange={close}>
   <Dialog.Portal><Dialog.Overlay class="ask-overlay" />
     <Dialog.Content class="ask-dialog" onCloseAutoFocus={(event) => { event.preventDefault(); submitButton?.focus(); }} onEscapeKeydown={(event) => { if (pending) event.preventDefault(); }} onInteractOutside={(event) => { if (pending) event.preventDefault(); }}>
-      <Dialog.Title level={2}>One shared passcode.</Dialog.Title>
-      <Dialog.Description>This check needs the demo’s passcode. Your question is saved while you enter it.</Dialog.Description>
-      <section class="notice" role="alert"><p>{passcodeNotice.situation}</p><p>{passcodeNotice.next}</p></section>
+      <Dialog.Title level={2}>Enter the passcode</Dialog.Title>
+      <Dialog.Description>This demo requires a passcode to start a check.</Dialog.Description>
       <form onsubmit={unlock} aria-busy={pending}>
         <label for="shared-passcode">Passcode<input id="shared-passcode" type="password" bind:value={passcode} bind:this={passcodeInput} required disabled={pending} autocomplete="off" aria-invalid={!!passcodeError} aria-describedby={passcodeError ? 'passcode-error' : undefined} /></label>
         {#if passcodeError}<p id="passcode-error" class="notice" role="alert">{passcodeError}</p>{/if}
@@ -169,7 +136,6 @@
 
 <style>
   .ask-panel { border-top: 3px solid var(--accent); }
-  .form-intro { font-size: .9rem; margin-bottom: 25px; }
   .fields { display: grid; grid-template-columns: minmax(0, 1fr) 100px; gap: 18px; }
   label { display: block; font-size: .82rem; font-weight: 650; color: var(--text); }
   input { display: block; width: 100%; min-height: 52px; margin-top: 9px; padding: 12px; border: 1px solid var(--line); border-radius: var(--radius-control); background: var(--surface); color: var(--text); font: inherit; font-size: 1rem; font-weight: 400; }
@@ -178,17 +144,12 @@
   button:disabled, input:disabled { cursor: wait; }
   .primary { width: 100%; border: 1px solid var(--accent); background: var(--accent); color: var(--on-accent); margin-top: 22px; padding: 12px 18px; }
   .primary:hover { box-shadow: 0 0 0 2px var(--accent-soft); }
-  .footnote { margin: 22px 0 0; padding-top: 18px; border-top: 1px solid var(--line-soft); font-size: .78rem; color: var(--faint); }
   .notice { background: var(--warn-soft); color: var(--warn); border-left: 3px solid var(--warn); padding: 13px 15px; font-size: .9rem; margin: 18px 0 0; }
   .notice p { margin: 0; overflow-wrap: anywhere; }
   .notice p + p { margin-top: 8px; }
-  :global(.keys-dialog [data-budget-notice]) { margin-top: 0; }
-  :global(.keys-dialog [data-budget-notice] p) { margin: 0; }
-  :global(.keys-dialog [data-budget-notice] p + p) { margin-top: 8px; }
   .examples { margin-top: 36px; }
   .examples-heading { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; margin-bottom: 12px; }
   .examples h2 { font-size: 1.35rem; margin: 0; }
-  .examples-heading > span { color: var(--faint); font-size: .72rem; white-space: nowrap; }
   .examples > p { font-size: .85rem; }
   ul { margin: 0; padding: 0; list-style: none; }
   li { border-top: 1px solid var(--line-soft); }
@@ -203,5 +164,5 @@
   :global(.ask-dialog [data-dialog-title]) { font-family: Georgia, Cambria, serif; font-size: 1.8rem; font-weight: 400; margin-bottom: 16px; }
   :global(.ask-dialog [data-dialog-description]) { color: var(--dim); font-size: .9rem; margin-bottom: 22px; }
   :global(.ask-dialog .cancel) { width: 100%; min-height: 52px; font: inherit; font-size: .94rem; font-weight: 650; cursor: pointer; border-radius: var(--radius-control); margin-top: 10px; border: 1px solid var(--line); background: var(--surface); color: var(--text); }
-  @media (max-width: 480px) { .ask-panel { padding: 20px; } .ask-panel h2 { font-size: 1.5rem; } .form-intro { margin-bottom: 18px; } .fields { grid-template-columns: minmax(0, 1fr); gap: 15px; } #child-age { max-width: 130px; } .examples-heading { display: block; } .examples-heading > span { display: block; margin-top: 5px; } }
+  @media (max-width: 480px) { .ask-panel { padding: 20px; } .ask-panel h2 { font-size: 1.5rem; } .fields { grid-template-columns: minmax(0, 1fr); gap: 15px; } #child-age { max-width: 130px; } .examples-heading { display: block; } }
 </style>

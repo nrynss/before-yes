@@ -110,7 +110,7 @@ async function open(page: Page, title = 'Minecraft', age = 12, client = false) {
   await page.goto(address(title, age, client));
   await expect(page.getByRole('dialog')).toBeVisible();
   await expect(page.getByRole('dialog')).toContainText(`For ${title}, age ${age}.`);
-  await expect(page.getByRole('dialog')).toContainText('used for this one check and not stored');
+  await expect(page.getByRole('dialog')).toContainText('Your keys aren’t stored.');
   await expect(page.getByRole('dialog').getByLabel('App, game or channel')).toHaveCount(0);
   await expect(page.getByRole('dialog').getByLabel('Child’s age')).toHaveCount(0);
   return logs;

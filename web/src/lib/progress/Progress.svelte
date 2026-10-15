@@ -2,6 +2,7 @@
  import { onMount } from 'svelte';
  import { goto } from '$app/navigation';
  import { resolve } from '$app/paths';
+ import { page } from '$app/state';
  import { api, JobStream, type JobSnapshot } from '@nrynss/chaaya/keel';
  import { errorNotice, type Notice } from '../errors/notice';
  import { snapshot, validId, type StageSnapshot } from './snapshot';
@@ -13,7 +14,8 @@
  let generation = 0;
  let alive = false;
  let controller: AbortController;
- const stages = [{id:'gather',label:'Gather',text:'Find policies, reviews and parent reports.'},{id:'read',label:'Read',text:'Read the sources and keep the evidence.'},{id:'judge',label:'Judge',text:'Consider the evidence against the same checklist.'}];
+ const stages = [{id:'gather',label:'Find sources',text:'Find policies, reviews, parent discussions and news.'},{id:'read',label:'Check the evidence',text:'Read the sources for risks and parental controls.'},{id:'judge',label:'Get an age-specific answer',text:'Assess six areas for your child’s age.'}];
+ const checkTitle = $derived((page.state as {checkTitle?: string}).checkTitle);
  // saved is the stage GET /api/checks/{id} last reported, on load and on
  // every reconnect; savedAt is how many stream events had arrived then. A
  // late subscriber gets no progress replay, so saved shows until a newer
@@ -46,7 +48,7 @@
   else if (state.status === 'error') problem = errorNotice(state.error);
   else if (state.status === 'cancelled') problem = { situation: 'This check was cancelled.', next: 'Return to the ask page to start it again.' };
   else if (state.status === 'interrupted') problem = { situation: 'A restart interrupted this check.', next: 'Return to the ask page to start it again.' };
-  else problem = { situation: 'The saved result isn’t ready yet.', next: 'Retry following this check to read it again.' };
+  else problem = { situation: 'The saved result isn’t ready yet.', next: 'Reconnect to read it again.' };
  }
  async function start() {
   const attempt = ++generation;
@@ -74,25 +76,26 @@
  });
  onMount(() => {alive = true;void start();return () => {alive=false;controller?.abort();stream?.close();};});
 </script>
-<svelte:head><title>A check, step by step — Before Yes</title></svelte:head>
+<svelte:head><title>Before Yes - Check in progress{checkTitle ? ` for ${checkTitle}` : ''}</title></svelte:head>
 <div class="reading">
- <a class="back" href={resolve('/')}>← Ask about a title</a><p class="eyebrow">The research</p>
- <h1>A check,<br />step by step.</h1><p class="intro">Good answers start with a closer look. We’ll bring you to the decision when the research is ready.</p>
+ <a class="back" href={resolve('/')}>← Ask about a title</a>
+ <h1>Checking this title<span class="ellipsis" aria-hidden="true"><span>.</span><span>.</span><span>.</span></span></h1><p class="intro">Your result will open here when the check is complete.</p>
  <section class="panel research" aria-label="Check progress">
-  <div class="live-note"><span class="seed" aria-hidden="true"></span><span>Evidence before an answer</span></div>
   <div class="update" role="status" aria-live="polite" aria-atomic="true">
    {#if problem}<h2>{problem.situation}</h2><p>{problem.next}</p>
-   {:else if stream?.connection === 'failed'}<h2>The connection stopped.</h2><p>We couldn’t keep following the check. Retry to catch up with its saved state.</p>
-   {:else}<h2>{message || initial}</h2>{#if current !== undefined}<p class="count">{`${current.toLocaleString()}${total !== undefined ? ` of ${total.toLocaleString()}` : ''}`} <span>{stage === 'read' ? 'read so far' : 'so far'}</span></p>{/if}
-    {#if stream?.connection === 'reconnecting'}<p>Connection lost. Reconnecting to your check…</p>{/if}
+   {:else if stream?.connection === 'failed'}<h2>We couldn’t reconnect.</h2><p>Try again to see the latest progress.</p>
+   {:else}<h2>{stage === 'read' && current !== undefined ? 'Reading sources' : message || initial}</h2>{#if current !== undefined}<p class="count">{`${current.toLocaleString()}${total !== undefined ? ` of ${total.toLocaleString()}` : ''}`} <span>{stage === 'read' ? 'sections read' : 'so far'}</span></p>{/if}
+    {#if stream?.connection === 'reconnecting'}<p>Connection lost. Reconnecting…</p>{/if}
     {#if stage === 'alternatives'}<p>Checking safer alternatives.</p>{/if}
    {/if}
   </div>
-  {#if problem || stream?.connection === 'failed'}<button type="button" onclick={() => void start()}>Retry following this check</button>{/if}
+  {#if problem || stream?.connection === 'failed'}<button type="button" onclick={() => void start()}>Reconnect</button>{/if}
   <ol class="steps">{#each stages as item,index (item.id)}<li class:active={index === active} class:complete={index < active} aria-current={index === active ? 'step' : undefined}><span class="step-number" aria-hidden="true">{index < active ? '✓' : `0${index+1}`}</span><div><h3>{item.label}{#if index === active}<span class="state-label">In progress</span>{:else if index < active}<span class="state-label">Complete</span>{/if}</h3><p>{item.text}</p></div></li>{/each}</ol>
  </section>
- <p class="footnote">Your check keeps running if you leave this page. No answer until the evidence has been read.</p>
+ <p class="footnote">This check keeps running if you leave. Return to this page to see the result.</p>
 </div>
 <style>
- .research {padding:32px;}.live-note {display:flex;gap:10px;align-items:center;color:var(--accent);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;font-weight:650;}.seed {width:9px;height:9px;border-radius:50%;background:var(--accent);flex-shrink:0;}.update {padding:28px 0 24px;min-height:130px;}.update h2 {font-size:1.7rem;line-height:1.3;overflow-wrap:anywhere;}.update p {margin:12px 0 0;}.count {font-family:var(--font-numeric);color:var(--text);font-size:1.05rem;}.count span {font-family:var(--font-ui);font-size:.85rem;color:var(--dim);}.active .step-number {background:var(--accent);color:var(--on-accent);border-color:var(--accent);}.complete .step-number {background:var(--accent-soft);border-color:var(--accent);}.state-label {font-size:.68rem;font-weight:500;color:var(--accent);display:block;}button {font:inherit;min-height:48px;padding:10px 18px;background:var(--accent);color:var(--on-accent);border:0;border-radius:var(--radius-control);margin:0 0 24px;cursor:pointer;}.footnote {font-size:.82rem;max-width:540px;margin:22px 0 0;}@media(max-width:480px) {.research {padding:23px;}.update h2 {font-size:1.5rem;}}
+ .ellipsis {white-space:nowrap;} .ellipsis span {animation:dot 1.5s infinite;opacity:0;} .ellipsis span:nth-child(2) {animation-delay:.2s;} .ellipsis span:nth-child(3) {animation-delay:.4s;} @keyframes dot {0%,20% {opacity:0;} 40%,100% {opacity:1;}} @media(prefers-reduced-motion:reduce) {.ellipsis span {animation:none;opacity:1;}}
+
+ .research {padding:32px;}.update {padding:28px 0 24px;min-height:130px;}.update h2 {font-size:1.7rem;line-height:1.3;overflow-wrap:anywhere;}.update p {margin:12px 0 0;}.count {font-family:var(--font-numeric);color:var(--text);font-size:1.05rem;}.count span {font-family:var(--font-ui);font-size:.85rem;color:var(--dim);}.active .step-number {background:var(--accent);color:var(--on-accent);border-color:var(--accent);}.complete .step-number {background:var(--accent-soft);border-color:var(--accent);}.state-label {font-size:.68rem;font-weight:500;color:var(--accent);display:block;}button {font:inherit;min-height:48px;padding:10px 18px;background:var(--accent);color:var(--on-accent);border:0;border-radius:var(--radius-control);margin:0 0 24px;cursor:pointer;}.footnote {font-size:.82rem;margin:22px 0 0;}@media(max-width:480px) {.research {padding:23px;}.update h2 {font-size:1.5rem;}}
 </style>
