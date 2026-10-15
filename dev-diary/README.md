@@ -12,7 +12,7 @@ Where a phase document and the brief conflict, the brief wins. Record the discre
 
 Each phase document gives an engineer starting cold the complete context for its tasks.
 
-**Current status:** P0, P1, P2 and P3 are done. P3 closed with T3.10: every standing grade now rests on its area's own flag definition, enforced by an entailment check; the demo titles read Roblox **no**, Minecraft **yes_with_settings**, Khan Academy Kids **unclear** (per-area table in the T3.10 handoff entry). P4 is 2 of 5 and P5 is 3 of 7; both tracks are live. An earlier backend draft sits in `scratch/` at the repository root, uncommitted and unreviewed. Tasks it covers show `status: drafted`, which means there is code to start from, not that the task is done. See [Starting from the scratch draft](#starting-from-the-scratch-draft).
+**Current status:** P0, P1, P2, P4 and P5 are done. P3 has 15 of 17 tasks done: T3.11 calibrated the judge against two live gathers per demo title and closed after round 5 APPROVE with zero residue. Roblox reads **no** on both gathers; Minecraft and Khan Academy Kids differ between gathers for documented evidence reasons. T3.13 (alternatives outside the platform) and T3.14 (reasons a parent can read) are ready. An earlier backend draft sits in `scratch/` at the repository root, uncommitted and unreviewed. Tasks marked `drafted` have code to start from, not completed work. See [Starting from the scratch draft](#starting-from-the-scratch-draft).
 
 ---
 
@@ -180,8 +180,8 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 |---|---|---|
 | P0 | 9 / 9 | Done. All exit criteria met: the Token Factory balance ($29.00) is recorded, Nano completions and `config` resolving every secret are proven. CI is green. |
 | P1 | 4 / 4 | Done. All exit criteria met; the `job.Failure` criterion was proven by T4.1. |
-| P2 | 12 / 12 | Done. All six exit criteria are met. Measured model cost is $0.0309 per check. Tavily is 7–8 credits per check, from fixtures, not a live run. |
-| P3 | 14 / 17 | T3.11 (live judge calibration) is in review as PR #34. T3.13 (alternatives outside the platform, and the App Store genre) is ready. T3.14 (reasons a parent can read) follows T3.11. All exit criteria are ticked. |
+| P2 | 12 / 12 | Done. All six exit criteria are met. T3.11 remeasured fixture model cost at $0.042598 per check; six live gathers used 7–8 Tavily credits each. |
+| P3 | 15 / 17 | T3.11 is done after round 5 APPROVE with zero residue. T3.13 (alternatives outside the platform, and the App Store genre) and T3.14 (reasons a parent can read) are ready. All exit criteria are ticked. |
 | P4 | 7 / 7 | Done. `serve` runs the whole server, run end to end live. Progress now shows during a check, and a page opened late catches up from `GET /api/checks/{id}` (T4.7). |
 | P5 | 9 / 9 | Done. Every page is built and wired, and its text was rewritten with the user (T5.9); the rules are in `docs/voice.md`. |
 | P6 | 0 / 6 | Not started. |
@@ -192,6 +192,11 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 
 Newest first. One entry per closed task, finding, or split.
 
+- **T3.11 closed after round 5 APPROVE, zero findings and zero residue across rounds 1–4.** The rebased branch gate and post-merge main gate passed, including 175 browser tests; independent offline replays and a conditional-only evidence ablation matched from branch and main checkout contexts.
+  - **What landed:** six captured live gathers, before/after per-area diagnoses and fixture replays; entailment uses the judge model with thinking off. Published canonical reasons are checked against verified quotes instead of discarded free-form prose. Age flags classify cited risks independently, require exact source witnesses, and a wrong-age claim requires separate actual-age and assigned-age spans. Conditional correction instructions, curriculum limits and generic tracking no longer earn the reviewed flags. Server/CLI entailment wiring was corrected as a round-1 ownership exception.
+  - **Verdicts:** fixture recordings: Roblox **no**, Minecraft **unclear**, Khan Academy Kids **unclear**. Live gather 1: Roblox **no**, Minecraft **unclear**, Khan **no**; gather 2: Roblox **no**, Minecraft **no**, Khan **unclear**. Minecraft gather 2 has an earned completed-child-purchase flag; Khan gather 1 has the verified horror report that gather 2 lost through an incorrect reader reference. Roblox's earned flags survive both gathers.
+  - **Spend:** model ledger **$0.36763782 of $0.50**, including unsuccessful calibration attempts; six gathers used **46 Tavily credits**. This continuation added $0.06128610 model, entailment only. Final measured fixture mean $0.04259826 per check; live-gather mean $0.04201093. No budget ceiling changed; four-key scans found no matches.
+  - **Limit:** event classification remains model judgment. Exact matching rejects invented spans; it cannot prove every semantic label. The saved failed attempts and feedback retain that limitation. T3.14 now owns parent-facing reasons; T3.13 remains the alternatives follow-up.
 - **T5.9 closed; P5 is done.** The user and one agent went through every screen and string, and the user decided each change. A fresh reviewer approved with no findings: the gate passed in the task checkout and on main (175 browser tests each), a browser probe measured the pages at 360 to 1440 px, and backend, fixtures and model-written text are unchanged. The gate passed again on main after the merge.
   - **What landed:** new text on every page, plain area labels ("Contact with strangers", "Purchases and spending", ...), the headline "Research first. Yes next.", an icon-only theme button that cycles System, Light and Dark, an animated ellipsis on progress (still under reduced motion), the title in the progress tab, and comparison cells of equal height. Progress counts "sections read", which settles T4.7's "14 sources, 3 of 9" wording. Out of owns, by the user's request during the session: `routes/+layout.svelte` (the theme button) and `card/contract.ts`.
   - **The rules:** `docs/voice.md`, with before and after examples.

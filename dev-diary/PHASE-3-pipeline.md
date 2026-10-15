@@ -702,7 +702,7 @@ requires:   T3.10
 fixture-ok: no
 size:       M · frontier
 owns:       internal/pipeline/judge.go, internal/pipeline/judge_test.go, tools/eval/, testdata/eval/, docs/budget.md (re-measured figures only)
-status:     in-review
+status:     done
 ```
 The first live end-to-end run (handoff log) showed T3.10's checks demoting earned grades on fresh evidence. Roblox (9) read **unclear** from 191 verified findings (49 content, 44 contact, 34 money, 13 developer-record risks): money, data, content and developer record fell to unknown with "No verified quote backs the reason the judge gave", and contact and age gating came out `ok_with_setting`. Minecraft (9) read **no** live against `yes_with_settings` on the recordings. A demo verdict should not depend on the day's search results.
 
