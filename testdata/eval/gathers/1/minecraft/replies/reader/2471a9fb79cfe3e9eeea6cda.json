@@ -1,0 +1,8 @@
+{
+  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D502]\",\n      \"area\": \"developer_record\",\n      \"claim\": \"The developer may terminate accounts of repeat intellectual property infringers.\",\n      \"stance\": \"risk\",\n      \"quote\": \"If appropriate, we may terminate the accounts of users who are repeat infringers.\"\n    }\n  ]\n}",
+  "input_tokens": 792,
+  "output_tokens": 79,
+  "price_nano": 66480,
+  "measured": true,
+  "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B"
+}

@@ -1,0 +1,8 @@
+{
+  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D533]\",\n      \"area\": \"developer_record\",\n      \"claim\": \"A parent reports that Epic Games was involved in a high‑profile antitrust lawsuit with Apple and Google over app store policies.\",\n      \"stance\": \"neutral\",\n      \"quote\": \"Epic did not seek monetary damages in either case, but instead was \\\"seeking injunctive relief to allow fair competition in these two key markets that directly affect hundreds of millions of consumers and tens of thousands, if not more, of third‑party app developers.\\\"\"\n    }\n  ]\n}",
+  "input_tokens": 3972,
+  "output_tokens": 132,
+  "price_nano": 270000,
+  "measured": true,
+  "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B"
+}

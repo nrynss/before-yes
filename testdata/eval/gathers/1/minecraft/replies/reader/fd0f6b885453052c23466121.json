@@ -1,0 +1,8 @@
+{
+  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D526]\",\n      \"area\": \"contact\",\n      \"claim\": \"Strangers can message or voice chat with your child, and it is on by default.\",\n      \"stance\": \"risk\",\n      \"quote\": \"Your privacy is important to us. We won't share this comment without your permission. If you chose to provide an email address, it will only be used to contact you about your comment.\"\n    }\n  ]\n}",
+  "input_tokens": 876,
+  "output_tokens": 106,
+  "price_nano": 78000,
+  "measured": true,
+  "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B"
+}
