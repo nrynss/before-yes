@@ -149,15 +149,16 @@ func doubledBlock(sec []string, i int) (n, resp, used int) {
 // storePageDocs reads the listing's web page with one basic extract and
 // turns its reviews into documents, kind review, with the page URL as the
 // source and the page position as the index. The extract is metered under
-// ref like any Tavily call. It returns the documents and, when there are
-// none, why.
-func (g *Gatherer) storePageDocs(ctx context.Context, ref string, a *appstore.App, at time.Time) ([]Doc, float64, string, bool) {
+// ref like any Tavily call. It returns the documents, the page text it read
+// (empty when it could not be read; the store facts of storefacts.go read it
+// too) and, when there are no documents, why.
+func (g *Gatherer) storePageDocs(ctx context.Context, ref string, a *appstore.App, at time.Time) ([]Doc, string, float64, string, bool) {
 	if a.StoreURL == "" {
-		return nil, 0, "no App Store page URL to read reviews from", false
+		return nil, "", 0, "no App Store page URL to read reviews from", false
 	}
 	ex, used, err := g.extract(ctx, ref, []string{a.StoreURL})
 	if err != nil {
-		return nil, used, "App Store page could not be read: " + err.Error(), true
+		return nil, "", used, "App Store page could not be read: " + err.Error(), true
 	}
 	var page string
 	for _, p := range ex.Pages {
@@ -166,11 +167,11 @@ func (g *Gatherer) storePageDocs(ctx context.Context, ref string, a *appstore.Ap
 		}
 	}
 	if page == "" {
-		return nil, used, "App Store page could not be read: " + a.StoreURL, true
+		return nil, "", used, "App Store page could not be read: " + a.StoreURL, true
 	}
 	reviews := ParseStorePage(page)
 	if len(reviews) == 0 {
-		return nil, used, "App Store page shows no reviews", false
+		return nil, page, used, "App Store page shows no reviews", false
 	}
 	docs := make([]Doc, 0, len(reviews))
 	for _, r := range reviews {
@@ -179,5 +180,5 @@ func (g *Gatherer) storePageDocs(ctx context.Context, ref string, a *appstore.Ap
 			Text:   r.Title + "\n" + r.Body,
 		})
 	}
-	return docs, used, "", false
+	return docs, page, used, "", false
 }

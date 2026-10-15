@@ -277,6 +277,21 @@ func (p *Pipeline) Collect(ctx context.Context, title, ref string) (ev Evidence,
 		return Evidence{}, false, err
 	}
 
+	// The App Store's own facts (storefacts.go) join the reader's findings
+	// after the same quote check. A fact the reader also found is the same
+	// finding (same id) and is kept once.
+	facts, _ := storeFactFindings(g.StoreFacts)
+	have := map[string]bool{}
+	for _, f := range rd.Findings {
+		have[f.ID] = true
+	}
+	for _, f := range facts {
+		if !have[f.ID] {
+			have[f.ID] = true
+			rd.Findings = append(rd.Findings, f)
+		}
+	}
+
 	ev = Evidence{Title: title, Kind: g.Kind, CollectedAt: p.now().UTC(), Findings: rd.Findings}
 	if g.App != nil {
 		ev.App = &AppInfo{
