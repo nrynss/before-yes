@@ -1,0 +1,8 @@
+{
+  "text": "{\"reason_supported\": false, \"explanation\": \"The reason states 'A review reports a child aged 10 spent birthday money on Minecoins and felt scammed.' The supporting quote says: \\\"i bought 10,000 minecoins and im litterly a kid im only 10 and i got scammed i litterly used all my birthday money! FRICK YOU MINECRAFT\\\". This quote attributes the statement to a user who says they are 10 years old, but the reason presents it as a verified report from a review source stating a child aged 10 spent birthday money and felt scammed. However, the quote is a direct user statement, not a reviewed or summarized report by a third party. More critically, the reason claims the child is aged 10, but the evaluation context specifies the child's age is 9. The reason incorrectly applies a statement from a 10-year-old to a 9-year-old child, introducing an unsupported age mismatch. The area definition concerns whether the title pushes purchases at children, and while the quote shows a purchase and negative experience, the reason fails to tie this to the actual child in question (age 9). Instead, it generalizes from a 10-year-old’s experience without evidence that a 9-year-old would encounter the same risk. Thus, the reason misrepresents the evidence by applying an age-specific claim to a different age, making it unsupported.\"}",
+  "input_tokens": 1015,
+  "output_tokens": 306,
+  "price_nano": 579900,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

@@ -1,0 +1,8 @@
+{
+  "text": "{\"reason_supported\": true, \"explanation\": \"A forum post reports that within seconds, the 'Street Code' game showed an intense, fiery car accident and prompted the player to decide whether to shoot or save an officer.\"}",
+  "input_tokens": 2191,
+  "output_tokens": 49,
+  "price_nano": 701400,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

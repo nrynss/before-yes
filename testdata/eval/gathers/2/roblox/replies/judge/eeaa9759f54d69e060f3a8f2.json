@@ -1,0 +1,8 @@
+{
+  "text": "{\"reasons\": [{\"area\": \"contact\", \"reason\": \"A reviewer states that chats in certain mini-games cannot be disabled and children can type text on signs irrespective of communication preferences.\"}, {\"area\": \"money\", \"reason\": \"A news article reports that a parent said their 10-year-old daughter spent over $7,000 in two months despite efforts to restrict spending.\"}, {\"area\": \"data\", \"reason\": \"The store listing claims advanced content filtering and age-appropriate moderation, while the terms state Roblox may access and review content shared via communication features and other non-public content.\"}, {\"area\": \"age_gating\", \"reason\": \"A review indicates that recent app updates to age grouping are malfunctioning, placing children in incorrect groups, and another review notes difficulty resetting facial recognition due to age restrictions requiring waiting until age 13.\"}, {\"area\": \"content\", \"reason\": \"Multiple forum posts state that extreme violence, inappropriate language, and sexually explicit content are possible and likely in user-created games, including titles like 'Street Code' and 'Baddies,' and that condo games often feature adult themes and sexual content despite safety filters.\"}, {\"area\": \"developer_record\", \"reason\": \"A news report states that the Texas Attorney General has sued Roblox for allegedly ignoring safety laws and deceiving parents about risks to young people.\"}]}",
+  "input_tokens": 2227,
+  "output_tokens": 292,
+  "price_nano": 930900,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

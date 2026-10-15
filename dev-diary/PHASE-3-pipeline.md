@@ -980,7 +980,7 @@ requires:   T3.11
 fixture-ok: no
 size:       M · frontier
 owns:       internal/pipeline/judge.go (the prompt and reason handling), internal/pipeline/judge_test.go, tools/eval/, testdata/eval/
-status:     claimed:gpt-6.1-sol
+status:     in-review
 ```
 The reasons on a card are written by the judge model. After T3.10 the judge copies the area's definition as its reason for a standing flag, so a card says why something counts as a concern in general, not what this title does. The user agreed in T5.9 that model-written text needs its own task with an evaluation (`docs/voice.md`, "Separate model-writing follow-up").
 
@@ -990,6 +990,13 @@ The reasons on a card are written by the judge model. After T3.10 the judge copi
 - Re-record with `-live-cap-usd` set; report the spend.
 
 **Done when:** a before-and-after table of reasons per title and area, judged against `docs/voice.md`; no grade or verdict changes because of the wording alone (any change is explained); tests pin the prompt's rules; the user signs off a sample of reasons.
+
+
+**Implementation for review:** Reason writing is isolated after the calibrated judge and all T3.9b–T3.11 checks. The original grading prompts, entailment rules, citation/setting grounding and independent age-event classifier remain unchanged. The new fast writer can change only reason strings; a separate metered quote-support/voice check gates each candidate, with one bounded repair and cautious fallback. Unknowns make no generated factual title claims.
+
+The complete before/after per-area voice assessment, quoted witnesses, rejected-pilot delta account, replay commands and measured costs are in [`testdata/eval/parent-reasons/report.md`](../testdata/eval/parent-reasons/report.md). Nine full demo checks and two sourced outside-demo judge probes have identical evidence hashes and unchanged grades, settings, citations and verdicts. The remediated final pass produces sixteen checked specific explanations and zero cautious fallbacks across sixteen non-unknown areas; the other fifty areas explicitly say evidence is insufficient. Runtime fallback remains for rejected prose. Final prose adds $0.01329420 across the eleven checks. Whole-task spend, including rejected pilots, superseded remediation attempts, all repairs and five independent rejection probes, is $0.24024090 against one $0.50 ledger; no fresh Tavily gathers were needed. The original calibrated age-event witness now focuses the writer without a new classification, and diagnoses preserve the actual completed-check cause independently of public prose. Round 1 remediation evidence and reproducible pins are included in the evaluation report.
+
+`./tools/check.sh` passed Go vet/race, frontend lint/check and 175 browser tests. Recorded replay tests compare every non-prose grade field and evidence hash with the original calibrated judge, including both outside-demo cases. No dependencies added. The user approved the Minecraft spending, Khan compliance-label and Scratch free-platform samples. Round 2 closes with APPROVE by explicit operator intervention after direct M4 remediation. The PR remains unmerged and the task stays in-review at the user’s request.
 
 ---
 

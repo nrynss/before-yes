@@ -36,9 +36,19 @@ type traced struct {
 }
 
 type callTrace struct {
-	mu     sync.Mutex
-	judge  []traced
-	entail []traced
+	mu             sync.Mutex
+	judge          []traced
+	entail         []traced
+	checkedReasons map[checklist.Area]string
+}
+
+func (t *callTrace) captureCheckedReasons(reasons map[checklist.Area]string) {
+	if t == nil {
+		return
+	}
+	t.mu.Lock()
+	defer t.mu.Unlock()
+	t.checkedReasons = reasons
 }
 
 func bare(c pipeline.Chatter) pipeline.Chatter {
@@ -74,6 +84,8 @@ func (t *tracingChatter) Chat(ctx context.Context, msgs []model.Message, o model
 		// Entailment can run on the judge client. Classify it before the
 		// role, or its JSON is read as a second judge pass.
 		t.tr.entail = append(t.tr.entail, traced{user: user, reply: r.Text})
+	case strings.HasPrefix(system, "Write explanations for a parent") || strings.HasPrefix(system, "You check the exact explanation a parent"):
+		// Prose-only calls cannot replace a grading pass in the diagnosis.
 	case t.role == "judge":
 		t.tr.judge = append(t.tr.judge, traced{user: user, reply: r.Text})
 	}
@@ -302,7 +314,15 @@ func diagnose(w io.Writer, card pipeline.Card, ev pipeline.Evidence, tr *callTra
 			fmt.Fprintf(w, "    judge (not in the reply)\n")
 		}
 		fmt.Fprintf(w, "    card %s setting %q\n", g.Level, g.Setting)
-		fmt.Fprintf(w, "    check %s\n", checkActed(g, fault))
+		checked := g
+		if tr != nil {
+			tr.mu.Lock()
+			if reason, ok := tr.checkedReasons[a.ID]; ok {
+				checked.Reason = reason
+			}
+			tr.mu.Unlock()
+		}
+		fmt.Fprintf(w, "    check %s\n", checkActed(checked, fault))
 		if note := entailNote(tr, a.ID); note != "" {
 			fmt.Fprintf(w, "    %s\n", note)
 		}

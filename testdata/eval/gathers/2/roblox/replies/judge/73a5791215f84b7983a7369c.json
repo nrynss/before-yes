@@ -1,0 +1,8 @@
+{
+  "text": "{\"reason_supported\": true, \"explanation\": \"A news article attributes the claim that the Texas Attorney General has sued Roblox over 'flagrantly ignoring' safety laws and 'deceiving parents' about the dangers the platform poses to young people.\"}",
+  "input_tokens": 1077,
+  "output_tokens": 54,
+  "price_nano": 371700,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

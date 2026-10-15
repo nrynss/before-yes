@@ -1,0 +1,8 @@
+{
+  "text": "{\"reasons\": [{\"area\": \"contact\", \"reason\": \"A forum post reports chats built into specific mini-games cannot be disabled, allowing kids to type text on signs regardless of communication preferences.\"}]}",
+  "input_tokens": 1206,
+  "output_tokens": 45,
+  "price_nano": 402300,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

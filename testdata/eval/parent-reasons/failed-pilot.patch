@@ -1,0 +1,160 @@
+--- a/internal/pipeline/judge.go
++++ b/internal/pipeline/judge.go
+@@ -33,21 +33,6 @@
+ 	checklist.DeveloperRecord: "this title's developer has a record of enforcement over how it treats children or their data: fines, data breaches, lawsuits or regulatory actions naming this developer. Another company's enforcement, or the developer's own marketing about its values, is not a record. A setting cannot answer a record.",
+ }
+ 
+-// standingReason is the card reason for a grade that stands. It is the area
+-// definition's opening claim: the words of areaDefs before the colon that
+-// lists examples, or the first sentence when the definition has no colon.
+-// The example list stays in the prompt. It is not the card reason, because
+-// that list names harms and practices a cited quote may not show. A model's
+-// sentence is never the card reason.
+-func standingReason(area checklist.Area) string {
+-	def := areaDefs[area]
+-	if head, _, ok := strings.Cut(def, ":"); ok {
+-		return strings.TrimSpace(head)
+-	}
+-	head, _, _ := strings.Cut(def, ".")
+-	return strings.TrimSpace(head)
+-}
+-
+ func judgeSystem() string {
+ 	var b strings.Builder
+ 	b.WriteString(`You grade an app, game or channel for one child against a fixed parent checklist, using only the findings you are given. Every finding has an id, a stance, and a verbatim quote from a named source.
+@@ -82,6 +67,14 @@
+ - Every id you cite must be in that area. A "flag" may cite only findings whose stance is "risk". An "ok_with_setting" may cite only "risk" or "mitigation" findings, and at least one "mitigation" finding's quote must name the setting.
+ - One id that does not exist, is in another area, or has the wrong stance voids the whole grade: it becomes "unknown". If you cannot cite a finding that fits, grade the area "unknown".
+ - Write the reason in your own plain words for a parent. It must say only what the cited quotes say.
++
++Writing the reason:
++- Describe what THIS title's cited sources report, not the area's general definition. Use one or two short sentences with concrete actions and familiar words.
++- Attribute claims: say "A parent reports...", "A reviewer says...", "The privacy policy says...", or "The store listing says..." as the cited source warrants. A report is not proof that every child has that experience; a policy promise is not proof that a control works.
++- Explain uncertainty directly. Say what the sources do not establish for this child's age. Do not turn missing evidence into reassurance, and do not claim a control works unless the cited quotes show it.
++- Do not use internal terms such as "finding", "mitigation", "stance", "flag definition", "standing grade", or citation ids in the reason.
++- Name only the specific practice, harm, recipient, purchase, or control the cited quotes establish. Do not copy the definition's list of possible harms. Do not add motives, causes, frequency, defaults, ages, or uses of data the quotes do not establish.
++- For "ok_with_setting", explain the reported concern and name the quoted control a parent should change. For "ok", describe the limited positive evidence without calling the whole title safe. For "unknown", explain the evidence gap plainly.
+ 
+ Reply with one JSON object:
+ {"grades": [{"area": "...", "level": "...", "reason": "one plain sentence for a parent", "setting": "...", "findings": ["id", ...]}, ...]}
+@@ -294,6 +287,15 @@
+ 			return out, err
+ 		}
+ 	}
++	// Checklist enforcement also supplies explanations for invalid or absent
++	// citations. Translate those internal diagnostics at the card boundary;
++	// demotion records retain the exact diagnostic for inspection.
++	for i := range out.Grades {
++		g := &out.Grades[i]
++		if g.Level == checklist.Unknown && (len(g.Findings) == 0 || strings.HasPrefix(g.Reason, "Changed to unknown:")) {
++			g.Reason = "We don’t have enough evidence to assess this area. Don’t assume it is safe."
++		}
++	}
+ 	out.Demotions = append(out.Demotions, entDem...)
+ 	out.Thin = thinAreas(out.Grades, thinCited, thinGround, thinEntail)
+ 	out.Verdict, err = checklist.Decide(out.Grades)
+@@ -364,18 +366,18 @@
+ // ThinReason is the card reason for a grade checkCitations dropped
+ // to unknown. The card's structured signal is Card.ThinAreas; this text is
+ // for the parent.
+-const ThinReason = "Changed to unknown: the evidence was thin. No verified quote backs the reason the judge gave."
++const ThinReason = "We don’t have enough evidence to assess this area. The sources do not support the explanation."
+ 
+ // SettingThinReason is the card reason when only the setting was unbacked.
+-const SettingThinReason = "Changed to unknown: the evidence was thin. No verified quote names the setting."
++const SettingThinReason = "We don’t have enough evidence to recommend a setting. The sources do not name the control."
+ 
+ // NotEarnedReason is the card reason when the entailment check found the
+ // cited findings do not meet the area's flag definition (T3.10).
+-const NotEarnedReason = "Changed to unknown: the cited quotes do not meet this area's flag definition."
++const NotEarnedReason = "We don’t have enough evidence to assess this concern for your child’s age."
+ 
+ // UnsupportedReason is the card reason when the entailment check found the
+ // reason says more than the cited quotes support (T3.10).
+-const UnsupportedReason = "Changed to unknown: the reason says more than the cited quotes support."
++const UnsupportedReason = "We don’t have enough evidence to assess this area. The explanation went beyond what the sources say."
+ 
+ // checkCitations holds every flag and ok_with_setting to the findings it
+ // cites (T3.9b). It reads the judge's own citation list, before
+@@ -490,11 +492,9 @@
+ - Age gating, for an ok_with_setting, also needs a mitigation that stops that bypass for the child who takes it. Read the mitigation for who receives the control. If the control is given only to accounts the age check has already treated as under a stated age, it does not reach a child the risk quote says can make that check record a different age. meets_definition is false for that ok_with_setting. This sentence is only for an ok_with_setting. A flag whose quote shows the check recorded an age or a group that is not the child's still meets the definition.
+ - Content is a child meeting sexual content, realistic violence, horror, harassment, or self-harm. A dislike, a startle, or a wish that names none of those harms is not that.
+ - A record of enforcement is a fine, a data breach, a lawsuit, or a regulatory action naming this developer. A quote that shows one filed or brought against this developer meets it: the action itself is the record, and the quote need not show its outcome. Another company's action is not a record. A demand that the developer be punished, or a page that only explains a policy, is not a record: the quote itself has to name the fine, the suit, the breach, or the regulator's action.
+-(b) reason_supported. Do these two steps in order. Stop when a step decides the field.
+-Step 1. The opening statement is the flag definition before its first colon, or before its first period when there is no colon. Step 1 applies only when the reason is those same words, with nothing changed but the case of the first letter. If you would add, drop, or replace any other word, it is not this step. A paraphrase of the opening statement is step 2. When step 1 does apply, reason_supported is true when the cited quotes show the part of that sentence the grade rests on, and clauses of that copied sentence that the quotes do not show are allowed. Stop.
+-Step 2. The reason is the judge's own words. List every practice, use, recipient, harm, number, or control it names. A use or a recipient attached to a shown fact is its own item. The flag definition is not a quote: a practice the definition lists is not shown unless a cited quote shows it. A different word for the same fact a cited quote shows is supported. The definition's name for a child who paid is a purchase that child completed without a parent, and that name is supported when any cited quote shows the child paying. Calling that purchase a push, or a purchase inside the product, is the same fact. The word "pushes" is that name. It is not an extra practice, and it must not be why reason_supported is false, when a cited quote shows the child paid. The currency, the amount, and a scam that quote names are the same fact. Another cited quote that names a control a parent could turn on does not erase the purchase. A kind of purchase no quote names is still an extra practice. For that money shape, when a cited quote shows the child paid and the reason names only that purchase, reason_supported is true. That money rule is only for a money grade. It does not make a use supported on any other area.
++(b) reason_supported. The reason is the judge's own words. List every practice, use, recipient, harm, number, or control it names. A use or a recipient attached to a shown fact is its own item. The flag definition is not a quote: a practice the definition lists is not shown unless a cited quote shows it. A different word for the same fact a cited quote shows is supported. The definition's name for a child who paid is a purchase that child completed without a parent, and that name is supported when any cited quote shows the child paying. Calling that purchase a push, or a purchase inside the product, is the same fact. The word "pushes" is that name. It is not an extra practice, and it must not be why reason_supported is false, when a cited quote shows the child paid. The currency, the amount, and a scam that quote names are the same fact. Another cited quote that names a control a parent could turn on does not erase the purchase. A kind of purchase no quote names is still an extra practice. For that money shape, when a cited quote shows the child paid and the reason names only that purchase, reason_supported is true. That money rule is only for a money grade. It does not make a use supported on any other area.
+ An extra practice is a concrete thing the reason names that no cited quote shows: a buyer, a kind of purchase, a kind of tracking, a use, a recipient, or a harm the quote does not name. Each harm a free-form reason names is its own item. One extra item fails the reason even when every other item is shown.
+-A free-form reason does not get that allowance. Naming another clause of the definition is allowed only in step 1.
++No reason gets an allowance for copying the flag definition. Every concrete claim needs a cited quote.
+ A cited quote can meet the definition while reason_supported is false. meets_definition does not forgive an extra practice, and the grade does not stand.
+ Worked split, for a different grade than the one you were given. Reason: "The company shares children's information for advertising, and a partner keeps their photos with no stated deletion period." Quote: "A partner stores the child's photos and does not say for how long." The storage and the missing deletion period are in the quote, so meets_definition is true. reason_supported is false, because advertising is not in the quote. The matching storage does not carry the advertising use. One unshown use fails the reason. A short name for that same use is the same failure. The flag definition listing the use is not a quote. Do not answer true for reason_supported on that shape, on a data grade or any other grade.
+ Use only the findings given. A quote is the source's own words; a claim is the reader's reading of them. Reply with one JSON object: {"meets_definition": true, "reason_supported": true}, with false where the answer is no. Set each field from the steps above. Do not copy the two trues. A data reason that names a use no cited quote contains has reason_supported false.`
+@@ -523,11 +523,6 @@
+ 		fmt.Fprintf(&b, "Setting: %s\n", g.Setting)
+ 	}
+ 	reason := g.Reason
+-	if g.Level == checklist.Flag {
+-		// Assess the claim the card will actually publish, independently of
+-		// unsupported additions in the generator's discarded prose.
+-		reason = standingReason(g.Area)
+-	}
+ 	if strings.TrimSpace(reason) == "" {
+ 		reason = "(no reason given)"
+ 	}
+@@ -614,8 +609,8 @@
+ // thinking off via Fast, metered like any other call (T3.10, fault 3).
+ // meets_definition false drops the grade to unknown (RuleNotEarned). An
+ // unsupported published claim also drops (RuleReasonUnsupported). Flags
+-// are checked using standingReason, independently of discarded generated
+-// prose. A grade that stands keeps standingReason, not the model's sentence.
++// retain their generated reason only when that exact prose is supported.
++// Age flags also need an independent source-event witness.
+ // Generic entailment errors retain the grade. Age flags require an exact source
+ // event witness; without one they become unknown even if classification failed.
+ // Errors and measured costs remain visible. The input is not modified.
+@@ -651,8 +646,6 @@
+ 				dem = append(dem, checklist.Demotion{Area: g.Area, Rule: RuleReasonUnsupported, Detail: string(g.Level) + ": " + string(g.Area)})
+ 				thin = append(thin, g.Area)
+ 				g.Level, g.Setting, g.Reason, g.Findings = checklist.Unknown, "", UnsupportedReason, []string{}
+-			default:
+-				g.Reason = standingReason(g.Area)
+ 			}
+ 			out[i] = g
+ 			continue
+@@ -660,6 +653,10 @@
+ 		if entailErr == nil {
+ 			entailErr = fmt.Errorf("judge: entailment for %s: %w", g.Area, err)
+ 		}
++		// Retain the established grade on a generic service failure, but
++		// do not publish unchecked generated claims as its explanation.
++		g.Reason = "We couldn’t verify the explanation for this concern. Read the source quotes before deciding."
++		out[i] = g
+ 	}
+ 	return out, dem, thin, entailErr, price
+ }
+@@ -716,7 +713,23 @@
+ 		if err != nil && firstErr == nil {
+ 			firstErr = err
+ 		}
+-		if err == nil && v.Meets && v.Reason && witnessedAgeGate(one, fs, v.AgeGate) {
++		if err == nil && v.Meets && witnessedAgeGate(one, fs, v.AgeGate) {
++			// The independent event classification earns the age flag; it
++			// cannot vouch for the generated sentence, which it never saw.
++			// Check the exact published prose separately against all citations.
++			r, p, err := chat(ctx, j.Meter, j.Entail, "entail", ref, []model.Message{
++				{Role: "system", Content: entailSystem()},
++				{Role: "user", Content: entailUser(title, age, g, fs)},
++			}, model.Options{JSON: true, Extra: j.Fast})
++			total += p
++			if err != nil {
++				return entailVerdict{}, total, err
++			}
++			prose, err := parseEntail(r.Text)
++			if err != nil {
++				return entailVerdict{}, total, err
++			}
++			v.Reason = prose.Reason
+ 			return v, total, nil
+ 		}
+ 		if ctx.Err() != nil {

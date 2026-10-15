@@ -1,0 +1,8 @@
+{
+  "text": "{\"reasons\": [{\"area\": \"money\", \"reason\": \"The store page states that games may contain optional in-game purchases, including lootboxes and other items.\"}, {\"area\": \"age_gating\", \"reason\": \"A review describes how Roblox’s age check requires showing face via camera and using AI to estimate age, with potential need to submit ID if estimation fails, and notes the partner company retains photos and may sell them.\"}, {\"area\": \"developer_record\", \"reason\": \"A news article reports Los Angeles County filed a civil lawsuit alleging Roblox falsely marketed its platform as safe for children while knowingly allowing it to become a hunting ground for predators.\"}]}",
+  "input_tokens": 945,
+  "output_tokens": 144,
+  "price_nano": 413100,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

@@ -1,0 +1,8 @@
+{
+  "text": "{\"reason_supported\": false, \"explanation\": \"The phrase 'forced to add payment information' adds compulsion not present in the source quote, which says the app told the user to upgrade and required a payment option to proceed—not that they were forced.\"}",
+  "input_tokens": 1303,
+  "output_tokens": 55,
+  "price_nano": 440400,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

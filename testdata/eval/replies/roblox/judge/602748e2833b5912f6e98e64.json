@@ -1,0 +1,8 @@
+{
+  "text": "{\"reason_supported\": true, \"explanation\": \"The store page states 'Games may contain optional in-game purchases, including lootboxes'—a direct reference to a loot box mechanism, which satisfies the requirement for a quoted loot box, pay-to-win, or subscription mechanism.\"}",
+  "input_tokens": 1110,
+  "output_tokens": 63,
+  "price_nano": 389700,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

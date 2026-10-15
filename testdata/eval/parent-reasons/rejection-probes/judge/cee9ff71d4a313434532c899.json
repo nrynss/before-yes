@@ -1,0 +1,8 @@
+{
+  "text": "{\"reason_supported\": false, \"explanation\": \"The explanation describes a general possibility ('is possible and likely') but does not cite any concrete report of a specific encounter where someone actually saw, was shown, or accessed such content.\"}",
+  "input_tokens": 1091,
+  "output_tokens": 50,
+  "price_nano": 372300,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

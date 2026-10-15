@@ -1,0 +1,8 @@
+{
+  "text": "{\"reason_supported\": true, \"explanation\": \"Store states 'Games may contain optional in-game purchases, including lootboxes' – directly supporting the claim.\"}",
+  "input_tokens": 1152,
+  "output_tokens": 36,
+  "price_nano": 378000,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

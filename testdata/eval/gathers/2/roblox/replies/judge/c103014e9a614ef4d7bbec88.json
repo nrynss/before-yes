@@ -1,0 +1,8 @@
+{
+  "text": "{\"reasons\": [{\"area\": \"age_gating\", \"reason\": \"A review reports the birthday field showed age 41 while the user is younger than 13.\"}]}",
+  "input_tokens": 785,
+  "output_tokens": 41,
+  "price_nano": 272400,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

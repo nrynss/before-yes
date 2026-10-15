@@ -1,0 +1,8 @@
+{
+  "text": "{\"grades\": [{\"area\": \"contact\", \"level\": \"flag\", \"reason\": \"Strangers can message or voice chat with a child, and it is on by default.\", \"setting\": \"\", \"findings\": [\"f_8e13d0d8cf810113\", \"f_62782efd9b2d6164\", \"f_bbfb28fb53ef2e38\", \"f_16520fb8859a88b1\"]}, {\"area\": \"money\", \"level\": \"flag\", \"reason\": \"Multiple parents report being charged for purchases without receiving items, being scammed, or facing undisclosed charges.\", \"setting\": \"\", \"findings\": [\"f_4f0d24b3b6bb0948\", \"f_fe600dad41e0a6a9\", \"f_a24eb25dc2e2b26a\", \"f_d34b991c87235fe5\"]}, {\"area\": \"data\", \"level\": \"flag\", \"reason\": \"Personal data was exposed after a hack, and the app stores sensitive information; worlds and data may be lost due to repeated crashes after updates.\", \"setting\": \"\", \"findings\": [\"f_62ec888b21dd4cc0\", \"f_a850c242f9d2a85a\"]}, {\"area\": \"age_gating\", \"level\": \"flag\", \"reason\": \"Age gate does not work in practice, as a child under 5 asks for access.\", \"setting\": \"\", \"findings\": [\"f_88d325d4c1d10860\"]}, {\"area\": \"content\", \"level\": \"ok\", \"reason\": \"No reports indicate children actually encountering unsuitable material such as sexual content, realistic violence, horror, harassment, or self-harm.\", \"setting\": \"\", \"findings\": []}, {\"area\": \"developer_record\", \"level\": \"flag\", \"reason\": \"Developer has faced regulatory fines or lawsuits regarding data privacy violations.\", \"setting\": \"\", \"findings\": [\"f_796e7220c1a87086\", \"f_84aa4cf4beb17e84\"]}]}",
+  "input_tokens": 21667,
+  "output_tokens": 520,
+  "price_nano": 6968100,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

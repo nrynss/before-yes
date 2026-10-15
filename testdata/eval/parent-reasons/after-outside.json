@@ -1,0 +1,246 @@
+[
+  {
+    "title": "LEGO Worlds",
+    "grades": [
+      {
+        "area": "contact",
+        "level": "ok",
+        "findings": [
+          "f_outside_lego-worlds"
+        ],
+        "reason": "The comparison guide reports there is no open chat with strangers."
+      },
+      {
+        "area": "money",
+        "level": "unknown",
+        "findings": [],
+        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+      },
+      {
+        "area": "data",
+        "level": "unknown",
+        "findings": [],
+        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+      },
+      {
+        "area": "age_gating",
+        "level": "unknown",
+        "findings": [],
+        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+      },
+      {
+        "area": "content",
+        "level": "unknown",
+        "findings": [],
+        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+      },
+      {
+        "area": "developer_record",
+        "level": "unknown",
+        "findings": [],
+        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+      }
+    ],
+    "evidence_sha256": "35556ae247099f92d0d3ec3b2e78c2b56bd5aed98787bcc5c0ea4eff133c7620",
+    "age": 9,
+    "models": "",
+    "want_verdict": "",
+    "got_verdict": "unclear",
+    "areas": [
+      {
+        "area": "contact",
+        "want": "",
+        "got": "ok",
+        "agree": false,
+        "found": null,
+        "missed": null,
+        "got_reason": "The comparison guide reports there is no open chat with strangers."
+      },
+      {
+        "area": "money",
+        "want": "",
+        "got": "unknown",
+        "agree": false,
+        "found": null,
+        "missed": null,
+        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+      },
+      {
+        "area": "data",
+        "want": "",
+        "got": "unknown",
+        "agree": false,
+        "found": null,
+        "missed": null,
+        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+      },
+      {
+        "area": "age_gating",
+        "want": "",
+        "got": "unknown",
+        "agree": false,
+        "found": null,
+        "missed": null,
+        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+      },
+      {
+        "area": "content",
+        "want": "",
+        "got": "unknown",
+        "agree": false,
+        "found": null,
+        "missed": null,
+        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+      },
+      {
+        "area": "developer_record",
+        "want": "",
+        "got": "unknown",
+        "agree": false,
+        "found": null,
+        "missed": null,
+        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+      }
+    ],
+    "agreed": 0,
+    "decisive_found": 0,
+    "decisive_total": 0,
+    "findings": 1,
+    "drops": {
+      "bad_area": 0,
+      "bad_stance": 0,
+      "no_quote": 0,
+      "unquoted": 0,
+      "duplicates": 0
+    },
+    "drop_rate": 0,
+    "chunks": 0,
+    "failed_chunks": 0,
+    "missing_kinds": null,
+    "tavily_credits": 0,
+    "read_cost_nano": 0,
+    "judge_cost_nano": 1437300
+  },
+  {
+    "title": "Scratch",
+    "grades": [
+      {
+        "area": "contact",
+        "level": "unknown",
+        "findings": [],
+        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+      },
+      {
+        "area": "money",
+        "level": "ok",
+        "findings": [
+          "f_outside_scratch"
+        ],
+        "reason": "The comparison guide calls Scratch MIT's free, block-based coding platform."
+      },
+      {
+        "area": "data",
+        "level": "unknown",
+        "findings": [],
+        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+      },
+      {
+        "area": "age_gating",
+        "level": "unknown",
+        "findings": [],
+        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+      },
+      {
+        "area": "content",
+        "level": "unknown",
+        "findings": [],
+        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+      },
+      {
+        "area": "developer_record",
+        "level": "unknown",
+        "findings": [],
+        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+      }
+    ],
+    "evidence_sha256": "dd2bb91632b3dc85039a4efd517378655dcd379b266d085b82bbc757e482e5d7",
+    "age": 9,
+    "models": "",
+    "want_verdict": "",
+    "got_verdict": "unclear",
+    "areas": [
+      {
+        "area": "contact",
+        "want": "",
+        "got": "unknown",
+        "agree": false,
+        "found": null,
+        "missed": null,
+        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+      },
+      {
+        "area": "money",
+        "want": "",
+        "got": "ok",
+        "agree": false,
+        "found": null,
+        "missed": null,
+        "got_reason": "The comparison guide calls Scratch MIT's free, block-based coding platform."
+      },
+      {
+        "area": "data",
+        "want": "",
+        "got": "unknown",
+        "agree": false,
+        "found": null,
+        "missed": null,
+        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+      },
+      {
+        "area": "age_gating",
+        "want": "",
+        "got": "unknown",
+        "agree": false,
+        "found": null,
+        "missed": null,
+        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+      },
+      {
+        "area": "content",
+        "want": "",
+        "got": "unknown",
+        "agree": false,
+        "found": null,
+        "missed": null,
+        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+      },
+      {
+        "area": "developer_record",
+        "want": "",
+        "got": "unknown",
+        "agree": false,
+        "found": null,
+        "missed": null,
+        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+      }
+    ],
+    "agreed": 0,
+    "decisive_found": 0,
+    "decisive_total": 0,
+    "findings": 1,
+    "drops": {
+      "bad_area": 0,
+      "bad_stance": 0,
+      "no_quote": 0,
+      "unquoted": 0,
+      "duplicates": 0
+    },
+    "drop_rate": 0,
+    "chunks": 0,
+    "failed_chunks": 0,
+    "missing_kinds": null,
+    "tavily_credits": 0,
+    "read_cost_nano": 0,
+    "judge_cost_nano": 2344500
+  }
+]

@@ -1,0 +1,182 @@
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_model filename=0001_cost.sql
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_model filename=0002_cost_owner.sql
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_model filename=0003_cost_settle.sql
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_model filename=0004_cost_denomination.sql
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_model filename=0005_cost_quote.sql
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_model filename=0006_cost_settle_once.sql
+2026/10/15 23:31:16 INFO sqlitestore: opened namespace=cost_model limit=1000000000000 denomination="" expired_reservations=0 expired_quotes=0
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_tavily filename=0001_cost.sql
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_tavily filename=0002_cost_owner.sql
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_tavily filename=0003_cost_settle.sql
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_tavily filename=0004_cost_denomination.sql
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_tavily filename=0005_cost_quote.sql
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_tavily filename=0006_cost_settle_once.sql
+2026/10/15 23:31:16 INFO sqlitestore: opened namespace=cost_tavily limit=1000000 denomination=tavily.credit expired_reservations=0 expired_quotes=0
+diagnose Khan Academy Kids age 5 verdict unclear findings 212 (conflict pass unusable (no grades); first pass kept)
+  contact  risks 10 mitigations 2 other 6
+    judge ok setting "" cited 0 []
+    card unknown setting ""
+    check ok_without_finding
+    reason We don’t have enough evidence to assess this area. Don’t assume it is safe.
+  money  risks 5 mitigations 10 other 14
+    judge ok setting "" cited 0 []
+    card unknown setting ""
+    check ok_without_finding
+    reason We don’t have enough evidence to assess this area. Don’t assume it is safe.
+  data  risks 12 mitigations 6 other 3
+    judge ok setting "" cited 0 []
+    card unknown setting ""
+    check ok_without_finding
+    reason We don’t have enough evidence to assess this area. Don’t assume it is safe.
+  age_gating  risks 18 mitigations 3 other 4
+    judge ok_with_setting setting "skills test and curriculum matching" cited 2 [f_a6928887eae37273 f_a6928887eae37273]
+    card unknown setting ""
+    check ground: setting_without_quote
+    reason We don’t have enough evidence to assess this area. Don’t assume it is safe.
+    quote f_a6928887eae37273 risk review: My daughter is 4, but she is autistic. She reads on a 1st/2nd grade level, can add, subtract up to digit numbers, tells time by a digital and analog clock— and because of that, this game is far too easy for her. She gets bored and starts answering the questions wrong just to see what will happen. Maybe update with a skills test, and then match the child up with curriculum that is in their skill range rather than age level
+    quote f_a6928887eae37273 risk review: My daughter is 4, but she is autistic. She reads on a 1st/2nd grade level, can add, subtract up to digit numbers, tells time by a digital and analog clock— and because of that, this game is far too easy for her. She gets bored and starts answering the questions wrong just to see what will happen. Maybe update with a skills test, and then match the child up with curriculum that is in their skill range rather than age level
+  content  risks 26 mitigations 1 other 81
+    judge flag setting "" cited 2 [f_f33d4f32a70824f8 f_6d37ce5cfcbca138]
+    card unknown setting ""
+    check entail: flag_not_earned
+    entail meets_definition=false reason_supported=false
+    reason We don’t have enough evidence to assess this area. Don’t assume it is safe.
+    quote f_f33d4f32a70824f8 risk review: Out of nowhere it will talk and ask her to record her voice. Each time it startles my child who then gets quiet and runs to whispers to me what it said. This is inappropriate, and it’s always in the coloring app.
+    quote f_6d37ce5cfcbca138 risk review: I was looking for something for my grandson to get a foundation for reading. During his first time using it, I noticed that there were two men, and who was supposed to put the hats on them. Then he was supposed to put the neck ties on them. Then they would disappear and he was supposed to put the pink bows on their head. Then it would say something like don’t they look nice? Then I looked up information and found a review that said ..." I just saw a question about Britany and Sophia taking the…
+  developer_record  risks 3 mitigations 2 other 6
+    judge ok setting "" cited 0 []
+    card unknown setting ""
+    check ok_without_finding
+    reason We don’t have enough evidence to assess this area. Don’t assume it is safe.
+live Khan Academy Kids reader: calls 0 (conflict 0), recorded 19, refused 0, failed 0; tokens in 76765 out 29118; booked $0.000000; dry reserve $0.000000
+live Khan Academy Kids judge: calls 0 (conflict 0), recorded 3, refused 0, failed 0; tokens in 43577 out 16479; booked $0.000000; dry reserve $0.000000
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_model filename=0001_cost.sql
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_model filename=0002_cost_owner.sql
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_model filename=0003_cost_settle.sql
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_model filename=0004_cost_denomination.sql
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_model filename=0005_cost_quote.sql
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_model filename=0006_cost_settle_once.sql
+2026/10/15 23:31:16 INFO sqlitestore: opened namespace=cost_model limit=1000000000000 denomination="" expired_reservations=0 expired_quotes=0
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_tavily filename=0001_cost.sql
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_tavily filename=0002_cost_owner.sql
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_tavily filename=0003_cost_settle.sql
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_tavily filename=0004_cost_denomination.sql
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_tavily filename=0005_cost_quote.sql
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_tavily filename=0006_cost_settle_once.sql
+2026/10/15 23:31:16 INFO sqlitestore: opened namespace=cost_tavily limit=1000000 denomination=tavily.credit expired_reservations=0 expired_quotes=0
+diagnose Minecraft age 9 verdict unclear findings 259 (conflict pass replaced the conflicted areas)
+  contact  risks 66 mitigations 8 other 1
+    judge ok_with_setting setting "friends only" cited 2 [f_14ad19cd96f10974 f_d3937e99a98f8280]
+    card unknown setting ""
+    check entail: flag_not_earned
+    entail meets_definition=false reason_supported=false
+    reason We don’t have enough evidence to assess this area. Don’t assume it is safe.
+    quote f_14ad19cd96f10974 risk review: Minecraft is a game that barely has a “standard way to play.” Unlike many games that require you to finish missions, follow a storyline, or defeat a final boss, Minecraft simply places a world made of blocks into your hands. You can mine, build houses, farm, explore caves, fight monsters, trade with villagers, or team up with friends to create entire cities. You can even use redstone to design automatic farms, hidden doors, and complicated machines.
+    quote f_d3937e99a98f8280 mitigation forum: For younger kids and even tweens and teens, consider setting chat to "friends only" or turning it off completely. This helps ensure that only trusted people can reach them.
+  money  risks 31 mitigations 1 other 5
+    judge ok_with_setting setting "Control Spending" cited 2 [f_6721f2cc2e961a3d f_6b222f7ec75ab54a]
+    card unknown setting ""
+    check entail: flag_not_earned
+    entail meets_definition=false reason_supported=false
+    reason We don’t have enough evidence to assess this area. Don’t assume it is safe.
+    quote f_6721f2cc2e961a3d risk review: This dumb Mining game spent me 1.09$ for a mod thean because I got 0 mine coins I have to pay 15.99$ so my mom got scammed 1.09$
+    quote f_6b222f7ec75ab54a mitigation rating: Control Spending
+  data  risks 25 mitigations 0 other 24
+    judge unknown setting "" cited 0 []
+    card unknown setting ""
+    check stood
+    reason We don’t have enough evidence to assess this area. Don’t assume it is safe.
+  age_gating  risks 9 mitigations 12 other 11
+    judge ok_with_setting setting "multiplayer starts off" cited 2 [f_4b74610e6a867581 f_ce2d5a847567a4cc]
+    card unknown setting ""
+    check entail: flag_not_earned
+    entail meets_definition=false reason_supported=false
+    reason We don’t have enough evidence to assess this area. Don’t assume it is safe.
+    quote f_4b74610e6a867581 risk rating: Play with your friends on your own personal server.
+    quote f_ce2d5a847567a4cc mitigation rating: On a child account, multiplayer starts off, and you choose whether others can communicate with your child: everyone, friends only, or no one.
+  content  risks 16 mitigations 6 other 25
+    judge ok_with_setting setting "single player" cited 2 [f_fd053a071f7b28c0 f_6724e94b1c6db22f]
+    card unknown setting ""
+    check entail: flag_not_earned
+    entail meets_definition=false reason_supported=false
+    reason We don’t have enough evidence to assess this area. Don’t assume it is safe.
+    quote f_fd053a071f7b28c0 risk review: Good but has something satanic
+    quote f_6724e94b1c6db22f mitigation reddit: Minecraft is safe, although some of the online servers are pretty rough. But single player and with people you know who can be trusted not to be
+  developer_record  risks 12 mitigations 0 other 7
+    judge unknown setting "" cited 0 []
+    card unknown setting ""
+    check stood
+    reason We don’t have enough evidence to assess this area. Don’t assume it is safe.
+live Minecraft reader: calls 0 (conflict 0), recorded 45, refused 0, failed 0; tokens in 167562 out 45567; booked $0.000000; dry reserve $0.000000
+live Minecraft judge: calls 0 (conflict 0), recorded 6, refused 0, failed 0; tokens in 51010 out 9557; booked $0.000000; dry reserve $0.000000
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_model filename=0001_cost.sql
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_model filename=0002_cost_owner.sql
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_model filename=0003_cost_settle.sql
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_model filename=0004_cost_denomination.sql
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_model filename=0005_cost_quote.sql
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_model filename=0006_cost_settle_once.sql
+2026/10/15 23:31:16 INFO sqlitestore: opened namespace=cost_model limit=1000000000000 denomination="" expired_reservations=0 expired_quotes=0
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_tavily filename=0001_cost.sql
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_tavily filename=0002_cost_owner.sql
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_tavily filename=0003_cost_settle.sql
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_tavily filename=0004_cost_denomination.sql
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_tavily filename=0005_cost_quote.sql
+2026/10/15 23:31:16 INFO sqlite: applied migration namespace=cost_tavily filename=0006_cost_settle_once.sql
+2026/10/15 23:31:16 INFO sqlitestore: opened namespace=cost_tavily limit=1000000 denomination=tavily.credit expired_reservations=0 expired_quotes=0
+diagnose Roblox age 9 verdict no findings 165 (conflict pass unusable (no grades); first pass kept)
+  contact  risks 22 mitigations 11 other 1
+    judge flag setting "" cited 3 [f_13ef933f57ca74df f_d42c00ffd7a27c3e f_e42142508f0e6c8a]
+    card unknown setting ""
+    check entail: flag_not_earned
+    entail meets_definition=false reason_supported=false
+    reason We don’t have enough evidence to assess this area. Don’t assume it is safe.
+    quote f_13ef933f57ca74df risk review: Amazing i love roblox alot of pedos tho
+    quote f_d42c00ffd7a27c3e risk review: I type nothing bad and get tagged normal yes but I get tag looped no matter what I say sometimes and Roblox suspended my chat for 10 mins so I say they made a mistake when I get it back and try chatting I’m tagged again…and chat suspended for 30 mins!
+    quote f_e42142508f0e6c8a risk review: this game SUCKS predator47_ tried to bomb me
+  money  risks 20 mitigations 4 other 3
+    judge flag setting "" cited 3 [f_1f8ad057919885d2 f_617ef30b88662b85 f_8e63e88f4f3ed463]
+    card flag setting ""
+    check stood
+    entail meets_definition=true reason_supported=true
+    reason The store page notes that games may contain optional in-game purchases, including lootboxes.
+    quote f_1f8ad057919885d2 risk store: Games may contain optional in-game purchases, including lootboxes and other items
+    quote f_617ef30b88662b85 risk terms: Roblox may offer you access to additional benefits or other digital items provided by Roblox through paid subscriptions (“Roblox Subscription”).
+    quote f_8e63e88f4f3ed463 risk rating: Some experts have raised concerns that loot boxes can encourage repeated spending because players do not know what reward they will receive.
+  data  risks 15 mitigations 2 other 3
+    judge flag setting "" cited 3 [f_1e242dc4bf501739 f_b4d5eaf5ea37a5fb f_3863f822c43eb156]
+    card unknown setting ""
+    check entail: flag_not_earned
+    entail meets_definition=false reason_supported=false
+    reason We don’t have enough evidence to assess this area. Don’t assume it is safe.
+    quote f_1e242dc4bf501739 risk store: Industry-leading safety, privacy, and civility
+    quote f_b4d5eaf5ea37a5fb risk terms: You may be asked to provide information like an email address, phone number, or a government-issued photo identification to access certain Content or features in Roblox Player.
+    quote f_3863f822c43eb156 risk terms: Roblox may access and review Content, including Content shared via Communication Features and other non-public Content.
+  age_gating  risks 20 mitigations 6 other 10
+    judge flag setting "" cited 3 [f_3832ce49d8ba54a2 f_3e1e4d584522e5a9 f_6d5f412b40fb55a0]
+    card flag setting ""
+    check stood
+    age-gate event=none witness="" actual_age="" assigned_age=""; age-gate event=access_bypass witness="a kid who wants to dodge all of the above can simply enter any birthdate before September 2007." actual_age="" assigned_age=""
+    reason A news article reports that a kid who wants to dodge the age check can simply enter any birthdate before September 2007.
+    quote f_3832ce49d8ba54a2 risk review: Roblox added something called an "age check," meaning if you want to have features in the game such as Chat, Voice chat, and a few games You would have to turn on a camera to SHOW YOUR FACE 😭 and it's AI SYSTEM would have to ESTIMATE YOUR AGE if the estimation isn't not you're age you need to PUT AN ID TO COMFRIM YOUR CORRECT AGE 😔 and for the age check they partnered up with a company that keeps your photo and sells it 🫤
+    quote f_3e1e4d584522e5a9 risk news: a kid who wants to dodge all of the above can simply enter any birthdate before September 2007.
+    quote f_6d5f412b40fb55a0 risk rating: Roblox has an opt-in age verification feature.
+  content  risks 25 mitigations 1 other 14
+    judge flag setting "" cited 3 [f_3dc06be183d151be f_27cffc324c551e87 f_38becf1fa1eeaaaf]
+    card unknown setting ""
+    check entail: flag_not_earned
+    entail meets_definition=false reason_supported=false
+    reason We don’t have enough evidence to assess this area. Don’t assume it is safe.
+    quote f_3dc06be183d151be risk review: people have been kidnapped by adults ever since 20 years i try my best not to get hacked. It is not the safest game ever.
+    quote f_27cffc324c551e87 risk review: This game has preds and it’s dumbahh can’t even detect it but it can ban you for 3 year for literally saying hello
+    quote f_38becf1fa1eeaaaf risk review: Thank u for unsuspending me because I was just trying to spread awareness about Oblock20101
+  developer_record  risks 5 mitigations 0 other 3
+    judge flag setting "" cited 3 [f_936fa34c97679429 f_def610c472adb7ff f_e6456ac7986e1e75]
+    card flag setting ""
+    check stood
+    entail meets_definition=true reason_supported=true
+    reason A news article reports that Los Angeles County filed a civil lawsuit against Roblox Corporation alleging the company falsely marketed its platform as safe for children while knowingly allowing it to become a hunting ground for predators.
+    quote f_936fa34c97679429 risk forum: Following safety concerns, Roblox is rolling out new protections for under-13 users in November and December 2024. These updates include mandatory age ratings for games, limits on social spaces, and restrictions on unmoderated content. Since these changes are new and won't be fully enforced until 2025, we're not sure what their impact will be.
+    quote f_def610c472adb7ff risk news: Los Angeles County filed a civil lawsuit against Roblox Corporation alleging the company falsely marketed its online gaming platform as safe for children while knowingly allowing it to become a “hunting ground for predators.”
+    quote f_e6456ac7986e1e75 risk news: The report discloses active investigations into online platforms affecting children and teens, including messaging apps, gaming platforms, and AI chatbots.
+live Roblox reader: calls 0 (conflict 0), recorded 36, refused 0, failed 0; tokens in 134885 out 31774; booked $0.000000; dry reserve $0.000000
+live Roblox judge: calls 1 (conflict 0), recorded 12, refused 0, failed 0; tokens in 46969 out 17103; booked $0.000378; dry reserve $0.000000

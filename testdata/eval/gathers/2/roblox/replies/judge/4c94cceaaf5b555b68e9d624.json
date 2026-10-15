@@ -1,0 +1,8 @@
+{
+  "text": "{\"reason_supported\": false, \"explanation\": \"The reason states 'A review reports my child got put in the 28th group.' This requires a direct first-hand report that a child ended up on the wrong side of the age gate—specifically, that the child was placed in an incorrect age group due to a failed age gate. While the first quote mentions 'my child got put in the 28th group,' it does not clarify what the '28th group' means in terms of age, nor does it state that this placement resulted from a failed age gate check (e.g., accepting a false birth date or misassigning age). The term '28th group' is undefined and could refer to anything (e.g., a server, game, or arbitrary grouping), not an age-based restriction. Without evidence linking the '28th group' to an age gate failure—such as a statement that the child’s actual age is far below what the group implies, or that the gate accepted an invalid birth date—the claim remains unsupported. The second quote discusses a birthday discrepancy (Oct 7, 1985 vs. being under 13) and waiting until 13 to reset Face ID, which suggests an age-related issue, but it is not cited in the reason and does not mention the '28th group.' Since the reason relies solely on the first quote and attributes the '28th group' placement to the child without explaining its relevance to age gating, the core claim lacks decisive detail and is therefore unsupported.\"}",
+  "input_tokens": 1248,
+  "output_tokens": 327,
+  "price_nano": 668700,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

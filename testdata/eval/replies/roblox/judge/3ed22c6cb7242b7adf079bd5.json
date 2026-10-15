@@ -1,0 +1,8 @@
+{
+  "text": "{\"reasons\": [{\"area\": \"money\", \"reason\": \"A parent reports that some games on Roblox contain optional in-game purchases like lootboxes where rewards are unknown, which experts say can encourage repeated spending.\"}, {\"area\": \"age_gating\", \"reason\": \"A review states that Roblox’s age check requires showing your face via camera and using AI to estimate age, and if incorrect, demands ID submission, with a partner company retaining and selling photos; a news source notes kids can bypass checks by entering any birthdate before September 2007.\"}, {\"area\": \"developer_record\", \"reason\": \"A news article reports Los Angeles County filed a civil lawsuit alleging Roblox falsely marketed its platform as safe for children while knowingly allowing it to become a hunting ground for predators.\"}]}",
+  "input_tokens": 836,
+  "output_tokens": 171,
+  "price_nano": 404700,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

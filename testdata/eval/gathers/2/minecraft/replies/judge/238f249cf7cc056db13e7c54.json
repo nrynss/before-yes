@@ -1,0 +1,8 @@
+{
+  "text": "{\"reason_supported\": true, \"explanation\": \"A reviewer states they are 10 years old and describes purchasing 10,000 Minecoins using birthday money, then feeling scammed. This directly provides a completed child spending event involving real money spent on an in-game currency (Minecoins), accompanied by emotional distress indicating a negative experience. The explanation attributes the claim to the reviewer’s self-reported age and purchase, preserving the qualification that they felt scammed without inferring permission, pressure, or additional details not claimed.\"}",
+  "input_tokens": 1144,
+  "output_tokens": 113,
+  "price_nano": 444900,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

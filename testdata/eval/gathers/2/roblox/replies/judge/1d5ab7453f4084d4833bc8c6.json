@@ -1,0 +1,8 @@
+{
+  "text": "{\"reason_supported\": false, \"explanation\": \"The reason states 'The terms state Roblox may access and review Content shared via Communication Features and other non-public Content.' This describes a capability under the Terms of Service regarding content access and review, but it does not address any aspect of children's data collection, usage, or lack of parental control—specifically, it does not mention ad tracking, third-party sharing/selling, inability to delete data, or any related privacy practice. Therefore, the reason does not meet the area definition for 'data' as defined.\"}",
+  "input_tokens": 1094,
+  "output_tokens": 119,
+  "price_nano": 435300,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

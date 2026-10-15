@@ -1,0 +1,8 @@
+{
+  "text": "{\"reasons\": [{\"area\": \"age_gating\", \"reason\": \"A review reports my child got put in the 28th group.\"}]}",
+  "input_tokens": 1490,
+  "output_tokens": 35,
+  "price_nano": 478500,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

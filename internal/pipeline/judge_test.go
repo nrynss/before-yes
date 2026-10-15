@@ -849,13 +849,13 @@ func TestEntailmentFallsToUnknown(t *testing.T) {
 	for _, g := range got.Grades {
 		by[g.Area] = g
 	}
-	if g := by[checklist.Contact]; g.Level != checklist.Unknown || g.Reason != NotEarnedReason || len(g.Findings) != 0 {
+	if g := by[checklist.Contact]; g.Level != checklist.Unknown || g.Reason != parentUnknownReason || len(g.Findings) != 0 {
 		t.Errorf("contact = %+v, want unknown with the not-earned reason", g)
 	}
-	if g := by[checklist.Money]; g.Level != checklist.Unknown || g.Setting != "" || g.Reason != UnsupportedReason || len(g.Findings) != 0 {
+	if g := by[checklist.Money]; g.Level != checklist.Unknown || g.Setting != "" || g.Reason != parentUnknownReason || len(g.Findings) != 0 {
 		t.Errorf("money = %+v, want unknown, setting cleared, unsupported reason", g)
 	}
-	if g := by[checklist.Content]; g.Level != checklist.Flag || g.Reason != standingReason(checklist.Content) || len(g.Findings) != 1 || g.Findings[0] != "f_content" {
+	if g := by[checklist.Content]; g.Level != checklist.Flag || g.Reason != parentConcernFallback || len(g.Findings) != 1 || g.Findings[0] != "f_content" {
 		t.Errorf("content = %+v, want the flag to stand on its citation with the area definition", g)
 	}
 	if want := []checklist.Area{checklist.Contact, checklist.Money}; !reflect.DeepEqual(got.Thin, want) {
@@ -935,7 +935,7 @@ func TestFlagStandsWhenTheReasonRunsPastTheQuotes(t *testing.T) {
 		by[g.Area] = g
 	}
 	content := by[checklist.Content]
-	if content.Level != checklist.Flag || content.Reason != standingReason(checklist.Content) || len(content.Findings) != 1 {
+	if content.Level != checklist.Flag || content.Reason != parentConcernFallback || len(content.Findings) != 1 {
 		t.Errorf("content = %+v, want the flag on the area definition", content)
 	}
 	for _, w := range []string{"horror", "self-harm"} {
@@ -944,17 +944,17 @@ func TestFlagStandsWhenTheReasonRunsPastTheQuotes(t *testing.T) {
 		}
 	}
 	data := by[checklist.Data]
-	if data.Level != checklist.Flag || data.Reason != standingReason(checklist.Data) || len(data.Findings) != 1 {
+	if data.Level != checklist.Flag || data.Reason != parentConcernFallback || len(data.Findings) != 1 {
 		t.Errorf("data = %+v, want the flag on the area definition", data)
 	}
 	if strings.Contains(data.Reason, "ads") {
 		t.Errorf("data reason says ads: %q", data.Reason)
 	}
 	money := by[checklist.Money]
-	if money.Level != checklist.Unknown || money.Setting != "" || money.Reason != UnsupportedReason || len(money.Findings) != 0 {
+	if money.Level != checklist.Unknown || money.Setting != "" || money.Reason != parentUnknownReason || len(money.Findings) != 0 {
 		t.Errorf("money = %+v, want the setting dropped", money)
 	}
-	if !strings.HasPrefix(areaDefs[checklist.Content], content.Reason) || !strings.HasPrefix(areaDefs[checklist.Data], data.Reason) {
+	if content.Reason != parentConcernFallback || data.Reason != parentConcernFallback {
 		t.Errorf("reasons are not the area definitions: %q %q", content.Reason, data.Reason)
 	}
 	rules := map[checklist.Area]string{}
@@ -1121,5 +1121,164 @@ func TestAgeGateWithoutVerifiedEventCannotStandOnClassifierFailure(t *testing.T)
 		if out[0].Level != checklist.Unknown || len(out[0].Findings) != 0 || len(dem) != 1 || len(thin) != 1 {
 			t.Fatalf("unwitnessed flag stood: %+v %+v", out, dem)
 		}
+	}
+}
+
+func TestParentReasonWritingCannotChangeGrades(t *testing.T) {
+	fs := []finding.Finding{{ID: "c", Area: checklist.Contact, Stance: finding.Risk, Quote: "A stranger asked my child for her address.", Source: finding.Source{Kind: KindReview}}}
+	initial := []checklist.Grade{{Area: checklist.Contact, Level: checklist.Flag, Findings: []string{"c"}, Reason: "calibrated reason"}, {Area: checklist.Data, Level: checklist.Unknown, Findings: []string{}, Reason: "internal diagnostic"}}
+	for _, check := range []any{`{"reason_supported":true}`, `{"reason_supported":false}`, `{"meets_definition":true}`, errors.New("offline")} {
+		writer := &superRecorder{price: 4, replies: []any{`{"reasons":[{"area":"contact","reason":"A reviewer reports a stranger asking their child for an address.","level":"ok","findings":[]}]}`}}
+		verifier := &superRecorder{price: 3, replies: []any{check}}
+		j := &Judge{Model: writer, Entail: verifier, Meter: openTestMeter(t)}
+		got, price := j.parentReasons(context.Background(), "Any title", 8, "r", initial, fs)
+		for i := range initial {
+			if got[i].Level != initial[i].Level || got[i].Setting != initial[i].Setting || !reflect.DeepEqual(got[i].Findings, initial[i].Findings) {
+				t.Fatalf("prose mutated grade: %+v", got)
+			}
+		}
+		wantPrice := cost.Price(7)
+		if _, failed := check.(error); failed {
+			wantPrice = 4
+		}
+		if price != wantPrice || got[1].Reason != parentUnknownReason {
+			t.Fatalf("cost/unknown: %d %+v", price, got)
+		}
+		supported, ok := check.(string)
+		if ok && supported == `{"reason_supported":true}` {
+			if got[0].Reason != "A reviewer reports a stranger asking their child for an address." {
+				t.Fatal(got)
+			}
+		} else if got[0].Reason != parentConcernFallback {
+			t.Fatal(got)
+		}
+		if initial[0].Reason != "calibrated reason" {
+			t.Fatal("input mutated")
+		}
+		if !strings.Contains(verifier.users[0], `Quote: "A stranger asked my child for her address."`) || strings.Contains(verifier.users[0], "calibrated reason") {
+			t.Fatal(verifier.users)
+		}
+	}
+}
+
+func TestParentReasonPromptPinsVoiceAndSupport(t *testing.T) {
+	for _, rule := range []string{"grades and citations are already checked and fixed", "THIS title's cited sources report", "Attribute claims", "Explain uncertainty directly", "Do not use internal terms", "Do not add motives", "without calling the whole title safe", "name the quoted control"} {
+		if !strings.Contains(parentReasonSystem(), rule) {
+			t.Errorf("missing voice rule %q", rule)
+		}
+	}
+	for _, rule := range []string{"One unsupported item", "Do not grant an allowance", "Silence about a risk does not establish safety", "Do not change or re-evaluate the grade"} {
+		if !strings.Contains(parentReasonCheckSystem(), rule) {
+			t.Errorf("missing support rule %q", rule)
+		}
+	}
+}
+
+func TestParentReasonsMissingDuplicateMalformedFailClosed(t *testing.T) {
+	fs := []finding.Finding{{ID: "f", Area: checklist.Money, Stance: finding.Neutral, Quote: "The app is free."}}
+	grades := []checklist.Grade{{Area: checklist.Money, Level: checklist.OK, Findings: []string{"f"}}}
+	for _, reply := range []any{errors.New("unavailable"), `not JSON`, `{"reasons":[]}`, `{"reasons":[{"area":"money","reason":"First"},{"area":"money","reason":"Second"}]}`} {
+		r := &superRecorder{replies: []any{reply}}
+		v := &superRecorder{}
+		got, _ := (&Judge{Model: r, Entail: v, Meter: openTestMeter(t)}).parentReasons(context.Background(), "Any title", 8, "r", grades, fs)
+		if got[0].Level != checklist.OK || got[0].Reason != parentOKFallback || len(v.users) != 0 {
+			t.Fatalf("bad prose escaped: %+v", got)
+		}
+	}
+}
+
+// Diagnostics retain the actual completed-check explanation, independently
+// of parent prose, and the observer cannot change a grade by editing its map.
+func TestCheckedReasonsSnapshotBeforeParentProse(t *testing.T) {
+	fs := []finding.Finding{{ID: "m", Area: checklist.Money, Stance: finding.Risk, Quote: "A child bought coins.", Source: finding.Source{Kind: KindReview}}}
+	writer := &superRecorder{replies: []any{gradesJSON(t, checklist.Grade{Area: checklist.Money, Level: checklist.Flag, Findings: []string{"m"}, Reason: "A child bought coins."})}}
+	checker := &superRecorder{replies: []any{`{"meets_definition":false,"reason_supported":false}`}}
+	var snapshot map[checklist.Area]string
+	j := &Judge{Model: writer, Entail: checker, Meter: openTestMeter(t), CheckedReasons: func(v map[checklist.Area]string) { snapshot = v; v[checklist.Contact] = "observer mutation" }}
+	got, err := j.Judge(context.Background(), "Any title", 9, "r", fs, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if snapshot[checklist.Money] != NotEarnedReason {
+		t.Fatalf("lost check cause: %v", snapshot)
+	}
+	for _, g := range got.Grades {
+		if g.Level != checklist.Unknown || g.Reason != parentUnknownReason {
+			t.Fatalf("observer or prose changed checked grade: %+v", g)
+		}
+	}
+	if got.Verdict != checklist.Unclear {
+		t.Fatal(got.Verdict)
+	}
+}
+
+func TestParentReasonRemediationRules(t *testing.T) {
+	if !strings.Contains(parentPurchaseQualification, "an attempt to limit spending does not establish") {
+		t.Fatal("purchase qualification missing")
+	}
+	for _, rule := range []string{"explicit actual and assigned ages", "two events joined by", "concrete encounter", "preserving qualifications", "does not verify its practices", "Never list risks"} {
+		if !strings.Contains(parentReasonSystem(), rule) {
+			t.Errorf("writer missing %q", rule)
+		}
+	}
+	for _, rule := range []string{"reject \"wrong group\"", "Reject a cause inferred", "reject generalized possibility", "preserve its qualifications", "Reject lists of risks", "exact unsupported words"} {
+		if !strings.Contains(parentReasonCheckSystem(), rule) {
+			t.Errorf("checker missing %q", rule)
+		}
+	}
+}
+
+// These rejected examples are real prior outputs, checked against their exact
+// cited source reports. The checker recordings are separate from accepted prose.
+func TestParentReasonRejectsRecordedUnsupportedProse(t *testing.T) {
+	cases := []struct {
+		name          string
+		area          checklist.Area
+		kind          string
+		quote, reason string
+	}{
+		{"age_wrong_group_cause", checklist.AgeGating, KindReview, "The new app updates age group ideas are completely broken plus my child got put in the 28th group.", "A review reports the child was placed in the wrong age group (28th group) due to broken age group updates."},
+		{"content_possibility", checklist.Content, KindForum, "Extreme violence, inappropriate language, and sexually explicit content is possible (and quite likely) within the user-created games.", "A forum post states extreme violence, inappropriate language, and sexually explicit content is possible and likely within user-created games."},
+		{"ok_omission_checklist", checklist.Money, "comparison guide", "It's MIT's free, block-based coding platform, and kids genuinely learn programming concepts like loops and variables while building.", "The comparison guide states Scratch is MIT's free, block-based coding platform with no mention of purchases, loot boxes, pay-to-win pressure, subscription traps, or any way for a child to spend money within the title."},
+		{"attempted_purchase_limits", checklist.Money, KindNews, "A parent said their 10-year-old daughter spent more than $7,000 (£5,200) in two months despite attempts to limit purchases.", "A news article reports a parent said their 10-year-old daughter spent over $7,000 in two months despite purchase limits."},
+		{"data_extra_use", checklist.Data, KindForum, "Images used for age verification may be processed by third-party providers, but Roblox does not publicly guarantee a fixed retention period for the images of children.", "A forum post reports children's verification images are used by third parties for advertising."},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			fs := []finding.Finding{{ID: "probe", Area: c.area, Stance: finding.Risk, Quote: c.quote, Source: finding.Source{Kind: c.kind}}}
+			level := checklist.Flag
+			if c.name == "ok_omission_checklist" {
+				level = checklist.OK
+				fs[0].Stance = finding.Neutral
+			}
+			g := checklist.Grade{Area: c.area, Level: level, Reason: c.reason, Findings: []string{"probe"}}
+			r := &recordedReplies{dir: filepath.Join("..", "..", "testdata", "eval", "parent-reasons", "rejection-probes"), role: "judge"}
+			j := &Judge{Entail: r, Meter: openTestMeter(t), Fast: map[string]any{"chat_template_kwargs": map[string]any{"enable_thinking": false}}}
+			supported, _, _ := j.checkParentReason(context.Background(), "Source report probe", 9, "probe", g, fs)
+			if r.misses.Load() != 0 {
+				t.Fatal("missing real checker recording")
+			}
+			if supported {
+				t.Fatal("unsupported or irrelevant prose accepted")
+			}
+		})
+	}
+}
+
+func TestParentWriterUsesValidatedAgeEventFocus(t *testing.T) {
+	fs := []finding.Finding{
+		{ID: "vague", Area: checklist.AgeGating, Quote: "Updates are broken plus my child is in group 28."},
+		{ID: "precise", Area: checklist.AgeGating, Quote: "I am 11 but the app says I am 40."},
+	}
+	g := checklist.Grade{Area: checklist.AgeGating, Level: checklist.Flag, Findings: []string{"vague", "precise"}}
+	witnesses := map[checklist.Area]ageGateWitness{checklist.AgeGating: {Criterion: "wrong_age_assignment", Quote: fs[1].Quote, ActualAge: "11", AssignedAge: "40"}}
+	user := parentReasonUser("Any title", 9, []checklist.Grade{g}, fs, witnesses)
+	for _, text := range []string{"Required age-event focus", `"I am 11 but the app says I am 40."`, "Actual age reported: 11", "Assigned age reported: 40", "describe only those reported actual and assigned ages"} {
+		if !strings.Contains(user, text) {
+			t.Errorf("missing precise event focus %q", text)
+		}
+	}
+	if strings.Contains(user, "Area definition") {
+		t.Fatal("prose pass must not re-run grade thresholds")
 	}
 }

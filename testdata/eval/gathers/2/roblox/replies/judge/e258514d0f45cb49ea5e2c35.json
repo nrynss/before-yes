@@ -1,0 +1,8 @@
+{
+  "text": "{\"reason_supported\": false, \"explanation\": \"The phrase 'chats in specific mini-games cannot be disabled' attributes functionality to mini-games generally, but the forum quote specifies 'Chats built into the coding of specific mini-games,' referring only to certain games where chat is hardcoded. The reason overgeneralizes by implying all mini-game chats share this trait, which the source does not state.\"}",
+  "input_tokens": 1169,
+  "output_tokens": 88,
+  "price_nano": 429900,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

@@ -1,0 +1,8 @@
+{
+  "text": "{\"reasons\": [{\"area\": \"age_gating\", \"reason\": \"A news report states that a child can easily bypass age restrictions by entering any birthdate before September 2007.\"}]}",
+  "input_tokens": 1151,
+  "output_tokens": 45,
+  "price_nano": 385800,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

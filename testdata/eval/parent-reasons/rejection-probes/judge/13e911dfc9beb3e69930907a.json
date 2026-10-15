@@ -1,0 +1,8 @@
+{
+  "text": "{\"reason_supported\": false, \"explanation\": \"The Reason states 'despite purchase limits' but the Quote says 'despite attempts to limit purchases'. Attempts to limit spending do not equate to purchase limits being in place, so adding 'purchase limits' introduces an unsupported claim.\"}",
+  "input_tokens": 1120,
+  "output_tokens": 64,
+  "price_nano": 393600,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

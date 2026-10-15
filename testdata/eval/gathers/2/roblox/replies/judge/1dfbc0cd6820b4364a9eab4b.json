@@ -1,0 +1,8 @@
+{
+  "text": "{\"reasons\": [{\"area\": \"contact\", \"reason\": \"A review reports that a child has been threatened by a stranger in Adopt Me, causing fear to play.\"}]}",
+  "input_tokens": 1330,
+  "output_tokens": 40,
+  "price_nano": 435000,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

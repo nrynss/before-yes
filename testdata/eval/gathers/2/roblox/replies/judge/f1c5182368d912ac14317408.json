@@ -1,0 +1,8 @@
+{
+  "text": "{\"reason_supported\": false, \"explanation\": \"The reason states 'A review reports child predators interacting with children through threats in Adopt Me' — while the review quote mentions threats and predator interaction, it does not specify that these interactions occurred via message, chat, or voice. The area definition requires that strangers can reach the child specifically through message, chat, or voice, and the reason does not confirm the mode of contact. Therefore, the reason lacks the decisive detail needed to support the contact flag.\"}",
+  "input_tokens": 1016,
+  "output_tokens": 105,
+  "price_nano": 399300,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

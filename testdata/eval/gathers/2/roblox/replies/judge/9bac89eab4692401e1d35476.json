@@ -1,0 +1,8 @@
+{
+  "text": "{\"reasons\": [{\"area\": \"age_gating\", \"reason\": \"A review reports contacting Roblox support and being told to wait until 13, while the birthday entered showed Oct 7, 1985, which the system calculated as age 41.\"}]}",
+  "input_tokens": 1866,
+  "output_tokens": 62,
+  "price_nano": 615600,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

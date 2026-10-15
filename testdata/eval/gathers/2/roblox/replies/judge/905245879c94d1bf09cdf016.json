@@ -1,0 +1,8 @@
+{
+  "text": "{\"reason_supported\": true, \"explanation\": \"The review explicitly describes being required to provide payment information to access gameplay, leading to a $46 charge after attempting to add a card with no funds—this constitutes a completed child spending event involving unintended charges due to mandatory payment prompts. The news article directly attributes to a parent the report of their 10-year-old daughter spending over $7,000 in two months despite purchase limits, confirming a verified instance of significant unauthorized or uncontrolled spending by a child. Both claims are strictly supported by the cited quotes and align with the area focus on concrete monetary mechanisms or completed spending events involving children, without inferring permission, pressure, or additional unsupported details.\"}",
+  "input_tokens": 1261,
+  "output_tokens": 148,
+  "price_nano": 511500,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

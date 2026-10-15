@@ -1,0 +1,8 @@
+{
+  "text": "{\"reason_supported\": false, \"explanation\": \"The Reason adds 'no mention of purchases' etc., but the Quote contains none of those denials—it only describes Scratch as a free learning tool. Absence of purchasing features is not stated in the provided quote.\"}",
+  "input_tokens": 1127,
+  "output_tokens": 59,
+  "price_nano": 391200,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

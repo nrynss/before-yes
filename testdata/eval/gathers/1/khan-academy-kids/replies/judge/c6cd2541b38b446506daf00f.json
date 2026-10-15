@@ -1,0 +1,8 @@
+{
+  "text": "{\"reason_supported\": true, \"explanation\": \"Review states: \\\"A grid of scary devil faces and men tied up with their mouth taped shut popped up for about 15 seconds while my kid was working on math.\\\"\"}",
+  "input_tokens": 1170,
+  "output_tokens": 51,
+  "price_nano": 396900,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}
