@@ -114,7 +114,8 @@ requires:   T5.2, T5.3
 fixture-ok: yes
 size:       S · light
 owns:       web/src/lib/errors/
-status:     not-started
+status:     in-review
+note:       Parent copy for the eight codes, each with a next step, and an unknown-area explanation that is not a pass. Browser tests render every message. Raw codes, server sentences, and stacks stay off the page.
 ```
 One message per code in T1.4: `budget_exhausted`, `no_sources`, `check_failed`, `live_checks_off`, `busy`, `rate_limited`, `passcode_required`, `not_found`. Each tells the parent what to do next. None shows a stack trace or a raw code.
 
