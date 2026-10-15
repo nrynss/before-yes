@@ -1000,6 +1000,25 @@ The complete before/after per-area voice assessment, quoted witnesses, rejected-
 
 ---
 
+### T3.15: Nano reads the list pages; the App Store confirms the products
+```yaml
+requires:   T3.13
+fixture-ok: no (captures and recorded replies, then one live run)
+size:       M · frontier
+owns:       internal/pipeline/alternatives.go, internal/pipeline/alternatives_test.go, internal/pipeline/pipeline.go (alternatives wiring only), testdata/alternatives/
+status:     not-started
+```
+Tavily finds the right pages (Common Sense Media's "Games Like Minecraft", with its whole text), but the rule-based name parser (T3.12, T3.13) finds few names and needed three review rounds to keep junk out. The user decided: Tavily keeps finding the pages, Nemotron reads them, and the App Store confirms each name is a real product before any paid check.
+
+1. **More pages from Tavily.** Run two or three searches per title instead of one, for example `games like <title> for a <age> year old`, `<title> alternatives for kids` and `best <genre> for <age> year olds` (about 1 credit each, through the meter). Tavily stays load-bearing for alternatives, as the brief requires.
+2. **Nano names the products.** For each list page, one metered Nano call returns the products the page recommends, each with the exact line that names it. A name stands only if that line is a verbatim span of the page text: the same string check the reader's findings use. The rule-based parser is removed, not kept beside it.
+3. **The App Store confirms.** Look each name up with `appstore.Find` before any check. No App Store product, or one that is the title itself, the same app, or an experience on the title's platform, drops out for free. Only real, different products go on to a check.
+4. **The check stays.** Each confirmed candidate is checked like any title (about $0.05 and one daily slot), at most `MaxAlternatives`, and only one that beats the original verdict reaches the card.
+
+**Done when:** on captured pages for the three demo titles, the recorded Nano replies name real products, each with its verbatim line and source page; App Store lookups (recorded) drop non-products; tests pin each rule; one live run of a "no" title shows a checked alternative on its card, reported with its spend.
+
+---
+
 ## Exit Criteria
 
 - [x] Review 312 decides the card end to end, by test. (Review 355, the captures' equivalent: `TestReview355DecidesTheCard`.)
