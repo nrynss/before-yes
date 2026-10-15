@@ -3,7 +3,9 @@ package pipeline
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
+	"os"
 	"path/filepath"
 	"reflect"
 	"regexp"
@@ -311,8 +313,13 @@ func TestSelfInAnyFormSkipped(t *testing.T) {
 }
 
 // A list page's entries become candidates, bounded, from the one metered
-// search's page text. No capture covers a live list page; this is a
-// stand-in.
+// search's page text. The captures under testdata/alternatives are the
+// ground truth for the layouts; this is the rule's unit-level shape.
+// listHit wraps page text and a title as a search hit carries them.
+func listHit(title, url, page string) tavily.Result {
+	return tavily.Result{Title: title, URL: url, RawContent: page}
+}
+
 func TestListPageEntries(t *testing.T) {
 	list := "Looking for something calmer?\n" +
 		"## 1. **Calm Builder**\nA gentle building game.\n" +
@@ -321,13 +328,17 @@ func TestListPageEntries(t *testing.T) {
 		"4. **This entry reads like a long sentence about many things**\n" +
 		"5. **Animal Crossing: New Horizons** (Switch)\n" +
 		"6. **Sixth Pick**\n"
-	if got := listNames(list, nil, nil); len(got) != 0 {
-		t.Errorf("uncorroborated listNames = %q, want none", got)
-	}
-	got := listNames(list, func(n string) bool { return sameTitle(n, "Roblox") },
-		knownSet("Calm Builder", "Roblox", "Quiet Garden", "Animal Crossing: New Horizons", "Sixth Pick"))
+	notRoblox := func(n string) bool { return sameTitle(n, "Roblox") }
+	// On a page titled as a list, the ranked, marked entries are picks with
+	// no corroborating hit needed (the T3.5 corroboration rule, redecided on
+	// the captures: see TestCapturedListPagesYieldNames).
+	got := listNames(listHit("10 Best Games Like Roblox for Kids", "https://www.example.com/list", list), notRoblox, nil)
 	if strings.Join(got, "|") != "Calm Builder|Quiet Garden|Animal Crossing: New Horizons" {
 		t.Errorf("listNames = %q", got)
+	}
+	// On a page titled as advice, the same markup names nothing.
+	if got := listNames(listHit("How to Pick a Building Game", "https://www.example.com/guide", list), notRoblox, nil); len(got) != 0 {
+		t.Errorf("advice page gave %q, want none", got)
 	}
 	e, s, _, card := altE2E(t)
 	s.hits = []tavily.Result{
@@ -371,8 +382,11 @@ func knownSet(names ...string) func(string) bool {
 
 func TestListPageRejectsHeadingsAndSteps(t *testing.T) {
 	notRoblox := func(n string) bool { return sameTitle(n, "Roblox") }
-	// The round-4 probe pages: markup is no title evidence, so none of these
-	// gives a name without a corroborating hit.
+	// The round-4 probe pages, on a page titled as advice: markup locates,
+	// but nothing evidences the name, so none of these gives one.
+	guide := func(page string) tavily.Result {
+		return listHit("How to Keep Kids Safe in Roblox", "https://www.example.com/guide", page)
+	}
 	for _, page := range []string{
 		"1. **Turn on parental controls**\n2. **Disable chat** in settings\n3. **Set a time limit**\n",
 		"## **Why we like it**\n## **Our verdict**\n## **Pros and cons**\n",
@@ -382,9 +396,14 @@ func TestListPageRejectsHeadingsAndSteps(t *testing.T) {
 		"1. Turn on parental controls\n2. Set a spending limit\n3. Talk to your kid\n",
 		"1. **Stop Motion Studio**\n2. **Minecraft**\n",
 	} {
-		if got := listNames(page, notRoblox, knownSet()); len(got) != 0 {
+		if got := listNames(guide(page), notRoblox, knownSet()); len(got) != 0 {
 			t.Errorf("listNames(%q) = %q, want none", page, got)
 		}
+	}
+	// The round-4 change, redecided on the captures: the same picks on a page
+	// titled as a list are names with no corroborating hit.
+	if got := listNames(listHit("12 Best Building Games for Kids", "https://www.example.com/best", "1. **Stop Motion Studio**\n2. **Minecraft**\n"), notRoblox, knownSet()); strings.Join(got, "|") != "Stop Motion Studio|Minecraft" {
+		t.Errorf("list-page picks = %q", got)
 	}
 	cases := []struct {
 		page  string
@@ -403,21 +422,26 @@ func TestListPageRejectsHeadingsAndSteps(t *testing.T) {
 		{"1. **Stop Motion Studio**\n2. **Disable chat** in settings\n", knownSet("Stop Motion Studio"), "Stop Motion Studio"},
 	}
 	for _, c := range cases {
-		if got := strings.Join(listNames(c.page, notRoblox, c.known), "|"); got != c.want {
+		if got := strings.Join(listNames(guide(c.page), notRoblox, c.known), "|"); got != c.want {
 			t.Errorf("listNames(%q) = %q, want %q", c.page, got, c.want)
 		}
 	}
 }
 
-// A list entry counts only when the same search response has a hit titled
-// with that name.
-func TestListEntryCorroboratedBySearch(t *testing.T) {
-	e, s, _, card := altE2E(t)
-	s.hits = []tavily.Result{
-		{URL: "https://www.example.com/list", Title: "Best Games Like Roblox", RawContent: "1. Download the app\n2. **Minecraft**\n3. Lego Builder\n4. Open settings\n"},
+// The evidence forms a list entry can carry, one per case: the page's own
+// list title behind a ranked, marked entry (E2), and another hit titled with
+// the name (E3, the T3.5 corroboration, kept as one form). An unmarked
+// ranked line needs the corroboration; a bolded one needs only the list
+// title.
+func TestListEntryEvidenceForms(t *testing.T) {
+	page := "1. Download the app\n2. **Minecraft**\n3. Lego Builder\n4. Open settings\n"
+	hits := []tavily.Result{
+		listHit("Best Games Like Roblox", "https://www.example.com/list", page),
 		{URL: "https://play.google.com/store/apps/details?id=lego", Title: "Lego Builder - Apps on Google Play"},
 	}
-	pending, err := e.p.FindAlternatives(context.Background(), card, "check-1")
+	p := &Pipeline{Gatherer: &Gatherer{Search: &staticSearch{hits: hits}, Meter: openTestMeter(t)}}
+	card := Card{Title: "Roblox", Age: 9, Verdict: checklist.No, Kind: KindIOS}
+	pending, err := p.FindAlternatives(context.Background(), card, "check-1")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -425,9 +449,10 @@ func TestListEntryCorroboratedBySearch(t *testing.T) {
 	for _, a := range pending {
 		names = append(names, a.Title)
 	}
-	// Minecraft is bold but has no hit of its own, so markup alone does not
-	// make it a candidate.
-	if strings.Join(names, ",") != "Lego Builder" {
+	// Minecraft is bold and ranked on a list-titled page. Lego Builder is
+	// corroborated by the Play Store hit. The unmarked advice lines around
+	// them name nothing.
+	if strings.Join(names, ",") != "Minecraft,Lego Builder" {
 		t.Errorf("candidates %v", names)
 	}
 }
@@ -658,5 +683,161 @@ func TestEmbeddedCardKeepsFieldsAndHidesNames(t *testing.T) {
 	}
 	if b, _ := json.Marshal(Card{}); !strings.Contains(string(b), `"alternatives":[]`) {
 		t.Errorf("empty card alternatives %s", b)
+	}
+}
+
+// The T3.12 captures: the live responses of the one search FindAlternatives
+// makes for the three demo titles, under testdata/alternatives. The tests
+// replay them through a static searcher; the captures are evidence and are
+// never edited.
+
+// altCapture loads one captured alternatives search and checks it is one.
+func altCapture(t *testing.T, slug string) []tavily.Result {
+	t.Helper()
+	raw, err := os.ReadFile(filepath.Join("..", "..", "testdata", "alternatives", slug, "tavily-search-alternatives.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var body struct {
+		Query   string          `json:"query"`
+		Results []tavily.Result `json:"results"`
+	}
+	if err := json.Unmarshal(raw, &body); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.HasPrefix(body.Query, "safer ") {
+		t.Fatalf("capture %s is not an alternatives search: %q", slug, body.Query)
+	}
+	if len(body.Results) == 0 {
+		t.Fatalf("capture %s has no results", slug)
+	}
+	return body.Results
+}
+
+// staticSearch answers every search with one fixed response.
+type staticSearch struct {
+	hits []tavily.Result
+}
+
+func (s *staticSearch) Search(context.Context, tavily.Search) ([]tavily.Result, tavily.Credits, error) {
+	return s.hits, tavily.Credits{Used: 1, Reported: true}, nil
+}
+
+func (s *staticSearch) ExtractWithFailures(context.Context, []string) (tavily.Extracted, error) {
+	return tavily.Extracted{}, errors.New("extract is not part of the alternatives search")
+}
+
+// replayPending runs FindAlternatives for one demo title against its
+// captured search, on a card the server would have made: a no, kind ios,
+// with no listing genre (the pipeline never fills AppInfo.Genre).
+func replayPending(t *testing.T, slug, title string, age int) []Alternative {
+	t.Helper()
+	p := &Pipeline{Gatherer: &Gatherer{Search: &staticSearch{hits: altCapture(t, slug)}, Meter: openTestMeter(t)}}
+	card := Card{Title: title, Age: age, Verdict: checklist.No, Kind: KindIOS}
+	pending, err := p.FindAlternatives(context.Background(), card, "replay")
+	if err != nil {
+		t.Fatal(err)
+	}
+	return pending
+}
+
+// The Done-when: on the captured live results, each demo title's candidates
+// are real game or app names from the pages the search returned, with the
+// source page named in the reason, and no site or platform name, no
+// question post, never the title itself, no duplicates, and at most
+// MaxAlternatives.
+func TestCapturedListPagesYieldNames(t *testing.T) {
+	for _, c := range []struct {
+		slug, title string
+		age         int
+		want        []string
+		listedBy    string
+	}{
+		{"roblox", "Roblox", 9,
+			[]string{"Theme Park Tycoon 2", "Build A Boat for Treasure", "My Hello Kitty Cafe"},
+			"Listed by bitdefender.com: 12 Safe Roblox Games for Children Under 10 (2025 Guide)"},
+		{"minecraft", "Minecraft", 9,
+			[]string{"Blox 3D Junior", "Pango Build Safari", "RaceCraft"},
+			"Listed by commonsensemedia.org: Games Like Minecraft | Common Sense Media"},
+		{"khan-academy-kids", "Khan Academy Kids", 5,
+			[]string{"Duolingo", "Lingokids", "ELSA Speak"},
+			"Listed by samiolearning.com: Best learning apps for elementary students 2026"},
+	} {
+		pending := replayPending(t, c.slug, c.title, c.age)
+		if len(pending) > MaxAlternatives {
+			t.Errorf("%s: %d candidates, over the bound", c.title, len(pending))
+		}
+		var names []string
+		seen := map[string]bool{}
+		for _, a := range pending {
+			names = append(names, a.Title)
+			if seen[appName(a.Title)] {
+				t.Errorf("%s: duplicate candidate %q", c.title, a.Title)
+			}
+			seen[appName(a.Title)] = true
+			if sameTitle(a.Title, c.title) {
+				t.Errorf("%s: the title itself is a candidate: %q", c.title, a.Title)
+			}
+			if platformNames[nameFold(a.Title)] {
+				t.Errorf("%s: platform name %q is a candidate", c.title, a.Title)
+			}
+			if strings.Contains(a.Title, "?") {
+				t.Errorf("%s: a question is a candidate: %q", c.title, a.Title)
+			}
+			if a.Status != AltPending || a.CardID != "" || a.Verdict != "" {
+				t.Errorf("%s: candidate %+v is not pending", c.title, a)
+			}
+			if !strings.HasPrefix(a.Reason, "Listed by ") && !strings.HasPrefix(a.Reason, "Suggested by ") {
+				t.Errorf("%s: reason %q does not name the source page", c.title, a.Reason)
+			}
+		}
+		if strings.Join(names, "|") != strings.Join(c.want, "|") {
+			t.Errorf("%s: candidates %q, want %q", c.title, names, c.want)
+		}
+		if len(pending) == 0 || pending[0].Reason != c.listedBy {
+			first := ""
+			if len(pending) > 0 {
+				first = pending[0].Reason
+			}
+			t.Errorf("%s: first reason %q, want %q", c.title, first, c.listedBy)
+		}
+	}
+}
+
+// The captured offenders never become candidates: the blogging platform hit
+// titled "Medium", the blogs' own names in their pages' picks ("Mysh" on
+// playmysh.com, "Samio Learning" on samiolearning.com, "TruPlay" on
+// truplaygames.com), and the hit titles that are page names or questions.
+func TestCapturedSiteNamesAndQuestionsRejected(t *testing.T) {
+	for _, c := range []struct {
+		name, title, url string
+	}{
+		{"Medium", "Medium", "https://sa-liberty.medium.com/your-kids-love-video-games-which-are-the-safest-ones-to-play-8ba311f201c6"},
+		{"Mysh", "Safe Games Like Roblox for Kids: 8 Picks (2026) | Mysh Blog", "https://playmysh.com/blog/the-best-games-like-roblox-for-kids-in-2026"},
+		{"Samio Learning", "Best learning apps for elementary students 2026 — 5 tested, the honest verdict — Sami", "https://samiolearning.com/best-learning-apps-for-kids"},
+		{"TruPlay", "7 Alternatives to Roblox for Kids (2026 Parent Guide) | TruPlay", "https://www.truplaygames.com/blog/safe-alternatives-to-roblox-for-kids"},
+	} {
+		if !isSiteName(c.name, c.title, c.url) {
+			t.Errorf("isSiteName(%q, %q) = false, want true", c.name, c.url)
+		}
+	}
+	for _, c := range []struct{ name, title, url string }{
+		{"Teacher-Recommended Apps", "Teacher-Recommended Apps | Field Trip Directory", "https://fieldtripdirectory.com/blog/teacher-recommended-apps-for-home-learning"},
+		{"What are safe and fun app alternatives to Roblox for a 4- ...", "What are safe and fun app alternatives to Roblox for a 4- ...", "https://www.facebook.com/groups/688042038014714/posts/2920045021481060"},
+		{"I don't want my 8 year old child playing Roblox anymore, so ...", "I don't want my 8 year old child playing Roblox anymore, so ...", "https://www.reddit.com/r/XboxGamePass/comments/1mpy0nj/i_dont_want_my_8_year_old_child_playing_roblox"},
+	} {
+		name := candidateName(c.name)
+		if plausibleName(name) && !genericTail.MatchString(name) && !isSiteName(name, c.title, c.url) {
+			t.Errorf("hit-title candidate %q (%s) is not rejected", name, c.url)
+		}
+	}
+	for _, c := range []struct{ name, title, url string }{
+		{"Toca Boca World", "7 Alternatives to Roblox for Kids (2026 Parent Guide) | TruPlay", "https://www.truplaygames.com/blog/safe-alternatives-to-roblox-for-kids"},
+		{"PBS Kids Games", "The Best Early Learning Apps for Kids: A Parent and Teacher Guide", "https://blog.khanacademy.org/best-early-learning-apps-for-kids"},
+		{"RaceCraft - Build & Race", "Games Like Minecraft | Common Sense Media", "https://www.commonsensemedia.org/lists/games-like-minecraft"},
+	} {
+		if isSiteName(c.name, c.title, c.url) {
+			t.Errorf("isSiteName(%q on %q) = true, want false", c.name, c.url)
+		}
 	}
 }
