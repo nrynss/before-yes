@@ -27,7 +27,9 @@ for (const { name, card } of fixtures) for (const mode of ['light', 'dark']) for
   await expect(page.locator('[data-area] h3')).toHaveText(areas.map(a => a[1]));
   for (const [area] of areas) {
    const grade = card.grades.find(g => g.area === area)!; const row = page.locator(`[data-area="${area}"]`);
-   await expect(row.locator('.grade')).toHaveText(levels[grade.level]); await expect(row).toContainText(grade.reason || 'Not enough verified evidence was found to answer this question.');
+   const explanation = grade.reason?.trim() ? grade.reason : grade.level === 'unknown' ? 'Not enough evidence was found to answer this question.' : 'The supplied evidence supports this grade; no further explanation was provided.';
+   await expect(row.locator('.grade')).toHaveText(levels[grade.level]); await expect(row).toContainText(explanation);
+   if (grade.level === 'unknown' && !grade.reason?.trim()) await expect(row).toContainText('This question is unanswered, not a pass.');
    if (grade.level !== 'flag' && grade.findings.length) await row.locator('summary').click();
    await expect(row.locator('figure')).toHaveCount(grade.findings.length);
    for (const id of grade.findings) { const finding = card.findings.find(f => f.id === id)!; const quote = row.locator(`[data-finding="${id}"]`); await expect(quote.locator('blockquote')).toHaveText(finding.quote); await expect(quote.locator('a')).toHaveAttribute('href', finding.source.url); }
@@ -62,7 +64,7 @@ test('pending and refused alternatives stay hidden, server verdict stays authori
 });
 for (const failure of ['404', 'network', 'malformed']) test(`${failure} loads safe error and retry recovers`, async ({page}) => {
  let first = true; await page.route(`**/api/cards/${no.id}`, async route => { if (!first) return route.fulfill({json:no}); first = false; if (failure === 'network') return route.abort(); if (failure === '404') return route.fulfill({status:404,json:{error:{code:'not_found',message:'PRIVATE SERVER MESSAGE'}}}); return route.fulfill({json:{id:no.id}}); });
- await page.goto(`/card/${no.id}`); await expect(page.locator('h1')).toHaveText(failure === '404' ? 'Card not found.' : 'The card couldn’t be opened.'); await expect(page.locator('body')).not.toContainText('PRIVATE SERVER MESSAGE'); await page.getByRole('button', {name:'Try again'}).click(); await expect(page.locator('h1')).toHaveText('No');
+ await page.goto(`/card/${no.id}`); await expect(page.locator('h1')).toHaveText(failure === '404' ? 'Nothing matches that address.' : 'The card couldn’t be opened.'); if (failure === '404') await expect(page.getByRole('alert')).toHaveText('Go back to the ask page and start again.'); await expect(page.locator('body')).not.toContainText('PRIVATE SERVER MESSAGE'); await page.getByRole('button', {name:'Try again'}).click(); await expect(page.locator('h1')).toHaveText('No');
 });
 for (const mutation of ['unsafe source', 'missing finding', 'wrong area', 'bad id', 'route mismatch']) test(`fails closed on ${mutation}`, async ({page}) => {
  const card = structuredClone(no); if (mutation === 'unsafe source') card.findings[0].source.url = 'javascript:alert(1)'; if (mutation === 'missing finding') card.findings.shift(); if (mutation === 'wrong area') card.findings[0].area = 'money'; if (mutation === 'bad id') card.id = 'abcdef1234'; if (mutation === 'route mismatch') card.id = yes.id;
@@ -71,7 +73,7 @@ for (const mutation of ['unsafe source', 'missing finding', 'wrong area', 'bad i
 test('unsafe route id requests nothing and XSS quote is plain exact text', async ({page}) => {
  let calls = 0; await page.route('**/api/cards/*', route => {calls++;return route.fulfill({json:no});});
  for (const id of ['c_1', 'c_7Hq2mXv9pK3wLr8sTn4bYe', `c_${'a'.repeat(22)}`, `c_${'a'.repeat(31)}`, `c_${'a'.repeat(33)}`, `c_${'a'.repeat(32)}\n`, `c_${'a'.repeat(31)}g`, `c_${'A'.repeat(32)}`, 'abcdef1234']) {
-  await page.goto(`/card/${encodeURIComponent(id)}`); await expect(page.locator('h1')).toHaveText('Card not found.');
+  await page.goto(`/card/${encodeURIComponent(id)}`); await expect(page.locator('h1')).toHaveText('Nothing matches that address.'); await expect(page.getByRole('alert')).toHaveText('Go back to the ask page and start again.');
  }
  expect(calls).toBe(0); await page.unroute('**/api/cards/*');
  const card = structuredClone(no); card.findings[0].quote = '<img src=x onerror="window.pwned=true">'; await open(page,card); await expect(page.locator('.lead blockquote')).toHaveText(card.findings[0].quote); await expect(page.locator('.lead img')).toHaveCount(0); expect(await page.evaluate(() => 'pwned' in window)).toBe(false);
@@ -91,4 +93,27 @@ test('Go nil empty collections render honestly without relaxing citation integri
  for (const grade of card.grades as Record<string, unknown>[]) grade.findings = null;
  const stats = card.stats as Record<string, unknown>; stats.conflicted_areas = null; stats.missing_kinds = null;
  await page.route(`**/api/cards/${card.id}`, r => r.fulfill({json:card})); await page.goto(`/card/${card.id}`); await expect(page.locator('h1')).toHaveText('Not enough evidence'); await expect(page.locator('[data-area]')).toHaveCount(6); await expect(page.locator('figure')).toHaveCount(0); await expect(page.locator('body')).toContainText('kind unknown');
+});
+test('an unknown area with no reason shows it is unanswered, and a real reason stays', async ({page}) => {
+ const card = structuredClone(no);
+ const data = card.grades.find(grade => grade.area === 'data')!;
+ const record = card.grades.find(grade => grade.area === 'developer_record')!;
+ data.reason = '';
+ record.reason = 'No news finding was verified.';
+ await open(page, card);
+ const blank = page.locator('[data-area="data"]');
+ await expect(blank).toContainText('Not enough evidence was found to answer this question.');
+ await expect(blank).toContainText('Read the sources on the card before you decide. This question is unanswered, not a pass.');
+ await expect(blank).not.toContainText('Not enough verified evidence was found to answer this question.');
+ await expect(blank).not.toContainText('OK');
+ const kept = page.locator('[data-area="developer_record"]');
+ await expect(kept).toContainText('No news finding was verified.');
+ await expect(kept).not.toContainText('This question is unanswered, not a pass.');
+ await expect(kept).not.toContainText('Not enough evidence was found to answer this question.');
+ data.reason = '   ';
+ await page.unroute(`**/api/cards/${card.id}`);
+ await open(page, card);
+ await expect(page.locator('[data-area="data"]')).toContainText('This question is unanswered, not a pass.');
+ await expect(page.locator('[data-area="developer_record"]')).toContainText('No news finding was verified.');
+ await expect(page.locator('[data-area="developer_record"]')).not.toContainText('unanswered, not a pass');
 });

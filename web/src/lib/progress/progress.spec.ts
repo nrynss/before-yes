@@ -45,24 +45,52 @@ test('dropped mid-read replays with Last-Event-ID and finishes', async ({page}) 
  expect(await page.evaluate(() => (window as unknown as {research:{requests:{lastId:string|null}[]}}).research.requests.filter(r=>r.lastId).at(-1)?.lastId)).toBe('2');
  await push(page,frames[2],1);await state(page,fixture('get-check-done'));await push(page,frames[3],1);await expect(page).toHaveURL(`/card/${card}`);
 });
-for (const [code,text] of [['budget_exhausted','research budget'],['no_sources','more specific title'],['check_failed','research couldn’t finish'],['live_checks_off','Fresh checks are paused'],['busy','Other checks'],['rate_limited','several requests'],['passcode_required','shared passcode'],['not_found','couldn’t find'],['internal_error','couldn’t read'],['job_failed','couldn’t read'],['unknown','couldn’t read']]) {
+const shown: Record<string, [string, string]> = {
+ budget_exhausted: ['The research budget is used up.', 'Open an example card, or come back later.'],
+ no_sources: ['We couldn’t find writing about this title.', 'Go back to the ask page and try the full name.'],
+ check_failed: ['The check stopped before it had an answer.', 'Start it again from the ask page.'],
+ live_checks_off: ['Fresh checks are paused right now.', 'Open an example card while you wait.'],
+ busy: ['Other checks are still in progress.', 'Wait a moment, then try this title again.'],
+ rate_limited: ['Too many checks were asked for in a short time.', 'Wait a moment, then try again.'],
+ passcode_required: ['This site asks for the shared passcode before starting a check.', 'Go back to the ask page and enter it there.'],
+ not_found: ['Nothing matches that address.', 'Go back to the ask page and start again.'],
+ internal_error: ['This check did not finish.', 'Go back to the ask page and try again.'],
+ job_failed: ['This check did not finish.', 'Go back to the ask page and try again.'],
+ unknown: ['This check did not finish.', 'Go back to the ask page and try again.'],
+};
+for (const [code, [situation, next]] of Object.entries(shown)) {
  test(`terminal generic stream rereads specific ${code} safely`,async({page})=>{
   await mock(page);await page.goto(`/check/${id}`);await opened(page);
   await state(page,{id,status:'error',code,message:'PRIVATE STACK TRACE',detail:{pool:'token_factory'}});
   await push(page,`event: error\nid: 1\ndata: ${JSON.stringify({job_id:id,status:'error',error:{error:{code:'job_failed',message:'PRIVATE STACK TRACE'}}})}`);
-  await expect(page.getByRole('status')).toContainText(text);await expect(page.getByRole('status')).not.toContainText('PRIVATE');
+  const status = page.getByRole('status');
+  await expect(status).toContainText(situation);await expect(status).toContainText(next);
+  await expect(status).not.toContainText('PRIVATE');await expect(status).not.toContainText(code);
+ });
+}
+for (const [pool, situation] of [['daily_checks', 'Today’s allowance of fresh checks is used up.'], ['tavily', 'The budget for searching sources is used up.']] as const) {
+ test(`budget pool ${pool} uses its T5.6 sentence`, async ({page}) => {
+  await mock(page); await page.goto(`/check/${id}`); await opened(page);
+  await state(page, {id, status:'error', code:'budget_exhausted', message:'PRIVATE', detail:{pool}});
+  await push(page, `event: error\nid: 1\ndata: ${JSON.stringify({job_id:id,status:'error',error:{error:{code:'job_failed',message:'PRIVATE'}}})}`);
+  const status = page.getByRole('status');
+  await expect(status).toContainText(situation);
+  await expect(status).toContainText('Open an example card, or come back later.');
+  await expect(status).not.toContainText(pool);
+  await expect(status).not.toContainText('PRIVATE');
+  await expect(status).not.toContainText('budget_exhausted');
  });
 }
 test('saved done on initial load goes straight to card',async({page})=> {await mock(page,fixture('get-check-done'));await page.goto(`/check/${id}`);await expect(page).toHaveURL(`/card/${card}`);});
 for(const status of ['cancelled','interrupted']) test(`${status} tells parent to restart`,async({page})=>{await mock(page,{id,status});await page.goto(`/check/${id}`);await expect(page.getByRole('status')).toContainText('start it again');});
 test('malformed snapshot retry works with keyboard',async({page})=>{
- await mock(page,{id,status:'done',card_id:'../../unsafe'});await page.goto(`/check/${id}`);await expect(page.getByRole('status')).toContainText('couldn’t read');await state(page,fixture('get-check-done'));await page.getByRole('button',{name:'Retry following'}).focus();await page.keyboard.press('Enter');await expect(page).toHaveURL(`/card/${card}`);
+ await mock(page,{id,status:'done',card_id:'../../unsafe'});await page.goto(`/check/${id}`);await expect(page.getByRole('status')).toContainText('This check did not finish.');await state(page,fixture('get-check-done'));await page.getByRole('button',{name:'Retry following'}).focus();await page.keyboard.press('Enter');await expect(page).toHaveURL(`/card/${card}`);
 });
 for (const status of ['done','error']) test(`count-free terminal snapshot: ${status} after counted Read reconnect`,async({page})=>{
  await mock(page);await page.goto(`/check/${id}`);await opened(page);await push(page,frames[1]);await expect(page.getByRole('status')).toContainText('120 of 500');
  await state(page,{id,status,card_id:card,code:'budget_exhausted',detail:{pool:'token_factory'}});
  await page.evaluate(() => (window as unknown as {research:{streams:ReadableStreamDefaultController<Uint8Array>[]}}).research.streams[0].close());await opened(page,2);
- if(status === 'done') {await expect(page).toHaveURL(`/card/${card}`);await expect(page.getByRole('heading',{level:1})).toHaveText('No');}else await expect(page.getByRole('status')).toContainText('research budget');
+ if(status === 'done') {await expect(page).toHaveURL(`/card/${card}`);await expect(page.getByRole('heading',{level:1})).toHaveText('No');}else await expect(page.getByRole('status')).toContainText('The research budget is used up.');
 });
 for(const mode of ['light','dark']) test(`active Read at 360px ${mode} passes Chaaya accessibility`,async({page})=>{
  await mock(page);await page.addInitScript(mode=>localStorage.setItem('chaaya-theme',mode),mode);await page.goto(`/check/${id}`);await opened(page);await push(page,frames[1]);await expect(page.getByRole('status')).toContainText('120 of 500');
@@ -117,8 +145,8 @@ test('rapid retry ignores stale failed read from the previous attempt',async({pa
 
 for (const bad of ['j_legacy', 'j_' + 'A'.repeat(32), 'j_' + '0'.repeat(31), 'j_' + '0'.repeat(33), 'c_' + '0'.repeat(32)]) test(`invalid check ID ${bad} refuses requests`, async ({page}) => {
  const requests: string[] = []; page.on('request', request => {if(request.url().includes('/api/checks/')) requests.push(request.url());});
- await page.goto(`/check/${bad}`);await expect(page.getByRole('status')).toContainText('couldn’t find');expect(requests).toEqual([]);
+ await page.goto(`/check/${bad}`);await expect(page.getByRole('status')).toContainText('Nothing matches that address.');await expect(page.getByRole('status')).toContainText('Go back to the ask page and start again.');expect(requests).toEqual([]);
 });
 for (const bad of ['c_legacy', 'c_' + 'A'.repeat(32), 'c_' + '0'.repeat(31), 'c_' + '0'.repeat(33), 'j_' + '0'.repeat(32), 'c_' + '0'.repeat(32) + '\n']) test(`invalid saved card ID ${JSON.stringify(bad)} stays on check`, async ({page}) => {
- await mock(page,{id,status:'done',card_id:bad});await page.goto(`/check/${id}`);await expect(page.getByRole('status')).toContainText('couldn’t read');await expect(page).toHaveURL(`/check/${id}`);
+ await mock(page,{id,status:'done',card_id:bad});await page.goto(`/check/${id}`);await expect(page.getByRole('status')).toContainText('This check did not finish.');await expect(page).toHaveURL(`/check/${id}`);
 });

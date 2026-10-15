@@ -147,7 +147,8 @@ requires:   T5.6, T5.7
 fixture-ok: yes
 size:       S · mid
 owns:       web/src/lib/ask/, web/src/lib/progress/Progress.svelte, web/src/lib/progress/progress.spec.ts, web/src/lib/card/Card.svelte, web/src/lib/card/card.spec.ts
-status:     not-started
+status:     in-review
+note:       Ask, progress and the card show the T5.6 situation and next step. A spent cap opens the keys dialog with the question kept and that budget sentence still readable. Example ages are 3 to 17. Compare still has its own unknown-area sentence; it was outside owns.
 ```
 T5.6 and T5.7 built the messages and the keys dialog inside their own folders, and nothing uses them yet: their file lists stopped short of the pages. As merged, a parent never sees the keys dialog, and the pages keep their own older messages.
 

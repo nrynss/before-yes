@@ -4,6 +4,8 @@
   import { resolve } from '$app/paths';
   import { api, ApiError, apiWithKeelGate, keelGate } from '@nrynss/chaaya/keel';
   import { Dialog } from 'bits-ui';
+  import Keys from '../keys/Keys.svelte';
+  import type { Notice } from '../errors/notice';
   import { refusal } from './messages';
 
   type Request = { title: string; age: number };
@@ -11,23 +13,27 @@
   const verdicts = { yes: 'Yes', yes_with_settings: 'Yes, with settings', no: 'No', unclear: 'Not enough evidence' };
   const gate = keelGate();
   const call = apiWithKeelGate(gate);
+  const passcodeNotice = refusal({ code: 'passcode_required' });
   let title = $state('');
   let age = $state<number | undefined>();
   let pending = $state(false);
-  let message = $state('');
+  let notice = $state<Notice | undefined>();
   let cards = $state<Card[]>([]);
   let list = $state<'loading' | 'ready' | 'failed'>('loading');
   let open = $state(false);
+  let keysOpen = $state(false);
   let passcode = $state('');
   let passcodeError = $state('');
-  let saved: Request | undefined;
+  let saved = $state<Request | undefined>();
+  // Set while closing the passcode dialog to offer keys, so that close does not drop the question or the passcode.
+  let keepQuestion = false;
   let submitButton: HTMLButtonElement;
   let passcodeInput: HTMLInputElement;
   const controller = new AbortController();
   onDestroy(() => { controller.abort(); gate.clear(); });
   function record(value: unknown): value is Record<string, unknown> { return typeof value === 'object' && value !== null && !Array.isArray(value); }
   function card(value: unknown): value is Card {
-    return record(value) && typeof value.id === 'string' && /^c_[A-Za-z0-9_-]+$/.test(value.id) && typeof value.title === 'string' && value.title.trim().length > 0 && Number.isInteger(value.age) && Number(value.age) >= 2 && Number(value.age) <= 17 && typeof value.verdict === 'string' && Object.hasOwn(verdicts, value.verdict);
+    return record(value) && typeof value.id === 'string' && /^c_[A-Za-z0-9_-]+$/.test(value.id) && typeof value.title === 'string' && value.title.trim().length > 0 && Number.isInteger(value.age) && Number(value.age) >= 3 && Number(value.age) <= 17 && typeof value.verdict === 'string' && Object.hasOwn(verdicts, value.verdict);
   }
   onMount(async () => {
     try {
@@ -39,13 +45,13 @@
   });
   async function start(event: SubmitEvent) {
     event.preventDefault();
-    if (pending || open) return;
+    if (pending || open || keysOpen) return;
     if (!title.trim() || !Number.isInteger(age) || Number(age) < 3 || Number(age) > 17) {
-      message = 'Enter a title and a whole age from 3 to 17.';
+      notice = { situation: 'The question needs a title and an age.', next: 'Enter a title and a whole age from 3 to 17.' };
       return;
     }
     saved = { title: title.trim(), age: Number(age) };
-    message = '';
+    notice = undefined;
     await send();
   }
   async function send() {
@@ -62,9 +68,20 @@
     } catch (error) {
       if (controller.signal.aborted) return;
       if (error instanceof ApiError && error.code === 'passcode_required') {
+        keysOpen = false;
         if (open) passcodeError = 'That passcode wasn’t accepted. Check it and try again.';
-        gate.clear(); passcode = ''; open = true;
-      } else { message = refusal(error); open = false; saved = undefined; }
+        gate.clear(); passcode = ''; notice = undefined; open = true;
+      } else {
+        notice = refusal(error);
+        const offerKeys = error instanceof ApiError && error.code === 'budget_exhausted';
+        if (offerKeys) {
+          keepQuestion = true;
+          passcode = ''; passcodeError = '';
+          open = false;
+          keepQuestion = false;
+          keysOpen = true;
+        } else { open = false; keysOpen = false; saved = undefined; }
+      }
     } finally {
       pending = false;
       if (open) { await tick(); passcodeInput?.focus(); }
@@ -79,8 +96,37 @@
   }
   function close(next: boolean) {
     open = next;
-    if (!next) { passcode = ''; passcodeError = ''; gate.clear(); saved = undefined; }
+    if (next || keepQuestion) return;
+    passcode = ''; passcodeError = ''; gate.clear(); saved = undefined;
   }
+  // The keys dialog covers the page. The same budget notice is placed in the dialog so it stays readable.
+  $effect(() => {
+    if (!keysOpen || !notice) return;
+    const situation = notice.situation;
+    const next = notice.next;
+    let copy: HTMLElement | undefined;
+    const place = () => {
+      const dialog = document.querySelector('.keys-dialog');
+      if (!(dialog instanceof HTMLElement)) return;
+      if (copy?.isConnected && copy.parentElement === dialog) return;
+      copy?.remove();
+      const section = document.createElement('section');
+      section.className = 'notice';
+      section.dataset.budgetNotice = '';
+      section.setAttribute('role', 'alert');
+      const situationNode = document.createElement('p');
+      situationNode.textContent = situation;
+      const nextNode = document.createElement('p');
+      nextNode.textContent = next;
+      section.append(situationNode, nextNode);
+      dialog.insertBefore(section, dialog.firstChild);
+      copy = section;
+    };
+    place();
+    const observer = new MutationObserver(place);
+    observer.observe(document.body, { childList: true, subtree: true });
+    return () => { observer.disconnect(); copy?.remove(); };
+  });
 </script>
 
 <section class="panel ask-panel" aria-labelledby="ask-title">
@@ -89,11 +135,11 @@
   <p class="form-intro">A little context. An answer for their age.</p>
   <form onsubmit={start} aria-busy={pending}>
     <div class="fields">
-      <label class="title-field" for="asked-title">App, game or channel<input id="asked-title" name="title" bind:value={title} required disabled={pending || open} placeholder="What your child asked for" autocomplete="off" /></label>
-      <label for="child-age">Child’s age<input id="child-age" name="age" type="number" bind:value={age} min="3" max="17" step="1" required disabled={pending || open} placeholder="3–17" inputmode="numeric" /></label>
+      <label class="title-field" for="asked-title">App, game or channel<input id="asked-title" name="title" bind:value={title} required disabled={pending || open || keysOpen} placeholder="What your child asked for" autocomplete="off" /></label>
+      <label for="child-age">Child’s age<input id="child-age" name="age" type="number" bind:value={age} min="3" max="17" step="1" required disabled={pending || open || keysOpen} placeholder="3–17" inputmode="numeric" /></label>
     </div>
-    <button class="primary" type="submit" disabled={pending || open} bind:this={submitButton}>{pending ? 'Starting your check…' : 'Check before yes'}</button>
-    {#if message}<p class="notice" role="alert">{message}</p>{/if}
+    <button class="primary" type="submit" disabled={pending || open || keysOpen} bind:this={submitButton}>{pending ? 'Starting your check…' : 'Check before yes'}</button>
+    {#if notice}<section class="notice" role="alert"><p>{notice.situation}</p><p>{notice.next}</p></section>{/if}
   </form>
   <p class="footnote">The same six questions. Sources you can follow.</p>
 </section>
@@ -109,6 +155,7 @@
     <Dialog.Content class="ask-dialog" onCloseAutoFocus={(event) => { event.preventDefault(); submitButton?.focus(); }} onEscapeKeydown={(event) => { if (pending) event.preventDefault(); }} onInteractOutside={(event) => { if (pending) event.preventDefault(); }}>
       <Dialog.Title level={2}>One shared passcode.</Dialog.Title>
       <Dialog.Description>This check needs the demo’s passcode. Your question is saved while you enter it.</Dialog.Description>
+      <section class="notice" role="alert"><p>{passcodeNotice.situation}</p><p>{passcodeNotice.next}</p></section>
       <form onsubmit={unlock} aria-busy={pending}>
         <label for="shared-passcode">Passcode<input id="shared-passcode" type="password" bind:value={passcode} bind:this={passcodeInput} required disabled={pending} autocomplete="off" aria-invalid={!!passcodeError} aria-describedby={passcodeError ? 'passcode-error' : undefined} /></label>
         {#if passcodeError}<p id="passcode-error" class="notice" role="alert">{passcodeError}</p>{/if}
@@ -118,6 +165,7 @@
     </Dialog.Content>
   </Dialog.Portal>
 </Dialog.Root>
+{#if keysOpen && saved}<Keys title={saved.title} age={saved.age} api={call} bind:open={keysOpen} />{/if}
 
 <style>
   .ask-panel { border-top: 3px solid var(--accent); }
@@ -132,6 +180,11 @@
   .primary:hover { box-shadow: 0 0 0 2px var(--accent-soft); }
   .footnote { margin: 22px 0 0; padding-top: 18px; border-top: 1px solid var(--line-soft); font-size: .78rem; color: var(--faint); }
   .notice { background: var(--warn-soft); color: var(--warn); border-left: 3px solid var(--warn); padding: 13px 15px; font-size: .9rem; margin: 18px 0 0; }
+  .notice p { margin: 0; overflow-wrap: anywhere; }
+  .notice p + p { margin-top: 8px; }
+  :global(.keys-dialog [data-budget-notice]) { margin-top: 0; }
+  :global(.keys-dialog [data-budget-notice] p) { margin: 0; }
+  :global(.keys-dialog [data-budget-notice] p + p) { margin-top: 8px; }
   .examples { margin-top: 36px; }
   .examples-heading { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; margin-bottom: 12px; }
   .examples h2 { font-size: 1.35rem; margin: 0; }
