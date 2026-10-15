@@ -274,7 +274,7 @@ func (p *Pipeline) FindAlternatives(ctx context.Context, card Card, ref string) 
 				continue
 			}
 			seenIDs[a.ID] = true
-			out = append(out, Alternative{Title: a.Name, Reason: fmt.Sprintf("Listed by %s: %s — %s", h.URL, h.Title, product.Line), Status: AltPending})
+			out = append(out, Alternative{confirmed: a, Title: a.Name, Reason: fmt.Sprintf("Listed by %s: %s — %s", h.URL, h.Title, product.Line), Status: AltPending})
 			if len(out) == MaxAlternatives {
 				return out, nil
 			}
@@ -320,9 +320,27 @@ func (p *Pipeline) CheckAlternatives(ctx context.Context, card Card, pending []A
 			res.outcomes = append(res.outcomes, alt)
 			continue
 		}
+		// Reconfirm callers that supplied only a name; never spend on an unconfirmed identity.
+		if alt.confirmed == nil {
+			if p.Gatherer == nil || p.Gatherer.Store == nil {
+				continue
+			}
+			apps, err := p.Gatherer.Store.Find(ctx, alt.Title, 5)
+			if err != nil {
+				continue
+			}
+			alt.confirmed = confirmedProduct(apps, alt.Title)
+		}
+		a := alt.confirmed
+		if a == nil || a.ID <= 0 || (card.App != nil && a.ID == card.App.TrackID) ||
+			normalizedProduct(a.Name) == normalizedProduct(card.Title) || appName(a.Name) == appName(card.Title) ||
+			platformExperience(a.Name+" "+a.Description, card.Title) {
+			continue
+		}
+		alt.Title = a.Name
 		altRef := fmt.Sprintf("%s/alt%d", ref, i+1)
 		var hold *spend.Check
-		if p.Checks != nil && !p.cached(ctx, alt.Title) {
+		if p.Checks != nil && !p.cachedAlternative(ctx, alt.Title, a) {
 			var err error
 			if !capped {
 				hold, err = p.Checks.BeginCheck(ctx, altRef)
@@ -336,7 +354,7 @@ func (p *Pipeline) CheckAlternatives(ctx context.Context, card Card, pending []A
 				continue
 			}
 		}
-		ev, _, err := p.Collect(ctx, alt.Title, altRef)
+		ev, _, err := p.collect(ctx, alt.Title, altRef, a)
 		var c Card
 		if err == nil {
 			c, err = p.Decide(ctx, ev, card.Age, altRef)
@@ -369,6 +387,10 @@ func (p *Pipeline) CheckAlternatives(ctx context.Context, card Card, pending []A
 // cached reports whether the evidence cache holds a title's evidence, so
 // its check is not fresh.
 func (p *Pipeline) cached(ctx context.Context, title string) bool {
+	return p.cachedAlternative(ctx, title, nil)
+}
+
+func (p *Pipeline) cachedAlternative(ctx context.Context, title string, confirmed *appstore.App) bool {
 	if p.Cache == nil || p.Gatherer == nil || p.Reader == nil || p.Reader.Model == nil {
 		return false
 	}
@@ -376,8 +398,8 @@ func (p *Pipeline) cached(ctx context.Context, title string) bool {
 	if err != nil {
 		return false
 	}
-	_, ok, err := p.Cache.Get(ctx, EvidenceKey(strings.Join(strings.Fields(title), " "), storefront, p.Reader.Model.Settings().Model))
-	return err == nil && ok
+	_, ok := p.cachedEvidence(ctx, title, storefront, p.Reader.Model.Settings().Model, confirmed)
+	return ok
 }
 
 // shown is what a card exposes of its alternatives: only the checked ones,
@@ -419,4 +441,43 @@ func (p *Pipeline) WithAlternatives(ctx context.Context, card Card, ref string) 
 	}
 	res := p.CheckAlternatives(ctx, card, pending, ref)
 	return res.Apply(card), res.Cards, nil
+}
+
+// confirmedStore binds every gather lookup and review feed to the already
+// confirmed listing. It does not repeat fuzzy selection or mutate the shared gatherer.
+type confirmedStore struct {
+	Store
+	app        appstore.App
+	storefront string
+}
+
+func (s confirmedStore) Storefront() string { return s.storefront }
+func (s confirmedStore) Find(context.Context, string, int) ([]appstore.App, error) {
+	return []appstore.App{s.app}, nil
+}
+func alternativeEvidenceKey(title, storefront, model string, app *appstore.App) string {
+	key := EvidenceKey(title, storefront, model)
+	if app != nil {
+		key += fmt.Sprintf("|app:%d", app.ID)
+	}
+	return key
+}
+
+// A normal title cache entry is reusable only when its evidence names the
+// confirmed product ID. A mismatched entry never authorizes a paid judge call.
+func (p *Pipeline) cachedEvidence(ctx context.Context, title, storefront, model string, confirmed *appstore.App) (Evidence, bool) {
+	if p.Cache == nil {
+		return Evidence{}, false
+	}
+	keys := []string{alternativeEvidenceKey(title, storefront, model, confirmed)}
+	if confirmed != nil {
+		keys = append(keys, EvidenceKey(title, storefront, model))
+	}
+	for _, key := range keys {
+		ev, ok, err := p.Cache.Get(ctx, key)
+		if err == nil && ok && (confirmed == nil || (ev.App != nil && ev.App.TrackID == confirmed.ID)) {
+			return ev, true
+		}
+	}
+	return Evidence{}, false
 }

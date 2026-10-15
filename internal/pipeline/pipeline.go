@@ -116,7 +116,7 @@ func versionSample() []Doc {
 // GatherVersion names what the gatherer asks and returns: PlanVersion
 // (hand-bumped for rule changes inside Gather), the plan for every kind
 // (PlanFor) as drawn for a sample title with and without a host, and the field names and types of
-// Gathered and Doc. A new query, a changed search option or a new output
+// Gathered, Doc and their App Store identity metadata. A new query, a changed search option or a new output
 // field changes the key on its own.
 func GatherVersion() string {
 	h := sha256.New()
@@ -127,7 +127,7 @@ func GatherVersion() string {
 			h.Write(b)
 		}
 	}
-	for _, v := range []any{Gathered{}, Doc{}, finding.Source{}} {
+	for _, v := range []any{Gathered{}, Doc{}, finding.Source{}, appstore.App{}, AppInfo{}} {
 		t := reflect.TypeOf(v)
 		for i := 0; i < t.NumField(); i++ {
 			fmt.Fprintf(h, "%s.%s %s;", t.Name(), t.Field(i).Name, t.Field(i).Type)
@@ -248,6 +248,10 @@ func (p *Pipeline) Run(ctx context.Context, req Request, ref string) (Card, erro
 // feed, a 404 page) is a fact and is cached. A cache hit costs nothing now: its Stats keep the
 // read cost paid when it was collected (see the T3.4 notes for T4).
 func (p *Pipeline) Collect(ctx context.Context, title, ref string) (ev Evidence, hit bool, err error) {
+	return p.collect(ctx, title, ref, nil)
+}
+
+func (p *Pipeline) collect(ctx context.Context, title, ref string, confirmed *appstore.App) (ev Evidence, hit bool, err error) {
 	if p.Gatherer == nil || p.Reader == nil || p.Reader.Model == nil {
 		return Evidence{}, false, errors.New("pipeline: a gatherer and a reader are required")
 	}
@@ -257,14 +261,16 @@ func (p *Pipeline) Collect(ctx context.Context, title, ref string) (ev Evidence,
 	if err != nil {
 		return Evidence{}, false, err
 	}
-	key := EvidenceKey(title, storefront, readerModel)
-	if p.Cache != nil {
-		if ev, ok, err := p.Cache.Get(ctx, key); err == nil && ok {
-			return ev, true, nil
-		}
+	key := alternativeEvidenceKey(title, storefront, readerModel, confirmed)
+	if ev, ok := p.cachedEvidence(ctx, title, storefront, readerModel, confirmed); ok {
+		return ev, true, nil
 	}
 
-	g, err := p.Gatherer.Gather(ctx, title, ref)
+	gatherer := *p.Gatherer
+	if confirmed != nil {
+		gatherer.Store = confirmedStore{Store: gatherer.Store, app: *confirmed, storefront: storefront}
+	}
+	g, err := gatherer.Gather(ctx, title, ref)
 	if err != nil {
 		return Evidence{}, false, err
 	}

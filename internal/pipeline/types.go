@@ -10,6 +10,7 @@ import (
 	"encoding/json"
 	"time"
 
+	"github.com/nrynss/before-yes/internal/appstore"
 	"github.com/nrynss/before-yes/internal/checklist"
 	"github.com/nrynss/before-yes/internal/finding"
 )
@@ -99,10 +100,12 @@ type Evidence struct {
 // Alternative is a safer title found with Tavily and checked the same way.
 // CardID and Verdict are empty until its own check has run.
 type Alternative struct {
-	Title   string            `json:"title"`
-	Reason  string            `json:"reason"`
-	CardID  string            `json:"card_id"`
-	Verdict checklist.Verdict `json:"verdict"`
+	// confirmed is the free lookup identity; it never enters the card contract.
+	confirmed *appstore.App     `json:"-"`
+	Title     string            `json:"title"`
+	Reason    string            `json:"reason"`
+	CardID    string            `json:"card_id"`
+	Verdict   checklist.Verdict `json:"verdict"`
 	// Status is "pending" (found, not checked yet), "checked" (its verdict
 	// beats the card's), or "refused" (the meter or the daily cap refused
 	// its check). On a card, and so in every API response, it is always

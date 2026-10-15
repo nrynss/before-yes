@@ -38,9 +38,9 @@ Observable diagnostics: 41 public sources, 500 reviews, 41 reader chunks, one fa
 
 Actual production spend was $0.04126986 and 8 Tavily credits, with one fresh main check. No reservations remain. Cumulative spend across the earlier work, discoveries, invalid trial and actual production request is **$0.50649654 and 117 credits**; remaining authorization is $0.49350346 and 33 credits. `production-roblox/cumulative-spend.json` gives the exact components, and both isolated ledgers remain available under their recorded paths.
 
-## Known cache limitation for review
+## Historical cache limitation and subsequent remediation
 
-Adding and propagating the primary genre does not invalidate prior evidence cache entries. `GatherVersion` hashes the `Gathered.App` pointer type, not the App struct's fields. An older cached `AppInfo` with an empty Genre can therefore still select the fallback app query until refreshed. Fresh captured/live collection contains the correct primary genre. No production behavior was changed after the live source freeze; this concern is explicitly handed to the fresh reviewer.
+The source used for these live recordings added and propagated the primary genre without invalidating prior evidence cache entries. `GatherVersion` hashes the `Gathered.App` pointer type, not the App struct's fields. An older cached `AppInfo` with an empty Genre can therefore still select the fallback app query until refreshed. Fresh captured/live collection contains the correct primary genre. The subsequent offline remediation changes the gather cache version to include the App Store and AppInfo field shapes, so legacy empty-genre entries miss and refresh. It also carries confirmed App Store identities through candidate collection and validates cache identity before reuse. These remediated changes were not run live. All recorded source hashes remain the original historical source hashes; they do not describe the remediated source. The live Done clause remains unmet. No new live call or capture was made.
 
 ## Safe replay
 

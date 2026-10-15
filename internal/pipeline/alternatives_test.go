@@ -339,7 +339,8 @@ func TestFreshAlternativeChecksCountAgainstCap(t *testing.T) {
 // with the cap spent, while a fresh one is refused.
 func TestCachedAlternativeRunsFree(t *testing.T) {
 	e, _, _, card := altE2E(t)
-	if _, _, err := e.p.Collect(context.Background(), "Calm Builder", "warm"); err != nil {
+	warm, _, err := e.p.Collect(context.Background(), "Calm Builder", "warm")
+	if err != nil {
 		t.Fatal(err)
 	}
 	checks := openChecksMeter(t, 5, 5) // none left today
@@ -359,7 +360,7 @@ func TestCachedAlternativeRunsFree(t *testing.T) {
 	if strings.Join(statuses, ",") != "Chatty World=refused,Calm Builder=checked,Blank Slate=refused" {
 		t.Errorf("statuses %v", statuses)
 	}
-	if len(res.Cards) != 1 || res.Cards[0].Title != "Calm Builder" {
+	if len(res.Cards) != 1 || res.Cards[0].Title != "Calm Builder" || res.Cards[0].App.TrackID != warm.App.TrackID {
 		t.Errorf("cards %+v", res.Cards)
 	}
 }
@@ -824,5 +825,153 @@ func TestRecordedNanoAndAppStoreDiscovery(t *testing.T) {
 				t.Error("capture did not exercise free non-product/identity rejection")
 			}
 		})
+	}
+}
+
+// identityPinStore places an unrelated prefix hit before the confirmed product
+// and records the actual App Store review identities requested by collection.
+type identityPinStore struct {
+	Store
+	reviews []int64
+	finds   int
+}
+
+func (s *identityPinStore) Storefront() string { return "us" }
+func (s *identityPinStore) Find(ctx context.Context, title string, limit int) ([]appstore.App, error) {
+	if title == "Calm Builder" {
+		s.finds++
+		return []appstore.App{{ID: 3333, Name: "Calm Builder Companion"}, {ID: 2222, Name: "Calm Builder", Genre: "Games"}}, nil
+	}
+	return s.Store.Find(ctx, title, limit)
+}
+func (s *identityPinStore) Reviews(_ context.Context, id int64, _ int) ([]appstore.Review, error) {
+	s.reviews = append(s.reviews, id)
+	return nil, nil
+}
+
+func TestConfirmedAlternativeIdentitySurvivesFullCheckAndCache(t *testing.T) {
+	e, _, r, card := altE2E(t)
+	ctx := context.Background()
+	store := &identityPinStore{Store: e.p.Gatherer.Store}
+	e.p.Gatherer.Store = store
+	pending, err := e.p.FindAlternatives(ctx, card, "identity")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var alt Alternative
+	for _, a := range pending {
+		if a.Title == "Calm Builder" {
+			alt = a
+		}
+	}
+	if alt.confirmed == nil || alt.confirmed.ID != 2222 {
+		t.Fatalf("missing confirmation: %+v", alt)
+	}
+	// Neither a poisoned identity-specific entry nor a fuzzy title entry may
+	// authorize judging the wrong product. The identity must survive paid gather.
+	wrong := Evidence{Title: alt.Title, Kind: KindIOS, App: &AppInfo{TrackID: 3333, Name: "Calm Builder Companion"}}
+	model := e.p.Reader.Model.Settings().Model
+	for _, key := range []string{EvidenceKey(alt.Title, "us", model), alternativeEvidenceKey(alt.Title, "us", model, alt.confirmed)} {
+		if err := e.p.Cache.Put(ctx, key, wrong); err != nil {
+			t.Fatal(err)
+		}
+	}
+	result := e.p.CheckAlternatives(ctx, card, []Alternative{alt}, "identity-check")
+	if len(result.Cards) != 1 || result.Cards[0].App == nil || result.Cards[0].App.TrackID != 2222 || result.Cards[0].App.Name != "Calm Builder" {
+		t.Fatalf("wrong full-check identity: %+v", result.Cards)
+	}
+	if fmt.Sprint(store.reviews) != "[2222]" || store.finds != 1 {
+		t.Fatalf("review IDs=%v lookups=%d", store.reviews, store.finds)
+	}
+	before := r.reads[alt.Title]
+	again := e.p.CheckAlternatives(ctx, card, []Alternative{alt}, "identity-cached")
+	if len(again.Cards) != 1 || again.Cards[0].App.TrackID != 2222 || r.reads[alt.Title] != before || len(store.reviews) != 1 {
+		t.Fatal("confirmed cache not reused")
+	}
+	t.Logf("pending=%q confirmed_id=2222 collected_id=%d review_ids=%v cached_reads_unchanged=true", alt.Title, result.Cards[0].App.TrackID, store.reviews)
+}
+
+func TestUnconfirmedAndSameProductNeverStartPaidCheck(t *testing.T) {
+	e, s, r, card := altE2E(t)
+	ctx := context.Background()
+	beforeCalls, beforeReads := s.altCalls, fmt.Sprint(r.reads)
+	for _, alt := range []Alternative{
+		{Title: "An Unconfirmed Product", Status: AltPending},
+		{Title: "Different Name", Status: AltPending, confirmed: &appstore.App{ID: card.App.TrackID, Name: "Different Name"}},
+		{Title: "Roblox", Status: AltPending},
+	} {
+		got := e.p.CheckAlternatives(ctx, card, []Alternative{alt}, "reject")
+		if len(got.Cards) != 0 || len(got.outcomes) != 0 {
+			t.Fatalf("unchecked candidate reached result: %+v", got)
+		}
+	}
+	for _, pool := range []spend.Pool{spend.PoolModel, spend.PoolTavily} {
+		if paid, err := e.meter.Spent(ctx, pool, "reject/alt1"); err != nil || paid != 0 {
+			t.Fatalf("rejected candidate paid %d in %s: %v", paid, pool, err)
+		}
+	}
+	if beforeCalls != s.altCalls || beforeReads != fmt.Sprint(r.reads) {
+		t.Fatal("rejected identity reached paid sources")
+	}
+}
+
+func TestLegacyGenreCacheKeyRefreshesBeforeAlternatives(t *testing.T) {
+	e := newE2E(t, demos[0], review355())
+	ctx := context.Background()
+	// Independently measured on pristine main; do not derive this legacy
+	// version from the implementation whose invalidation is being tested.
+	legacyVersion := "plan-5-c080d96d9c9f"
+	model := e.p.Reader.Model.Settings().Model
+	legacyKey := strings.Join([]string{"evidence", legacyVersion, ReaderVersion(), "us", model, "roblox"}, "|")
+	if err := e.p.Cache.Put(ctx, legacyKey, Evidence{Title: "Roblox", Kind: KindIOS, App: &AppInfo{TrackID: 431946152, Name: "Roblox"}}); err != nil {
+		t.Fatal(err)
+	}
+	ev, hit, err := e.p.Collect(ctx, "Roblox", "legacy-refresh")
+	if err != nil {
+		t.Fatal(err)
+	}
+	query := alternativesSearches(Card{Title: ev.Title, Kind: ev.Kind, Age: 9, App: ev.App})[0].Query
+	if hit || ev.App == nil || ev.App.Genre != "Games" || query != "safer games like Roblox for a 9 year old" {
+		t.Fatalf("hit=%v app=%+v query=%q", hit, ev.App, query)
+	}
+	if GatherVersion() == legacyVersion {
+		t.Fatal("legacy shape version retained")
+	}
+	_, secondHit, err := e.p.Collect(ctx, "Roblox", "genre-cached")
+	if err != nil || !secondHit {
+		t.Fatalf("fresh genre evidence not cached: hit=%v err=%v", secondHit, err)
+	}
+	t.Logf("LEGACY_VERSION=%s CURRENT_VERSION=%s HIT=%v GENRE=%q QUERY=%q", legacyVersion, GatherVersion(), hit, ev.App.Genre, query)
+}
+
+func TestWrongNormalCacheCannotBypassExhaustedAlternativeCap(t *testing.T) {
+	e, _, r, card := altE2E(t)
+	ctx := context.Background()
+	store := &identityPinStore{Store: e.p.Gatherer.Store}
+	e.p.Gatherer.Store = store
+	warm, _, err := e.p.Collect(ctx, "Calm Builder", "warm-wrong")
+	if err != nil || warm.App == nil || warm.App.TrackID != 3333 {
+		t.Fatalf("wrong-ID precondition: %+v %v", warm.App, err)
+	}
+	pending, err := e.p.FindAlternatives(ctx, card, "discover")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var selected []Alternative
+	for _, a := range pending {
+		if a.Title == "Calm Builder" {
+			selected = append(selected, a)
+		}
+	}
+	e.p.Checks = openChecksMeter(t, 5, 5)
+	before := r.reads["Calm Builder"]
+	got := e.p.CheckAlternatives(ctx, card, selected, "exhausted")
+	if len(got.Cards) != 0 || !got.Refused || len(got.outcomes) != 1 || got.outcomes[0].Status != AltRefused || r.reads["Calm Builder"] != before {
+		t.Fatalf("wrong-ID cache bypassed cap: %+v", got)
+	}
+	for _, pool := range []spend.Pool{spend.PoolModel, spend.PoolTavily} {
+		if paid, err := e.meter.Spent(ctx, pool, "exhausted/alt1"); err != nil || paid != 0 {
+			t.Fatalf("wrong-cache paid %d in %s: %v", paid, pool, err)
+		}
 	}
 }

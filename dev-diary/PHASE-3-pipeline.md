@@ -976,6 +976,10 @@ This task was first scoped as "alternatives outside the platform" with a rule-ba
 
 **Done when:** the App Store client sets the genre (pinned on captured lookups); on captured pages for the three demo titles, the recorded Nano replies name real products, each with its verbatim line and source page; App Store lookups (recorded) drop non-products; tests pin each rule; one live run of a "no" title shows a checked alternative on its card, reported with its spend.
 
+**Round 1 remediation notes:** H1 carries each confirmed App Store listing privately from discovery through full collection. Candidate gathers use that exact listing, and identity-specific evidence keys plus TrackID validation prevent either a fuzzy title-cache hit or a poisoned identity entry from reaching the judge. Normal title evidence remains reusable when its TrackID matches the confirmation, including under an exhausted fresh-check cap. Unconfirmed and same-product candidates drop before a paid call. M1 includes App Store and AppInfo field shapes in GatherVersion, invalidating the independently measured legacy `plan-5-c080d96d9c9f` key; its empty-genre entry refreshes to Games before alternatives queries. Offline pins cover those cases and replay the unchanged genuine recordings.
+
+M2 remains unresolved: the actual production card was unclear and correctly skipped alternatives. The failed harness omitted entailment and remains invalid as production proof. No remediated source was run live; original raw responses, cards, ledgers, historical source and source hashes remain unchanged. The Nano MANIFEST distinguishes those historical captures from the offline remediation. Cumulative spend remains $0.50649654 and 117 Tavily credits; no further paid work occurred. The live Done clause remains unmet and task status remains in-review.
+
 ---
 
 ## Exit Criteria

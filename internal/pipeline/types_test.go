@@ -81,6 +81,9 @@ func jsonPaths(t reflect.Type, prefix string, out map[string]bool) {
 	}
 	for i := 0; i < t.NumField(); i++ {
 		f := t.Field(i)
+		if f.PkgPath != "" {
+			continue // Private runtime metadata is not a JSON contract field.
+		}
 		name := strings.Split(f.Tag.Get("json"), ",")[0]
 		if name == "" || name == "-" {
 			panic("field " + t.Name() + "." + f.Name + " has no json name")
