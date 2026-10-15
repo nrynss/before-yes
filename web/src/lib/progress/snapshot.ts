@@ -1,11 +1,19 @@
 import { ApiError, type JobSnapshot, type JobStatus } from '@nrynss/chaaya/keel';
 export const validId = (id: unknown, prefix: 'j' | 'c'): id is string => typeof id === 'string' && id.length === 34 && new RegExp(`^${prefix}_[0-9a-f]{32}$`).test(id);
 const statuses = ['queued', 'running', 'done', 'error', 'cancelled', 'interrupted'];
-export function snapshot(body: unknown, id: string): JobSnapshot & {cardId?: string} {
+/** The latest stage GET /api/checks/{id} reports while a check is queued or running. */
+export type StageSnapshot = {stage: string; message?: string; current?: number; total?: number};
+export function snapshot(body: unknown, id: string): JobSnapshot & {cardId?: string; progress?: StageSnapshot} {
  if (!body || typeof body !== 'object') throw new Error('Malformed snapshot');
  const value = body as Record<string, unknown>;
  if (value.id !== id || typeof value.status !== 'string' || !statuses.includes(value.status)) throw new Error('Malformed snapshot');
- const result: JobSnapshot & {cardId?: string} = {jobId:id, status:value.status as JobStatus};
+ const result: JobSnapshot & {cardId?: string; progress?: StageSnapshot} = {jobId:id, status:value.status as JobStatus};
+ if ((result.status === 'running' || result.status === 'queued') && typeof value.stage === 'string' && value.stage !== '') {
+  const progress: StageSnapshot = {stage:value.stage};
+  if (typeof value.message === 'string' && value.message !== '') progress.message = value.message;
+  if (Number.isFinite(value.current) && Number.isFinite(value.total)) {progress.current = value.current as number; progress.total = value.total as number;}
+  result.progress = progress;
+ }
  if (result.status === 'done') {
   if (!validId(value.card_id, 'c')) throw new Error('Malformed card id');
   result.cardId = value.card_id;

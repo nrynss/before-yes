@@ -137,10 +137,24 @@ func (r *Reader) Read(ctx context.Context, title, ref string, docs []Doc) (Read,
 	sem := make(chan struct{}, n)
 	var wg sync.WaitGroup
 	system := readerSystem()
+	// Chunk counts for the progress hook: one report as reading starts and
+	// one as each chunk ends, whether it succeeded or not.
+	// The count and its report share a lock, so the hook sees 1, 2, 3 in
+	// order however the chunks race.
+	var progMu sync.Mutex
+	finished := 0
+	total := len(chunks)
+	report(ctx, Step{Stage: "read", Message: fmt.Sprintf("reading %d sources", len(docs)), Current: 0, Total: total})
 	for i, c := range chunks {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
+			defer func() {
+				progMu.Lock()
+				finished++
+				report(ctx, Step{Stage: "read", Message: fmt.Sprintf("reading %d sources", len(docs)), Current: finished, Total: total})
+				progMu.Unlock()
+			}()
 			select {
 			case sem <- struct{}{}:
 			case <-ctx.Done():

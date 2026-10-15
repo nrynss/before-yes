@@ -8,13 +8,17 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log/slog"
 	"net/http"
 	"net/http/httptest"
 	"net/http/httputil"
 	"net/url"
 	"path/filepath"
+	"regexp"
+	"slices"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"testing"
 	"time"
 
@@ -29,6 +33,8 @@ import (
 	"github.com/nrynss/before-yes/internal/appstore"
 	"github.com/nrynss/before-yes/internal/cards"
 	"github.com/nrynss/before-yes/internal/checklist"
+	"github.com/nrynss/before-yes/internal/finding"
+	"github.com/nrynss/before-yes/internal/model"
 	"github.com/nrynss/before-yes/internal/pipeline"
 	"github.com/nrynss/before-yes/internal/spend"
 	"github.com/nrynss/before-yes/internal/tavily"
@@ -41,6 +47,11 @@ type configurableSearcher struct {
 	blockChan    chan struct{}
 	searchCalls  int
 	extractCalls int
+	// pageText, when set, is every extracted page's text, so a test can
+	// make the read span several chunks.
+	pageText string
+	// failQuery, when set, fails every search whose query has this prefix.
+	failQuery string
 }
 
 func (s *configurableSearcher) Search(ctx context.Context, req tavily.Search) ([]tavily.Result, tavily.Credits, error) {
@@ -61,6 +72,12 @@ func (s *configurableSearcher) Search(ctx context.Context, req tavily.Search) ([
 
 	if fail != nil {
 		return nil, tavily.Credits{}, fail
+	}
+	s.mu.Lock()
+	fq := s.failQuery
+	s.mu.Unlock()
+	if fq != "" && strings.HasPrefix(req.Query, fq) {
+		return nil, tavily.Credits{}, &tavily.Error{Status: 502, Body: "upstream said tvly-dev-SECRETKEY1234567890 is bad"}
 	}
 	if empty {
 		return nil, tavily.Credits{}, nil
@@ -85,11 +102,15 @@ func (s *configurableSearcher) ExtractWithFailures(ctx context.Context, urls []s
 	if s.emptyDocs {
 		return tavily.Extracted{}, nil
 	}
+	text := s.pageText
+	if text == "" {
+		text = "Full policy document: chat is moderated and data is retained."
+	}
 	pages := make([]tavily.Page, len(urls))
 	for i, u := range urls {
 		pages[i] = tavily.Page{
 			URL:        u,
-			RawContent: "Full policy document: chat is moderated and data is retained.",
+			RawContent: text,
 		}
 	}
 	return tavily.Extracted{Pages: pages, Credits: tavily.Credits{Used: 1, Reported: true}}, nil
@@ -1318,5 +1339,294 @@ func TestCacheRecheckedUnderJoinLock(t *testing.T) {
 	}
 	if e.tv.saw(ourTavilyKey) != 0 {
 		t.Error("a check started")
+	}
+}
+
+// longPolicy is a policy page long enough to span several reader chunks.
+func longPolicy() string {
+	return strings.Repeat("Chat is moderated by staff and data is retained for thirty days. ", 900)
+}
+
+// slowChatter answers like fakeChatter after a pause, or holds every call
+// after the first hold calls until release closes, so a test sees a read
+// in flight.
+type slowChatter struct {
+	fakeChatter
+	delay   time.Duration
+	hold    int64
+	release chan struct{}
+	n       atomic.Int64
+}
+
+func (c *slowChatter) Chat(ctx context.Context, msgs []model.Message, opts model.Options) (model.Reply, error) {
+	if c.release != nil && c.n.Add(1) > c.hold {
+		select {
+		case <-c.release:
+		case <-ctx.Done():
+			return model.Reply{}, ctx.Err()
+		}
+	}
+	if c.delay > 0 {
+		time.Sleep(c.delay)
+	}
+	return c.fakeChatter.Chat(ctx, msgs, opts)
+}
+
+// TestProgressGatherThenRisingReadThenJudge is the T4.7 Done-when: a check
+// on a slow fake pipeline reports gather, then read with a count that
+// rises chunk by chunk to its total, then judge, in that order.
+func TestProgressGatherThenRisingReadThenJudge(t *testing.T) {
+	env := newTestServerEnv(t, 4)
+	env.searcher.pageText = longPolicy()
+	p := env.server.Pipeline
+	p.Reader.Model = &slowChatter{fakeChatter: fakeChatter{replyText: "[]"}, delay: 15 * time.Millisecond}
+
+	type seen struct {
+		stage, msg string
+		cur, tot   int64
+		counted    bool
+	}
+	var mu sync.Mutex
+	var got []seen
+	report := func(pr job.Progress) {
+		var d struct {
+			Message string `json:"message"`
+		}
+		_ = json.Unmarshal(pr.Detail, &d)
+		s := seen{stage: pr.Stage, msg: d.Message}
+		if pr.Current != nil && pr.Total != nil {
+			s.cur, s.tot, s.counted = *pr.Current, *pr.Total, true
+		}
+		mu.Lock()
+		got = append(got, s)
+		mu.Unlock()
+	}
+	if _, err := env.server.work(p, pipeline.Request{Title: "Minecraft", Age: 9}, "t47")(context.Background(), report); err != nil {
+		t.Fatalf("work: %v", err)
+	}
+
+	order := map[string]int{"gather": 0, "read": 1, "judge": 2}
+	last := -1
+	var gathers []string
+	var counts []int64
+	var total int64
+	for _, s := range got {
+		o, ok := order[s.stage]
+		if !ok {
+			continue
+		}
+		if o < last {
+			t.Fatalf("stage %q after a later stage: %+v", s.stage, got)
+		}
+		last = o
+		if s.msg == "" {
+			t.Errorf("stage %q with no message", s.stage)
+		}
+		switch s.stage {
+		case "gather":
+			gathers = append(gathers, s.msg)
+		case "read":
+			if s.counted {
+				counts = append(counts, s.cur)
+				total = s.tot
+			}
+		}
+	}
+	if last != 2 {
+		t.Fatalf("never reached judge: %+v", got)
+	}
+	if !slices.Contains(gathers, "searching for the privacy policy") || !slices.Contains(gathers, "looking up the App Store listing") {
+		t.Errorf("gather did not say what it was fetching: %q", gathers)
+	}
+	if total < 2 {
+		t.Fatalf("read total = %d, want several chunks (counts %v)", total, counts)
+	}
+	if len(counts) != int(total)+1 || counts[0] != 0 || counts[len(counts)-1] != total {
+		t.Fatalf("read counts = %v, want 0..%d", counts, total)
+	}
+	for i := 1; i < len(counts); i++ {
+		if counts[i] <= counts[i-1] {
+			t.Fatalf("read counts not rising: %v", counts)
+		}
+	}
+}
+
+// TestGetCheckMidReadShowsStageAndCount: while the read is under way, GET
+// /api/checks/{id} answers with the latest stage, message and counts, so a
+// page opened mid-read shows them at once.
+func TestGetCheckMidReadShowsStageAndCount(t *testing.T) {
+	env := newTestServerEnv(t, 4)
+	env.searcher.pageText = longPolicy()
+	release := make(chan struct{})
+	p := env.server.Pipeline
+	p.Reader.Concurrency = 1
+	p.Reader.Model = &slowChatter{fakeChatter: fakeChatter{replyText: "[]"}, hold: 1, release: release}
+	defer func() {
+		select {
+		case <-release:
+		default:
+			close(release)
+		}
+	}()
+
+	resp, err := http.Post(env.srv.URL+"/api/checks", "application/json", strings.NewReader(`{"title":"Minecraft","age":9}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+	b, _ := io.ReadAll(resp.Body)
+	resp.Body.Close()
+	cid := checkIDOf(t, b)
+
+	type running struct {
+		ID      string `json:"id"`
+		Status  string `json:"status"`
+		Stage   string `json:"stage"`
+		Message string `json:"message"`
+		Current *int64 `json:"current"`
+		Total   *int64 `json:"total"`
+	}
+	var r running
+	deadline := time.Now().Add(10 * time.Second)
+	for {
+		res, err := http.Get(env.srv.URL + "/api/checks/" + cid)
+		if err != nil {
+			t.Fatal(err)
+		}
+		r = running{}
+		_ = json.NewDecoder(res.Body).Decode(&r)
+		res.Body.Close()
+		if r.Stage == "read" && r.Current != nil && *r.Current >= 1 {
+			break
+		}
+		if time.Now().After(deadline) {
+			t.Fatalf("never saw a counted read: %+v", r)
+		}
+		time.Sleep(10 * time.Millisecond)
+	}
+	if r.Status != "running" || r.Message == "" || r.Total == nil || *r.Current != 1 || *r.Total <= *r.Current {
+		t.Fatalf("mid-read GET = %+v, want running, a message, 1 of several", r)
+	}
+	close(release)
+	waitCheckDone(t, env, cid)
+}
+
+func waitCheckDone(t *testing.T, env *testServerEnv, cid string) map[string]any {
+	t.Helper()
+	deadline := time.Now().Add(10 * time.Second)
+	for time.Now().Before(deadline) {
+		res, err := http.Get(env.srv.URL + "/api/checks/" + cid)
+		if err != nil {
+			t.Fatal(err)
+		}
+		var out map[string]any
+		_ = json.NewDecoder(res.Body).Decode(&out)
+		res.Body.Close()
+		if out["status"] != "running" && out["status"] != "queued" {
+			if _, ok := out["stage"]; ok {
+				t.Errorf("finished check still carries a stage: %v", out)
+			}
+			return out
+		}
+		time.Sleep(10 * time.Millisecond)
+	}
+	t.Fatal("check never finished")
+	return nil
+}
+
+var segRefLine = regexp.MustCompile(`(?m)^\[([RD]\d+)\] \(`)
+var findingID = regexp.MustCompile(`id=(\S+) area=contact`)
+
+// flagReader reports one contact risk per segment, quoting the policy.
+type flagReader struct{ fakeChatter }
+
+func (c *flagReader) Chat(ctx context.Context, msgs []model.Message, opts model.Options) (model.Reply, error) {
+	user := msgs[len(msgs)-1].Content
+	var out []finding.Raw
+	for _, m := range segRefLine.FindAllStringSubmatch(user, -1) {
+		out = append(out, finding.Raw{Ref: m[1], Area: "contact", Stance: "risk", Claim: "Chat is open", Quote: "chat is moderated and data is retained"})
+	}
+	if out == nil {
+		out = []finding.Raw{}
+	}
+	b, _ := json.Marshal(map[string]any{"findings": out})
+	return model.Reply{Text: string(b), Measured: true}, nil
+}
+
+// flagJudge flags contact on the first contact finding and grades the rest ok.
+type flagJudge struct{ fakeChatter }
+
+func (c *flagJudge) Chat(ctx context.Context, msgs []model.Message, opts model.Options) (model.Reply, error) {
+	user := msgs[len(msgs)-1].Content
+	var gs []checklist.Grade
+	for _, a := range checklist.Areas() {
+		g := checklist.Grade{Area: a.ID, Level: checklist.OK, Reason: "All ok.", Findings: []string{}}
+		if m := findingID.FindStringSubmatch(user); a.ID == checklist.Contact && m != nil {
+			g = checklist.Grade{Area: a.ID, Level: checklist.Flag, Reason: "Chat is open.", Findings: []string{m[1]}}
+		}
+		gs = append(gs, g)
+	}
+	b, _ := json.Marshal(map[string]any{"grades": gs})
+	return model.Reply{Text: string(b), Measured: true}, nil
+}
+
+// lockedBuf is a log sink a job goroutine and the test share.
+type lockedBuf struct {
+	mu sync.Mutex
+	b  bytes.Buffer
+}
+
+func (l *lockedBuf) Write(p []byte) (int, error) {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+	return l.b.Write(p)
+}
+
+func (l *lockedBuf) String() string {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+	return l.b.String()
+}
+
+// TestAlternativesFailureLoggedCardStored: a "no" card whose alternatives
+// search fails on something other than the budget is still stored, and
+// the failure is logged with its upstream and status, never the body.
+func TestAlternativesFailureLoggedCardStored(t *testing.T) {
+	env := newTestServerEnv(t, 4)
+	var logs lockedBuf
+	env.server.Log = slog.New(slog.NewTextHandler(&logs, nil))
+	env.searcher.failQuery = "safer "
+	p := env.server.Pipeline
+	p.Reader.Model = &flagReader{}
+	p.Judge.Model = &flagJudge{}
+
+	resp, err := http.Post(env.srv.URL+"/api/checks", "application/json", strings.NewReader(`{"title":"Minecraft","age":9}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+	b, _ := io.ReadAll(resp.Body)
+	resp.Body.Close()
+	out := waitCheckDone(t, env, checkIDOf(t, b))
+	if out["status"] != "done" {
+		t.Fatalf("check = %v, want done with the card stored", out)
+	}
+	cardID, _ := out["card_id"].(string)
+	res, err := http.Get(env.srv.URL + "/api/cards/" + cardID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var card struct {
+		Verdict checklist.Verdict `json:"verdict"`
+	}
+	_ = json.NewDecoder(res.Body).Decode(&card)
+	res.Body.Close()
+	if card.Verdict != checklist.No {
+		t.Fatalf("card verdict = %s, want no (the alternatives path must run)", card.Verdict)
+	}
+	got := logs.String()
+	if !strings.Contains(got, "alternatives failed") || !strings.Contains(got, "tavily HTTP 502") {
+		t.Fatalf("alternatives failure not logged: %q", got)
+	}
+	if strings.Contains(got, "SECRETKEY") || strings.Contains(got, "upstream said") {
+		t.Fatalf("log carries the upstream body: %q", got)
 	}
 }

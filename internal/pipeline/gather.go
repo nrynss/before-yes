@@ -206,6 +206,7 @@ func (g *Gatherer) Gather(ctx context.Context, title, ref string) (Gathered, err
 	// policy and terms searches to the developer's own pages.
 	var apps []appstore.App
 	if g.Store != nil {
+		report(ctx, Step{Stage: "gather", Message: "looking up the App Store listing"})
 		var err error
 		apps, err = g.Store.Find(ctx, title, storeHits)
 		if err != nil {
@@ -228,6 +229,7 @@ func (g *Gatherer) Gather(ctx context.Context, title, ref string) (Gathered, err
 		if err := ctx.Err(); err != nil {
 			return err
 		}
+		report(ctx, Step{Stage: "gather", Message: "searching for " + searchLabel(q.Name)})
 		res, used, err := g.search(ctx, ref, q.Search)
 		out.Credits += used
 		if err != nil {
@@ -290,6 +292,7 @@ func (g *Gatherer) Gather(ctx context.Context, title, ref string) (Gathered, err
 		g.storeDocs(ctx, ref, out.App, at, &out, miss)
 	}
 
+	report(ctx, Step{Stage: "gather", Message: "fetching the policy and terms pages"})
 	// 3. The policy and terms pages: one extract call, and a second only
 	// when a homepage names a privacy or terms link to follow.
 	docs, notes, failed, used, err := g.policyPages(ctx, ref, plan, hits, out.Host, at)
@@ -1165,3 +1168,24 @@ func capText(s string) string {
 }
 
 func utf8Start(b byte) bool { return b&0xC0 != 0x80 }
+
+// searchLabel is a plan query's name as a parent reads it in progress.
+func searchLabel(name string) string {
+	switch name {
+	case "policy":
+		return "the privacy policy"
+	case "terms":
+		return "the terms of service"
+	case "rating":
+		return "age ratings"
+	case "news":
+		return "news about the developer"
+	case "reddit-parents":
+		return "parent discussions"
+	case "reddit-community":
+		return "player discussions"
+	case "forum":
+		return "parent forums"
+	}
+	return strings.ReplaceAll(name, "_", " ") + " sources"
+}

@@ -4,7 +4,7 @@
  import { resolve } from '$app/paths';
  import { api, JobStream, type JobSnapshot } from '@nrynss/chaaya/keel';
  import { errorNotice, type Notice } from '../errors/notice';
- import { snapshot, validId } from './snapshot';
+ import { snapshot, validId, type StageSnapshot } from './snapshot';
  let {id}: {id:string} = $props();
  let stream = $state<JobStream>();
  let problem = $state<Notice | undefined>();
@@ -14,12 +14,20 @@
  let alive = false;
  let controller: AbortController;
  const stages = [{id:'gather',label:'Gather',text:'Find policies, reviews and parent reports.'},{id:'read',label:'Read',text:'Read the sources and keep the evidence.'},{id:'judge',label:'Judge',text:'Consider the evidence against the same checklist.'}];
- const latest = $derived(stream?.events.findLast(event => event.name === 'progress'));
- const stage = $derived(stream?.stage);
- const detail = $derived(latest?.name === 'progress' && typeof latest.detail === 'object' && latest.detail !== null ? latest.detail as Record<string, unknown> : {});
- const message = $derived(typeof detail.message === 'string' ? detail.message : '');
- const current = $derived(latest?.name === 'progress' ? latest.current : undefined);
- const total = $derived(latest?.name === 'progress' ? latest.total : undefined);
+ // saved is the stage GET /api/checks/{id} last reported, on load and on
+ // every reconnect; savedAt is how many stream events had arrived then. A
+ // late subscriber gets no progress replay, so saved shows until a newer
+ // progress event arrives.
+ let saved = $state<StageSnapshot | undefined>();
+ let savedAt = $state(0);
+ const latestIndex = $derived(stream ? stream.events.findLastIndex(event => event.name === 'progress') : -1);
+ const live = $derived(latestIndex >= 0 && (!saved || latestIndex >= savedAt) ? stream?.events[latestIndex] : undefined);
+ const stage = $derived(live?.name === 'progress' ? live.stage : saved?.stage ?? stream?.stage);
+ const detail = $derived(live?.name === 'progress' && typeof live.detail === 'object' && live.detail !== null ? live.detail as Record<string, unknown> : {});
+ const message = $derived(live ? (typeof detail.message === 'string' ? detail.message : '') : saved?.message ?? '');
+ const current = $derived(live?.name === 'progress' ? live.current : saved?.current);
+ const total = $derived(live?.name === 'progress' ? live.total : saved?.total);
+ function keep(state: {progress?: StageSnapshot}) {if (state.progress) {saved = state.progress; savedAt = stream?.events.length ?? 0;}}
  const active = $derived(stage === 'alternatives' ? 3 : stages.findIndex(item => item.id === stage));
  async function read() {return snapshot(await api<unknown>(`/api/checks/${id}`,{signal:controller.signal,timeoutMs:15000}),id);}
  async function finish(state: JobSnapshot & {cardId?:string}, attempt = generation) {
@@ -40,8 +48,9 @@
    if (!alive || attempt !== generation) return;
    if (!['queued','running'].includes(state.status)) {await finish(state, attempt);return;}
    initial = state.status === 'queued' ? 'Your check is queued.' : 'The research is running.';
+   saved = undefined; keep(state);
    stream = new JobStream({url:`/api/checks/${id}/events`,fetchState:async () => {
-    try {return await read();} catch(error) {if(alive && attempt === generation) {problem = errorNotice(error);stream?.close();} throw error;}
+    try {const state = await read(); if (alive && attempt === generation) keep(state); return state;} catch(error) {if(alive && attempt === generation) {problem = errorNotice(error);stream?.close();} throw error;}
    }});
    stream.attach(task => {task();});
   } catch(error) {if(alive && attempt === generation) problem = errorNotice(error);}

@@ -45,6 +45,22 @@ test('dropped mid-read replays with Last-Event-ID and finishes', async ({page}) 
  expect(await page.evaluate(() => (window as unknown as {research:{requests:{lastId:string|null}[]}}).research.requests.filter(r=>r.lastId).at(-1)?.lastId)).toBe('2');
  await push(page,frames[2],1);await state(page,fixture('get-check-done'));await push(page,frames[3],1);await expect(page).toHaveURL(`/card/${card}`);
 });
+test('page opened mid-read shows the saved stage and count at once', async ({page}) => {
+ await mock(page);await page.goto(`/check/${id}`);
+ const status = page.getByRole('status');
+ await expect(status).toContainText('reading 14 sources');await expect(status).toContainText('3 of 9');
+ await expect(page.locator('li[aria-current="step"]')).toContainText('Read');
+ await opened(page);await expect(page.getByRole('status')).toContainText('3 of 9');
+});
+test('reconnect rereads the saved stage and count', async ({page}) => {
+ await mock(page);await page.goto(`/check/${id}`);await opened(page);await push(page,frames[0]);
+ await expect(page.getByRole('status')).toContainText('searching for the privacy policy');
+ await state(page,{...fixture('get-check-running'),message:'reading 14 sources',current:7,total:9});
+ await page.evaluate(() => (window as unknown as {research:{streams:ReadableStreamDefaultController<Uint8Array>[]}}).research.streams[0].close());
+ await opened(page,2);
+ await expect(page.getByRole('status')).toContainText('7 of 9');
+ await push(page,frames[2],1);await expect(page.getByRole('status')).toContainText('grading 6 areas');await expect(page.getByRole('status')).not.toContainText('7 of 9');
+});
 const shown: Record<string, [string, string]> = {
  budget_exhausted: ['The research budget is used up.', 'Open an example card, or come back later.'],
  no_sources: ['We couldn’t find writing about this title.', 'Go back to the ask page and try the full name.'],
