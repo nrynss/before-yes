@@ -1,10 +1,10 @@
 diagnose Minecraft age 9 verdict no findings 142 (conflict pass replaced the conflicted areas)
   contact  risks 26 mitigations 7 other 0
     judge ok_with_setting setting "Multiplayer is off by default on child accounts in both Java Edition and Bedrock Edition" cited 2 [f_a204ed94e6ffcd86 f_1e24b73e7fa966bc]
-    card ok_with_setting setting "Multiplayer is off by default on child accounts in both Java Edition and Bedrock Edition"
-    check stood
-    entail meets_definition=true reason_supported=true
-    reason Strangers can message or voice chat in multiplayer, but multiplayer is off by default on child accounts and can be kept off or limited to friends.
+    card unknown setting ""
+    check entail: flag_not_earned
+    entail meets_definition=false reason_supported=true
+    reason Changed to unknown: the cited quotes do not meet this area's flag definition.
     quote f_a204ed94e6ffcd86 risk store: Local Network: To find other devices on the same Wi‑Fi network for multiplayer gameplay.
     quote f_1e24b73e7fa966bc mitigation rating: Multiplayer is off by default on child accounts in both Java Edition and Bedrock Edition.
   money  risks 30 mitigations 0 other 7
@@ -17,10 +17,10 @@ diagnose Minecraft age 9 verdict no findings 142 (conflict pass replaced the con
     quote f_52134516877ae723 risk rating: In your child’s spending settings, turn on “Ask a parent to buy things” so every Marketplace purchase (paid for with Minecoins) or Realms subscription needs your approval, or remove the saved payment method from the account entirely.
   data  risks 8 mitigations 2 other 5
     judge ok_with_setting setting "child accounts automatically provide guardrails against the collection of some data" cited 2 [f_62d7413616ee25d9 f_7bff118ec684f6e0]
-    card ok_with_setting setting "child accounts automatically provide guardrails against the collection of some data"
-    check stood
-    entail meets_definition=true reason_supported=true
-    reason The app may collect data for ads and share it, but child accounts limit collection and data can be deleted.
+    card unknown setting ""
+    check entail: flag_not_earned
+    entail meets_definition=false reason_supported=false
+    reason Changed to unknown: the cited quotes do not meet this area's flag definition.
     quote f_62d7413616ee25d9 risk store: App Tracking: To deliver personalized ads and improve application experience
     quote f_7bff118ec684f6e0 mitigation rating: child accounts automatically provide guardrails against the collection of some data
   age_gating  risks 11 mitigations 4 other 6
