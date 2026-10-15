@@ -1,10 +1,10 @@
 diagnose Minecraft age 9 verdict no findings 221 (conflict pass replaced the conflicted areas)
   contact  risks 27 mitigations 11 other 2
     judge ok_with_setting setting "Restrict Communication" cited 2 [f_8e13d0d8cf810113 f_31c58032f10f0ed3]
-    card ok_with_setting setting "Restrict Communication"
-    check stood
-    entail meets_definition=true reason_supported=true
-    reason Strangers can message or chat with your child, but the Restrict Communication setting can turn this off.
+    card unknown setting ""
+    check entail: flag_not_earned
+    entail meets_definition=false reason_supported=false
+    reason Changed to unknown: the cited quotes do not meet this area's flag definition.
     quote f_8e13d0d8cf810113 risk review: Gosh Minecraft NEVER have I EVER been so MAD in my life! I use to play Minecraft on my ps4 BACK THEN! And now I downloaded it on my phone after thinking of it, but as I put my email in it says account has been locked! So I used my mother’s email and it work but it was talking about some unusual activity🫩 fix this.
     quote f_31c58032f10f0ed3 mitigation rating: Restrict Communication
   money  risks 60 mitigations 4 other 6
@@ -17,24 +17,24 @@ diagnose Minecraft age 9 verdict no findings 221 (conflict pass replaced the con
     quote f_6b222f7ec75ab54a mitigation rating: Control Spending
   data  risks 21 mitigations 2 other 10
     judge flag setting "" cited 1 [f_62d7413616ee25d9]
-    card flag setting ""
-    check stood
-    entail meets_definition=true reason_supported=true
-    reason The app collects data for ads and may share it with third parties, and no setting is shown to stop this collection.
+    card unknown setting ""
+    check entail: flag_not_earned
+    entail meets_definition=false reason_supported=false
+    reason Changed to unknown: the cited quotes do not meet this area's flag definition.
     quote f_62d7413616ee25d9 risk store: App Tracking: To deliver personalized ads and improve application experience
   age_gating  risks 10 mitigations 2 other 8
     judge flag setting "" cited 1 [f_88d325d4c1d10860]
-    card flag setting ""
-    check stood
-    entail meets_definition=true reason_supported=true
-    reason The age gate does not work in practice, as a young child can access the game despite intended restrictions.
+    card unknown setting ""
+    check entail: flag_not_earned
+    entail meets_definition=false reason_supported=false
+    reason Changed to unknown: the cited quotes do not meet this area's flag definition.
     quote f_88d325d4c1d10860 risk review: Can you make the game available for +5 year-old?
   content  risks 18 mitigations 2 other 15
     judge ok_with_setting setting "block access to games based on the ESRB-assigned rating information" cited 2 [f_3cad9aec44591175 f_81363ff213c488f0]
-    card ok_with_setting setting "block access to games based on the ESRB-assigned rating information"
-    check stood
-    entail meets_definition=true reason_supported=true
-    reason Scary or violent content has been reported, but blocking games by ESRB rating can keep such material away.
+    card unknown setting ""
+    check entail: flag_not_earned
+    entail meets_definition=false reason_supported=false
+    reason Changed to unknown: the cited quotes do not meet this area's flag definition.
     quote f_3cad9aec44591175 risk review: it was scary but in the good way
     quote f_81363ff213c488f0 mitigation rating: block access to games based on the ESRB-assigned rating information
   developer_record  risks 12 mitigations 1 other 10
