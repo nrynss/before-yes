@@ -551,10 +551,12 @@ func (j *Judge) entail(ctx context.Context, title string, age int, ref string, g
 		if (g.Level != checklist.Flag && g.Level != checklist.OKWithSetting) || !g.Area.Valid() || len(g.Findings) == 0 {
 			continue
 		}
+		// Fast is the judge's thinking-off switch. Entailment is a short
+		// check, and a thinking pass would bill a different call.
 		reply, p, err := chat(ctx, j.Meter, j.Entail, "entail", ref, []model.Message{
 			{Role: "system", Content: entailSystem()},
 			{Role: "user", Content: entailUser(title, age, g, fs)},
-		}, model.Options{JSON: true})
+		}, model.Options{JSON: true, Extra: j.Fast})
 		price += p
 		if err == nil {
 			var v entailVerdict

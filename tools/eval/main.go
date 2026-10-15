@@ -268,10 +268,11 @@ func runOne(root, models string, e Expectation) Result {
 	p := &pipeline.Pipeline{
 		Gatherer: &pipeline.Gatherer{Store: publicFeed{appstore.New(srv.URL, "us"), appstore.New("", "us")}, Search: tc, Meter: meter, Now: now},
 		Reader:   &pipeline.Reader{Model: reader, Meter: meter},
-		// Entail runs the T3.10 entailment check on the reader's model
-		// (Nano), the client production will wire; the server's wiring is
-		// T4's.
-		Judge: &pipeline.Judge{Model: judge, Meter: meter, Fast: fast, Think: think, Entail: reader},
+		// Entailment runs on the judge model, thinking off. The reader model
+		// accepted quotes the area definitions exclude (Minecraft gather 1:
+		// a feature request as a failed age gate, "scary but in the good
+		// way", "BAN YOUR STUPID GAME"). The server's wiring is T4's.
+		Judge: &pipeline.Judge{Model: judge, Meter: meter, Fast: fast, Think: think, Entail: entailChatter(judge)},
 		Now:   now,
 	}
 	ev, _, err := p.Collect(ctx, e.Title, "eval-"+e.Slug)
@@ -321,6 +322,12 @@ func (s publicFeed) FeedURL(id int64, page int) string { return s.public.FeedURL
 
 // Storefront is the fixture client's country, for the evidence key.
 func (s publicFeed) Storefront() string { return s.Client.Country }
+
+// entailChatter is the judge model. The reader model accepted quotes the
+// area definitions exclude, so the check does not run on it.
+func entailChatter(judge pipeline.Chatter) pipeline.Chatter {
+	return judge
+}
 
 func chatters(root, models, slug string) (pipeline.Chatter, pipeline.Chatter) {
 	if models == "live" {

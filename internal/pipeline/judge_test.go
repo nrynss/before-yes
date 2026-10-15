@@ -728,6 +728,30 @@ func TestEntailSystemHoldsAFittingQuote(t *testing.T) {
 // (meets_definition=false), and a standing grade whose reason goes beyond the
 // cited quotes falls too (reason_supported=false). A grade that passes both
 // stands, its setting and citations intact.
+// Entailment is a short check. It uses the judge's thinking-off switch so
+// a thinking pass is not a different, larger call.
+func TestEntailmentUsesTheFastSwitch(t *testing.T) {
+	fast := map[string]any{"chat_template_kwargs": map[string]any{"enable_thinking": false}}
+	fs := []finding.Finding{{
+		ID: "f_contact", Area: checklist.Contact, Stance: finding.Risk,
+		Quote: "a stranger messaged the child", Source: finding.Source{Kind: KindReview, Index: 1},
+	}}
+	reply := gradesJSON(t, checklist.Grade{
+		Area: checklist.Contact, Level: checklist.Flag, Findings: []string{"f_contact"},
+		Reason: "A stranger messaged the child.",
+	})
+	entail := &superRecorder{replies: []any{`{"meets_definition": true, "reason_supported": true}`}}
+	_, err := (&Judge{
+		Model: &superRecorder{replies: []any{reply}}, Meter: openTestMeter(t), Entail: entail, Fast: fast,
+	}).Judge(context.Background(), "T", 9, "c", fs, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(entail.opts) != 1 || !entail.opts[0].JSON || !reflect.DeepEqual(entail.opts[0].Extra, fast) {
+		t.Errorf("entail options %+v, want JSON and the fast switch", entail.opts)
+	}
+}
+
 func TestEntailmentFallsToUnknown(t *testing.T) {
 	fs := []finding.Finding{
 		{ID: "f_contact", Area: checklist.Contact, Stance: finding.Risk, Quote: "a child predator might ask where you are",

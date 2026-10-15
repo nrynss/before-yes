@@ -70,10 +70,12 @@ func (t *tracingChatter) Chat(ctx context.Context, msgs []model.Message, o model
 	}
 	t.tr.mu.Lock()
 	switch {
+	case strings.Contains(system, "meets_definition"):
+		// Entailment can run on the judge client. Classify it before the
+		// role, or its JSON is read as a second judge pass.
+		t.tr.entail = append(t.tr.entail, traced{user: user, reply: r.Text})
 	case t.role == "judge":
 		t.tr.judge = append(t.tr.judge, traced{user: user, reply: r.Text})
-	case strings.Contains(system, "meets_definition"):
-		t.tr.entail = append(t.tr.entail, traced{user: user, reply: r.Text})
 	}
 	t.tr.mu.Unlock()
 	return r, err
