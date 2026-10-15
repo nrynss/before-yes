@@ -75,11 +75,12 @@ func (c *core) Close() {
 	}
 }
 
-// buildCore builds the pipeline the way tools/eval does, on real clients:
-// the reader is Nano and also the judge's entailment check (T3.10), and
-// every paid call goes through one durable *spend.Meter, which is also the
-// pipeline's Checks so fresh alternatives count against the daily cap
-// (T3.5).
+// buildCore builds the pipeline the way tools/eval does, on real clients.
+// Entailment is the judge client, and the entail call uses JudgeFast
+// (thinking off), the same wiring as tools/eval. The reader is not that
+// check (T3.11). Every paid call goes through one durable *spend.Meter,
+// which is also the pipeline's Checks so fresh alternatives count against
+// the daily cap (T3.5).
 func buildCore(ctx context.Context, s Settings) (*core, error) {
 	if err := os.MkdirAll(s.DataDir, 0o700); err != nil {
 		return nil, fmt.Errorf("data dir: %w", err)
@@ -129,7 +130,7 @@ func buildCore(ctx context.Context, s Settings) (*core, error) {
 		Judge: &pipeline.Judge{
 			Model: judge, Meter: c.Meter,
 			Fast: s.JudgeFast, Think: s.JudgeThink,
-			Entail: reader,
+			Entail: judge,
 		},
 		Checks: c.Meter,
 	}

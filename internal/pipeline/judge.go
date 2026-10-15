@@ -160,12 +160,13 @@ func conflicted(fs []finding.Finding) []checklist.Area {
 type Judge struct {
 	Model Chatter
 	Meter Meter
-	// Entail is the reader's model client (Nano), used one call per standing
-	// flag or ok_with_setting grade to check the cited findings against the
-	// area's flag definition and the reason against the quotes (T3.10, fault
-	// 3). Nil skips the step, so tests that do not wire it keep compiling and
-	// passing. Production wiring (the server's reader client) is T4's; the
-	// eval wires it in tools/eval/main.go.
+	// Entail is the judge model, one call per standing flag or
+	// ok_with_setting, with thinking off (Fast). It checks the cited
+	// findings against the area's flag definition and the reason against
+	// the quotes (T3.10, fault 3). The reader model accepted quotes the
+	// definitions exclude, so the server wires this client, the same one
+	// as Model (T3.11). Nil skips the step, so tests that do not wire it
+	// keep compiling and passing.
 	Entail Chatter
 	// Fast and Think are merged into the first pass and the conflict pass:
 	// the host's thinking switch off and on (judge_fast and judge_think in
@@ -453,24 +454,34 @@ func ground(grades []checklist.Grade, fs []finding.Finding) (out []checklist.Gra
 
 // entailSystem is the entailment check's fixed instruction. The replies are
 // recorded and replayed keyed on the exact messages, so this text is final
-// before a live re-record. A quote that shows the definition meets it even
-// when another cited quote shows less: one weak citation must not sink a
-// fitting one, and a quote that shows less still does not meet it on its
-// own. The enforcement sentence scopes itself to the one definition that
-// names enforcement.
+// before a live re-record. A quote meets the definition only by showing the
+// harm areaDefs names. One quote that shows less does not cancel one that
+// shows it. reason_supported is false when a free-form reason states a fact
+// no cited quote shows. Naming the definition's other clauses is allowed
+// only when the reason text is the definition's opening statement.
 func entailSystem() string {
-	return `You check one grade of a parent checklist against the findings its grade cites, for one child. You are given the area's flag definition, the child's age, the grade, and each cited finding with its verbatim quote. Answer two questions and nothing else:
-(a) meets_definition: for a "flag", true when at least one cited quote itself shows what the area's flag definition requires for a child of this age. A quote that shows less does not meet the definition, and it does not cancel a cited quote that does. For an "ok_with_setting", true only when a cited risk quote shows that concern and a cited mitigation quote names a control that answers that same concern. A control that does not close the hole the risk quote describes does not meet it.
-Hold the definition to its words. The quotes must show the harm the definition names, not only that a reviewer disliked, disagreed with or was startled by something.
-- Contact takes strangers reaching this child by message, chat or voice. A locked account, a Wi-Fi or tracking permission, or a settings label is not that. A child threatened or contacted by another player is.
-- Money takes a child pushed into a purchase, or a child completing one. A price on its own is not that. A mitigation meets it when its quote names a control that gates what the child can buy.
-- Data takes collection or sharing a parent cannot control: ad tracking aimed at children, third-party sharing or selling, or no way to delete what was collected. A store slogan, a compliance claim, or an email field is not that.
-- Age gating takes a child getting past the gate, a birth date the gate accepted, or the check stating the wrong age. A request to widen the age range, or a complaint that the lessons are too easy or stop at a grade, is not a failed gate. A mitigation meets it only when the control stops the bypass the risk quote describes.
-- Content takes a child meeting sexual content, realistic violence, horror, harassment or self-harm. "Scary in a good way", a wish, or a dislike that names none of those harms is not that.
-- A record of enforcement is a fine, a data breach, a lawsuit or a regulatory action naming this developer. A quote showing one filed or brought against this developer meets it: the action itself is the record, and the quote need not show its outcome. "Ban this game", or another company's action, is not a record. A player saying to ban the game, a help page, or an FAQ citation is not a record either: the quote itself has to name the fine, the suit, the breach, or the regulator's action.
-(b) reason_supported: false only when the reason states a fact no cited quote shows. A reason that restates the area definition is supported when the quotes show the part of that definition the grade rests on. Do not fail it for also naming the definition's other clauses.
-The reason is not evidence. meets_definition is false when no cited quote names the harm, even if the reason does. reason_supported stays false when the reason adds a fact the quotes do not show, apart from the definition's other clauses.
-Judge from the quotes, not the claims: a quote is the source's own words, a claim is the reader's reading of them. Use only the findings given. Reply with one JSON object: {"meets_definition": true, "reason_supported": true}, with false where the answer is no.`
+	return `You check one grade of a parent checklist against the findings its grade cites, for one child. You are given the area's flag definition, the child's age, the grade, and each cited finding with its verbatim quote. Answer two questions and nothing else.
+(a) meets_definition. Judge the quotes only. The reason is not evidence: meets_definition is false when no cited quote shows the harm, even if the reason names it.
+For a "flag", true when at least one cited quote itself shows what the area's flag definition requires for a child of this age. A quote that shows less does not meet the definition, and it does not cancel a cited quote that does.
+For an "ok_with_setting", true only when both of these hold, and false if either fails:
+1. A cited risk quote, in its own words, shows the harm the flag definition names. A cited mitigation does not supply a harm the risk quote lacks. A description of ordinary use, a list of what a player can do, a permission the product asks for, or the name of a screen does not show that harm.
+2. A cited mitigation quote names a control that closes the hole that risk quote describes. Take the child the risk quote describes, doing the thing that quote says they do, and read the mitigation quote for whom the control applies to and what it stops. If that child is outside the control, the control does not close the hole. A control handed out only after a check the risk quote says the child can get past does not close that hole. A mitigation quote that only names a control, and does not say the control stops the thing the risk quote describes, does not close the hole.
+Hold each definition to its own words. A quote must show the harm that definition names.
+- Contact is strangers reaching this child by message, chat, or voice. The risk quote shows it when a person the child does not know reaches the child that way. Playing with people the child knows does not. A quote that lists what a player can do in the product, and never says a stranger messages, chats with, or speaks to the child, does not show contact. A mitigation that limits chat does not meet the definition when no cited risk quote shows that harm.
+- Money is a child pushed into a purchase, or a child completing one. A price on its own, or a plan a school pays for, is not that. A mitigation meets it when its quote says the control stops the child completing the purchase the risk quote describes. The control's name alone does not.
+- Data is children's information collected or shared in a way a parent cannot control: ad tracking aimed at children, a third party handling or receiving children's information, or no way to delete what was collected. A claim that the product is safe, private, or compliant, or an email address asked for when an account is set up, is not that. A quote that shows a third party holding the information, or no deletion period, meets data. That quote does not show a use or a recipient it does not name.
+- Age gating, for a flag, is true when a cited quote shows a child getting past the gate, a birth date the gate accepted, or the check stating an age or a group that is not the child's. A wish that the product include more, or a complaint about what it teaches or how hard that teaching is, is not a failed gate.
+- Age gating, for an ok_with_setting, also needs a mitigation that stops that bypass for the child who takes it. Read the mitigation for who receives the control. If the control is given only to accounts the age check has already treated as under a stated age, it does not reach a child the risk quote says can make that check record a different age. meets_definition is false for that ok_with_setting. This sentence is only for an ok_with_setting. A flag whose quote shows the check recorded an age or a group that is not the child's still meets the definition.
+- Content is a child meeting sexual content, realistic violence, horror, harassment, or self-harm. A dislike, a startle, or a wish that names none of those harms is not that.
+- A record of enforcement is a fine, a data breach, a lawsuit, or a regulatory action naming this developer. A quote that shows one filed or brought against this developer meets it: the action itself is the record, and the quote need not show its outcome. Another company's action is not a record. A demand that the developer be punished, or a page that only explains a policy, is not a record: the quote itself has to name the fine, the suit, the breach, or the regulator's action.
+(b) reason_supported. Do these two steps in order. Stop when a step decides the field.
+Step 1. The opening statement is the first sentence of the flag definition you were given, ending at its first period. Step 1 applies only when the reason is those same words, with nothing changed but the case of the first letter. If you would add, drop, or replace any other word, it is not this step. A paraphrase of the opening statement is step 2. When step 1 does apply, reason_supported is true when the cited quotes show the part of that sentence the grade rests on, and clauses of that copied sentence that the quotes do not show are allowed. Stop.
+Step 2. The reason is the judge's own words. List every practice, use, recipient, harm, number, or control it names. A use or a recipient attached to a shown fact is its own item. The flag definition is not a quote: a practice the definition lists is not shown unless a cited quote shows it. A different word for the same fact a cited quote shows is supported. The definition's name for a child who paid is a purchase that child completed without a parent, and that name is supported when any cited quote shows the child paying. Calling that purchase a push, or a purchase inside the product, is the same fact. The word "pushes" is that name. It is not an extra practice, and it must not be why reason_supported is false, when a cited quote shows the child paid. The currency, the amount, and a scam that quote names are the same fact. Another cited quote that names a control a parent could turn on does not erase the purchase. A kind of purchase no quote names is still an extra practice. For that money shape, when a cited quote shows the child paid and the reason names only that purchase, reason_supported is true. That money rule is only for a money grade. It does not make a use supported on any other area.
+An extra practice is a concrete thing the reason names that no cited quote shows: a buyer, a kind of purchase, a kind of tracking, a use, a recipient, or a harm the quote does not name. Each harm a free-form reason names is its own item. One extra item fails the reason even when every other item is shown.
+A free-form reason does not get that allowance. Naming another clause of the definition is allowed only in step 1.
+A cited quote can meet the definition while reason_supported is false. meets_definition does not forgive an extra practice, and the grade does not stand.
+Worked split, for a different grade than the one you were given. Reason: "The company shares children's information for advertising, and a partner keeps their photos with no stated deletion period." Quote: "A partner stores the child's photos and does not say for how long." The storage and the missing deletion period are in the quote, so meets_definition is true. reason_supported is false, because advertising is not in the quote. The matching storage does not carry the advertising use. One unshown use fails the reason. A short name for that same use is the same failure. The flag definition listing the use is not a quote. Do not answer true for reason_supported on that shape, on a data grade or any other grade.
+Use only the findings given. A quote is the source's own words; a claim is the reader's reading of them. Reply with one JSON object: {"meets_definition": true, "reason_supported": true}, with false where the answer is no. Set each field from the steps above. Do not copy the two trues. A data reason that names a use no cited quote contains has reason_supported false.`
 }
 
 // entailUser shows one grade and the findings it cites. It mirrors judgeUser's
@@ -532,10 +543,11 @@ func parseEntail(reply string) (entailVerdict, error) {
 }
 
 // entail holds every standing flag and ok_with_setting grade to its area's
-// flag definition and its own reason, one call per grade through the reader's
-// model (Entail), metered like any other call (T3.10, fault 3). Either false
-// drops the grade to unknown with no setting and no citations, a demotion
-// (RuleNotEarned or RuleReasonUnsupported) and its area in thin. A failed or
+// flag definition and its own reason, one call per grade through the judge
+// model (Entail), thinking off via Fast, metered like any other call (T3.10,
+// fault 3). Either false drops the grade to unknown with no setting and no
+// citations, a demotion (RuleNotEarned or RuleReasonUnsupported) and its
+// area in thin. A failed or
 // unparseable call keeps the grade: the reason is returned as entailErr and
 // never sinks a standing grade, so a rate limit or a bad reply cannot turn
 // earned flags into unclear cards. The calls' price is returned for the

@@ -26,9 +26,9 @@ diagnose Minecraft age 9 verdict no findings 142 (conflict pass replaced the con
   age_gating  risks 11 mitigations 4 other 6
     judge ok_with_setting setting "Players younger than 16 will automatically have a \"child account,\" which must be linked to an adult account." cited 2 [f_e9731cf660fbf00c f_ee415e54d7a54a34]
     card unknown setting ""
-    check entail: flag_not_earned
-    entail meets_definition=false reason_supported=false
-    reason Changed to unknown: the cited quotes do not meet this area's flag definition.
+    check entail: reason_unsupported
+    entail meets_definition=true reason_supported=false
+    reason Changed to unknown: the reason says more than the cited quotes support.
     quote f_e9731cf660fbf00c risk forum: When setting up an account it checks to verify age requirements, but it's pretty easy for a savvy kid to fake their birthdate to gain access.
     quote f_ee415e54d7a54a34 mitigation forum: Players younger than 16 will automatically have a "child account," which must be linked to an adult account.
   content  risks 11 mitigations 1 other 8

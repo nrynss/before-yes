@@ -213,3 +213,55 @@ func mustEval(t *testing.T, models string) []Result {
 	}
 	return rs
 }
+
+// Gather 2 must not keep the two unearned settings the entailment check
+// accepted: Minecraft age gating, where a child account does not stop a
+// child who gets past the age check, and Roblox data, whose reason says
+// the data is shared for ads when no cited quote says that. Minecraft's
+// money flag is earned and the verdict stays no.
+func TestGather2DoesNotKeepUnearnedSettings(t *testing.T) {
+	prevG, prevOnly := *gatherN, *liveOnly
+	t.Cleanup(func() {
+		*gatherN = prevG
+		*liveOnly = prevOnly
+	})
+	*gatherN = 2
+
+	*liveOnly = "minecraft"
+	mc := mustEval(t, "replay")
+	if len(mc) != 1 || mc[0].Err != "" {
+		t.Fatalf("minecraft replay: %+v", mc)
+	}
+	if g := areaGot(t, mc[0], checklist.AgeGating); g.Got == checklist.OKWithSetting {
+		t.Errorf("age gating stayed ok_with_setting; the cited control does not close the hole")
+	}
+	if g := areaGot(t, mc[0], checklist.Money); g.Got != checklist.Flag {
+		t.Errorf("money = %s, want the earned flag", g.Got)
+	}
+	if mc[0].GotVerdict != checklist.No {
+		t.Errorf("minecraft verdict %s, want no", mc[0].GotVerdict)
+	}
+
+	*liveOnly = "roblox"
+	rb := mustEval(t, "replay")
+	if len(rb) != 1 || rb[0].Err != "" {
+		t.Fatalf("roblox replay: %+v", rb)
+	}
+	if g := areaGot(t, rb[0], checklist.Data); g.Got == checklist.Flag || g.Got == checklist.OKWithSetting {
+		t.Errorf("data stands (%s) on %q; no cited quote says ads", g.Got, g.GotNote)
+	}
+	if rb[0].GotVerdict != checklist.No {
+		t.Errorf("roblox verdict %s, want no", rb[0].GotVerdict)
+	}
+}
+
+func areaGot(t *testing.T, r Result, area checklist.Area) AreaResult {
+	t.Helper()
+	for _, a := range r.Areas {
+		if a.Area == area {
+			return a
+		}
+	}
+	t.Fatalf("no %s grade", area)
+	return AreaResult{}
+}

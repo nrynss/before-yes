@@ -776,7 +776,7 @@ Minecraft gather 2, age 9, verdict no. Same verdict as gather 1. Tavily 7 credit
 | content | unknown (judge had ok_with_setting) | Risk, in area: "Racist It called me the n word". The other citation is a contact mitigation about preset chat words. | the harassment quote is earned. The grade does not stand. | checkCitations: citation outside the area. One bad id voided the fitting citation. ThinReason. |
 | developer_record | unknown (judge had flagged) | A store tracking line, and "Microsoft will pay a fine of $20 million to settle Federal Trade Commission charges that it illegally collected and retained the data of children who signed up", which the reader filed under data. | the Microsoft fine may name this title's developer. It was not a developer_record finding, so the citation was out of area. The grade does not stand. | checkCitations: citation outside the area. ThinReason. |
 
-Khan Academy Kids gather 2, age 5, verdict no. Tavily 8 credits. Read $0.015596, judge $0.028643. 226 findings, 33 chunks, 0 failed chunks, missing source: terms. Ledger after this gather: $0.236605. Both gathers say no. Gather 1's no includes an earned content flag (a child met devil faces and men tied up during math). Gather 2's no is only an age_gating flag, and its content grade is unknown because the judge graded ok and cited nothing, with 28 content risks on the table.
+Khan Academy Kids gather 2, age 5, verdict no. Tavily 8 credits. Read $0.015596, judge $0.028643. 226 findings, 33 chunks, 0 failed chunks, missing source: terms. Ledger after this gather: $0.236605. Both gathers say no. Gather 1's no includes an earned content flag. The reader filed the devil-faces sentence with ref `[R18]`, and review 18's body contains those words, so the quote reached the judge. Gather 2 filed the same sentence with ref `[R52]`. Review 52 is a crashing and green-bear story and does not contain those words, so the quote was dropped before the judge. Of the gather 2 content-risk quotes whose named review contains them, none name sexual content, violence, horror, harassment, or self-harm. Gather 2's content grade is unknown because that quote was dropped, and the judge then graded content ok and cited nothing. The only flag on that card is the curriculum ceiling.
 
 | Area | Card grade | Cited quote | Earned | Check |
 |---|---|---|---|---|
@@ -814,55 +814,57 @@ Fixture recordings, replayed offline.
 
 Minecraft's four standing settings are the T3.10 caveat again: the check that would refuse a fitting citation did not run, because entailment accepted grades whose risk quotes do not meet the area definition. Khan's demotions are the checks holding uncited ok grades, an unnamed setting, and two odd reviews. No fixture grade was voided by checkCitations.
 
-**Result, after the entailment change.** The reader model returned `meets_definition: true` for every Minecraft gather 1 grade, including the quotes the prompt names as exclusions. The same prompt on the judge model, thinking off, refuses those grades. Entailment now runs on the judge model. Reader and judge recordings were replayed. Only entailment keys were new. `go run ./tools/eval` exits 0. Replay of gathers 1 and 2 exits 0. Two settings still stand on quotes that do not earn them: fixture Minecraft contact, and Minecraft gather 2 age gating. No further prompt was added to push a verdict.
+**Result, after the entailment change.** The reader model returned `meets_definition: true` on 11 of the 12 Minecraft gather 1 entailment replies. The same check on the judge model, thinking off, refuses the grades whose quotes do not show the harm `areaDefs` names. This round wires the server the same way `tools/eval` already did: `cmd/before-yes/build.go` passes the judge client as `Entail`, and the entail call keeps `JudgeFast` (thinking off). `TestServeAndCheckWireEntail` fails if that client is the reader. That wiring was not already true. Reader and judge grade recordings were replayed. A new entailment prompt writes new keys; the old Nano true/true files stay. `go run ./tools/eval` exits 0. Replay of gathers 1 and 2 exits 0.
 
-Roblox gather 1, age 9, verdict **no**. Card read $0.017832, judge $0.020867 (entailment on the judge model is in the judge figure). Tavily 8.
+Fixture Minecraft contact does not stand. The risk quote is a gameplay paragraph and the mitigation is chat set to friends only; entailment was false/false (`flag_not_earned`). Content is also unknown, so the verdict stays unclear. Minecraft gather 2 age gating does not stand: the mitigation is a child account linked to an adult, which does not close a birth date the child can fake. Money on that card remains a flag, so the verdict stays no. Roblox gather 2 data does not stand. The image-retention quote meets the data definition (`meets_definition` true) and the reason adds that the data is shared for ads, which none of the three cited quotes say, so `reason_supported` is false and the grade drops. The other Roblox gather 2 flags still carry verdict no. Roblox gather 1 is unclear, and that difference is the evidence: the age-gating reason adds that no parent-set control locks the account, which the birthdate quote does not say, so that flag drops, and content unknown makes the verdict unclear before the contact setting can. A standing reason stays the area definition. `checklist.Decide` is unchanged.
+
+Roblox gather 1, age 9, verdict **unclear**. Card read $0.017832, judge $0.022718 (entailment on the judge model is in the judge figure). Tavily 8. Gather 2 still reads no. No flag remains on this card. The age-gating reason is "The age gate can be bypassed (e.g., by entering any birthdate before September 2007) and no parent-set control locks the account to the correct age band." The birthdate quote shows the bypass. It does not say that no parent-set control locks the account, so `reason_supported` is false and the flag drops. Content is unknown. `Decide` returns unclear when content is unknown, before a contact setting can make the card yes_with_settings.
 
 | Area | Card grade | Cited quote | Earned | Check |
 |---|---|---|---|---|
-| contact | ok_with_setting, "parental controls" | Open communication channels exposed minors. Mitigation: direct messages and party chats can be disabled with parental controls. | earned | stood (entail true/true) |
-| money | ok_with_setting, "parental controls" | Store loot-box line. Mitigation: parental controls can block spending. | earned | stood (entail true/true) |
-| data | ok_with_setting, "turn off ad personalization and data selling" | "Data will now be sold." Mitigation names turning off ad personalization and data selling. | earned | stood (entail true/true) |
-| age_gating | flag | "A kid who wants to dodge all of the above can simply enter any birthdate before September 2007." | earned | stood (entail true/true). This flag carries the verdict. |
+| contact | ok_with_setting, "parental controls" | Open communication channels exposed minors to sexual exploitation. Mitigation: direct messages and party chats can be disabled with parental controls. | earned | stood (entail true/true) |
+| money | unknown (judge ok_with_setting, "parental controls") | Store loot-box line. Mitigation: parental controls can block spending. | the check returned meets_definition false | entail: flag_not_earned |
+| data | unknown (judge ok_with_setting, "turn off ad personalization and data selling") | "Data will now be sold." Mitigation names turning off ad personalization and data selling. | the check returned meets_definition false | entail: flag_not_earned |
+| age_gating | unknown (judge flagged) | "A kid who wants to dodge all of the above can simply enter any birthdate before September 2007." | the quote shows the bypass. The reason adds a control the quote does not show. | entail: reason_unsupported (meets_definition true, reason_supported false) |
 | content | unknown (judge flagged) | "god theres so many preds so i do NOT recommend this game for children/teens because there is some bad games" | not earned on the content list: the quote names predators and bad games, and none of sexual content, violence, horror, harassment or self-harm | entail: flag_not_earned |
 | developer_record | unknown (judge flagged) | Predator review, suspension review, VNG-partnership review, terms Section 10.2 | not earned | entail: flag_not_earned |
 
-Roblox gather 2, age 9, verdict **no**. Read $0.017949, judge $0.026573. Tavily 8. Same verdict as gather 1. The grades differ because this gather's pages include the threat report, the $7,000 spend, and the Texas suit.
+Roblox gather 2, age 9, verdict **no**. Read $0.017949, judge $0.028423. Tavily 8. The grades differ from gather 1 because this gather's pages include the threat report, the $7,000 spend, and the Texas suit. Data does not stand. The reason is "Roblox collects and shares children's data for ads, and users cannot fully delete it or stop third-party sharing of age-verification images." The three cited quotes are a store slogan, a terms line that Roblox may review content, and the image-retention line (third-party providers, no fixed retention period). None of them say ads. The image-retention quote meets the data definition, so `meets_definition` stayed true. `reason_supported` is false, and the grade drops. `meets_definition` was not weakened to keep it. Contact, money, age gating, content, and developer_record still stand, so the verdict stays no.
 
 | Area | Card grade | Cited quote | Earned | Check |
 |---|---|---|---|---|
 | contact | flag | "my kids has been threatened by a person in adopt me". Also mini-game chats that cannot be disabled. | earned | stood (entail true/true). The pre-fix entailment on this gather had refused this citation. |
 | money | flag | A 10-year-old spent more than $7,000 in two months, and a $46 charge. A third review does not mention a purchase. | earned, on the two spend quotes | stood (entail true/true) |
-| data | flag | Age-verification images "may be processed by third-party providers" with no fixed retention. Also a store slogan and a terms line. | earned on the image quote. The reason also says the data is shared for ads, which these quotes do not say, and entailment marked reason_supported true. | stood (entail true/true) |
+| data | unknown (judge flagged) | Age-verification images "may be processed by third-party providers" with no fixed retention. Also a store slogan and a terms line. | the image quote meets the data definition. The reason adds "for ads", which no cited quote says. | entail: reason_unsupported (meets_definition true, reason_supported false) |
 | age_gating | flag | Birthday recorded as 7 October 1985 for a child under 13, and a child "put in the 28th group." | earned | stood (entail true/true) |
 | content | flag | Sexually explicit user-made games, a shooting scene, a 5+ punching tutorial, a 10-year-old reaching suggestive spaces. Other cited quotes do not meet the definition. | earned, on the quotes that name sexual content and violence | stood (entail true/true) |
 | developer_record | flag | "Texas Attorney General Ken Paxton says he has sued Roblox" | earned | stood (entail true/true) |
 
-Every Roblox flag that stands is earned. Both gathers read no.
+Every Roblox gather 2 flag that stands is earned. Gather 1 is unclear for the reason above. Gather 2 reads no.
 
-Minecraft gather 1, age 9, verdict **unclear**. Read $0.020038, judge $0.023319. Tavily 7. The fixture recordings for this title were yes_with_settings before this change. The unearned flags fell, and contact and content are unknown, so the verdict is unclear.
+Minecraft gather 1, age 9, verdict **unclear**. Read $0.020038, judge $0.025169. Tavily 7. The fixture recordings for this title were yes_with_settings before this change. The unearned flags fell, and contact and content are unknown, so the verdict is unclear. Money is unknown. The mitigation is the words "Control Spending", and entailment was false/false.
 
 | Area | Card grade | Cited quote | Earned | Check |
 |---|---|---|---|---|
 | contact | unknown (judge ok_with_setting, "Restrict Communication") | Locked-account review. Mitigation is the words "Restrict Communication". | not earned | entail: flag_not_earned |
 | money | unknown (judge ok_with_setting, "Control Spending") | A 10-year-old spent birthday money on minecoins. Mitigation is the words "Control Spending". | the purchase quote is earned. The mitigation quote is only the label, and the check refused the setting. | entail: flag_not_earned |
-| data | unknown (judge flagged) | "App Tracking: To deliver personalized ads and improve application experience" | not earned | entail: flag_not_earned |
+| data | unknown (judge flagged) | "App Tracking: To deliver personalized ads and improve application experience" | the quote shows a tracking line. The reason states more than that quote shows. | entail: reason_unsupported (meets_definition true, reason_supported false) |
 | age_gating | unknown (judge flagged) | "Can you make the game available for +5 year-old?" | not earned | entail: flag_not_earned |
 | content | unknown (judge ok_with_setting) | "it was scary but in the good way" | not earned | entail: flag_not_earned |
 | developer_record | unknown (judge flagged) | "BAN YOUR STUPID GAME" and a Microsoft age-assurance FAQ citation. The reason says fines and lawsuits. | not earned | entail: flag_not_earned |
 
-Minecraft gather 2, age 9, verdict **no**. Read $0.013781, judge $0.017650. Tavily 7. Same documents do not explain a shared verdict with gather 1: gather 2 cites a completed child purchase and has no money mitigation, so the money flag stands. Gather 1's flags were unearned and fell.
+Minecraft gather 2, age 9, verdict **no**. Read $0.013781, judge $0.018884. Tavily 7. Same documents do not explain a shared verdict with gather 1: gather 2 cites a completed child purchase and has no money mitigation, so the money flag stands. Gather 1's flags were unearned and fell. Age gating is not ok_with_setting.
 
 | Area | Card grade | Cited quote | Earned | Check |
 |---|---|---|---|---|
 | contact | unknown (judge ok_with_setting) | "Local Network: To find other devices on the same Wi-Fi network". Mitigation: multiplayer off by default on child accounts. | not earned | entail: flag_not_earned |
 | money | flag | "i bought 10,000 minecoins and im litterly a kid im only 10 and i got scammed i litterly used all my birthday money!" | earned | stood (entail true/true). This flag carries the verdict. |
 | data | unknown (judge ok_with_setting) | App-tracking line. Mitigation: child accounts "provide guardrails against the collection of some data". | not earned | entail: flag_not_earned |
-| age_gating | ok_with_setting, child account linked to an adult | "it's pretty easy for a savvy kid to fake their birthdate to gain access." Mitigation: under-16 accounts are child accounts linked to an adult. | the risk quote is earned. The setting does not close that hole, so the ok_with_setting is not earned. It still stands. | stood (entail true/true) |
+| age_gating | unknown (judge ok_with_setting, child account linked to an adult) | "it's pretty easy for a savvy kid to fake their birthdate to gain access." Mitigation: under-16 accounts are child accounts linked to an adult. | the risk quote shows a birth date the child can fake. The control is given only to accounts the age check has already treated as children, so it does not close that hole. The model returned meets_definition true anyway. reason_supported is false, and the grade does not stand. | entail: reason_unsupported (meets_definition true, reason_supported false) |
 | content | unknown | Harassment quote "Racist It called me the n word", plus a contact mitigation. | the harassment quote is earned. The grade does not stand. | checkCitations: citation outside the area |
 | developer_record | unknown | Store tracking line, and the Microsoft FTC fine, filed under data. | the fine was not a developer_record finding | checkCitations: citation outside the area |
 
-Khan Academy Kids gather 1, age 5, verdict **no**. Read $0.016476, judge $0.025015. Tavily 8.
+Khan Academy Kids gather 1, age 5, verdict **no**. Read $0.016476, judge $0.025631. Tavily 8. The content flag cites the devil-faces sentence. Its ref is `[R18]`, and review 18's body contains those words.
 
 | Area | Card grade | Cited quote | Earned | Check |
 |---|---|---|---|---|
@@ -873,18 +875,18 @@ Khan Academy Kids gather 1, age 5, verdict **no**. Read $0.016476, judge $0.0250
 | content | flag | "A grid of scary devil faces and men tied up with their mouth taped shut popped up" during math. | earned | stood (entail true/true). This flag carries the verdict. |
 | developer_record | unknown | none (judge graded ok) | n/a | ok_without_finding |
 
-Khan Academy Kids gather 2, age 5, verdict **unclear**. Read $0.015596, judge $0.029295. Tavily 8. Gather 1's content flag does not recur: this gather's judge graded content ok and cited nothing, with 28 content risks on the table. The only flag was the curriculum ceiling, and it fell. No flag stands.
+Khan Academy Kids gather 2, age 5, verdict **unclear**. Read $0.015596, judge $0.029604. Tavily 8. Gather 1 reads no and gather 2 reads unclear. The gap is one dropped quote. The reader filed the same devil-faces sentence gather 1 kept, with ref `[R52]`. Review 52 does not contain those words (its body is a crashing and green-bear story), so the quote was dropped and never reached the judge. Of the gather 2 content-risk quotes whose named review contains them, none name sexual content, violence, horror, harassment, or self-harm. The judge graded content ok and cited nothing. The curriculum-ceiling flag does not stand: the model returned meets_definition true and reason_supported false, so the grade drops as reason_unsupported. No flag stands.
 
 | Area | Card grade | Cited quote | Earned | Check |
 |---|---|---|---|---|
 | contact | unknown | none | n/a | ok_without_finding |
 | money | unknown | none | n/a | ok_without_finding |
 | data | unknown | none | n/a | ok_without_finding |
-| age_gating | unknown (judge flagged) | Nineteen citations that the lessons stop at 2nd grade. | not earned | entail: flag_not_earned |
-| content | unknown | none | n/a | ok_without_finding |
+| age_gating | unknown (judge flagged) | Nineteen citations that the lessons stop at 2nd grade. | not a failed gate. The model returned meets_definition true and reason_supported false, so the grade does not stand. | entail: reason_unsupported (meets_definition true, reason_supported false) |
+| content | unknown | none. The devil-faces sentence was filed with ref `[R52]` and dropped, because review 52 does not contain those words. | n/a | ok_without_finding |
 | developer_record | unknown | none | n/a | ok_without_finding |
 
-Fixture recordings, replayed offline after the same entailment calls. `go run ./tools/eval` exited 0. Roblox read $0.015719, judge $0.026303, Tavily 8, verdict no. Minecraft read $0.020990, judge $0.022719, Tavily 7, verdict unclear. Khan read $0.011594, judge $0.027626, Tavily 7, verdict unclear.
+Fixture recordings, replayed offline after the same entailment calls. `go run ./tools/eval` exited 0. Roblox read $0.015719, judge $0.028154, Tavily 8, verdict no. Minecraft read $0.020990, judge $0.023953, Tavily 7, verdict unclear. Khan read $0.011594, judge $0.027934, Tavily 7, verdict unclear.
 
 | Title | Area | Card grade | Cited quote | Earned | Check |
 |---|---|---|---|---|---|
@@ -894,7 +896,7 @@ Fixture recordings, replayed offline after the same entailment calls. `go run ./
 | Roblox | age_gating | flag | "a kid who wants to dodge all of the above can simply enter any birthdate before September 2007." | earned, on the birthdate quote | stood (entail true/true). The reason is the area definition. |
 | Roblox | content | unknown (judge flagged) | "people have been kidnapped by adults", and "This game has preds". A third review is a suspension complaint. | earned on the kidnapping quote | entail: flag_not_earned. The verdict no does not use this grade. |
 | Roblox | developer_record | flag | "Los Angeles County filed a civil lawsuit against Roblox Corporation". Also a line about new under-13 protections, and a report of investigations that does not name this developer. | earned, on the lawsuit quote | stood (entail true/true). The reason is the area definition. |
-| Minecraft (9), verdict unclear | contact | ok_with_setting, "friends only" | Risk quote is a gameplay paragraph ("You can mine, build houses…"). Mitigation: set chat to "friends only". | not earned. The grade still stands. | stood (entail true/true) |
+| Minecraft (9), verdict unclear | contact | unknown (judge ok_with_setting, "friends only") | Risk quote is a gameplay paragraph ("You can mine, build houses…"). Mitigation: set chat to "friends only". | not earned: the risk quote does not show strangers reaching the child | entail: flag_not_earned (meets_definition false, reason_supported false) |
 | Minecraft | money | unknown (judge ok_with_setting, "Control Spending") | A mod charge "scammed" a parent. Mitigation is the words "Control Spending". | the purchase quote is thin. The check refused the setting. | entail: flag_not_earned |
 | Minecraft | data | unknown | none | n/a | stood (judge graded unknown) |
 | Minecraft | age_gating | unknown (judge ok_with_setting, "multiplayer starts off") | "Play with your friends on your own personal server." | not earned | entail: flag_not_earned |

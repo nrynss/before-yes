@@ -376,11 +376,12 @@ func TestRecordedRepliesGradesRestOnVerifiedQuotes(t *testing.T) {
 		// suit is filed against the developer). contact, data and content
 		// are flag_not_earned and land thin. Verdict no.
 		{demos[0], 9, checklist.No, L(unk, flag, unk, flag, unk, flag), []checklist.Area{"contact", "data", "content"}},
-		// Minecraft: contact stays ok_with_setting. money, age_gating and
-		// content are flag_not_earned. data and developer_record are the
-		// judge's own unknowns, so they are not thin. Content unknown makes
-		// the verdict unclear.
-		{demos[1], 9, checklist.Unclear, L(set, unk, unk, unk, unk, unk), []checklist.Area{"money", "age_gating", "content"}},
+		// Minecraft: contact, money, age_gating and content are
+		// flag_not_earned. The contact grade was a gameplay paragraph plus
+		// a friends-only chat setting; it does not stand. data and
+		// developer_record are the judge's own unknowns, so they are not
+		// thin. Content unknown makes the verdict unclear.
+		{demos[1], 9, checklist.Unclear, L(unk, unk, unk, unk, unk, unk), []checklist.Area{"contact", "money", "age_gating", "content"}},
 		// Khan: the judge graded four areas ok citing nothing (Enforce's
 		// ok_without_finding), age_gating named a setting no cited quote
 		// names, and the content flag's quotes do not meet the definition
@@ -696,35 +697,92 @@ func TestJudgeSystemAreaDefinitions(t *testing.T) {
 	}
 }
 
-// The entailment instruction is what keeps an unearned flag from standing
-// and what keeps one weak citation from sinking a fitting one. The live
-// gathers measured both misses against the previous wording.
+// The entailment instruction states the area definition. It does not name a
+// captured review. The fixture replay must not keep a grade whose risk quote
+// is a gameplay paragraph, or a setting whose mitigation is only a label.
 func TestEntailSystemHoldsAFittingQuote(t *testing.T) {
 	s := entailSystem()
 	for _, w := range []string{
+		"Scary in a good way",
+		"Ban this game",
+		"A player saying to ban the game",
+		"A locked account, a Wi-Fi or tracking permission",
+		"lessons are too easy or stop at a grade",
+		"You can mine, build houses",
+		"fake their birthdate",
+		"BAN YOUR STUPID GAME",
+	} {
+		if strings.Contains(s, w) {
+			t.Errorf("entail prompt names a captured phrase: %q", w)
+		}
+	}
+	for _, w := range []string{
 		"at least one cited quote itself shows",
 		"does not cancel a cited quote that does",
-		"A control that does not close the hole the risk quote describes does not meet it",
-		"A locked account, a Wi-Fi or tracking permission, or a settings label is not that",
-		"A child threatened or contacted by another player is",
-		"A price on its own is not that",
-		"A store slogan, a compliance claim, or an email field is not that",
-		"A request to widen the age range, or a complaint that the lessons are too easy or stop at a grade, is not a failed gate",
-		"A mitigation meets it only when the control stops the bypass the risk quote describes",
-		`"Scary in a good way", a wish, or a dislike that names none of those harms is not that`,
-		`"Ban this game", or another company's action, is not a record`,
-		"A player saying to ban the game, a help page, or an FAQ citation is not a record",
-		"the quote itself has to name the fine, the suit, the breach, or the regulator's action",
-		"the action itself is the record, and the quote need not show its outcome",
-		"The reason is not evidence",
-		"meets_definition is false when no cited quote names the harm, even if the reason does",
-		"false only when the reason states a fact no cited quote shows",
-		"Do not fail it for also naming the definition's other clauses",
+		"A control handed out only after a check the risk quote says the child can get past does not close that hole",
+		"only names a control",
+		"A free-form reason does not get that allowance",
+		"meets_definition is false when no cited quote shows the harm, even if the reason names it",
+		"The flag definition is not a quote",
+		"shares children's information for advertising",
+		"advertising is not in the quote",
+		"One unshown use fails the reason",
+		"A paraphrase of the opening statement is step 2",
+		"Age gating, for a flag, is true when a cited quote shows a child getting past the gate",
 	} {
 		if !strings.Contains(s, w) {
 			t.Errorf("entail prompt misses %q", w)
 		}
 	}
+	card := replayDemo(t, demos[1], 9)
+	by := map[checklist.Area]checklist.Grade{}
+	for _, g := range card.Grades {
+		by[g.Area] = g
+	}
+	if by[checklist.Contact].Level == checklist.OKWithSetting {
+		t.Errorf("fixture contact stayed ok_with_setting %q; the risk quote is a gameplay paragraph", by[checklist.Contact].Setting)
+	}
+	if by[checklist.Money].Level == checklist.OKWithSetting {
+		t.Errorf("label-only money setting stood: %q", by[checklist.Money].Setting)
+	}
+}
+
+// replayDemo runs one fixture title through the recorded reader and judge,
+// including entailment, the way TestRecordedRepliesGradesRestOnVerifiedQuotes
+// does. A missing recording fails the test.
+func replayDemo(t *testing.T, d demo, age int) Card {
+	t.Helper()
+	dir := filepath.Join("..", "..", "testdata", "eval", "replies", d.slug)
+	reader := &recordedReplies{dir: dir, role: "reader"}
+	judge := &recordedReplies{dir: dir, role: "judge"}
+	_, srv := newFixture(t, d)
+	store, tc := fixtureClients(t, srv)
+	m := openTestMeter(t)
+	now := func() time.Time { return time.Date(2026, 10, 13, 19, 0, 0, 0, time.UTC) }
+	p := &Pipeline{
+		Gatherer: &Gatherer{Store: store, Search: tc, Meter: m, Now: now},
+		Reader:   &Reader{Model: reader, Meter: m},
+		Judge: &Judge{
+			Model: judge, Meter: m,
+			Fast:   map[string]any{"chat_template_kwargs": map[string]any{"enable_thinking": false}},
+			Think:  map[string]any{"chat_template_kwargs": map[string]any{"enable_thinking": true}},
+			Entail: judge,
+		},
+		Now: now,
+	}
+	ctx := context.Background()
+	ev, _, err := p.Collect(ctx, d.title, "eval-"+d.slug)
+	if err != nil {
+		t.Fatal(err)
+	}
+	card, err := p.Decide(ctx, ev, age, "eval-"+d.slug)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if n := reader.misses.Load() + judge.misses.Load(); n > 0 {
+		t.Fatalf("%d calls had no recording", n)
+	}
+	return card
 }
 
 // T3.10, fault 3, and the definition rule of fault 1: a standing grade whose
