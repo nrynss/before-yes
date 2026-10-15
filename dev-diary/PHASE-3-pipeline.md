@@ -765,6 +765,17 @@ Roblox gather 2, age 9, verdict no. Same verdict as gather 1. Tavily 8 credits. 
 
 The flags that stand are earned, so the verdict no is earned. Contact is the case the task describes: a fitting citation was on the table and entailment refused it. Gather 1's developer_record was the other shape: a fitting lawsuit quote was on the table and the judge cited reviews instead, and entailment then correctly refused those reviews.
 
+Minecraft gather 2, age 9, verdict no. Same verdict as gather 1. Tavily 7 credits. Read $0.013781, judge $0.016536. 142 findings, 43 chunks, 0 failed chunks, missing source: policy. Ledger after this gather: $0.192367. The path to no is not the same. Gather 1's no stands on an unearned age_gating flag and an unearned developer_record flag. Gather 2's no stands on a money flag a child-spend quote earns. Gather 2 has no money mitigations in the findings (0), so the judge could not cite Control Spending the way gather 1 did.
+
+| Area | Card grade | Cited quote | Earned | Check |
+|---|---|---|---|---|
+| contact | ok_with_setting, "Multiplayer is off by default on child accounts in both Java Edition and Bedrock Edition" | Risk: "Local Network: To find other devices on the same Wi‑Fi network for multiplayer gameplay." Mitigation: multiplayer is off by default on child accounts. | not earned: the risk quote is a permission string, not strangers reaching the child | stood (entail true/true) |
+| money | flag | "i bought 10,000 minecoins and im litterly a kid im only 10 and i got scammed i litterly used all my birthday money!" Also a rating line about turning on "Ask a parent to buy things", which the reader marked risk. | earned, on the child's purchase | stood (entail true/true) |
+| data | ok_with_setting, "child accounts automatically provide guardrails against the collection of some data" | "App Tracking: To deliver personalized ads and improve application experience." Mitigation: child accounts "provide guardrails against the collection of some data". | not earned: the risk quote does not say the tracking is aimed at children or that a parent cannot stop it, and "some data" does not stop that tracking | stood (entail true/true) |
+| age_gating | ok_with_setting, child account linked to an adult | "it's pretty easy for a savvy kid to fake their birthdate to gain access." Mitigation: under-16 accounts are child accounts linked to an adult. | the risk quote is earned (a birthdate the child can fake). The setting does not close that hole, so the ok_with_setting is not earned. | stood (entail true/true) |
+| content | unknown (judge had ok_with_setting) | Risk, in area: "Racist It called me the n word". The other citation is a contact mitigation about preset chat words. | the harassment quote is earned. The grade does not stand. | checkCitations: citation outside the area. One bad id voided the fitting citation. ThinReason. |
+| developer_record | unknown (judge had flagged) | A store tracking line, and "Microsoft will pay a fine of $20 million to settle Federal Trade Commission charges that it illegally collected and retained the data of children who signed up", which the reader filed under data. | the Microsoft fine may name this title's developer. It was not a developer_record finding, so the citation was out of area. The grade does not stand. | checkCitations: citation outside the area. ThinReason. |
+
 Fixture recordings, replayed offline.
 
 | Title | Area | Card grade | Cited quote | Earned | Check |

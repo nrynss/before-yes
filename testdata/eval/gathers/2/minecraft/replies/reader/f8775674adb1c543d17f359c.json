@@ -1,0 +1,8 @@
+{
+  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D180]\",\n      \"area\": \"money\",\n      \"claim\": \"A nine-year-old spent $118,000 on YouTube ads using a corporate credit card saved in a shared Google account.\",\n      \"stance\": \"risk\",\n      \"quote\": \"according to a video his father posted on September 15, 2026. The father, who goes by Dave in the coverage, says the money came off a company credit card that had been saved to the family’s shared Google account after an earlier purchase of Robux, Roblox’s in-game currency.\"\n    }\n  ]\n}",
+  "input_tokens": 3640,
+  "output_tokens": 144,
+  "price_nano": 252960,
+  "measured": true,
+  "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B"
+}
