@@ -752,6 +752,19 @@ Khan Academy Kids gather 1, age 5, verdict no. The fixture recordings for this t
 | content | flag | "A grid of scary devil faces and men tied up with their mouth taped shut popped up for about 15 seconds while my kid was working on math." | earned: a child met horror and violence in the app | stood (entail true/true) |
 | developer_record | unknown (judge graded ok and cited nothing) | none | n/a | ok_without_finding |
 
+Roblox gather 2, age 9, verdict no. Same verdict as gather 1. Tavily 8 credits. Read $0.017949, judge $0.024417. 187 findings, 39 chunks, 1 failed chunk, no missing sources. Ledger after this gather: $0.162050. The grades are not the same as gather 1. Gather 2's news and forum pages include a Texas Attorney General suit and first-hand content reports that gather 1's citations did not use.
+
+| Area | Card grade | Cited quote | Earned | Check |
+|---|---|---|---|---|
+| contact | unknown (judge flagged) | "it allows your child to interact with adults and my kids has been threatened by a person in adopt me". Also: mini-game chats "cannot be disabled". | earned, and the check refused it | entail: flag_not_earned (meets_definition false, reason_supported false) |
+| money | flag | A 10-year-old "spent more than $7,000 in two months", and a $46 charge on a game advertised as free. A third cited review does not mention purchases. | earned, on the two spend quotes | stood (entail true/true) |
+| data | flag | "Images used for age verification may be processed by third-party providers, but Roblox does not publicly guarantee a fixed retention period for the images of children." Also a store safety slogan and a terms line that Roblox may review content. | earned on the image-retention quote. The reason also says the data is shared for ads, which these quotes do not say. | stood (entail true/true) |
+| age_gating | flag | "my child got put in the 28th group." Also a birthday recorded as 7 October 1985 for a child under 13, so the check said they were 41. | earned: the check placed a child at the wrong age | stood (entail true/true) |
+| content | flag | Forum and review reports of sexually explicit user-made games, a fiery shooting scene, a 5+ game whose tutorial is punching and shooting, and a 10-year-old reaching "highly suggestive" spaces. The judge also cited quotes that do not meet the definition. | earned, on the quotes that name sexual content and violence | stood (entail true/true) |
+| developer_record | flag | "Texas Attorney General Ken Paxton says he has sued Roblox" for ignoring safety laws. | earned: a lawsuit by a regulator naming this developer | stood (entail true/true) |
+
+The flags that stand are earned, so the verdict no is earned. Contact is the case the task describes: a fitting citation was on the table and entailment refused it. Gather 1's developer_record was the other shape: a fitting lawsuit quote was on the table and the judge cited reviews instead, and entailment then correctly refused those reviews.
+
 Fixture recordings, replayed offline.
 
 | Title | Area | Card grade | Cited quote | Earned | Check |
