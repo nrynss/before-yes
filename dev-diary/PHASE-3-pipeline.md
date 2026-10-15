@@ -961,8 +961,8 @@ On live search, the alternatives step finds nothing usable. Replaying the live r
 requires:   T3.12
 fixture-ok: no (offline on the T3.12 captures, then one live run)
 size:       S · mid
-owns:       internal/pipeline/alternatives.go, internal/pipeline/alternatives_test.go, internal/appstore/ (genre only), testdata/alternatives/
-status:     not-started
+owns:       internal/pipeline/alternatives.go, internal/pipeline/alternatives_test.go, internal/pipeline/pipeline.go (genre propagation only), internal/appstore/ (genre only), testdata/alternatives/
+status:     claimed:gpt-6.1-sol
 ```
 T3.12's live run: Roblox (9) read **no**, and its three candidates were Roblox experiences. Each carried the platform's own risks, so none beat the "no" and the card shows no alternative. The user decided that a "no" on a platform suggests other products, not other experiences on the same platform.
 
