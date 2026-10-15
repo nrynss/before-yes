@@ -1,16 +1,19 @@
 import { ApiError } from '@nrynss/chaaya/keel';
+import { errorNotice, type Notice } from '../errors/notice';
 
-export function refusal(error: unknown): string {
-  if (!(error instanceof ApiError)) return 'We couldn’t read the answer. Please try again, or open an example below.';
-  const seconds = error.detail.retry_after_seconds ?? error.retryAfterSeconds;
-  const wait = typeof seconds === 'number' && Number.isFinite(seconds) && seconds > 0 ? ` Wait ${Math.ceil(seconds)} seconds, then try again.` : ' Please wait a moment, then try again.';
-  switch (error.code) {
-    case 'invalid_request': return 'Please check the title and enter a whole age from 3 to 17, then try again.';
-    case 'budget_exhausted': return 'The budget for fresh checks is used up. Open a recent example below, or come back later.';
-    case 'live_checks_off': return 'Fresh checks are paused. You can still open the free example cards below.';
-    case 'busy': return 'Other checks are running.' + wait;
-    case 'rate_limited': return 'You’ve asked for several checks.' + wait;
-    case 'network': case 'timeout': return 'We couldn’t reach Before Yes. Check your connection and try again.';
-    default: return 'Before Yes couldn’t start this check. Please try again, or open an example below.';
-  }
+// The eight T1.4 codes live in errorNotice. This file only adds the refusals that module does not define.
+const fromModule = new Set(['budget_exhausted', 'no_sources', 'check_failed', 'live_checks_off', 'busy', 'rate_limited', 'passcode_required', 'not_found']);
+
+function codeOf(error: unknown): string {
+  if (error instanceof ApiError) return error.code;
+  if (typeof error === 'object' && error !== null && 'code' in error && typeof (error as { code: unknown }).code === 'string') return (error as { code: string }).code;
+  return '';
+}
+
+export function refusal(error: unknown): Notice {
+  const code = codeOf(error);
+  if (fromModule.has(code)) return errorNotice(error);
+  if (code === 'invalid_request') return { situation: 'The title or the age was not accepted.', next: 'Please check the title and enter a whole age from 3 to 17, then try again.' };
+  if (code === 'network' || code === 'timeout') return { situation: 'We couldn’t reach Before Yes.', next: 'Check your connection and try again.' };
+  return { situation: 'Before Yes couldn’t start this check.', next: 'Please try again, or open an example below.' };
 }
