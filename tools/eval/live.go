@@ -38,7 +38,7 @@ import (
 )
 
 var (
-	liveSet        = flag.String("live-set", "tokenfactory", "with -models live: tokenfactory (Nano and Super on Token Factory) or openrouter (the free stand-ins)")
+	liveSet        = flag.String("live-set", "tokenfactory", "with -models live: tokenfactory (Nano and Super on Token Factory), super-vl or ultra (judge candidates on Token Factory), or openrouter (the free stand-ins)")
 	liveOnly       = flag.String("live-only", "", "with -models live: run only the title with this slug")
 	liveCapUSD     = flag.Float64("live-cap-usd", 1.5, "with -models live: refuse a call that would take the ledger past this many dollars")
 	liveLedger     = flag.String("live-ledger", "", "with -models live: file that holds the running spend in nanodollars, kept outside the repository")
@@ -106,6 +106,29 @@ var liveSets = map[string]liveSetting{
 		judge: model.Settings{
 			Provider: "tokenfactory", BaseURL: "https://api.tokenfactory.nebius.com/v1",
 			Model: "nvidia/Nemotron-3.5-Super-VL", InputPerM: 0.30, OutputPerM: 0.90,
+			MaxTokens: 4096, PerMinute: 60,
+		},
+		keyVar: "NEBIUS_KEY",
+		fast:   map[string]any{"chat_template_kwargs": map[string]any{"enable_thinking": false}},
+		think:  map[string]any{"chat_template_kwargs": map[string]any{"enable_thinking": true}},
+	},
+	// Nemotron-3-Ultra-550b-a55b on Token Factory, as a judge candidate only.
+	// Its price is not on the host's model page, which renders empty; the
+	// third-party listings (Requesty, TypingMind, LLM Gateway) give $1.00 in and
+	// $3.00 out per million tokens. That is the highest figure seen, so the cap
+	// errs safe. The thinking switch was confirmed live: enable_thinking false
+	// gave 3 output tokens, true gave 18 (14 of them reasoning). The reader is
+	// the Nano set's, and under -live-judge-out it only replays.
+	"ultra": {
+		reader: model.Settings{
+			Provider: "tokenfactory", BaseURL: "https://api.tokenfactory.nebius.com/v1",
+			Model: "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B", InputPerM: 0.06, OutputPerM: 0.24,
+			MaxTokens: 8192, PerMinute: 100,
+			Extra: map[string]any{"chat_template_kwargs": map[string]any{"enable_thinking": false}},
+		},
+		judge: model.Settings{
+			Provider: "tokenfactory", BaseURL: "https://api.tokenfactory.nebius.com/v1",
+			Model: "nvidia/Nemotron-3-Ultra-550b-a55b", InputPerM: 1.00, OutputPerM: 3.00,
 			MaxTokens: 4096, PerMinute: 60,
 		},
 		keyVar: "NEBIUS_KEY",
