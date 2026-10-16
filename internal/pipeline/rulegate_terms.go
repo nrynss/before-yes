@@ -170,6 +170,33 @@ var dataRisk = []pattern{
 // on the label.
 var dataLabelNotLinked = []string{"data not linked to you"}
 
+// accountHacked: a user's report of their own account being hacked, stolen
+// or compromised. One such report is about the account's security, not about
+// how the company handles children's data, so alone it does not hold a data
+// flag up (rule F). Negated hits ("never got hacked") do not count.
+var accountHacked = []string{
+	"got hacked", "getting hacked", "was hacked", "been hacked", "were hacked", // hacked
+	"account stolen", "accounts stolen", "account was stolen", "account got stolen", "stole my account", "stolen my account", // stolen
+	"account compromised", "accounts compromised", "account was compromised", "account got compromised", "got compromised", "was compromised", "been compromised", // compromised
+}
+
+// companyBreach: a breach or leak at the company itself — "data breach",
+// "leaked", "exposed records" — the words a regulator or news report of a
+// breach carries. Such a quote keeps a data flag standing whatever hack
+// reports sit beside it (rule F). A person's own account being hacked is
+// accountHacked, not this.
+var companyBreach = []string{
+	"data breach*", "security breach*", "was breached", "were breached", "breached",
+	"leaked", "data leak*",
+	"exposed record*", "records exposed", "exposed the data", "data exposed",
+}
+
+// dataMisuse is dataRisk without its breach group and without the no-delete
+// group: data being sold, tracked for ads, shared for marketing, or collected
+// without consent. Any such quote keeps a data flag standing beside a hack
+// report (rule F).
+var dataMisuse = append(append([]pattern{}, dataRisk[:7]...), dataRisk[8:9]...)
+
 // ---------------------------------------------------------------- content
 
 // contentHarm: a quote names a kind of material areaDefs calls unsuitable:

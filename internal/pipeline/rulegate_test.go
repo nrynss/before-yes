@@ -394,12 +394,17 @@ func TestRegulatorActionAboutAnotherProductIsInformation(t *testing.T) {
 	}
 
 	// With other evidence the flag stands, on the citations that are left.
-	hacked := gf{"hacked", checklist.Data, finding.Risk, KindReview, "", "I literally got hacked on Blocks by this kid so I'm deleting it"}
-	gs, acts = ApplyRules("Blocks", 9, all(grade(checklist.Data, checklist.Flag, "ftc", "hacked")), findings(news, hacked), names)
+	tracked := gf{"tracked", checklist.Data, finding.Risk, KindReview, "", "Sampleland tracks my child across apps to target them with ads"}
+	gs, acts = ApplyRules("Blocks", 9, all(grade(checklist.Data, checklist.Flag, "ftc", "tracked")), findings(news, tracked), names)
 	got = want(t, gs, acts, checklist.Data, checklist.Flag, RuleRegulatorOtherProduct, RuleDataConfirmed)
-	if !slices.Equal(got.Findings, []string{"hacked"}) {
+	if !slices.Equal(got.Findings, []string{"tracked"}) {
 		t.Errorf("citations %v, want only the quote about the title", got.Findings)
 	}
+	// A hacked-account review beside the stripped quote is rule F's shape:
+	// the flag falls to unknown on the one user report.
+	hacked := gf{"hacked", checklist.Data, finding.Risk, KindReview, "", "I literally got hacked on Blocks by this kid so I'm deleting it"}
+	gs, acts = ApplyRules("Blocks", 9, all(grade(checklist.Data, checklist.Flag, "ftc", "hacked")), findings(news, hacked), names)
+	want(t, gs, acts, checklist.Data, checklist.Unknown, RuleRegulatorOtherProduct, RuleDataOwnAccount)
 
 	// An ok left with nothing to cite falls to unknown, as Enforce's
 	// ok_without_finding does.

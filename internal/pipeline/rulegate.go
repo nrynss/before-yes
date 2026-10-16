@@ -32,6 +32,12 @@ import (
 //     about another product: it supports no grade, is removed from the
 //     citations, and is shown on the card as information (rule E). A regulator
 //     action that names the title itself is still evidence.
+//   - A data flag whose every qualifying quote is one user's report of their
+//     own account being hacked, stolen or compromised falls to unknown: that
+//     is account security, not how the company handles children's data. Two
+//     or more independent reports, a breach or leak at the company, or a
+//     quote about selling, tracking, sharing or consentless collection keeps
+//     the flag (rule F).
 //   - An unknown area is raised to ok when a verified fact settles it: the App
 //     Store lists the title as free with no in-app purchases (money), its
 //     privacy label shows no data linked to the user (data), its age rating is
@@ -65,6 +71,7 @@ const (
 	RuleDataNoBasis        = "data.flag_without_basis"
 	RuleDataConfirmed      = "data.flag_confirmed"
 	RuleDataNotLinked      = "data.label_not_linked"
+	RuleDataOwnAccount     = "data.own_account_hacked"
 	RuleContentNoHarm      = "content.flag_without_harm"
 	RuleContentConfirmed   = "content.flag_confirmed"
 	RuleContentRated       = "content.rated_for_age"
@@ -508,6 +515,11 @@ func (g *gate) area(in checklist.Grade, acts []GateAction) (checklist.Grade, []G
 		}
 		if len(support) > 0 && in.Area == checklist.Content {
 			if g2, act, done := g.singleMild(in, support); done {
+				return g2, append(acts, act)
+			}
+		}
+		if len(support) > 0 && in.Area == checklist.Data {
+			if g2, act, done := g.ownAccountReport(in, support); done {
 				return g2, append(acts, act)
 			}
 		}
@@ -988,4 +1000,40 @@ func (g *gate) singleMild(in checklist.Grade, support []finding.Finding) (checkl
 	out.Level, out.Setting, out.Reason = checklist.OK, "", note
 	out.Findings = []string{rating.ID, witness.ID}
 	return out, GateAction{Area: in.Area, Rule: RuleContentSingleMild, From: checklist.Flag, To: checklist.OK, Findings: []string{rating.ID, witness.ID}, Note: note}, true
+}
+
+// ownAccountReport is data.own_account_hacked. A data flag whose every
+// qualifying citation is a user's report of their own account being hacked,
+// stolen or compromised does not stand: one person's hacked account is about
+// account security, not about how the company handles children's data, so the
+// area is left open rather than flagged. The flag stays when two or more
+// independent hack reports exist anywhere in the area's verified risk quotes
+// about the title, or when a quote behind the flag itself describes a breach
+// or leak at the company, or data being sold, tracked for ads, shared for
+// marketing or collected without consent — a quote that reads "hacked" and
+// "leaked" together is reporting both.
+func (g *gate) ownAccountReport(in checklist.Grade, support []finding.Finding) (checklist.Grade, GateAction, bool) {
+	for _, f := range support {
+		if !hitsAny(g.w(f), accountHacked, true) {
+			return in, GateAction{}, false
+		}
+	}
+	sources := map[string]bool{}
+	for _, f := range g.riskIn(checklist.Data, func(f finding.Finding) bool { return hitsAny(g.w(f), accountHacked, true) }) {
+		sources[f.Source.URL+"#"+strconv.Itoa(f.Source.Index)] = true
+	}
+	if len(sources) >= 2 {
+		return in, GateAction{}, false
+	}
+	for _, id := range in.Findings {
+		f, ok := g.find(id)
+		if !ok || f.Stance != finding.Risk || !g.onSubject(f) {
+			continue
+		}
+		if hitsAny(g.w(f), companyBreach, true) || hitsVocab(g.w(f), dataMisuse, true) {
+			return in, GateAction{}, false
+		}
+	}
+	return unknownGrade(in), GateAction{Area: in.Area, Rule: RuleDataOwnAccount, From: checklist.Flag, To: checklist.Unknown, Findings: []string{},
+		Note: "One user reports that their own account was hacked, stolen or compromised. That is about the account's security, not about how the company handles children's data, so it is not enough evidence to concern the app."}, true
 }

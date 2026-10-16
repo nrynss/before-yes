@@ -165,3 +165,67 @@ func TestControlsAreReadFromTheTextNotTheStance(t *testing.T) {
 	gs, acts = run(all(grade(checklist.AgeGating, checklist.Flag, "risk")), findings(arisk, actl), 8)
 	want(t, gs, acts, checklist.AgeGating, checklist.OKWithSetting, RuleAgeGateCapped)
 }
+
+// ---------------------------------------------------------------- rule F: one user's hacked account
+
+// Rule F: a data flag whose every qualifying quote is a user's report of
+// their own account being hacked, stolen or compromised falls to unknown.
+// Two or more independent reports, a breach or leak at the company, or data
+// being sold, tracked, shared or collected without consent keeps the flag.
+// The report count reads the whole area; the breach and misuse words are
+// read behind the flag, in the quotes the concern rests on.
+func TestDataOwnAccountHackReport(t *testing.T) {
+	hack := gf{"hack", checklist.Data, finding.Risk, KindReview, "https://itunes.example/review/1", "I literally got hacked on Sampleland by this kid so I'm deleting it"}
+	// One hack report: unknown, citing nothing.
+	gs, acts := run(all(grade(checklist.Data, checklist.Flag, "hack")), findings(hack), 9)
+	g := want(t, gs, acts, checklist.Data, checklist.Unknown, RuleDataOwnAccount)
+	if len(g.Findings) != 0 {
+		t.Errorf("unknown cites %v", g.Findings)
+	}
+	if !strings.Contains(acts[0].Note, "the account's security, not about how the company handles children's data") {
+		t.Errorf("note %q", acts[0].Note)
+	}
+
+	// Two hack reports from two reviews still flag; a second uncited report
+	// is enough, because the rule counts reports wherever they are.
+	hack2 := gf{"hack2", checklist.Data, finding.Risk, KindReview, "https://itunes.example/review/2", "my account got stolen last week and support did nothing"}
+	gs, acts = run(all(grade(checklist.Data, checklist.Flag, "hack", "hack2")), findings(hack, hack2), 9)
+	want(t, gs, acts, checklist.Data, checklist.Flag, RuleDataConfirmed)
+	gs, acts = run(all(grade(checklist.Data, checklist.Flag, "hack")), findings(hack, hack2), 9)
+	want(t, gs, acts, checklist.Data, checklist.Flag, RuleDataConfirmed)
+	// Two findings from one review are one report.
+	same := gf{"same", checklist.Data, finding.Risk, KindReview, "https://itunes.example/review/1", "someone stole my account and everything in it is gone"}
+	gs, acts = run(all(grade(checklist.Data, checklist.Flag, "hack", "same")), findings(hack, same), 9)
+	want(t, gs, acts, checklist.Data, checklist.Unknown, RuleDataOwnAccount)
+
+	// A quote behind the flag that reports a breach or leak keeps it: the
+	// rule reads the flag's own quotes.
+	breach := gf{"breach", checklist.Data, finding.Risk, KindNews, "https://news.example/breach", "Sampleland had a data breach that leaked children's email addresses"}
+	gs, acts = run(all(grade(checklist.Data, checklist.Flag, "hack", "breach")), findings(hack, breach), 9)
+	want(t, gs, acts, checklist.Data, checklist.Flag, RuleDataConfirmed)
+	// The words together in one quote are the same: hacked and leaked is a
+	// company breach, not one child's account.
+	both := gf{"both", checklist.Data, finding.Risk, KindReview, "https://itunes.example/review/4", "my account got hacked after the database leaked"}
+	gs, acts = run(all(grade(checklist.Data, checklist.Flag, "both")), findings(both), 9)
+	want(t, gs, acts, checklist.Data, checklist.Flag, RuleDataConfirmed)
+
+	// Data being sold or tracked for ads behind the flag keeps it too; a
+	// misuse quote the judge did not cite is not what the concern is about.
+	sold := gf{"sold", checklist.Data, finding.Risk, KindForum, "https://forum.example/thread", "Sampleland sells your personal information to advertisers"}
+	gs, acts = run(all(grade(checklist.Data, checklist.Flag, "hack", "sold")), findings(hack, sold), 9)
+	want(t, gs, acts, checklist.Data, checklist.Flag, RuleDataConfirmed)
+	gs, acts = run(all(grade(checklist.Data, checklist.Flag, "hack")), findings(hack, sold), 9)
+	want(t, gs, acts, checklist.Data, checklist.Unknown, RuleDataOwnAccount)
+
+	// A flag resting on any other data concern is untouched: Roblox's shape,
+	// two policy quotes about reselling data for advertising.
+	policy := gf{"policy", checklist.Data, finding.Risk, KindPolicy, "https://forum.example/policy", "Roblox is reserving the right to resell and/or share your data for advertising purposes"}
+	gs, acts = run(all(grade(checklist.Data, checklist.Flag, "policy")), findings(policy), 9)
+	want(t, gs, acts, checklist.Data, checklist.Flag, RuleDataConfirmed)
+
+	// A negated hack report is not a hack report, so the rule does not apply
+	// and the flag stands or falls by the ordinary rules.
+	nohack := gf{"nohack", checklist.Data, finding.Risk, KindReview, "https://itunes.example/review/3", "nobody got hacked, I just lost my worlds in the update"}
+	gs, acts = run(all(grade(checklist.Data, checklist.Flag, "nohack")), findings(nohack), 9)
+	want(t, gs, acts, checklist.Data, checklist.Flag, RuleDataConfirmed)
+}

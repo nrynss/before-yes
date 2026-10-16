@@ -20,8 +20,10 @@ import (
 // so a card judged under v7 can differ from one judged now. v9: the gate caps
 // a money flag on a named purchase control even when other quotes complain
 // about spending, scams or billing (rule D), and treats a regulator action
-// about another product as information, not evidence (rule E).
-const Version = "v9"
+// about another product as information, not evidence (rule E). v10: the gate
+// leaves a data concern that rests on one user's report of a hacked account
+// unknown (rule F).
+const Version = "v10"
 
 // Area is one checklist area id. The ids are stable wire values.
 type Area string
