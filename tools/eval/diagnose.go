@@ -345,6 +345,11 @@ func diagnose(w io.Writer, card pipeline.Card, ev pipeline.Evidence, tr *callTra
 			fmt.Fprintf(w, "    judge (not in the reply)\n")
 		}
 		fmt.Fprintf(w, "    card %s setting %q\n", g.Level, g.Setting)
+		for _, act := range card.Gate {
+			if act.Area == a.ID {
+				fmt.Fprintf(w, "    gate %s %s -> %s findings %v\n", act.Rule, act.From, act.To, act.Findings)
+			}
+		}
 		checked := g
 		if tr != nil {
 			tr.mu.Lock()

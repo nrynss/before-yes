@@ -7,7 +7,7 @@
     "status": 200,
     "body": {
       "live": true,
-      "checklist_version": "v7",
+      "checklist_version": "v8",
       "budget": {
         "token_factory_remaining_nano": 24310000000,
         "tavily_credits_remaining": 914,

@@ -60,6 +60,22 @@ The app reads this route on load and after a reconnect whose `Last-Event-ID` fel
 
 Comment frames (`: ping`) keep the connection open and carry nothing.
 
+### The card's `gate` field
+
+`GET /api/cards/{id}` may carry `gate`, added in checklist `v8`: what the pipeline's rule gate did to the grades. The gate is plain code that runs after the model's grades and their checks and before the verdict is computed (`internal/pipeline/rulegate.go`); it makes no model call. It moves a grade only on verified quotes, and every grade it confirms, raises or caps cites at least one verified finding that satisfies its rule. `gate` is omitted when the gate did nothing, and a card saved before `v8` has none, so a client treats a missing or `null` `gate` as an empty list.
+
+Each member is one action, in the order they happened:
+
+| Field | Meaning |
+|---|---|
+| `area` | The checklist area id. |
+| `rule` | A stable rule id, `<area>.<rule>`, such as `money.free_no_in_app_purchases`. The rule table is in `internal/pipeline/rulegate.go`. |
+| `from`, `to` | Grade levels before and after. Equal levels mean the grade met its rule and stands. A veto goes to `unknown`, which also lists the area in `thin_areas`. A cap goes from `flag` to `ok_with_setting` and names its setting on the grade. A raise goes from `unknown` to `ok`. |
+| `findings` | Ids of the verified findings the action rests on, all on the card. A veto cites none. |
+| `note` | The rule's finding, as a plain sentence. When an action changes a grade, the grade's `reason` is set to a deterministic sentence from the cited quote's source, so the reason and the level agree. |
+
+A client never recomputes the verdict from `gate`. It shows the actions under "About this check".
+
 ## Errors
 
 Every non-2xx JSON response is Keel's `wire` envelope, written with `wire.WriteError`:

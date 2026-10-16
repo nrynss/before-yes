@@ -5,15 +5,23 @@ diagnose Khan Academy Kids age 5 verdict unclear findings 195 (conflict pass unu
     check ok_without_finding
     reason We don’t have enough evidence to assess this area. Don’t assume it is safe.
   money  risks 6 mitigations 4 other 22
-    judge ok setting "" cited 0 []
-    card unknown setting ""
+    conflict pass ok setting "" cited 0 []
+    first-pass fallback: the conflict pass's grade was made unknown by the checks, so the first pass's grade stands
+    judge (first pass) ok setting "" cited 0 []
+    card ok setting ""
+    gate money.free_no_in_app_purchases unknown -> ok findings [f_b42defec3738fd8b]
     check ok_without_finding
-    reason We don’t have enough evidence to assess this area. Don’t assume it is safe.
+    reason The App Store lists this app as free with no in-app purchases, and no checked quote reports purchases or ads.
+    quote f_b42defec3738fd8b mitigation store: Reading & Math Learning Games Free
   data  risks 5 mitigations 13 other 5
-    judge ok setting "" cited 0 []
-    card unknown setting ""
+    conflict pass ok setting "" cited 0 []
+    first-pass fallback: the conflict pass's grade was made unknown by the checks, so the first pass's grade stands
+    judge (first pass) ok setting "" cited 0 []
+    card ok setting ""
+    gate data.label_not_linked unknown -> ok findings [f_95d0754500916e2d]
     check ok_without_finding
-    reason We don’t have enough evidence to assess this area. Don’t assume it is safe.
+    reason The App Store privacy label says the developer reports no data linked to the user and none used to track them, and no checked quote reports data being sold, tracked for ads or shared for marketing.
+    quote f_95d0754500916e2d mitigation store: Data Not Linked to You The following data, which may be collected but is not linked to your identity, may be used for the following purposes:
   age_gating  risks 26 mitigations 2 other 7
     judge flag setting "" cited 16 [f_c130cb709d7b6d05 f_d977c3d7c01daf8a f_2ed72bf5cc14d74b f_de1f59b2e76eefb6 f_a6928887eae37273 f_4bd8df2d54f82513 f_a69e194698f6b29b f_3ea7cb6813dacd99 f_c63eb2084df56d40 f_1fa09bf014966950 f_f31ccecec31b4c6c f_b95573267eabed03 f_ea2bd4d42dd675c5 f_d79b70a1dd1aa8c2 f_ccc2d027a266e5eb f_a38e580fc7e48feb]
     card unknown setting ""

@@ -297,6 +297,16 @@ func build(t *testing.T, cs cardSpec) (Card, Evidence) {
 	if len(dem) != 0 {
 		t.Fatalf("%s: demotions %v", cs.file, dem)
 	}
+	// The examples are what the whole judge step would produce, so they must
+	// be stable under the rule gate: it may confirm a grade, never change it.
+	var names []string
+	if cs.app != nil {
+		names = []string{cs.app.Name, cs.app.Seller}
+	}
+	gated, acts := ApplyRules(cs.title, cs.age, grades, fs, WithDeveloper(names...))
+	if !reflect.DeepEqual(gated, grades) {
+		t.Fatalf("%s: the rule gate changes the example grades: %+v", cs.file, acts)
+	}
 	verdict, err := checklist.Decide(grades)
 	if err != nil {
 		t.Fatal(err)
@@ -342,7 +352,7 @@ func build(t *testing.T, cs cardSpec) (Card, Evidence) {
 		kind = KindIOS
 	}
 	card := Card{ID: cs.cardID, Title: cs.title, Kind: kind, KindLabel: KindLabel(kind), Age: cs.age, ChecklistVersion: checklist.Version,
-		CheckedAt: collected.Add(40 * time.Second), CollectedAt: collected, Verdict: verdict, Grades: grades, ThinAreas: cs.thin,
+		CheckedAt: collected.Add(40 * time.Second), CollectedAt: collected, Verdict: verdict, Grades: grades, ThinAreas: cs.thin, Gate: acts,
 		Settings: checklist.Settings(grades), Findings: onCard, Alternatives: alts, AlternativesNote: cs.altNote, App: cs.app, Stats: stats}
 	evStats := stats
 	evStats.ConflictedAreas, evStats.JudgeCostNano, evStats.JudgeModel = []checklist.Area{}, 0, ""
@@ -410,11 +420,14 @@ func cardSpecs() []cardSpec {
 					claim: "The developer describes the app as made for ages 2–8", quote: "A free educational app for children ages 2–8"},
 				{ref: "R311", area: checklist.Content, stance: finding.Neutral, claim: "A parent reports the app is calm and ad-free for a 4-year-old",
 					quote: "My 4 year old loves this. It has everything and isn’t overstimulating AND it has no ads."},
+				{ref: "tavily-search-rating.json|https://apps.apple.com/mx/app/khan-academy-kids/id1378467217?l=en-GB", kind: "store", area: checklist.Data, stance: finding.Mitigation,
+					claim: "Apple's privacy label shows the developer reports only data not linked to the user's identity, and none used to track the user.",
+					quote: "Data Not Linked to You The following data may be collected but it is not linked to your identity:"},
 			},
 			grades: []checklist.Grade{
 				g(checklist.Contact, checklist.OK, "", "A Kids-category app; no source describes chat or messaging.", "2"),
 				g(checklist.Money, checklist.OK, "", "Free, with no ads or subscriptions.", "0"),
-				g(checklist.Data, checklist.OK, "", "No ads and no third-party tracking.", "1"),
+				g(checklist.Data, checklist.OK, "", "No ads and no third-party tracking.", "1", "5"),
 				g(checklist.AgeGating, checklist.OK, "", "Made for ages 2 to 8; nothing to gate.", "3"),
 				g(checklist.Content, checklist.OK, "", "Parents report calm, age-appropriate content.", "4"),
 				g(checklist.DeveloperRecord, checklist.Unknown, "", "No developer record found."),

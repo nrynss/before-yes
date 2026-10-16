@@ -15,8 +15,10 @@ import (
 
 // Version names the checklist and rules a card was judged under. Bump it when
 // an area's wording or a rule in Decide or Enforce changes, because cached
-// cards record the version they were judged under.
-const Version = "v7"
+// cards record the version they were judged under. v8: the pipeline's rule
+// gate (internal/pipeline/rulegate.go) now settles the grades before Decide,
+// so a card judged under v7 can differ from one judged now.
+const Version = "v8"
 
 // Area is one checklist area id. The ids are stable wire values.
 type Area string

@@ -12,6 +12,7 @@ diagnose Minecraft age 9 verdict no findings 227 (conflict pass replaced the con
     first-pass fallback: the conflict pass's grade was made unknown by the checks, so the first pass's grade stands
     judge (first pass) flag setting "" cited 4 [f_4f0d24b3b6bb0948 f_fe600dad41e0a6a9 f_a24eb25dc2e2b26a f_f9d8e252eb8283e0]
     card flag setting ""
+    gate money.flag_confirmed flag -> flag findings [f_4f0d24b3b6bb0948 f_fe600dad41e0a6a9 f_a24eb25dc2e2b26a]
     check stood
     entail meets_definition=false reason_supported=false; entail meets_definition=true reason_supported=true
     reason A reviewer who says they are 10 years old reports buying 10,000 Minecoins using birthday money and feeling scammed.

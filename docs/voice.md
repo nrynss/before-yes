@@ -22,6 +22,8 @@ These rules and examples reflect the user’s accepted interface copy.
 - Alternatives are “Other titles to consider”; actions are “View check” and “Compare titles”. A daily-limit notice says “More alternatives can be checked when the daily limit resets.” Keep generated reasons and source quotes unchanged.
 - “About this check” uses plain labels for source sections, excluded findings, missing source types, AI models and processing costs. Counts and model identifiers stay as recorded. Sharing uses “Copy card link” and “Card link”. Small print: “This guidance reflects the sources available when the check was run.”
 
+- “About this check” also lists the rule checks, under “Rule checks”, one line for each: the area label, what happened (“Changed from Concern to Not enough evidence.” or “Stays Concern.”), then “Checked by rule:” and the rule’s finding in plain words, for example “Checked by rule: the App Store lists this app as free with no in-app purchases, and no checked quote reports purchases or ads.” These sentences are fixed by the rules, not written by a model.
+
 - Settings: “Settings to change” and “Needs a setting change”. Explain: “Change these settings on your child’s device, then tick them here. Ticking a box doesn’t change the device’s settings.” Remove “A practical checklist”. Keep “OK” and “Not enough evidence”.
 - An unknown area without a model explanation says: “We don’t have enough evidence to assess this area. Don’t assume it is safe.” Preserve any model explanation that exists.
 - Comparison: “Compare titles” and “Compare the evidence for each title. Check the age shown above each result.” Remove “Side by side”. Links say “View <title>’s check”; tab title is “Before Yes - <title> and <title>”.

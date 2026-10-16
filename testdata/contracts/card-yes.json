@@ -4,7 +4,7 @@
   "kind": "ios",
   "kind_label": "iOS app",
   "age": 5,
-  "checklist_version": "v7",
+  "checklist_version": "v8",
   "checked_at": "2026-10-13T18:58:40Z",
   "collected_at": "2026-10-13T18:58:00Z",
   "verdict": "yes",
@@ -29,7 +29,8 @@
       "area": "data",
       "level": "ok",
       "findings": [
-        "f_a02b449a48bf5752"
+        "f_a02b449a48bf5752",
+        "f_cb1ab482293f7def"
       ],
       "reason": "No ads and no third-party tracking."
     },
@@ -54,6 +55,18 @@
       "level": "unknown",
       "findings": [],
       "reason": "No developer record found."
+    }
+  ],
+  "gate": [
+    {
+      "area": "data",
+      "rule": "data.label_not_linked",
+      "from": "ok",
+      "to": "ok",
+      "findings": [
+        "f_cb1ab482293f7def"
+      ],
+      "note": "The App Store privacy label says the developer reports no data linked to the user and none used to track them, and no checked quote reports data being sold, tracked for ads or shared for marketing."
     }
   ],
   "settings": [],
@@ -120,6 +133,19 @@
         "url": "https://itunes.apple.com/us/rss/customerreviews/id=1378467217/sortby=mostrecent/json",
         "kind": "review",
         "index": 311,
+        "fetched_at": "2026-10-13T18:57:30Z"
+      }
+    },
+    {
+      "id": "f_cb1ab482293f7def",
+      "area": "data",
+      "claim": "Apple's privacy label shows the developer reports only data not linked to the user's identity, and none used to track the user.",
+      "stance": "mitigation",
+      "quote": "Data Not Linked to You The following data may be collected but it is not linked to your identity:",
+      "source": {
+        "url": "https://apps.apple.com/mx/app/khan-academy-kids/id1378467217?l=en-GB",
+        "kind": "store",
+        "title": "‎Khan Academy Kids App - App Store",
         "fetched_at": "2026-10-13T18:57:30Z"
       }
     }

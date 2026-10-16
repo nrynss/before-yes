@@ -45,6 +45,10 @@ for (const { name, card } of fixtures) for (const mode of ['light', 'dark']) for
    await expect(page.getByRole('link', {name:'View check'})).toHaveAttribute('href', `/card/${no.alternatives[0].card_id}`); await expect(page.getByRole('link', {name:'Compare titles'})).toHaveAttribute('href', `/compare/${no.id}/${no.alternatives[0].card_id}`); await expect(page.locator('.alternative-note')).toHaveText('More alternatives can be checked when the daily limit resets.');
    await expect(page.locator('[data-area="contact"] figure')).toHaveCount(3);
   }
+  if (card.gate?.length) {
+   const items = value('Rule checks').locator('li'); await expect(items).toHaveCount(card.gate.length);
+   for (const [i, action] of card.gate.entries()) { await expect(items.nth(i)).toContainText('Checked by rule:'); await expect(items.nth(i)).toContainText(areas.find(a => a[0] === action.area)![1]); await expect(items.nth(i)).toContainText(action.note.charAt(0).toLowerCase() + action.note.slice(1)); }
+  } else await expect(page.locator('dl dt', { hasText: /^Rule checks$/ })).toHaveCount(0);
   const h1size = await page.locator('h1').evaluate(el => parseFloat(getComputedStyle(el).fontSize)); expect(h1size).toBeGreaterThanOrEqual(44); expect(h1size).toBeLessThanOrEqual(64);
   await fit(page); await accessibility(page); expect(errors).toEqual([]); await page.screenshot({path:`/tmp/card-${name}-${mode}-${width}.png`,fullPage:true});
  });
@@ -57,6 +61,25 @@ test('settings work by keyboard without changing verdict or storage; canonical c
  expect(await page.evaluate(() => (window as unknown as {copied:string}).copied)).toBe(url); await expect(page.getByLabel('Card link')).toHaveValue(url);
  await page.evaluate(() => { Object.defineProperty(navigator, 'clipboard', {value:undefined, configurable:true}); }); await page.getByRole('button', {name:'Copy card link'}).click(); await expect(page.getByText('Copy the address below to share this card.')).toBeVisible(); expect(await page.evaluate(() => JSON.stringify(localStorage))).toBe(before);
  expect(await page.getByRole('button', {name:'Copy card link'}).evaluate(el => el.getBoundingClientRect().height)).toBeGreaterThanOrEqual(48);
+});
+test('rule checks say what the code changed, in plain words', async ({page}) => {
+ const card = structuredClone(yes); const data = card.grades.find(g => g.area === 'data')!; const label = card.findings.find(f => data.findings.includes(f.id) && f.source.kind === 'store')!;
+ card.gate = [
+  { area: 'data', rule: 'data.flag_without_basis', from: 'flag', to: 'unknown', findings: [], note: 'None of the quotes behind this concern describes data being sold, tracked for ads, shared for marketing or breached.' },
+  { area: 'data', rule: 'data.label_not_linked', from: 'unknown', to: 'ok', findings: [label.id], note: 'The App Store privacy label says the developer reports no data linked to the user.' },
+  { area: 'money', rule: 'money.flag_capped_by_control', from: 'flag', to: 'ok_with_setting', findings: card.grades.find(g => g.area === 'money')!.findings, note: 'A source names a control that answers this concern (Ask to Buy).' }
+ ];
+ await open(page, card); const items = page.locator('dl > div').filter({has: page.locator('dt', {hasText: /^Rule checks$/})}).locator('li'); await expect(items).toHaveCount(3);
+ await expect(items.nth(0)).toHaveText('Privacy and data – Changed from Concern to Not enough evidence. Checked by rule: none of the quotes behind this concern describes data being sold, tracked for ads, shared for marketing or breached.');
+ await expect(items.nth(1)).toHaveText('Privacy and data – Changed from Not enough evidence to OK. Checked by rule: the App Store privacy label says the developer reports no data linked to the user.');
+ await expect(items.nth(2)).toContainText('Changed from Concern to Needs a setting change. Checked by rule: a source names a control');
+ await expect(page.locator('[data-area="data"] .grade')).toHaveText(levels[data.level]);
+});
+test('a card without rule checks, or with a null list, still opens; a rule check citing a missing finding fails closed', async ({page}) => {
+ const old = structuredClone(yes); delete old.gate; await open(page, old); await expect(page.locator('dl dt', { hasText: /^Rule checks$/ })).toHaveCount(0);
+ const nul = structuredClone(yes) as unknown as Record<string, unknown>; nul.gate = null; await page.route(`**/api/cards/${yes.id}`, route => route.fulfill({json: nul})); await page.goto(`/card/${yes.id}`); await expect(page.locator('h1')).toHaveText(verdicts[yes.verdict]);
+ const bad = structuredClone(yes); bad.gate = [{ area: 'data', rule: 'data.label_not_linked', from: 'unknown', to: 'ok', findings: ['f_missing'], note: 'x' }];
+ await page.route(`**/api/cards/${yes.id}`, route => route.fulfill({json: bad})); await page.goto(`/card/${yes.id}`); await expect(page.locator('h1')).toHaveText('The card couldn’t be opened.');
 });
 test('pending and refused alternatives stay hidden, server verdict stays authoritative, uncited risks stay hidden', async ({page}) => {
  const card = structuredClone(no); card.verdict = 'unclear'; card.alternatives.push({title:'Pending secret title',status:'pending',reason:'',card_id:'',verdict:'no'}, {title:'Refused secret title',status:'refused',reason:'',card_id:'',verdict:'no'}); card.findings.push({...card.findings[0], id:'f_uncited', quote:'Uncited sentence must not appear.'}); await open(page,card);
