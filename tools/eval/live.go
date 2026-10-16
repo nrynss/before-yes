@@ -44,6 +44,11 @@ var (
 	liveLedger     = flag.String("live-ledger", "", "with -models live: file that holds the running spend in nanodollars, kept outside the repository")
 	liveEntailOnly = flag.Bool("live-entail-only", false, "with -models live: refuse any uncached call except entailment")
 	liveDry        = flag.Bool("live-dry", false, "with -models live: make no call; report what each title's calls would reserve, at most")
+	// liveJudgeOut is the trial switch: with -reuse-gather and a live set, the
+	// reader replays its saved replies from the gather and only the judge calls
+	// the host, recording into this directory (one subdirectory per title). The
+	// gather's own replies are never written.
+	liveJudgeOut = flag.String("live-judge-out", "", "with -models live and -reuse-gather: the reader replays its saved replies; the judge calls the host and records under this directory, per title")
 	// gatherN selects a saved live gather. 0 is the frozen testdata/titles
 	// fixtures. 1 and 2 are the two live gathers under testdata/eval/gathers,
 	// recorded when -models live is set and replayed with no network otherwise.
@@ -81,6 +86,27 @@ var liveSets = map[string]liveSetting{
 			Provider: "tokenfactory", BaseURL: "https://api.tokenfactory.nebius.com/v1",
 			Model: "nvidia/nemotron-3-super-120b-a12b", InputPerM: 0.30, OutputPerM: 0.90,
 			MaxTokens: 4096, PerMinute: 300,
+		},
+		keyVar: "NEBIUS_KEY",
+		fast:   map[string]any{"chat_template_kwargs": map[string]any{"enable_thinking": false}},
+		think:  map[string]any{"chat_template_kwargs": map[string]any{"enable_thinking": true}},
+	},
+	// Nemotron-3.5-Super-VL on Token Factory, as a judge candidate only. Its
+	// price is the listed $0.30 in and $0.90 out per million tokens. Its
+	// thinking switch was confirmed live: enable_thinking false gave 3 output
+	// tokens, true gave 36 with reasoning. The reader is the same Nano as the
+	// tokenfactory set, but under -live-judge-out it only replays.
+	"super-vl": {
+		reader: model.Settings{
+			Provider: "tokenfactory", BaseURL: "https://api.tokenfactory.nebius.com/v1",
+			Model: "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B", InputPerM: 0.06, OutputPerM: 0.24,
+			MaxTokens: 8192, PerMinute: 100,
+			Extra: map[string]any{"chat_template_kwargs": map[string]any{"enable_thinking": false}},
+		},
+		judge: model.Settings{
+			Provider: "tokenfactory", BaseURL: "https://api.tokenfactory.nebius.com/v1",
+			Model: "nvidia/Nemotron-3.5-Super-VL", InputPerM: 0.30, OutputPerM: 0.90,
+			MaxTokens: 4096, PerMinute: 60,
 		},
 		keyVar: "NEBIUS_KEY",
 		fast:   map[string]any{"chat_template_kwargs": map[string]any{"enable_thinking": false}},
@@ -150,6 +176,13 @@ func liveChatters(root, slug string) (pipeline.Chatter, pipeline.Chatter) {
 	jc, err := model.New(set.judge, key)
 	if err != nil {
 		return &liveChatter{role: "reader", err: err}, &liveChatter{role: "judge", err: err}
+	}
+	if *liveJudgeOut != "" {
+		// Judge-only trial: the reader is the saved gather's reply set, replayed
+		// with no call, and every judge call goes live into its own directory,
+		// so no recording the current judge made is ever read back as Super's.
+		return &replayer{dir: dir, role: "reader", model: set.reader.Model},
+			&liveChatter{role: "judge", c: jc, dir: filepath.Join(*liveJudgeOut, slug)}
 	}
 	return &liveChatter{role: "reader", c: rc, dir: dir}, &liveChatter{role: "judge", c: jc, dir: dir}
 }
