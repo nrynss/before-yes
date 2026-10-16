@@ -14,23 +14,23 @@ Model figures are **measured**: the current Ultra run replayed the Nano reader a
 | Ceiling | Value | Pool, period | Reason in one line |
 |---|---|---|---|
 | Model lifetime ceiling | **$20** of the $25 credit | `model`, lifetime (`cost.None`) | Leaves $5 (20%) for re-runs (T3.9), demo pre-computation and measurement error. |
-| Tavily monthly ceiling | **900 credits** of the 1,000 free | `tavily`, monthly UTC (`cost.MonthlyUTC`) | 100 credits (10%) kept for a live check above the measured 7 to 8. |
+| Tavily monthly ceiling | **900 credits** of the 1,000 free | `tavily`, monthly UTC (`cost.MonthlyUTC`) | 100 credits (10%) kept for a live check above the measured 8 to 10. |
 | Daily cap on fresh checks, judging | **5 checks per UTC day** | `checks_daily`, daily UTC | Confirmed by the rule: 5 x 15 x 8 = 600 credits, under 900. |
-| Cost per fresh check | **$0.112840 model** (Ultra, mean of nine title/gather checks; $0.093468 to $0.134856 by title). **7 to 8 Tavily credits** (fixture-measured, and the same range on T3.11's six live gathers). | not a ceiling | Input to every ceiling above. |
-| Checks covered | **177** by the model ceiling (469 at T3.11, 492 at T3.10, 565 at T3.9b, 648 at T3.6b); **112 to 128 a month** by Tavily | derived | Tavily binds, as it did at the estimate. |
+| Cost per fresh check | **$0.106976 model** (Ultra, mean of nine title/gather checks; $0.093868 to $0.116922 by title). **8 to 10 Tavily credits** (fixture-measured on the plan-6 replay). | not a ceiling | Input to every ceiling above. |
+| Checks covered | **186** by the model ceiling (177 at the Ultra re-record, 469 at T3.11, 492 at T3.10, 565 at T3.9b, 648 at T3.6b); **90 to 112 a month** by Tavily | derived | Tavily binds, as it did at the estimate. |
 
-No ceiling or the cap changed. The current Ultra mean is $0.112840 per check, covering 177 checks from the $20 model ceiling. Tavily still binds at 112 to 128 checks a month, and the $5 model reserve covers about 44 checks at the Ultra mean.
+No ceiling changed. The plan-6 mean is $0.106976 per check, covering 186 checks from the $20 model ceiling. Tavily now binds at 90 checks a month at the measured 10 credits (112 at 8), and the $5 model reserve covers about 46 checks at the mean. The daily cap of 5 still holds: 5 x 15 x 10 = 750 credits of the 900.
 
 ## Model pool: lifetime ceiling and reserve
 
 **Ceiling: $20.** The Token Factory credit is $25 in total and is not renewed (the Devpost FAQ and the brief's Budget section). The $20 ceiling is 80% of it.
 
 **Reserve: $5.** It covers:
-- re-runs of the live eval on Nano and Ultra, which book their spend through the same meter. A three-title run costs about $0.338519 at the current per-title means, so $5 covers about 14 such runs (`5 / 0.338519`);
-- pre-computing the demo titles and alternatives. At the measured Ultra mean, $5 pays for about 44 fresh checks (`5 / 0.112840`);
+- re-runs of the live eval on Nano and Ultra, which book their spend through the same meter. A three-title run costs about $0.320927 at the current per-title means, so $5 covers about 15 such runs (`5 / 0.320927`);
+- pre-computing the demo titles and alternatives. At the measured Ultra mean, $5 pays for about 46 fresh checks (`5 / 0.106976`);
 - error in the per-check figure. The figure is the current nine-check Ultra replay; a reader or judge prompt change re-opens it.
 
-**Spent so far.** About $1.6799 of the $20 ceiling: about $0.0018 across the three T2.1b live runs (handoff log; the probe alone booked $0.00060618, `dev-diary/live/t2.1b-transcript.txt`), $0.092584 for the three titles in T3.6b, $0.106048 for the T3.9b re-record of the same three titles, $0.209723 for T3.10's re-record rounds (the task's live ledger; the final recordings those rounds ended with replay at $0.121741, the rest paid for superseded rounds and the entailment clarification), $0.367638 on T3.11's ledger, and $0.902061 on the Ultra re-record ledger (nine eval sets, LEGO Worlds, Scratch and five additional ablation-test calls). The rest is unspent headroom.
+**Spent so far.** About $1.6799 of the $20 ceiling: about $0.0018 across the three T2.1b live runs (handoff log; the probe alone booked $0.00060618, `dev-diary/live/t2.1b-transcript.txt`), $0.092584 for the three titles in T3.6b, $0.106048 for the T3.9b re-record of the same three titles, $0.209723 for T3.10's re-record rounds (the task's live ledger; the final recordings those rounds ended with replay at $0.121741, the rest paid for superseded rounds and the entailment clarification), $0.367638 on T3.11's ledger, $0.902061 on the Ultra re-record ledger (nine eval sets, LEGO Worlds, Scratch and five additional ablation-test calls), and **$2.722586** on the plan-6 re-record ledger (the nine eval sets and the two outside cases, plus the superseded attempts: one capped judge reply whose stub the new prompt line retires, and two decoding trials at temperature 0.3 that were reverted). The rest is unspent headroom.
 
 **Why a lifetime pool and not a monthly one.** The credit is one lump sum. A monthly window on the model pool would let the account spend $20 a month, which the credit cannot pay for. `cost.None` is the right period for this pool, and it is the default when `PoolConfig.Period` is unset.
 
@@ -43,9 +43,9 @@ No ceiling or the cap changed. The current Ultra mean is $0.112840 per check, co
 - search with `include_raw_content` reported the same 1 credit as without it (T2.2b, measured);
 - the T0.4 fixture captures ran 5 to 6 credits per title for an earlier search plan, 3 to 4 for the Common Sense extracts and 1 to 2 for the advanced extracts (`testdata/titles/README.md`, `dev-diary/PHASE-0-ground.md`, measured). Those captures are not the pipeline's plan.
 
-**The per-check figure, 7 to 8 credits, is fixture-measured and now live-measured.** It is the pipeline's plan (seven basic searches, plus one extract only when a policy or terms candidate exists) replayed against the saved fixtures through the eval's Tavily column (`dev-diary/PHASE-3-pipeline.md`, T3.1 stand-in baseline): Roblox 8, Minecraft 7, Khan Academy Kids 7. T3.11's six live gathers reported the same range: Roblox 8, Minecraft 7, Khan Academy Kids 8, each twice. T3.6b made zero live Tavily calls, and T3.8a's storepage capture spent 1 credit in total, which is not a check's cost.
+**The per-check figure, 8 to 10 credits, is fixture-measured.** It is the pipeline's plan-6: eight basic searches (the privacy policy, the terms, two Reddit, one parent forum, one news, one rating and one parental-controls search, all with `include_raw_content`), plus one extract when a policy or terms candidate exists, plus the listing page's own extract. The nine-check replay reported Roblox 9, 9, 9; Minecraft 8, 8, 8; Khan Academy Kids 9, 10, 10. The earlier 7-to-8 figures were plan-5 (T3.11's six live gathers) and are historical.
 
-The margin absorbs a live per-check cost above the 8-credit fixture figure without touching the free tier's limit.
+The margin absorbs a live per-check cost above the 10-credit fixture figure without touching the free tier's limit. At 10 credits the daily cap of 5 spends 750 of 900 credits over a 15-day window.
 
 **Period must be `cost.MonthlyUTC`.** `Open` pins it (T2.4b): the tavily pool is always monthly, whatever the caller passes. Opened as a lifetime pool, it would be 900 credits for life, not 900 a month. Keel's `MonthlyUTC` resets at the UTC month start. Tavily's own reset point is not confirmed; see open items.
 
@@ -74,20 +74,20 @@ Tavily cost per check, in credits:
 C_tavily = sum over the check's search and extract calls of usage.credits, as Tavily reports it
 ```
 
-Use Tavily's reported `usage.credits`, not the price list (PHASE-3, T3.1). Measured 7 to 8 on the fixtures and on T3.11's live gathers (see the Tavily pool section).
+Use Tavily's reported `usage.credits`, not the price list (PHASE-3, T3.1). Measured 8 to 10 on the plan-6 replay (see the Tavily pool section); the earlier plan-5 figure was 7 to 8.
 
-### Current Ultra figures
+### Current plan-6 figures
 
-These are nine fresh checks from one judge-only Ultra re-record, with the reader replayed. The costs combine the recorded Nano reader cost and Ultra judge cost. Ultra was priced at the assumed $1/$3 per million input/output tokens.
+These are nine fresh checks from the plan-6 re-record, replayed against the committed recordings. The costs combine the Nano reader cost (the new chunks were recorded live, the rest replayed) and the Ultra judge cost. Ultra was priced at the assumed $1/$3 per million input/output tokens.
 
 | Title | Gather 0 | Gather 1 | Gather 2 | Mean per check |
 |---|---:|---:|---:|---:|
-| Roblox | $0.138448 | $0.130641 | $0.135481 | $0.134856 |
-| Minecraft | $0.109894 | $0.143752 | $0.076941 | $0.110195 |
-| Khan Academy Kids | $0.085197 | $0.078477 | $0.116730 | $0.093468 |
-| **Mean per check** |  |  |  | **$0.112840** |
+| Roblox | $0.122457 | $0.121608 | $0.106701 | $0.116922 |
+| Minecraft | $0.109098 | $0.133528 | $0.087784 | $0.110137 |
+| Khan Academy Kids | $0.096363 | $0.082868 | $0.102374 | $0.093868 |
+| **Mean per check** |  |  |  | **$0.106976** |
 
-The nine checks booked $0.878257 in Ultra judge spend. Their replayed Nano reader component totals $0.137301, giving a measured model cost of $1.015558 across the nine. The two outside cases cost $0.013516, and five additional ablation-test judge calls cost $0.010288. Total paid Ultra spend for this re-record sequence was $0.902061; outside and test-only calls are excluded from the nine-check average.
+The nine checks booked $0.809042 in Ultra judge spend and $0.153739 in Nano reader spend, $0.962781 together. The two outside cases cost $0.013420. The plan-6 ledger spent $2.722586 in all, counting the superseded attempts; the nine-check average excludes those. For reference, the Ultra re-record before it measured $0.112840 a check: the controls pages add about 30 to 60 findings per title, the judge replies they bring are shorter than the ones they replace, and the average fell by about $0.006.
 
 ### Historical T3.11 figures
 
@@ -116,7 +116,7 @@ The entailment check's Super calls are shown apart from the judge pass because t
 
 The doc uses **$0.042598**, rounded from the measured $0.04259826 mean. Exact fixture totals are $0.04340226, $0.04489410 and $0.03949842; their sum is $0.12779478. Displayed token rows are rounded. Entailment averages $0.00217960, about 5% of the check. Age-gating flag classification checks cited risks independently and stops on the first verified event; the count therefore varies with the citations, rather than being bounded to one call per area.
 
-Tavily: **7 to 8 credits per check, fixture-measured**. The doc uses 8 for the worst case, and 7 where the best case is shown.
+Tavily: **8 to 10 credits per check, fixture-measured**. The doc uses 10 for the worst case, and 8 where the best case is shown.
 
 ## Checks the budget covers
 
@@ -124,14 +124,14 @@ With the measured figures, and the lower of the two pools binding:
 
 | Limit | Arithmetic | Checks |
 |---|---|---|
-| Model, $20 ceiling, mean check | 20 / 0.042598 | **469** |
-| Model, $20 ceiling, Minecraft-sized check | 20 / 0.044894 | 445 |
-| Model, $20 ceiling, Khan-sized check | 20 / 0.039498 | 505 |
-| Model, full $25 credit, mean check | 25 / 0.042598 | 586 |
-| Tavily, 900 a month, 8 credits per check | 900 / 8 = 112.5 | **112 a month** |
-| Tavily, 900 a month, 7 credits per check | 900 / 7 = 128.6 | 128 a month |
+| Model, $20 ceiling, mean check | 20 / 0.106976 | **186** |
+| Model, $20 ceiling, Roblox-sized check | 20 / 0.116922 | 171 |
+| Model, $20 ceiling, Khan-sized check | 20 / 0.093868 | 213 |
+| Model, full $25 credit, mean check | 25 / 0.106976 | 233 |
+| Tavily, 900 a month, 10 credits per check | 900 / 10 = 90 | **90 a month** |
+| Tavily, 900 a month, 8 credits per check | 900 / 8 = 112.5 | 112 a month |
 
-Tavily binds at both per-check costs, so the monthly figure is 112 to 128 checks. The model pool does not bind for a month of checks: 469 checks is more than four months at 112 a month.
+Tavily binds at both per-check costs, so the monthly figure is 90 to 112 checks. The model pool does not bind for a month of checks: 186 checks is more than two months at 90 a month.
 
 Checks in the table are fresh checks. Cache hits (`card_max_age_hours`, `evidence_max_age_hours` in the settings) add none to either pool.
 
@@ -142,19 +142,19 @@ Checks in the table are fresh checks. Cache hits (`card_max_age_hours`, `evidenc
 **Rule.** `cap x judging days x C_tavily <= 900`, with 15 judging days.
 
 **Derivation.**
-- Largest cap the rule allows: `floor(900 / (15 x C_tavily))`. At 8 credits, `900 / 120 = 7.5`, so 7. At 7 credits, `900 / 105 = 8.6`, so 8.
-- The cap of 5 at the worst measured figure: `5 x 15 x 8 = 600` credits, under 900, with **300 credits spare** for the month.
-- Whole window at 5 a day: 75 checks, 600 credits at 8 each (525 at 7).
-- Model side: 75 x $0.042598 = **$3.19** at the mean, or 75 x $0.044894 = **$3.37** at Minecraft size. Both far under the $20 ceiling. The model pool is not the reason for the cap.
+- Largest cap the rule allows: `floor(900 / (15 x C_tavily))`. At 10 credits, `900 / 150 = 6`, so 6. At 8 credits, `900 / 120 = 7.5`, so 7.
+- The cap of 5 at the worst measured figure: `5 x 15 x 10 = 750` credits, under 900, with **150 credits spare** for the month.
+- Whole window at 5 a day: 75 checks, 750 credits at 10 each (600 at 8).
+- Model side: 75 x $0.106976 = **$8.02** at the mean, or 75 x $0.116922 = **$8.77** at Roblox size. Both under the $20 ceiling. The model pool is not the reason for the cap.
 - The cap holds for any live per-check Tavily cost up to 12 credits (`5 x 15 x 12 = 900`).
 
-**Why not 7.** The rule allows 7 at 8 credits, and 840 of 900 credits would go to judging. That leaves 60 credits for a check above the measured 7 to 8, and for any re-run in the month. T3.11's six live gathers stayed at 7 or 8. 5 holds with 300 to spare. If a live check measures above 8 credits, lower the cap to `floor(900 / (15 x C_tavily))`.
+**Why not 6.** The rule allows 6 at 10 credits, and 900 of 900 credits would go to judging, leaving nothing for a re-run or a check above the measurement. 5 holds with 150 to spare. If a live check measures above 12 credits, lower the cap to `floor(900 / (15 x C_tavily))`.
 
 **What the cap protects.** Cached checks are free, and the demo titles are pre-computed. The cap stops a burst of fresh checks from draining the month before judging ends.
 
 ### A separate counter, not a daily model-dollar pool
 
-A daily model-dollar pool would be the wrong unit. The limit that binds is checks, or Tavily credits. Daily model spend at the cap is about $0.21 (5 x $0.042598), so a daily dollar cap would never trip and would not express "5 checks a day".
+A daily model-dollar pool would be the wrong unit. The limit that binds is checks, or Tavily credits. Daily model spend at the cap is about $0.53 (5 x $0.106976), so a daily dollar cap would never trip and would not express "5 checks a day".
 
 The counter is built in T2.4b: `Meter.BeginCheck(ctx, ref)` returns a `*Check`, which is ended with `Done()` (books one check) or `Fail()` (releases it). `Open` pins `checks_daily` to `cost.DailyUTC`. A cache hit never calls `BeginCheck`. Tests: `internal/spend/checks_test.go`.
 
@@ -197,6 +197,15 @@ T3.10 gave the judge each area's own flag and ok definitions, added the entailme
 - **Entailment.** 3.7 Nano calls a check at the mean (6 Roblox, 4 Minecraft, 1 Khan), $0.000162 a check, 0.4% of the check. One call per standing grade, and only standing grades are checked. After the first entailment round refused Roblox's developer_record flag on a filed-lawsuit citation, one sentence of clarification (an enforcement action filed against the developer is the record, outcome or no outcome) was added and the 11 entailment calls were re-recorded for $0.000485; no reader or judge call was re-made.
 - **Net.** +$0.005231 a check, $0.035349 to $0.040580.
 - **No ceiling changed.** The model pool has 492 checks at the mean and 469 at Minecraft size, against a Tavily limit of 112 to 128 a month. The reserve covers 123 mean checks. The T3.9b threshold for a change ($0.27 a check) is still far away.
+
+## plan-6 (measured): what it changed
+
+plan-6 adds one open Tavily search per gather for the title's own parental and safety controls — "`<title>` parental controls turn off chat multiplayer content settings how to", six results with raw content — and reads those pages as the new `help` source kind: support.xbox.com, help.minecraft.net, en.help.roblox.com, minecraft.net's own parental-controls article, Roblox's parental-controls pages and the guides around them. The checklist's rule C also caps a content concern on a quoted content filter, content restriction or maturity setting (v11 to v12), and the judge's system prompt now asks for the grades object alone, because Ultra's first pass wrote a per-area analysis and repeated one finding id to its 16,000-token cap on the Roblox controls evidence.
+
+- **Model.** The nine-check mean is $0.106976 (Roblox $0.116922, Minecraft $0.110137, Khan $0.093868), against $0.112840 before it. The plan-6 ledger spent $2.722586 in all, which includes the superseded attempts and the recordings the re-record kept.
+- **Tavily.** 9, 9 and 9 credits for Roblox; 8, 8 and 8 for Minecraft; 9, 10 and 10 for Khan Academy Kids. The four captures of the new search (the three demo titles and Toca Life World, the safer alternative) cost 4 credits. The plan's eight searches and the extracts price at 9 credits, and the store page's own extract is the tenth on the titles whose policy or terms candidate is missing.
+- **Verdicts after the re-record.** Roblox **no** on gathers 0, 1 and 2; Khan Academy Kids **yes**, **unclear**, **yes**; Minecraft **yes with settings**, **unclear**, **unclear**. The blockers on Minecraft's two unclear gathers are contact on both, and content on gather 2: the judge's own contact grade named a setting its cited quotes do not carry, the conflict pass's flag cited a mitigation finding, and the entailment check refused the cited risk quotes. They are recorded as they stand, not tuned away.
+- **No ceiling changed.** The $20 model ceiling, the 900-credit Tavily ceiling and the daily cap of 5 are unchanged. The daily cap now spends 750 of 900 credits over a 15-day window at the measured 10 credits.
 
 ## T3.11 (measured): what it changed
 

@@ -1,8 +1,0 @@
-{
-  "text": "{\"reason_supported\": true, \"explanation\": \"A news report states Texas Attorney General Ken Paxton says he has sued Roblox over 'flagrantly ignoring' safety laws and 'deceiving parents' about the dangers the online video gaming platform poses to young people.\"}",
-  "input_tokens": 1199,
-  "output_tokens": 58,
-  "price_nano": 411900,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

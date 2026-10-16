@@ -1,0 +1,9 @@
+{
+  "text": "{\"reason_supported\":true,\"explanation\":\"The review quote directly reports a face-verification system labeling a four-year-old as twenty-five ('if a four year old does it and it says that they are twenty five'), which is an explicit assigned-age mismatch. The same quote states the system did not remove inappropriate games or avatars ('it doesn't take away the scary games or inappropriate games or avatars'). The forum quote corroborates that incorrect age estimates may loosen built-in protections such as chat restrictions.\"}",
+  "input_tokens": 1320,
+  "output_tokens": 107,
+  "price_nano": 1641000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

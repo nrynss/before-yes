@@ -1,8 +1,0 @@
-{
-  "text": "{\"criterion\": \"wrong_age_assignment\", \"quote\": \"I contacted Roblox support and they said I gotta wait until I’m 13 but the birthday said Oct 7,1985 and I didn’t know how that worked… because it said that I’m 41 but I’m younger than 13\", \"actual_age\": \"younger than 13\", \"assigned_age\": \"41\"}",
-  "input_tokens": 469,
-  "output_tokens": 92,
-  "price_nano": 223500,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

@@ -1,9 +1,0 @@
-{
-  "text": "{\n  \"reasons\": [\n    {\n      \"area\": \"money\",\n      \"reason\": \"The comparison guide describes Scratch as MIT's free, block-based coding platform that runs in the browser and does not mention any loot boxes, pay-to-win mechanics, subscriptions, or child purchases.\"\n    }\n  ]\n}",
-  "input_tokens": 1292,
-  "output_tokens": 68,
-  "price_nano": 1496000,
-  "measured": true,
-  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
-  "finish_reason": "stop"
-}

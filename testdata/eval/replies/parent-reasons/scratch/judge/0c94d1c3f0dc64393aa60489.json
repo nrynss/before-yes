@@ -1,8 +1,0 @@
-{
-  "text": "{\"reason_supported\": false, \"explanation\": \"The explanation states 'MIT's free, block-based coding platform' but provides no supporting quote for these specific claims. While the source mentions Scratch is 'free,' it does not explicitly state that Scratch is developed by MIT or uses a block-based coding approach—these details are absent from the provided quote.\"}",
-  "input_tokens": 1105,
-  "output_tokens": 76,
-  "price_nano": 399900,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

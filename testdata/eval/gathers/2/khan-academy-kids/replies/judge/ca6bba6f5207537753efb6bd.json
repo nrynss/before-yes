@@ -1,9 +1,0 @@
-{
-  "text": "{\"reason_supported\":true,\"explanation\":\"The three provided sources contain no report of any enforcement action, lawsuit, data breach, or other developer event related to Khan Academy Kids. The forum quote points only to the privacy policy and notes that policies change. The second forum quote simply names the app. The rating quote states Khan Academy's nonprofit status. None of these citations describe a concrete regulatory finding, legal proceeding, security incident, or similar developer event, so the explanation's statement that no cited source reports such an event is fully supported.\"}",
-  "input_tokens": 1123,
-  "output_tokens": 111,
-  "price_nano": 1456000,
-  "measured": true,
-  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
-  "finish_reason": "stop"
-}

@@ -1,0 +1,9 @@
+{
+  "text": "{\"meets_definition\": true, \"reason_supported\": true}",
+  "input_tokens": 2067,
+  "output_tokens": 16,
+  "price_nano": 2115000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

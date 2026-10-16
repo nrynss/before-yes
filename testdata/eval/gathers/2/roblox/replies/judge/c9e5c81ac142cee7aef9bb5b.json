@@ -1,8 +1,0 @@
-{
-  "text": "{\"reason_supported\": false, \"explanation\": \"The Reason states 'A review reports a 40-50 year old man tried to meet up with her using the app.' This omits key elements required by the Explanation focus: it does not include any reference to a quoted stranger message, chat or voice channel, nor does it mention a quoted control or bypass. The Explanation focus requires these specific components—'a quoted stranger message, chat or voice channel and the quoted control or bypass'—to explain the contact concern under the 'flag' level. Since the Reason lacks these elements entirely, it fails to meet the required structure and therefore is not supported.\"}",
-  "input_tokens": 1129,
-  "output_tokens": 140,
-  "price_nano": 464700,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

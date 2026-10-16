@@ -1,9 +1,0 @@
-{
-  "text": "{\"reason_supported\":true,\"explanation\":\"A reviewer explicitly states: 'My friend is 9 and she in the 21+ age group!' This directly reports an assigned-age mismatch where a 9-year-old is placed in the 21+ age group.\"}",
-  "input_tokens": 1336,
-  "output_tokens": 58,
-  "price_nano": 1510000,
-  "measured": true,
-  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
-  "finish_reason": "stop"
-}

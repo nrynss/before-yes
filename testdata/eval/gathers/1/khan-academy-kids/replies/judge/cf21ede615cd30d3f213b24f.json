@@ -1,8 +1,0 @@
-{
-  "text": "{\"reasons\": [{\"area\": \"age_gating\", \"reason\": \"No source quote reports how age is collected, verified, or circumvented during sign-up or use.\"}]}",
-  "input_tokens": 1317,
-  "output_tokens": 40,
-  "price_nano": 431100,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

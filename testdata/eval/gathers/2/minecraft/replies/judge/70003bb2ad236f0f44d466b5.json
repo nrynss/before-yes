@@ -1,8 +1,0 @@
-{
-  "text": "{\"meets_definition\": true, \"reason_supported\": false, \"unsupported\": \"fake birthdate\"}",
-  "input_tokens": 1942,
-  "output_tokens": 25,
-  "price_nano": 605100,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

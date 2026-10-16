@@ -1,8 +1,0 @@
-{
-  "text": "{\"reason_supported\": true, \"explanation\": \"The store listing explicitly states the app is 'COPPA-compliant', but the explanation correctly attributes this as a claim from the store source while noting it does not verify actual practices, matching the requirement for an OK-grade data area explanation.\"}",
-  "input_tokens": 1151,
-  "output_tokens": 63,
-  "price_nano": 402000,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

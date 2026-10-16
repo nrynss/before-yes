@@ -1,0 +1,9 @@
+{
+  "text": "{\n  \"grades\": [\n    {\n      \"area\": \"contact\",\n      \"level\": \"unknown\",\n      \"reason\": \"No findings describe whether strangers can message or voice-chat with a nine-year-old on Scratch.\",\n      \"setting\": \"\",\n      \"findings\": []\n    },\n    {\n      \"area\": \"money\",\n      \"level\": \"ok\",\n      \"reason\": \"Scratch is described as a free platform with no mention of in-app purchases, loot boxes, subscriptions or other purchase pressure on children.\",\n      \"setting\": \"\",\n      \"findings\": [\"F1\"]\n    },\n    {\n      \"area\": \"data\",\n      \"level\": \"unknown\",\n      \"reason\": \"No findings describe what data Scratch collects, whether it tracks children for ads, shares data with third parties, or allows deletion.\",\n      \"setting\": \"\",\n      \"findings\": []\n    },\n    {\n      \"area\": \"age_gating\",\n      \"level\": \"unknown\",\n      \"reason\": \"No findings describe whether Scratch’s age gate works in practice for a nine-year-old.\",\n      \"setting\": \"\",\n      \"findings\": []\n    },\n    {\n      \"area\": \"content\",\n      \"level\": \"unknown\",\n      \"reason\": \"No findings report that nine-year-olds encounter sexual content, realistic violence, horror, harassment or self-harm on Scratch.\",\n      \"setting\": \"\",\n      \"findings\": []\n    },\n    {\n      \"area\": \"developer_record\",\n      \"level\": \"unknown\",\n      \"reason\": \"No findings mention fines, data breaches, lawsuits or regulatory actions against Scratch’s developer.\",\n      \"setting\": \"\",\n      \"findings\": []\n    }\n  ]\n}",
+  "input_tokens": 1603,
+  "output_tokens": 357,
+  "price_nano": 2674000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

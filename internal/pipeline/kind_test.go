@@ -71,19 +71,19 @@ var kindFixtures = []struct {
 	want  []string
 }{
 	{KindIOS, "Khan Academy Kids", &appstore.App{ID: 1, Name: "Khan Academy Kids", Seller: "Khan Academy", SellerURL: "https://khankids.org", StoreURL: "https://apps.apple.com/us/app/id1"},
-		nil, []string{"forum", "news", "policy", "rating", "reddit-community", "reddit-parents", "terms"}},
+		nil, []string{"controls", "forum", "news", "policy", "rating", "reddit-community", "reddit-parents", "terms"}},
 	{KindAndroid, "Sample Android Game", nil, map[string][]tavily.Result{
 		"rating": {hit("https://play.google.com/store/apps/details?id=com.sample", "Sample Android Game - Apps on Google Play", "Rated for 3+ on Google Play. Android only."),
 			hit("https://www.example-reviews.com/sample", "Sample Android Game review", "An Android game for kids.")},
-	}, []string{"forum", "news", "policy", "rating", "reddit-community", "reddit-parents", "terms"}},
+	}, []string{"controls", "forum", "news", "policy", "rating", "reddit-community", "reddit-parents", "terms"}},
 	{KindConsole, "Sample Console Game", nil, map[string][]tavily.Result{
 		"rating": {hit("https://www.esrb.org/ratings/40000/sample-console-game/", "Sample Console Game | ESRB", "Rated E10+. Platforms: PlayStation 5, Xbox Series, Nintendo Switch. In-Game Purchases, Users Interact."),
 			hit("https://pegi.info/search-pegi?q=sample", "PEGI 7", "PEGI 7 for PC game and console.")},
-	}, []string{"forum", "news", "policy", "rating", "rating-boards", "reddit-community", "reddit-parents", "terms"}},
+	}, []string{"controls", "forum", "news", "policy", "rating", "rating-boards", "reddit-community", "reddit-parents", "terms"}},
 	{KindYouTube, "Sample Kids Channel", nil, map[string][]tavily.Result{
 		"rating": {hit("https://www.youtube.com/@SampleKidsChannel", "Sample Kids Channel - YouTube", "12M subscribers. A YouTube channel for kids."),
 			hit("https://www.example-news.com/youtuber", "The YouTuber behind Sample Kids Channel", "The channel has millions of subscribers.")},
-	}, []string{"channel", "forum", "news", "policy", "rating", "reddit-community", "reddit-parents"}},
+	}, []string{"channel", "controls", "forum", "news", "policy", "rating", "reddit-community", "reddit-parents"}},
 }
 
 func TestKindsGatherTheirPlan(t *testing.T) {

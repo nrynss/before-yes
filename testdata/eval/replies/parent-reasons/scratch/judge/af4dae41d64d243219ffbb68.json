@@ -1,8 +1,0 @@
-{
-  "text": "{\"reasons\": [{\"area\": \"money\", \"reason\": \"Scratch is described as MIT's free, block-based coding platform.\"}]}",
-  "input_tokens": 581,
-  "output_tokens": 32,
-  "price_nano": 203100,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

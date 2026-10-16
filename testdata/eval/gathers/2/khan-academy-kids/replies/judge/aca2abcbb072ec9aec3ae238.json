@@ -1,0 +1,9 @@
+{
+  "text": "{\n  \"reasons\": [\n    {\n      \"area\": \"contact\",\n      \"reason\": \"Reviewers report setup and login problems including an email verification loop that blocks creating a support ticket, while another reviewer says their two children enjoy the app.\"\n    },\n    {\n      \"area\": \"money\",\n      \"reason\": \"A reviewer states the app is actually free with no payment needed, and the store listing describes it as free.\"\n    },\n    {\n      \"area\": \"data\",\n      \"reason\": \"A reviewer says a teacher account lets them watch progress, and the store listing notes data not linked to identity may be collected for listed purposes.\"\n    },\n    {\n      \"area\": \"age_gating\",\n      \"reason\": \"Reviewers describe use by children aged two, three, five, and seven, and one calls it suitable for fifth graders and two-year-olds.\"\n    },\n    {\n      \"area\": \"content\",\n      \"reason\": \"Reviewers report grandchildren learning daily, suitability for little ones learning to read and do easy math, and one negative comment calling it boring and annoying.\"\n    }\n  ]\n}",
+  "input_tokens": 1896,
+  "output_tokens": 232,
+  "price_nano": 2592000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

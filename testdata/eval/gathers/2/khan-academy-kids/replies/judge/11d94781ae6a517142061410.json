@@ -1,9 +1,0 @@
-{
-  "text": "{\n  \"reasons\": [\n    {\n      \"area\": \"age_gating\",\n      \"reason\": \"A forum post reports that parents must provide and confirm an email address to begin using the app, and the rating source lists the target audience as ages two to eight; neither source describes an age-gate mechanism, an assigned age, or a bypass for a five-year-old.\"\n    }\n  ]\n}",
-  "input_tokens": 1494,
-  "output_tokens": 84,
-  "price_nano": 1746000,
-  "measured": true,
-  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
-  "finish_reason": "stop"
-}

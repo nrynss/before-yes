@@ -1,8 +1,0 @@
-{
-  "text": "{\"reason_supported\": true, \"explanation\": \"A reviewer states they are 10 years old and reports purchasing 10,000 Minecoins using birthday money while expressing feeling scammed. This directly describes a purchase a child completed without apparent parental oversight, meeting the area definition criterion of 'purchases a child can complete without a parent.' The quote provides explicit attribution to a child-aged reviewer describing their own transaction and emotional reaction, supporting the claim that such a purchase occurred and was experienced negatively.\"}",
-  "input_tokens": 1135,
-  "output_tokens": 108,
-  "price_nano": 437700,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

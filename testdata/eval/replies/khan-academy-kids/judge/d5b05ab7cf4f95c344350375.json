@@ -1,0 +1,9 @@
+{
+  "text": "{\n  \"reasons\": [\n    {\n      \"area\": \"contact\",\n      \"reason\": \"No cited source reports a stranger message, chat, or voice channel in this title, nor a control or bypass for such a feature.\"\n    }\n  ]\n}",
+  "input_tokens": 1245,
+  "output_tokens": 54,
+  "price_nano": 1407000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

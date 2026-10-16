@@ -1,0 +1,9 @@
+{
+  "text": "{\"reason_supported\": false, \"explanation\": \"The explanation claims reviewers report 'suitability for little ones learning to read and do easy math' and 'grandchildren learning daily,' but none of the four provided quotes contain any report of an encounter with unsuitable material. The quotes are purely positive or negative sentiment about engagement and general appropriateness; they do not describe a concrete instance where a child saw or reached inappropriate content. Since the Area is 'content' and the instruction requires a concrete reported encounter with unsuitable material—not a generic possibility or description of available content—the reason is unsupported by the cited sources.\"}",
+  "input_tokens": 1105,
+  "output_tokens": 126,
+  "price_nano": 1483000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

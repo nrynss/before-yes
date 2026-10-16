@@ -1,8 +1,0 @@
-{
-  "text": "{\"reasons\": [{\"area\": \"data\", \"reason\": \"Terms state Roblox may access and review content shared via communication features and other non-public content.\"}]}",
-  "input_tokens": 780,
-  "output_tokens": 38,
-  "price_nano": 268200,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

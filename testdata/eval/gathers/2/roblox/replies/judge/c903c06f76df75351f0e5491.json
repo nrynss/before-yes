@@ -1,8 +1,0 @@
-{
-  "text": "{\"reason_supported\": true, \"explanation\": \"A forum post reports chats built into specific mini-games cannot be disabled, and kids can type text on signs regardless of communication preferences.\"}",
-  "input_tokens": 1134,
-  "output_tokens": 41,
-  "price_nano": 377100,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

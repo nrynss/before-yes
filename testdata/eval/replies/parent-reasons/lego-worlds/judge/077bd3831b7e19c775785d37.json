@@ -1,8 +1,0 @@
-{
-  "text": "{\"grades\": [{\"area\": \"contact\", \"level\": \"ok\", \"reason\": \"The comparison guide states there is no open chat with strangers.\", \"setting\": \"\", \"findings\": [\"f_outside_lego-worlds\"]}, {\"area\": \"money\", \"level\": \"unknown\", \"reason\": \"No findings provided about in-app purchases, monetization, or financial risks.\", \"setting\": \"\", \"findings\": []}, {\"area\": \"data\", \"level\": \"unknown\", \"reason\": \"No findings provided about data collection, tracking, or deletion controls.\", \"setting\": \"\", \"findings\": []}, {\"area\": \"age_gating\", \"level\": \"unknown\", \"reason\": \"No findings provided about age verification effectiveness or gate failures.\", \"setting\": \"\", \"findings\": []}, {\"area\": \"content\", \"level\": \"unknown\", \"reason\": \"No findings provided about exposure to unsuitable material like violence, horror, or harassment.\", \"setting\": \"\", \"findings\": []}, {\"area\": \"developer_record\", \"level\": \"unknown\", \"reason\": \"No findings provided about developer fines, breaches, lawsuits, or regulatory actions.\", \"setting\": \"\", \"findings\": []}]}",
-  "input_tokens": 1576,
-  "output_tokens": 257,
-  "price_nano": 704100,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

@@ -1,0 +1,9 @@
+{
+  "text": "{\n  \"reasons\": [\n    {\n      \"area\": \"content\",\n      \"reason\": \"A Reddit user reports Minecraft has no blood, gore, swearing, or graphic weaponry.\"\n    }\n  ]\n}",
+  "input_tokens": 1263,
+  "output_tokens": 49,
+  "price_nano": 1410000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

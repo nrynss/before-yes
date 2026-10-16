@@ -1,9 +1,0 @@
-{
-  "text": "{\"reason_supported\":true,\"explanation\":\"The explanation attributes the $7,000 spend to a parent report quoted in the news source ('A parent said their 10-year-old daughter spent more than $7,000...'), preserving the qualification that it occurred 'despite attempts to limit purchases' without asserting those attempts were effective controls. It attributes the allegation of 'gambling-like' mechanics such as loot boxes to the news source quoting the complaint. It notes the store listing carries a content advisory for loot boxes, matching the store quote. All three claims are directly supported by the cited sources.\"}",
-  "input_tokens": 1292,
-  "output_tokens": 132,
-  "price_nano": 1688000,
-  "measured": true,
-  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
-  "finish_reason": "stop"
-}

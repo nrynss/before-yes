@@ -1,0 +1,9 @@
+{
+  "text": "{\"reason_supported\": true, \"explanation\": \"The store listing explicitly states 'Data Not Linked to You' and describes data that 'may be collected but is not linked to your identity,' directly supporting the claim that certain data may be collected but is not linked to the user's identity.\"}",
+  "input_tokens": 1168,
+  "output_tokens": 62,
+  "price_nano": 1354000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

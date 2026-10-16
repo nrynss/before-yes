@@ -1,8 +1,0 @@
-{
-  "text": "{\"reasons\": [{\"area\": \"money\", \"reason\": \"The comparison guide reports Scratch is free.\"}]}",
-  "input_tokens": 1256,
-  "output_tokens": 27,
-  "price_nano": 401100,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

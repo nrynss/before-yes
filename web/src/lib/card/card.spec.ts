@@ -1,7 +1,7 @@
 import { test, expect, type Page } from '@playwright/test';
 import { readFileSync, readdirSync } from 'node:fs';
 import { contrastGate, type ContrastPair } from '@nrynss/chaaya/testing';
-import { areas, verdicts, levels, type Card } from './contract';
+import { areas, verdicts, levels, sourceLabel, type Card } from './contract';
 const fixtures = readdirSync('../testdata/contracts').filter(n => /^card-.*\.json$/.test(n)).map(name => ({ name, card: JSON.parse(readFileSync(`../testdata/contracts/${name}`, 'utf8')) as Card }));
 const no = fixtures.find(f => f.card.verdict === 'no')!.card;
 const yes = fixtures.find(f => f.card.verdict === 'yes')!.card;
@@ -155,4 +155,13 @@ test('an unknown area with no reason shows it is unanswered, and a real reason s
  await expect(page.locator('[data-area="data"]')).toContainText('Don’t assume it is safe.');
  await expect(page.locator('[data-area="developer_record"]')).toContainText('No news finding was verified.');
  await expect(page.locator('[data-area="developer_record"]')).not.toContainText('unanswered, not a pass');
+});
+
+test('a source is labelled by its kind, and a help page is named as one', () => {
+ const finding = (kind: string, url = 'https://example.org/a') => ({ id: 'f', area: 'contact' as const, claim: 'c', stance: 'mitigation' as const, quote: 'q', source: {kind, url, fetched_at: '2026-10-13T18:58:00Z'} });
+ expect(sourceLabel(finding('review', 'https://itunes.apple.com/x'))).toBe('Review');
+ expect(sourceLabel({...finding('review'), source: {...finding('review').source, index: 12}})).toBe('Review 12');
+ expect(sourceLabel(finding('policy'))).toBe('Privacy policy');
+ expect(sourceLabel(finding('help', 'https://help.minecraft.net/hc/en-us/articles/4408968616077'))).toBe('Help page');
+ expect(sourceLabel(finding('news', 'https://www.securitymagazine.com/articles/1'))).toBe('www.securitymagazine.com');
 });

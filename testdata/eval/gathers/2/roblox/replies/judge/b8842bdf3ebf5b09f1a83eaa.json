@@ -1,9 +1,0 @@
-{
-  "text": "{\"reason_supported\":false,\"explanation\":\"The explanation opens with the claim 'The privacy policy states \\u2018Data will now be sold.\\u2019' The provided policy quote is exactly 'Data will now be sold', but no surrounding context or attribution shows this sentence comes from Roblox\\u2019s privacy policy; the source label alone does not make the quote a verified policy excerpt. Because the opening factual claim lacks a demonstrated citation to the actual policy text, the explanation fails the requirement that every concrete claim be supported by a cited quote with matching attribution.\"}",
-  "input_tokens": 1323,
-  "output_tokens": 124,
-  "price_nano": 1695000,
-  "measured": true,
-  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
-  "finish_reason": "stop"
-}

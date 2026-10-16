@@ -303,7 +303,7 @@ func TestGatherFixtures(t *testing.T) {
 	cases := map[string]want{
 		"roblox": {
 			host: "roblox.com", from: "seller_url", app: 431946152,
-			kinds: map[string]int{KindReview: 500, KindStore: 1, KindTerms: 1, KindReddit: 16, KindForum: 4, KindNews: 7, KindRating: 6},
+			kinds: map[string]int{KindReview: 500, KindStore: 1, KindTerms: 1, KindReddit: 16, KindForum: 4, KindNews: 7, KindRating: 6, KindHelp: 6},
 			terms: []string{"https://en.help.roblox.com/hc/en-us/articles/14663412502676-Roblox-is-Updating-our-Terms-of-Use"},
 			// The open policy search's hits on roblox.com are the download
 			// page and two homepages, none of them a policy.
@@ -311,7 +311,7 @@ func TestGatherFixtures(t *testing.T) {
 		},
 		"minecraft": {
 			host: "minecraft.net", from: "policy_hit", app: 479516143,
-			kinds: map[string]int{KindReview: 500, KindStore: 1, KindReddit: 16, KindForum: 6, KindNews: 8, KindRating: 6},
+			kinds: map[string]int{KindReview: 500, KindStore: 1, KindReddit: 16, KindForum: 6, KindNews: 8, KindRating: 6, KindHelp: 6},
 			// The only policy hit on minecraft.net is the usage guidelines,
 			// which is not a privacy policy. The narrowed terms hits are the
 			// EULA pages, which the capture never extracted, so offline
@@ -320,20 +320,22 @@ func TestGatherFixtures(t *testing.T) {
 		},
 		"khan-academy-kids": {
 			host: "khankids.org", from: "seller_url", app: 1378467217,
-			// The off-product filter drops 15 sibling pages (see
+			// The off-product filter drops 20 sibling pages (see
 			// TestOffProductFilterFixtures): T3.10's 10 (8 reddit threads and
 			// the internetmatters and Common Sense pages about Khan Academy,
-			// the website, not the Kids app) and, by the shorter-sibling text
-			// rule, 2 reddit threads and 3 Common Sense articles that name
-			// Khan Academy and never Khan Academy Kids.
-			kinds: map[string]int{KindReview: 500, KindStore: 1, KindReddit: 6, KindForum: 1, KindNews: 1, KindRating: 5},
+			// the website, not the Kids app), by the shorter-sibling text
+			// rule 2 reddit threads and 3 Common Sense articles that name
+			// Khan Academy and never Khan Academy Kids, and from plan-6's
+			// controls search 3 support.khanacademy.org pages, one Internet
+			// Matters guide and one YouTube video that name only the sibling.
+			kinds: map[string]int{KindReview: 500, KindStore: 1, KindReddit: 6, KindForum: 1, KindNews: 1, KindRating: 5, KindHelp: 1},
 			// Both searches return only the homepage, which is skipped, so
 			// no extract call is made.
 			missing: []string{KindPolicy, KindTerms},
 		},
 		"toca-life-world": {
 			host: "tocaboca.com", from: "policy_hit", app: 1208138685,
-			kinds:  map[string]int{KindReview: 500, KindStore: 1, KindPolicy: 1, KindTerms: 1, KindReddit: 16, KindForum: 3, KindNews: 8, KindRating: 6},
+			kinds:  map[string]int{KindReview: 500, KindStore: 1, KindPolicy: 1, KindTerms: 1, KindReddit: 16, KindForum: 3, KindNews: 8, KindRating: 6, KindHelp: 6},
 			policy: []string{"https://www.tocaboca.com/docs/en/privacy-policy"},
 			terms:  []string{"https://www.tocaboca.com/docs/en/terms-of-service"},
 		},
@@ -390,16 +392,16 @@ func TestGatherFixtures(t *testing.T) {
 				}
 			}
 
-			// Seven searches and at most one extract, and the meter booked
+			// Eight searches and at most two extracts, and the meter booked
 			// what Tavily reported.
-			if len(f.searches) != 7 || len(f.extracts) > 2 {
-				t.Errorf("calls = %d searches, %d extracts; want 7 and at most 2", len(f.searches), len(f.extracts))
+			if len(f.searches) != 8 || len(f.extracts) > 2 {
+				t.Errorf("calls = %d searches, %d extracts; want 8 and at most 2", len(f.searches), len(f.extracts))
 			}
 			if got.Credits != f.credits() {
 				t.Errorf("credits = %g, want the captures' %g", got.Credits, f.credits())
 			}
-			if got.Credits > 8 {
-				t.Errorf("credits = %g, over the plan's eight", got.Credits)
+			if got.Credits > 9 {
+				t.Errorf("credits = %g, over the plan's nine", got.Credits)
 			}
 			spent, err := m.Spent(context.Background(), spend.PoolTavily, "check-"+d.slug)
 			if err != nil {
@@ -446,8 +448,8 @@ func TestGatherFixtures(t *testing.T) {
 func TestOffProductFilterFixtures(t *testing.T) {
 	khan := demos[2]
 	got, _, _ := gatherFixture(t, khan)
-	if got.OffProduct != 15 {
-		t.Errorf("OffProduct = %d, want 15 (T3.10's 10, plus 2 reddit and 3 Common Sense pages naming only the shorter sibling)", got.OffProduct)
+	if got.OffProduct != 20 {
+		t.Errorf("OffProduct = %d, want 20 (T3.10's 10, 2 reddit and 3 Common Sense pages naming only the shorter sibling, and the 5 controls-search pages that name only the sibling)", got.OffProduct)
 	}
 	dropped := []string{
 		// The Khan Academy website, not the Kids app.
@@ -921,8 +923,8 @@ func TestPlanCredits(t *testing.T) {
 		total += tavily.SearchCredits(q.Search.SearchDepth)
 	}
 	total += tavily.ExtractCredits(2 * extractTries)
-	if total != 8 {
-		t.Errorf("plan prices at %g credits, want 8", total)
+	if total != 9 {
+		t.Errorf("plan prices at %g credits, want 9", total)
 	}
 	for _, q := range p[:2] {
 		if len(q.Search.IncludeDomains) != 1 || q.Search.IncludeDomains[0] != "roblox.com" || !q.Extract {

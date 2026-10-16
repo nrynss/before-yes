@@ -1,8 +1,0 @@
-{
-  "text": "{\"asserted\": true, \"quote\": \"if the estimation isn't not you're age you need to PUT AN ID TO COMFRIM YOUR CORRECT AGE\"}",
-  "input_tokens": 366,
-  "output_tokens": 37,
-  "price_nano": 143100,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

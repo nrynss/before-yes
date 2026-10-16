@@ -1,0 +1,9 @@
+{
+  "text": "{\n  \"reasons\": [\n    {\n      \"area\": \"data\",\n      \"reason\": \"The terms state you may be asked to provide an email address, phone number, or government-issued photo identification to access certain content or features.\"\n    }\n  ]\n}",
+  "input_tokens": 1335,
+  "output_tokens": 56,
+  "price_nano": 1503000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

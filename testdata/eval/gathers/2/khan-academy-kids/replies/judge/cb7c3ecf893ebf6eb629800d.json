@@ -1,0 +1,9 @@
+{
+  "text": "{\n  \"reasons\": [\n    {\n      \"area\": \"content\",\n      \"reason\": \"No cited review reports a concrete encounter with unsuitable material; all four quotes describe general satisfaction, boredom, or broad suitability without naming any inappropriate content a child saw or reached.\"\n    }\n  ]\n}",
+  "input_tokens": 1306,
+  "output_tokens": 62,
+  "price_nano": 1492000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

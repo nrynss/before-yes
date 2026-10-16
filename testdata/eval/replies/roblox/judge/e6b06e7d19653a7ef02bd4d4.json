@@ -1,8 +1,0 @@
-{
-  "text": "{\"reason_supported\": true, \"explanation\": \"A news article states that 'a kid who wants to dodge all of the above can simply enter any birthdate before September 2007,' directly supporting the claim of a reported bypass where a child can evade age checks by providing a false birthdate.\"}",
-  "input_tokens": 1196,
-  "output_tokens": 68,
-  "price_nano": 420000,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

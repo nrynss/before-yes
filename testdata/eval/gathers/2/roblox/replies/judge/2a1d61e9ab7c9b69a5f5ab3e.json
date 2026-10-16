@@ -1,8 +1,0 @@
-{
-  "text": "{\"reason_supported\": true, \"explanation\": \"A review states that attempting to upgrade the game in the App Store required adding a payment option, leading to a $46 charge, despite the game being advertised as free.\"}",
-  "input_tokens": 1228,
-  "output_tokens": 49,
-  "price_nano": 412500,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

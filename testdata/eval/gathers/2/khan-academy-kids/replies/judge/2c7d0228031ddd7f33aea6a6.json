@@ -1,0 +1,9 @@
+{
+  "text": "{\"reason_supported\":false,\"explanation\":\"The explanation claims the store listing 'notes data not linked to identity may be collected for listed purposes,' but the provided store quote ends at 'purposes:' and does not include any listed purposes or further detail about what data is collected. Because the quote cuts off before describing those purposes, the claim about listed purposes is unsupported.\"}",
+  "input_tokens": 1248,
+  "output_tokens": 79,
+  "price_nano": 1485000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

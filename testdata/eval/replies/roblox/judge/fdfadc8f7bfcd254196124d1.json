@@ -1,9 +1,0 @@
-{
-  "text": "{\"reason_supported\":true,\"explanation\":\"Each sentence in the Reason is directly supported by a cited quote. The first sentence — 'The store listing says games may contain optional in‑game purchases, including loot boxes, and notes a content advisory for loot boxes' — is backed by the two store quotes: 'Games may contain optional in-game purchases, including lootboxes and other items' and 'Content advisory: Loot Boxes'. The second sentence — 'The terms say Roblox may offer paid subscriptions for additional benefits' — matches the terms quote: 'Roblox may offer you access to additional benefits or other digital items provided by Roblox through paid subscriptions (\\u201cRoblox Subscription\\u201d).' The third sentence — 'A forum post reports that Roblox encourages spending on Robux through limited‑time events, exclusive items, and social pressure' — follows the forum quote verbatim. All claims are attributed to their sources, qualifications such as 'may contain', 'optional', and 'encourages' are preserved, and no permission, pressure, or completed purchase beyond what the quotes state is inferred.\"}",
-  "input_tokens": 1268,
-  "output_tokens": 237,
-  "price_nano": 1979000,
-  "measured": true,
-  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
-  "finish_reason": "stop"
-}

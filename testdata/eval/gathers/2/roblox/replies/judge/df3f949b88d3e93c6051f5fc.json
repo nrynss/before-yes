@@ -1,8 +1,0 @@
-{
-  "text": "{\"reason_supported\": true, \"explanation\": \"A review states: 'I contacted Roblox support and they said I gotta wait until I’m 13 but the birthday said Oct 7,1985 and I didn’t know how that worked… because it said that I’m 41 but I’m younger than 13.' This directly reports an explicit actual/assigned-age mismatch—the user says they are younger than 13, yet the system calculated their age as 41 based on the entered birthdate (Oct 7, 1985), confirming a system error in age assignment.\"}",
-  "input_tokens": 1292,
-  "output_tokens": 131,
-  "price_nano": 505500,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

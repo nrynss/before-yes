@@ -1,9 +1,0 @@
-{
-  "text": "{\"grades\": [{\"area\": \"contact\", \"level\": \"ok_with_setting\", \"reason\": \"Strangers can reach your child on public multiplayer servers, but on a child account multiplayer is off by default and you can restrict communication to 'friends only' or 'no one' in Xbox privacy settings.\", \"setting\": \"Multiplayer off by default on child accounts; set 'Others can communicate with voice, text, or invites' to 'Block' or 'Friends' and turn 'You can join multiplayer games' off\", \"findings\": [\"F24\", \"F72\", \"F81\", \"F70\"]}, {\"area\": \"data\", \"level\": \"flag\", \"reason\": \"Microsoft was fined $20 million by the FTC for illegally collecting and retaining children's data, and the app tracks users across apps and websites for personalized ads with only partial limits from child accounts.\", \"setting\": \"\", \"findings\": [\"F11\", \"F63\", \"F93\", \"F82\"]}, {\"area\": \"age_gating\", \"level\": \"flag\", \"reason\": \"The age gate can be bypassed by entering a fake birth year, so a 9-year-old can get full access and lose the protective defaults that come with a proper child account.\", \"setting\": \"\", \"findings\": [\"F59\", \"F71\", \"F92\"]}, {\"area\": \"content\", \"level\": \"flag\", \"reason\": \"A parent reported that their child encountered racist language in the game, and no content-area finding describes a setting that blocks such harassment.\", \"setting\": \"\", \"findings\": [\"F6\"]}]}",
-  "input_tokens": 8611,
-  "output_tokens": 7252,
-  "price_nano": 30367000,
-  "measured": true,
-  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
-  "finish_reason": "stop"
-}

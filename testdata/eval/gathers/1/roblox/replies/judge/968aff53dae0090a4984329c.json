@@ -1,0 +1,9 @@
+{
+  "text": "{\"reason_supported\":false,\"explanation\":\"The explanation states 'The privacy policy says data will now be sold' and 'reserves the right to resell or share data for advertising purposes to third parties.' However, the provided sources are labeled only as 'policy' with short quoted fragments ('Data will now be sold', 'Roblox is now reserving the right to resell and/or share your data for advertising purposes to third parties', 'Feeding data to AI'). These fragments do not include any citation to an official Roblox privacy policy document, URL, section, or date, so the attribution to 'the privacy policy' is unsupported. Additionally, the claim 'It also mentions feeding data to AI' is presented as a policy statement, but the source quote 'Feeding data to AI' is an isolated phrase without context showing it comes from the privacy policy. The forum quote about age-verification images and retention is correctly attributed to a forum participant, but the policy claims lack decisive documentary evidence.\"}",
+  "input_tokens": 1186,
+  "output_tokens": 207,
+  "price_nano": 1807000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

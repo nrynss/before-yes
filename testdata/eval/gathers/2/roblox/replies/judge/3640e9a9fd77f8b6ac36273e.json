@@ -1,8 +1,0 @@
-{
-  "text": "{\"reason_supported\": true, \"explanation\": \"A review explicitly states that the user contacted Roblox support and was told to wait until age 13, while the birthday field displayed October 7, 1985, resulting in an assigned age of 41, despite the user being younger than 13. This directly describes an explicit actual/assigned-age mismatch, where the system calculated an age inconsistent with the user's true age, meeting the requirement for a reported bypass or mismatch without inferring cause or relying on undefined group labels.\"}",
-  "input_tokens": 1259,
-  "output_tokens": 116,
-  "price_nano": 482100,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

@@ -1,9 +1,0 @@
-{
-  "text": "{\n  \"reasons\": [\n    {\n      \"area\": \"content\",\n      \"reason\": \"A parent reports their daughter asks to play the app daily and it helps with counting and letters at her age.\"\n    }\n  ]\n}",
-  "input_tokens": 1711,
-  "output_tokens": 49,
-  "price_nano": 1858000,
-  "measured": true,
-  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
-  "finish_reason": "stop"
-}

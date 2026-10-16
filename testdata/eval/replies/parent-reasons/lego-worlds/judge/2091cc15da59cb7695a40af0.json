@@ -1,8 +1,0 @@
-{
-  "text": "{\"grades\": [{\"area\": \"contact\", \"level\": \"ok\", \"reason\": \"The comparison guide states there is no open chat with strangers.\", \"setting\": \"\", \"findings\": [\"f_outside_lego-worlds\"]}, {\"area\": \"money\", \"level\": \"unknown\", \"reason\": \"No findings were provided about in-app purchases, monetization, or financial risks.\", \"setting\": \"\", \"findings\": []}, {\"area\": \"data\", \"level\": \"unknown\", \"reason\": \"No findings were provided about data collection, tracking, or privacy practices.\", \"setting\": \"\", \"findings\": []}, {\"area\": \"age_gating\", \"level\": \"unknown\", \"reason\": \"No findings were provided about age verification or age-gating effectiveness.\", \"setting\": \"\", \"findings\": []}, {\"area\": \"content\", \"level\": \"unknown\", \"reason\": \"No findings were provided about exposure to unsuitable content such as violence, horror, or harassment.\", \"setting\": \"\", \"findings\": []}, {\"area\": \"developer_record\", \"level\": \"unknown\", \"reason\": \"No findings were provided about the developer's history of fines, breaches, lawsuits, or regulatory actions.\", \"setting\": \"\", \"findings\": []}]}",
-  "input_tokens": 1532,
-  "output_tokens": 268,
-  "price_nano": 700800,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

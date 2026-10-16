@@ -1,8 +1,0 @@
-{
-  "text": "{\"reasons\": [{\"area\": \"content\", \"reason\": \"A rating reports the game’s blocky visuals and non-graphic style make the violence less intense than many action games.\"}]}",
-  "input_tokens": 1262,
-  "output_tokens": 44,
-  "price_nano": 418200,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

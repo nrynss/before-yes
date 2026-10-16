@@ -1,8 +1,0 @@
-{
-  "text": "{\"reason_supported\": true, \"explanation\": \"The comparison guide states 'Scratch is ... MIT's free, block-based coding platform', directly supporting the claim that Scratch is free.\"}",
-  "input_tokens": 1098,
-  "output_tokens": 42,
-  "price_nano": 367200,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

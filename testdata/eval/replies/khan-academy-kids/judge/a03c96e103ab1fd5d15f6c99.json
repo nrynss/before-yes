@@ -1,0 +1,9 @@
+{
+  "text": "{\"reason_supported\":true,\"explanation\":\"Both reviewers state the app is free — one explicitly says \\\"it's FREE\\\" and another calls it a \\\"fantastic free learning app.\\\" The store listing corroborates this with \\\"100% free—no ads, no subscriptions\\\" and labels the product \\\"Free.\\\" No loot boxes, pay-to-win mechanics, subscriptions, or child spending events are mentioned in any source.\"}",
+  "input_tokens": 1175,
+  "output_tokens": 92,
+  "price_nano": 1451000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

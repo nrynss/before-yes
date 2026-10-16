@@ -531,6 +531,46 @@ func TestContentHarmCategories(t *testing.T) {
 	}
 }
 
+// A content flag is capped at the setting when a quote in the area names a
+// working content control, and a report that the control fails keeps the flag.
+// The wording is the pages' own: Apple's Screen Time content restrictions,
+// Microsoft Family Safety's content filters, Roblox's content maturity
+// setting and blocked games.
+func TestContentControlCapsAFlag(t *testing.T) {
+	risk := gf{"risk", checklist.Content, finding.Risk, KindReview, "", "my kid ran into a horror game with jump scares"}
+	for q, ok := range map[string]bool{
+		`Set up content filters for your child's account.`:            true,
+		`Go to "Content filters" and block games for your child.`:     true,
+		`Customise the automatic content restrictions for under-13s.`: true,
+		`Adjust the content maturity level for your child's account.`: true,
+		`Block a game to prevent your child from accessing it.`:       true,
+		`Age-based content restrictions`:                              true,
+		`The game has an age rating of 12+`:                           false,
+		`The app is free and has no ads`:                              false,
+	} {
+		ctl := gf{"ctl", checklist.Content, finding.Mitigation, KindHelp, "https://help.sampleland.example/parental-controls", q}
+		gs, acts := run(all(grade(checklist.Content, checklist.Flag, "risk")), findings(risk, ctl), 9)
+		g := byArea(gs, checklist.Content)
+		if capped := g.Level == checklist.OKWithSetting; capped != ok {
+			t.Errorf("%q: content = %s (setting %q), want capped=%v; actions %+v", q, g.Level, g.Setting, ok, actionsFor(acts, checklist.Content))
+			continue
+		}
+		if ok && (g.Setting == "" || !slices.Equal(g.Findings, []string{"risk", "ctl"})) {
+			t.Errorf("%q cap = %+v", q, g)
+		}
+	}
+	// A report that the control fails keeps the flag, cited or not.
+	fail := gf{"fail", checklist.Content, finding.Risk, KindReview, "", "kids still run into horror games despite the content filters"}
+	ctl := gf{"ctl", checklist.Content, finding.Mitigation, KindHelp, "https://help.sampleland.example/parental-controls", "Set up content filters for your child's account."}
+	gs, acts := run(all(grade(checklist.Content, checklist.Flag, "risk")), findings(risk, ctl, fail), 9)
+	want(t, gs, acts, checklist.Content, checklist.Flag, RuleContentConfirmed)
+	// A control about another title does not cap.
+	foreign := ctl
+	foreign.url = "https://help.othergame.example/parental-controls"
+	gs, acts = run(all(grade(checklist.Content, checklist.Flag, "risk")), findings(risk, foreign), 9)
+	want(t, gs, acts, checklist.Content, checklist.Flag, RuleContentConfirmed)
+}
+
 func TestContentRatingSettlesOKOnlyWithAWitnessAndNoHarm(t *testing.T) {
 	rating := gf{"r", checklist.Content, finding.Neutral, KindStore, "https://apps.apple.com/us/app/sampleland/id1", "Age rating: 4+"}
 	witness := gf{"w", checklist.Content, finding.Neutral, KindReview, "", "the content is appropriate and calm for a little one"}
@@ -676,6 +716,33 @@ func TestContactControlCapsAFlag(t *testing.T) {
 	absent.quote = "There is no way to set chat to friends only for kids."
 	gs, acts = run(all(grade(checklist.Contact, checklist.Flag, "risk")), findings(risk, absent), 7)
 	want(t, gs, acts, checklist.Contact, checklist.Flag, RuleContactConfirmed)
+}
+
+// The control word lists are read for the wording the pages parents are sent
+// to actually use: the Xbox family settings, Roblox's parental controls and
+// the guides around them. Each quote caps a contact flag whose cited risk
+// shows a stranger reaching the child, and names the setting the card shows.
+func TestContactControlRecognisesTheWordingPagesUse(t *testing.T) {
+	risk := gf{"risk", checklist.Contact, finding.Risk, KindReview, "", "a stranger sent my daughter a message in chat"}
+	for _, tc := range []struct {
+		quote   string
+		setting string
+	}{
+		{`For younger kids, consider turning off chat completely.`, "Turn chat off or restrict it"},
+		{`Roblox lets a parent set chat to friends only.`, "Friends-only chat"},
+		{`Under "Xbox Privacy", set "You can join multiplayer games" to "Block."`, "Turn off or limit messaging"},
+		{`Set the restriction to "Not Allowed" to completely block chat and messaging in Minecraft.`, "Turn chat off or restrict it"},
+		{`Parents can restrict voice and text communication or limit it to friends only.`, "Friends-only chat"},
+		{`You can restrict communication with other players.`, "Turn off or limit messaging"},
+		{`Choose if your child can use Experience chat with everyone in the game or no one.`, "Turn chat off or restrict it"},
+	} {
+		ctl := gf{"ctl", checklist.Contact, finding.Mitigation, KindHelp, "https://help.sampleland.example/parental-controls", tc.quote}
+		gs, acts := run(all(grade(checklist.Contact, checklist.Flag, "risk")), findings(risk, ctl), 7)
+		g := want(t, gs, acts, checklist.Contact, checklist.OKWithSetting, RuleContactCapped)
+		if g.Setting != tc.setting {
+			t.Errorf("%q caps at %q, want %q", tc.quote, g.Setting, tc.setting)
+		}
+	}
 }
 
 func TestContactNoChatStatedByTheDeveloperSettlesOK(t *testing.T) {

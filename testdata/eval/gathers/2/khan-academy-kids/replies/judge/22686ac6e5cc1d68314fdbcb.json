@@ -1,0 +1,9 @@
+{
+  "text": "{\"reason_supported\":true,\"explanation\":\"All four cited reviews express general satisfaction, boredom, or broad suitability for young learners. None of the quotes names a specific instance where a child encountered unsuitable material, describes what that material was, or reports reaching inappropriate content. Because the explanation only asserts that no review reports a concrete encounter with unsuitable material — and the provided quotes contain no such report — the claim is fully supported by the sources.\"}",
+  "input_tokens": 1111,
+  "output_tokens": 91,
+  "price_nano": 1384000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

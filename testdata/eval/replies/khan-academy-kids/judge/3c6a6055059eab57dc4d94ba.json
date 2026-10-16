@@ -1,9 +1,0 @@
-{
-  "text": "{\n  \"reasons\": [\n    {\n      \"area\": \"money\",\n      \"reason\": \"The store listing says the app is 100% free with no ads and no subscriptions. A reviewer says they were glad the app was absolutely free.\"\n    },\n    {\n      \"area\": \"age_gating\",\n      \"reason\": \"A parent reports their five-year-old autistic son uses the app all day long. Another reviewer says they played it when they were about 2 or 3 years old. The rating source says Khan Academy Kids is designed for children aged 2 to 7.\"\n    },\n    {\n      \"area\": \"content\",\n      \"reason\": \"Parents report their children use the app for counting, letters, reading, math, drawing, coloring, emotional intelligence, geometry, and logic activities. A grandmother says her 3-year-old granddaughter enjoys the interactive activities and story reading.\"\n    },\n    {\n      \"area\": \"developer_record\",\n      \"reason\": \"A rating source describes the co-founder as an experienced educator and tech entrepreneur with over 20 years of experience teaching more than 2,000 children across three countries.\"\n    }\n  ]\n}",
-  "input_tokens": 2042,
-  "output_tokens": 247,
-  "price_nano": 2783000,
-  "measured": true,
-  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
-  "finish_reason": "stop"
-}

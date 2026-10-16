@@ -1,9 +1,0 @@
-{
-  "text": "{\"reason_supported\":true,\"explanation\":\"Each concrete encounter is directly supported by a cited quote. The first sentence attributes reviewers who report that role‑play games such as Brookhaven involve 'disturbing and inappropriate stuff' and 'online dating,' matching the first two review quotes. The second sentence attributes a forum user describing a 'Baddies' game labeled 5+ whose opening tutorial encouraged punching, stomping, and shooting, matching the third forum quote. The third sentence attributes another forum quote stating a 'Street Code' game showed an intense fiery car accident and prompted the player to decide whether to shoot or save an officer within seconds, matching the fourth forum quote. All claims are presented as reported encounters in past tense with correct source attribution.\"}",
-  "input_tokens": 1926,
-  "output_tokens": 155,
-  "price_nano": 2391000,
-  "measured": true,
-  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
-  "finish_reason": "stop"
-}

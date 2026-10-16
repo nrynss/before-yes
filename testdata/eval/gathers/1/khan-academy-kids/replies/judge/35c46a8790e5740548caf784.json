@@ -1,0 +1,9 @@
+{
+  "text": "{\"reason_supported\":true,\"explanation\":\"The explanation attributes the claim directly to the reviewer's statement that 'you can make a bunch of profiles with your kids,' which is a verbatim quote from the supplied review.\"}",
+  "input_tokens": 1051,
+  "output_tokens": 47,
+  "price_nano": 1192000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

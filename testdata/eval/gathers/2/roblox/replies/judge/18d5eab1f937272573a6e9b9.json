@@ -1,8 +1,0 @@
-{
-  "text": "{\"reason_supported\": true, \"explanation\": \"A review states: 'I contacted Roblox support and they said I gotta wait until I’m 13 but the birthday said Oct 7,1985 and I didn’t know how that worked… because it said that I’m 41 but I’m younger than 13'. This directly attributes to the user their contact with Roblox support, who instructed them to wait until age 13, while the system interpreted the entered birthday (Oct 7, 1985) as making them 41 years old—despite the user stating they are younger than 13. This constitutes a first-hand report of the age gate placing the user on the wrong side of it (being blocked due to an overestimated age), meeting the area definition criterion: 'a check that places a child at the wrong age'.\"}",
-  "input_tokens": 1275,
-  "output_tokens": 187,
-  "price_nano": 550800,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

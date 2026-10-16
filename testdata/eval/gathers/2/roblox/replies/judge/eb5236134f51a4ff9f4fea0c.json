@@ -1,8 +1,0 @@
-{
-  "text": "{\"reason_supported\": false, \"explanation\": \"The reason repeats the forum quote verbatim but adds no new information beyond what is already present in the quote. However, the area definition requires evidence of children's data being collected and used in ways a parent cannot control—specifically ad tracking aimed at children, third-party sharing or selling, or no way to delete what was collected. While the forum quote mentions third-party processing of images used for age verification and lack of guaranteed retention period, it does not state that parents have no way to delete the collected data, nor does it confirm that the data is being used for ad tracking or sold/shared beyond processing for verification. The absence of a guaranteed retention period alone does not equate to 'no way to delete'—it only indicates uncertainty about how long data is kept, not that deletion is impossible or not offered. Therefore, the reason does not fully satisfy the area definition's requirement of demonstrating a lack of parental control over data deletion or misuse.\"}",
-  "input_tokens": 1106,
-  "output_tokens": 204,
-  "price_nano": 515400,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

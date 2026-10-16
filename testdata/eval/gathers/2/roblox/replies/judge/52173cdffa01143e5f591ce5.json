@@ -1,8 +1,0 @@
-{
-  "text": "{\"reason_supported\": true, \"explanation\": \"A forum post states: 'Within seconds, this \\\"Street Code\\\" game showed an intense, fiery car accident and prompted the player to decide whether to shoot or save an officer.' This directly reports a specific instance of extreme violence encountered during gameplay.\"}",
-  "input_tokens": 2233,
-  "output_tokens": 63,
-  "price_nano": 726600,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

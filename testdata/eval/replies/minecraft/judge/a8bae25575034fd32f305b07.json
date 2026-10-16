@@ -1,8 +1,0 @@
-{
-  "text": "{\"reason_supported\": true, \"explanation\": \"Review: 'Attempted to buy add ons like I have in the past, it wasn’t working and after the third attempt for the same product, I was charged for buying the same add on 3 times.' This directly describes a completed child spending event involving multiple charges for the same add-on due to failed attempts, matching the required focus on a qualified purchase mechanism.\"}",
-  "input_tokens": 1892,
-  "output_tokens": 88,
-  "price_nano": 646800,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

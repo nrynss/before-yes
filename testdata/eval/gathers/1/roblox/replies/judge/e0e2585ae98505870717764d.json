@@ -1,9 +1,0 @@
-{
-  "text": "{\n  \"criterion\": \"none\",\n  \"quote\": \"\",\n  \"actual_age\": \"\",\n  \"assigned_age\": \"\"\n}",
-  "input_tokens": 488,
-  "output_tokens": 28,
-  "price_nano": 572000,
-  "measured": true,
-  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
-  "finish_reason": "stop"
-}

@@ -1,0 +1,9 @@
+{
+  "text": "{\"reason_supported\":true,\"explanation\":\"The explanation directly attributes the claim to the reviewer ('A reviewer reports') and describes exactly what the quote says: a grid of scary devil faces and men tied up with mouths taped shut appeared for about 15 seconds while the child was doing math. This is a concrete reported encounter with unsuitable material, matching the required focus.\"}",
+  "input_tokens": 1124,
+  "output_tokens": 78,
+  "price_nano": 1358000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

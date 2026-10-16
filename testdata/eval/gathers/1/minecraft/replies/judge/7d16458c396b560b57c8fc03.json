@@ -1,0 +1,9 @@
+{
+  "text": "{\"reason_supported\":true,\"explanation\":\"Each concrete claim in the Reason is directly supported by the cited sources. The first three review quotes document specific child spending events: a 10-year-old who spent birthday money on 10,000 Minecoins and felt scammed; a user who was charged $40 repeatedly for an add-on that never arrived despite 'purchase successful' messages; and a reviewer who describes a recurring monthly charge presented as a one-time payment. The fourth review quote adds another instance of a $6 Minecoin purchase that did not deliver the coins. These are attributed as reviewers' own reports, preserving their qualifications ('felt scammed,' 'still don't have the add on,' 'think it's pretty scummy'). The help-article quote is correctly framed as describing what the 'Ask to Buy' setting is designed to do — sending an approval request each time a child tries to buy skins, texture packs, or Minecoins — without asserting that the control was enabled, worked, or was bypassed in any of the reported cases.\"}",
+  "input_tokens": 1385,
+  "output_tokens": 223,
+  "price_nano": 2054000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

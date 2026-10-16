@@ -1,8 +1,0 @@
-{
-  "text": "{\"reason_supported\": true, \"explanation\": \"The comparison guide states 'Scratch is MIT's free, block-based coding platform,' confirming no cost or paid mechanisms exist.\"}",
-  "input_tokens": 1147,
-  "output_tokens": 39,
-  "price_nano": 379200,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

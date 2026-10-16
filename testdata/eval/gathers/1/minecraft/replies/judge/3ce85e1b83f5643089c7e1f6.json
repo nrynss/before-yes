@@ -1,0 +1,9 @@
+{
+  "text": "{\"reason_supported\":true,\"explanation\":\"The explanation attributes two concrete claims to their sources. First, it cites the App Store listing for the statements that the app uses tracking to deliver personalized ads and that data may be used to track users across other companies' apps and websites — both phrases appear verbatim in the store quotes. Second, it cites a forum post for the claim that the developers share information with advertisers and direct readers to the privacy policy — matching the forum quote exactly. No additional claims about retention gaps, deletion practices, or verified compliance are made.\"}",
+  "input_tokens": 1340,
+  "output_tokens": 117,
+  "price_nano": 1691000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

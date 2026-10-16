@@ -1,0 +1,9 @@
+{
+  "text": "{\"grades\": [{\"area\": \"contact\", \"level\": \"ok_with_setting\", \"reason\": \"Strangers can interact with children on public servers, but the Xbox Privacy setting \\\"You can join multiplayer games\\\" can be set to Block to prevent this.\", \"setting\": \"Under “Xbox Privacy,” set “You can join multiplayer games” to “Block.”\", \"findings\": [\"F101\", \"F215\"]}, {\"area\": \"money\", \"level\": \"ok_with_setting\", \"reason\": \"The game pushes in-app purchases like Minecoins and add-ons, but the \\\"Ask to Buy\\\" setting under Spending requires parental approval for purchases.\", \"setting\": \"enable “Ask to Buy” under “Spending.”\", \"findings\": [\"F21\", \"F216\"]}, {\"area\": \"age_gating\", \"level\": \"unknown\", \"reason\": \"There are no credible first-hand reports showing the age gate fails for a 9-year-old, nor clear evidence it works reliably.\", \"setting\": \"\", \"findings\": []}, {\"area\": \"content\", \"level\": \"ok\", \"reason\": \"Reviewers report no blood, gore, or swearing, and the game is rated 9+ on the App Store, making it suitable for a 9-year-old.\", \"setting\": \"\", \"findings\": [\"F93\", \"F94\", \"F223\"]}, {\"area\": \"developer_record\", \"level\": \"unknown\", \"reason\": \"No findings cite a specific fine, breach, lawsuit, or regulatory action against Mojang concerning children's data.\", \"setting\": \"\", \"findings\": []}]}",
+  "input_tokens": 18839,
+  "output_tokens": 9395,
+  "price_nano": 47024000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

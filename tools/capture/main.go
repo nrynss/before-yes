@@ -8,16 +8,18 @@
 //	go run ./tools/capture -slug roblox -title "Roblox" -id 431946152 -out testdata/titles/roblox
 //	go run ./tools/capture -all
 //	go run ./tools/capture -all -only csm,reddit
+//	go run ./tools/capture -all -only controls
 //	go run ./tools/capture -all -only storepage -depth auto
 //
-// -only runs just the named kinds: csm and reddit (T0.4a), advanced (T0.4b),
-// storepage (T3.8a), or alternatives (T3.12), which each run alone. Storepage
-// and alternatives run with no App Store call: storepage reads each title's
-// trackViewUrl from the saved appstore-search.json; alternatives makes the
-// one search pipeline.FindAlternatives makes and writes
-// testdata/alternatives/<slug>, its own directory with its own MANIFEST.md,
-// instead of the title directories. Neither calls the first Tavily kinds, and
-// both add to (storepage) or write (alternatives) a MANIFEST.md.
+// -only runs just the named kinds: csm and reddit (T0.4a), controls
+// (plan-6's parental-controls search), advanced (T0.4b), storepage (T3.8a),
+// or alternatives (T3.12), which each run alone. Storepage and alternatives
+// run with no App Store call: storepage reads each title's trackViewUrl from
+// the saved appstore-search.json; alternatives makes the one search
+// pipeline.FindAlternatives makes and writes testdata/alternatives/<slug>,
+// its own directory with its own MANIFEST.md, instead of the title
+// directories. Neither calls the first Tavily kinds, and both add to
+// (storepage) or write (alternatives) a MANIFEST.md.
 // -depth sets the storepage extract: auto (basic, then
 // advanced when the basic answer shows no review text), basic or advanced.
 //
@@ -76,7 +78,7 @@ func main() {
 	all := flag.Bool("all", false, "capture the four demo titles into <dir>/<slug>")
 	dir := flag.String("dir", "testdata/titles", "root directory for -all")
 	pause := flag.Duration("pause", 500*time.Millisecond, "wait between App Store requests")
-	only := flag.String("only", "", "run only these kinds, comma-separated: csm, reddit (T0.4a), advanced (T0.4b), storepage (T3.8a) or alternatives (T3.12); advanced, storepage and alternatives run alone")
+	only := flag.String("only", "", "run only these kinds, comma-separated: csm, reddit, controls (the plan-6 controls search), advanced (T0.4b), storepage (T3.8a) or alternatives (T3.12); advanced, storepage and alternatives run alone")
 	depth := flag.String("depth", depthAuto, "for -only storepage: auto (basic, then advanced if no review text), basic or advanced")
 	flag.Parse()
 

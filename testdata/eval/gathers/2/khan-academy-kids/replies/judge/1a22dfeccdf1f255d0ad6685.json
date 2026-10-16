@@ -1,9 +1,0 @@
-{
-  "text": "{\"reason_supported\":false,\"explanation\":\"The explanation states 'Reviewers report children aged two to seven using the app successfully,' but none of the cited quotes explicitly state a child's assigned age within the app or show a mismatch between the child's actual age and any age-gate setting. The quotes only give reviewers' opinions about suitability ('Suitable for fifth graders and two year olds'), a self-reported past age ('about 3 or 2'), a general recommendation ('Best app for pre schoolers'), and a parent's note of their daughters' real-world ages (five and seven). No quote describes an age-gate mechanism, an assigned age, or a bypass. The forum quote only mentions email confirmation, not age gating. The rating quote gives a target range, not evidence of a gate or mismatch.\"}",
-  "input_tokens": 1246,
-  "output_tokens": 171,
-  "price_nano": 1759000,
-  "measured": true,
-  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
-  "finish_reason": "stop"
-}

@@ -1,8 +1,0 @@
-{
-  "text": "{\"reason_supported\": false, \"explanation\": \"The reason states 'A review reports a child aged 10 spent birthday money on Minecoins after being scammed,' but the provided review quote does not state the child's age—it only says 'im litterly a kid im only 10' which indicates the reviewer is 10 years old, not that they reported a child aged 10. The reason incorrectly attributes the age to the subject of the report rather than recognizing the reviewer self-identifies as 10. This misrepresents the source.\"}",
-  "input_tokens": 931,
-  "output_tokens": 122,
-  "price_nano": 389100,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

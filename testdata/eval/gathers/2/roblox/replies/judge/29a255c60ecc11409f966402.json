@@ -1,0 +1,9 @@
+{
+  "text": "{\"reason_supported\": false, \"explanation\": \"The explanation claims the privacy policy states 'Data will now be sold,' but the provided policy quote contains only those five words with no surrounding context showing this is an actual current policy statement rather than a fragment, hypothetical, or misattributed line. No cited quote demonstrates that Roblox's privacy policy affirmatively declares it sells children's data. The terms quote about providing email, phone, or government ID for certain features is accurately cited, but it does not support the data-selling claim. Because the central claim about the privacy policy lacks a verifiable, contextualized quote confirming the statement as policy, the reason is not fully supported.\"}",
+  "input_tokens": 1120,
+  "output_tokens": 140,
+  "price_nano": 1540000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

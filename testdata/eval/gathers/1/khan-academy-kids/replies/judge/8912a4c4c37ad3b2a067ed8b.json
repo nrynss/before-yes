@@ -1,0 +1,9 @@
+{
+  "text": "{\"reason_supported\":true,\"explanation\":\"Two reviewers state the app is completely free with no payment required — one writes \\\"ACTUALLY FREE YOU DONT NEED TO PAY\\\" and another says \\\"I love that it's... free.\\\" The store listing also labels the app \\\"Free.\\\" These sources together support the claim that reviewers report the app is free and the store confirms it.\"}",
+  "input_tokens": 1232,
+  "output_tokens": 85,
+  "price_nano": 1487000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

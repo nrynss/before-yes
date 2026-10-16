@@ -1,8 +1,0 @@
-{
-  "text": "{\"reasons\": [{\"area\": \"money\", \"reason\": \"A reviewer reports 'my money taken, and my account hacked, overall it has costed me me over 2,000 dollars'.\"}, {\"area\": \"age_gating\", \"reason\": \"A reviewer reports 'My friend is 9 and she in the 21+ age group!' showing an actual age of 9 and an assigned age of 21+.\"}, {\"area\": \"content\", \"reason\": \"A news report states 'The county also alleges that Roblox hosted sexually explicit content and that thousands of users shared child sexual abuse material on the platform.'\"}, {\"area\": \"developer_record\", \"reason\": \"A news report states 'Los Angeles County filed a civil lawsuit against Roblox Corporation alleging the company falsely marketed its online gaming platform as safe for children while knowingly allowing it to become a \\\"hunting ground for predators.\\\"'}]}}",
-  "input_tokens": 1633,
-  "output_tokens": 381,
-  "price_nano": 832800,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

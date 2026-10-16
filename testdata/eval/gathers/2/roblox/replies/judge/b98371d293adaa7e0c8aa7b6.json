@@ -1,8 +1,0 @@
-{
-  "text": "{\"reason_supported\": false, \"explanation\": \"The reason states 'The terms state Roblox may access and review Content shared via Communication Features and other non-public Content.' This describes a capability under the Terms of Service regarding content monitoring, but the area definition requires evidence of uncontrolled children's data collection/use—specifically ad tracking aimed at children, third-party sharing/selling, or inability to delete collected data. The cited terms quote does not mention any of these elements: it does not reference ad tracking, third-party data sharing or selling, or lack of deletion controls. Therefore, the reason does not meet the area definition for a data flag.\"}",
-  "input_tokens": 889,
-  "output_tokens": 134,
-  "price_nano": 387300,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

@@ -1,9 +1,0 @@
-{
-  "text": "{\"grades\": [{\"area\": \"contact\", \"level\": \"ok\", \"reason\": \"No findings show strangers can message or voice-chat with a 5-year-old; the app has no contact feature and uses a learning path without stranger interaction.\", \"setting\": \"\", \"findings\": [\"F115\", \"F124\"]}, {\"area\": \"money\", \"level\": \"ok\", \"reason\": \"The app is free with no in-app purchases, loot boxes, or subscriptions according to multiple sources including the App Store listing.\", \"setting\": \"\", \"findings\": [\"F132\", \"F134\"]}, {\"area\": \"data\", \"level\": \"flag\", \"reason\": \"Regulators allege the app collected children's names, emails, and birth dates without consent, and the privacy policy admits sharing data with third parties; no parental setting stops this collection or sharing.\", \"setting\": \"\", \"findings\": [\"F112\", \"F121\", \"F125\"]}, {\"area\": \"age_gating\", \"level\": \"ok\", \"reason\": \"The app uses an age gate that requires email confirmation and tailors activities to the child's age, so a 5-year-old gets appropriate content.\", \"setting\": \"\", \"findings\": [\"F113\", \"F124\"]}, {\"area\": \"content\", \"level\": \"flag\", \"reason\": \"A parent reported that scary devil faces and images of tied-up men appeared unexpectedly during math practice, which is horror content unsuitable for a 5-year-old.\", \"setting\": \"\", \"findings\": [\"F8\"]}]}",
-  "input_tokens": 13334,
-  "output_tokens": 7650,
-  "price_nano": 36284000,
-  "measured": true,
-  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
-  "finish_reason": "stop"
-}

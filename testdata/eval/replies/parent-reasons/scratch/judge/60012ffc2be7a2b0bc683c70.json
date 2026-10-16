@@ -1,8 +1,0 @@
-{
-  "text": "{\"grades\": [{\"area\": \"contact\", \"level\": \"unknown\", \"reason\": \"No findings were provided about whether strangers can message or voice chat with the child, or about controls to shut that door.\", \"setting\": \"\", \"findings\": []}, {\"area\": \"money\", \"level\": \"ok\", \"reason\": \"The description emphasizes Scratch as a free, educational coding platform with no mention of in-app purchases, loot boxes, or financial pressure on children.\", \"setting\": \"\", \"findings\": [\"f_outside_scratch\"]}, {\"area\": \"data\", \"level\": \"unknown\", \"reason\": \"No findings were provided about data collection, tracking, third-party sharing, or deletion controls.\", \"setting\": \"\", \"findings\": []}, {\"area\": \"age_gating\", \"level\": \"unknown\", \"reason\": \"No findings were provided about whether the age gate works in practice or if children under the stated age can access the platform.\", \"setting\": \"\", \"findings\": []}, {\"area\": \"content\", \"level\": \"unknown\", \"reason\": \"No findings were provided about whether children encounter unsuitable material such as sexual content, violence, horror, harassment, or self-harm.\", \"setting\": \"\", \"findings\": []}, {\"area\": \"developer_record\", \"level\": \"unknown\", \"reason\": \"No findings were provided about the developer's history of fines, breaches, lawsuits, or regulatory actions regarding children or their data.\", \"setting\": \"\", \"findings\": []}]}",
-  "input_tokens": 1522,
-  "output_tokens": 321,
-  "price_nano": 745500,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

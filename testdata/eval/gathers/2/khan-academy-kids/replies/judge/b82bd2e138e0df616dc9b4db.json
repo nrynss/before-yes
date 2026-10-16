@@ -1,0 +1,9 @@
+{
+  "text": "{\"grades\": [{\"area\": \"contact\", \"level\": \"ok\", \"reason\": \"The app includes a 'Parental Controls \u003e Chat \u003e Off' setting that can disable chat, and no findings show strangers can message or voice-chat a child.\", \"setting\": \"\", \"findings\": [\"F179\"]}, {\"area\": \"money\", \"level\": \"ok\", \"reason\": \"Multiple parent reviews and the App Store listing confirm the app is completely free with no ads or in-app purchases.\", \"setting\": \"\", \"findings\": [\"F3\", \"F195\"]}, {\"area\": \"data\", \"level\": \"flag\", \"reason\": \"A parent reports the app tracks children's information and gathers data, and no cited setting allows a parent to stop that collection or delete the data.\", \"setting\": \"\", \"findings\": [\"F123\"]}, {\"area\": \"age_gating\", \"level\": \"ok\", \"reason\": \"Parents report the app works well for preschoolers and kindergartners, with a 5-year-old and younger children using it successfully.\", \"setting\": \"\", \"findings\": [\"F30\", \"F94\", \"F97\", \"F103\"]}, {\"area\": \"content\", \"level\": \"ok\", \"reason\": \"Reviewers describe the content as age-appropriate and enjoyable for preschoolers and kindergartners, with no reports of sexual content, realistic violence, horror, harassment, or self-harm.\", \"setting\": \"\", \"findings\": [\"F74\", \"F80\", \"F81\", \"F82\"]}, {\"area\": \"developer_record\", \"level\": \"unknown\", \"reason\": \"No findings report any fines, data breaches, lawsuits, or regulatory actions against the developer.\", \"setting\": \"\", \"findings\": []}]}",
+  "input_tokens": 17745,
+  "output_tokens": 9826,
+  "price_nano": 47223000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

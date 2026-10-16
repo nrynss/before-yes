@@ -1,0 +1,9 @@
+{
+  "text": "{\"reason_supported\":true,\"explanation\":\"The explanation attributes two concrete claims directly to the store listing: (1) the app uses tracking to deliver personalized ads and improve experience, matching the first store quote 'App Tracking: To deliver personalized ads and improve application experience'; (2) data may be used to track the user across apps and websites owned by other companies, matching the second store quote 'Data Used to Track You\\\\nThe following data may be used to track you across apps and websites owned by other companies:' Both claims are presented as the store's stated purposes and disclosures, not as independently verified facts.\"}",
+  "input_tokens": 1173,
+  "output_tokens": 128,
+  "price_nano": 1557000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

@@ -1,0 +1,9 @@
+{
+  "text": "{\"reason_supported\":true,\"explanation\":\"The explanation attributes the age descriptions directly to reviewers. The first quote states the app is 'Suitable for fifth graders and two year olds.' The second quote is a self‑report from someone who used the app at ages two or three. The third quote labels it 'Best app for pre schoolers,' indicating use by preschool‑aged children. The fourth quote comes from a parent reporting that their daughters, aged five and seven, use and enjoy the app. Each claimed age — two, three, five, seven, and the reference to fifth graders — appears in the cited quotes, so the reason is fully supported by the provided sources.\"}",
+  "input_tokens": 1191,
+  "output_tokens": 143,
+  "price_nano": 1620000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

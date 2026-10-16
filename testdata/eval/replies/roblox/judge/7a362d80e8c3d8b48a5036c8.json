@@ -1,0 +1,9 @@
+{
+  "text": "{\n  \"reasons\": [\n    {\n      \"area\": \"content\",\n      \"reason\": \"A forum comment says children may still run into inappropriate content such as \\\"condo games\\\" featuring adult themes and sexual content, violent games, gambling-style play, and games with bullying or hate speech despite safety filters.\"\n    }\n  ]\n}",
+  "input_tokens": 1459,
+  "output_tokens": 70,
+  "price_nano": 1669000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

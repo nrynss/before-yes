@@ -1,8 +1,0 @@
-{
-  "text": "{\"reason_supported\": false, \"explanation\": \"The reason incorrectly attributes the forum quote to the review source. The review quote discusses child predators and threats in Adopt Me, while the forum quote states that chats in specific mini-games cannot be disabled and kids can type text on signs regardless of communication preferences. The reason falsely presents the forum content as coming from the review.\"}",
-  "input_tokens": 1134,
-  "output_tokens": 80,
-  "price_nano": 412200,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

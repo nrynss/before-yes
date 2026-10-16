@@ -1,8 +1,0 @@
-{
-  "text": "{\"reason_supported\": true, \"explanation\": \"The news quote directly attributes a lawsuit filed by the Texas Attorney General against Roblox for allegedly violating safety laws and misleading parents regarding risks to young users. This constitutes a regulatory action naming the developer, satisfying the developer_record criterion.\"}",
-  "input_tokens": 1057,
-  "output_tokens": 59,
-  "price_nano": 370200,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

@@ -1,0 +1,9 @@
+{
+  "text": "{\"reason_supported\":true,\"explanation\":\"The explanation attributes the claim to a reviewer who states they could not play without adding a payment method, and that after entering a card with no funds they saw a $46 charge while the game was advertised as free. Both points are directly supported by the first quoted review.\"}",
+  "input_tokens": 1237,
+  "output_tokens": 67,
+  "price_nano": 1438000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

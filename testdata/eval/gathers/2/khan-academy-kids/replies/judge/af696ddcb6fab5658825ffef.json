@@ -1,0 +1,9 @@
+{
+  "text": "{\n  \"reasons\": [\n    {\n      \"area\": \"data\",\n      \"reason\": \"A reviewer says a teacher account lets them watch progress.\"\n    }\n  ]\n}",
+  "input_tokens": 1404,
+  "output_tokens": 38,
+  "price_nano": 1518000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

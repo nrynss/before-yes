@@ -24,8 +24,11 @@ import (
 // leaves a data concern that rests on one user's report of a hacked account
 // unknown (rule F). v11: the gate turns an App Store ad-tracking label into
 // the Ask App Not to Track setting unless data-sale, marketing-sharing or
-// company-breach evidence keeps the concern flagged (rule G).
-const Version = "v11"
+// company-breach evidence keeps the concern flagged (rule G). v12: the gate
+// caps a content concern at a quoted content control — a content filter,
+// content restrictions or a maturity setting — when no quote reports that
+// control failing (the content half of rule C).
+const Version = "v12"
 
 // Area is one checklist area id. The ids are stable wire values.
 type Area string

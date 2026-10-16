@@ -1,8 +1,0 @@
-{
-  "text": "{\"reason_supported\": false, \"explanation\": \"The explanation states 'A rating reports the game’s blocky visuals and non-graphic style make the violence less intense than many action games.' This is a direct restatement of part of the first quote, but the Explanation focus requires 'a concrete reported encounter with unsuitable material'—not a general assessment of intensity. The provided quotes discuss overall tone and absence of certain content, but they do not describe any specific instance where a child encountered unsuitable material. Therefore, the explanation fails to meet the required focus.\"}",
-  "input_tokens": 1080,
-  "output_tokens": 118,
-  "price_nano": 430200,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

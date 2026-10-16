@@ -1,0 +1,9 @@
+{
+  "text": "{\n  \"reasons\": [\n    {\n      \"area\": \"money\",\n      \"reason\": \"A reviewer reports spending $1.09 for a mod and being asked to pay $15.99 more for Minecoins, describing it as a scam. The store lists a Realms Plus subscription providing monthly Marketplace items. The help article notes that enabling \\\"Ask to Buy\\\" requires parental approval for any in-app purchase.\"\n    },\n    {\n      \"area\": \"data\",\n      \"reason\": \"The store listing states the app uses tracking to deliver personalized ads and improve experience, and that data may be used to track the user across apps and websites owned by other companies.\"\n    },\n    {\n      \"area\": \"age_gating\",\n      \"reason\": \"A rating source reports that if a child signs up with a fake adult birthdate, default protections do not apply, and that it is very easy for a child to be aware of restrictions and choose to enter a birth year allowing full access to all features.\"\n    }\n  ]\n}",
+  "input_tokens": 1604,
+  "output_tokens": 217,
+  "price_nano": 2255000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

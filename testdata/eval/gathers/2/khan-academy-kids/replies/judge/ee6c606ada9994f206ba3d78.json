@@ -1,9 +1,0 @@
-{
-  "text": "{\n  \"reasons\": [\n    {\n      \"area\": \"content\",\n      \"reason\": \"Reviewers describe their kindergartner, pre-K granddaughter, and three-year-old grandson enjoying age-appropriate activities, songs, and stories, and a forum post lists curriculum topics including math, ELA, executive function, socio-emotional learning, and creative expression up to first grade with some second-grade lessons; none of the cited sources report a child encountering unsuitable material.\"\n    }\n  ]\n}",
-  "input_tokens": 1450,
-  "output_tokens": 104,
-  "price_nano": 1762000,
-  "measured": true,
-  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
-  "finish_reason": "stop"
-}

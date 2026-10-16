@@ -1,8 +1,0 @@
-{
-  "text": "{\"reason_supported\": true, \"explanation\": \"The comparison guide states 'There's no open chat with strangers,' directly supporting the claim that LEGO Worlds lacks open communication channels with strangers.\"}",
-  "input_tokens": 1151,
-  "output_tokens": 43,
-  "price_nano": 384000,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

@@ -1,8 +1,0 @@
-{
-  "text": "{\"reason_supported\": false, \"explanation\": \"The reason states 'A review reports a child being placed in the 28th age group' but no provided review contains that specific claim. The first review mentions 'my child got put in the 28th group,' yet attributes it to 'app updates age group ideas are completely broken.' This misattributes causation—it presents the placement as resulting from broken ideas, whereas the source describes the placement occurring alongside broken ideas without establishing that the ideas caused the placement. Additionally, the phrase 'due to broken age group ideas' adds an unsupported causal claim not present in the source.\"}",
-  "input_tokens": 1258,
-  "output_tokens": 133,
-  "price_nano": 497100,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

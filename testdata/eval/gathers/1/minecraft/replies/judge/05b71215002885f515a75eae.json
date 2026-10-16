@@ -1,0 +1,9 @@
+{
+  "text": "{\"reason_supported\":true,\"explanation\":\"The explanation attributes the claim directly to the rating source, stating that the rating description reports the game locks purchases for players registered as under 13 and that it is very easy for a child to be aware of those restrictions and choose to enter a birth year granting full access. This matches the quoted text exactly and describes a concrete reported bypass (entering a different birth year) without adding unsupported causal mechanisms or inferring a wrong age from an undefined group.\"}",
+  "input_tokens": 1114,
+  "output_tokens": 104,
+  "price_nano": 1426000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

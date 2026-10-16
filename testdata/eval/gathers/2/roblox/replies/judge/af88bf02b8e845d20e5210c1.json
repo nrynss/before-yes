@@ -1,8 +1,0 @@
-{
-  "text": "{\"reason_supported\": true, \"explanation\": \"A review reports the birthday field accepted Oct 7,1985, making the system calculate the user as 41 years old while the child is younger than 13.\"}",
-  "input_tokens": 1161,
-  "output_tokens": 52,
-  "price_nano": 395100,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

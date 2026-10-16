@@ -1,9 +1,0 @@
-{
-  "text": "{\"reason_supported\":true,\"explanation\":\"Each concrete claim in the Reason is directly supported by a cited quote. The first sentence — 'A parent reports their five-year-old autistic son uses the app all day long' — is attributed to the first review quote, which states the child is five and autistic and 'uses it all day long.' The second sentence — 'Another reviewer says they played it when they were about 2 or 3 years old' — is attributed to the second review quote, where the reviewer writes 'when I was younger like about 3 or 2 I played this game.' The third sentence — 'The rating source says Khan Academy Kids is designed for children aged 2 to 7' — is attributed to the rating quote, which explicitly says the platform 'is specifically designed for children aged 2 to 7 years old.' No claim infers a bypass, mismatch, or cause beyond what the sources state.\"}",
-  "input_tokens": 1298,
-  "output_tokens": 195,
-  "price_nano": 1883000,
-  "measured": true,
-  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
-  "finish_reason": "stop"
-}

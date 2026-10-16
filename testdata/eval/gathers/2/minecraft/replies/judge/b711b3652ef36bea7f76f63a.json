@@ -1,8 +1,0 @@
-{
-  "text": "{\"reason_supported\": true, \"explanation\": \"A reviewer states they are 10 years old and reports purchasing 10,000 Minecoins using all their birthday money, describing feeling scammed. This directly supports the claim that a child completed a purchase without effective parental oversight, meeting the area definition criterion of 'purchases a child can complete without a parent.' The quote provides a concrete example of a child making a significant in-game purchase using personal funds and expressing negative emotional impact, which constitutes purchase pressure as defined.\"}",
-  "input_tokens": 1137,
-  "output_tokens": 113,
-  "price_nano": 442800,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

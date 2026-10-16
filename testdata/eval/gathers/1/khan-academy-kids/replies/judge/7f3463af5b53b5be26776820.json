@@ -1,9 +1,0 @@
-{
-  "text": "{\"reason_supported\":true,\"explanation\":\"Both sources are correctly summarized: the rating quote only mentions a learning path and browsing for videos, games, books, and songs, with no reference to stranger messaging, chat, or voice channels; the forum quote recommends offline activities such as library visits and singing, also with no mention of in‑app communication.\"}",
-  "input_tokens": 1175,
-  "output_tokens": 74,
-  "price_nano": 1397000,
-  "measured": true,
-  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
-  "finish_reason": "stop"
-}

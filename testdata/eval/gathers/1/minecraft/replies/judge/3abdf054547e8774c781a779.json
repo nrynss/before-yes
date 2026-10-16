@@ -1,9 +1,0 @@
-{
-  "text": "{\"reason_supported\":true,\"explanation\":\"Each claim in the Reason is directly supported by the cited review quotes. The first sentence — 'Reviewers who say they are children report spending birthday money on Minecoins and add-ons' — is supported by the first quote where the reviewer states 'im only 10 and i got scammed i litterly used all my birthday money!' and by the other reviewers describing purchases of avatars, add‑ons, realms and Minecoins. The second part — 'then receiving error messages, duplicate charges, or no items delivered' — is supported by multiple quotes: the avatar buyer writes 'I never got my avatar', the double spender says 'I still didn't get the stuff I wanted', the separate purchaser reports 'said the purchase was successful ... just got charged 40 dollars. i still don't have the add on', the Realms buyer sees '\\\"error\\\" try again later', the morph add‑on buyer notes 'it didn't give me my mine coins back', and the repeated‑attempt reviewer describes being 'charged for buying the same add on 3 times' and that the coin purchase 'never got that product either'. The final clause — 'and one notes a Realms subscription recurs monthly rather than as a one‑time payment' — is supported by the reviewer who writes 'I think it's pretty scummy to not state up front that this is a monthly charge, not a one-and-done payment.' All statements are attributed to the reviewers themselves, preserving their qualifications and not inferring permission, pressure, or any implemented controls.\"}",
-  "input_tokens": 1637,
-  "output_tokens": 333,
-  "price_nano": 2636000,
-  "measured": true,
-  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
-  "finish_reason": "stop"
-}

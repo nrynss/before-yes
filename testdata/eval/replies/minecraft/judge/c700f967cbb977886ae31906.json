@@ -1,8 +1,0 @@
-{
-  "text": "{\"reasons\": [{\"area\": \"contact\", \"reason\": \"Multiplayer is off by default on child accounts in both Java Edition and Bedrock Edition.\"}, {\"area\": \"money\", \"reason\": \"Attempted to buy add ons like I have in the past, it wasn’t working and after the third attempt for the same product, I was charged for buying the same add on 3 times.\"}]}",
-  "input_tokens": 1972,
-  "output_tokens": 87,
-  "price_nano": 669900,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

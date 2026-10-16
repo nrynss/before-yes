@@ -19,6 +19,7 @@ import (
 const (
 	kindCSM        = "csm"
 	kindReddit     = "reddit"
+	kindControls   = "controls"
 	maxT04aCredits = 6 // per title; the run stops and reports past this
 	t04aHeading    = "## T0.4a"
 	csmHost        = "commonsensemedia.org"
@@ -36,6 +37,9 @@ var kindFiles = map[string][]string{
 		"tavily-search-reddit-parents.json",
 		"tavily-search-reddit-community.json",
 	},
+	kindControls: {
+		"tavily-search-controls.json",
+	},
 }
 
 // csmCategories are the review path prefixes. A page under one of them, with
@@ -51,10 +55,10 @@ func parseOnly(s string) (map[string]bool, error) {
 	for _, k := range strings.Split(s, ",") {
 		k = strings.TrimSpace(k)
 		switch k {
-		case kindCSM, kindReddit, kindAdvanced, kindStorePage, kindAlternatives:
+		case kindCSM, kindReddit, kindControls, kindAdvanced, kindStorePage, kindAlternatives:
 			kinds[k] = true
 		default:
-			return nil, fmt.Errorf("-only: unknown kind %q (want csm, reddit, advanced, storepage or alternatives)", k)
+			return nil, fmt.Errorf("-only: unknown kind %q (want csm, reddit, controls, advanced, storepage or alternatives)", k)
 		}
 	}
 	return kinds, nil
@@ -114,6 +118,11 @@ func (r *titleRun) runT04a(d demo, only map[string]bool) error {
 	}
 	if only[kindReddit] {
 		if err := r.reddit(d); err != nil {
+			return err
+		}
+	}
+	if only[kindControls] {
+		if err := r.controls(d); err != nil {
 			return err
 		}
 	}
@@ -217,6 +226,35 @@ func (r *titleRun) reddit(d demo) error {
 			return err
 		}
 		if err := r.keepTavily("tavily-search-"+s.Kind+".json", resp); err != nil {
+			return err
+		}
+		hits := hitsOf(resp.Body)
+		withRaw := 0
+		for _, h := range hits {
+			if h.Raw != "" {
+				withRaw++
+			}
+		}
+		r.files[len(r.files)-1].note = fmt.Sprintf("%d results, %d with raw_content", len(hits), withRaw)
+	}
+	return nil
+}
+
+// controls runs the plan's parental-controls search (plan-6): the title's own
+// settings and safety instructions. The pages often live on a platform's
+// support site, so the search carries no include_domains. Each hit keeps its
+// raw content, because the reader reads the page, and the note counts what
+// came back.
+func (r *titleRun) controls(d demo) error {
+	for _, q := range plan(d.Title, "") {
+		if q.Kind != "controls" {
+			continue
+		}
+		resp, err := r.c.post(r.c.tavily+"/search", tavilySearch{searchReq: q.Search, IncludeUsage: true})
+		if err != nil {
+			return err
+		}
+		if err := r.keepTavily("tavily-search-controls.json", resp); err != nil {
 			return err
 		}
 		hits := hitsOf(resp.Body)

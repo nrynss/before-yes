@@ -247,6 +247,26 @@ var contentBenign = []pattern{
 	{any: []string{"no violence", "no inappropriate", "no scary", "no graphic", "no blood", "free of violence", "nothing inappropriate"}}, // the harms are said to be absent
 }
 
+// contentControls: a quote that names a working content control — the content
+// filter or maturity setting a parent turns on — so rule C can cap a content
+// concern at the setting that answers it (content.flag_capped_by_control).
+// The wording follows the pages parents are sent to: Apple's Screen Time
+// content restrictions, Microsoft Family Safety's content filters, Roblox's
+// content maturity setting and blocked experiences.
+var contentControls = []control{
+	{"Set a content filter", pattern{any: []string{
+		"content filter*", "filter* inappropriate", "filter* unsuitable", "filter* explicit",
+		"filter* content", "filter content", "content filtering",
+	}}},
+	{"Set content restrictions", pattern{any: []string{
+		"content restrictions", "content restriction", "content maturity", "maturity restrictions", "maturity settings",
+	}}},
+	{"Restrict or block content", pattern{all: [][]string{
+		{"content", "game*", "experience*", "material"},
+		{"restrict*", "block*", "limit*"},
+	}}},
+}
+
 // ---------------------------------------------------------------- developer record
 
 // legalAction: terms for an enforcement action. A developer-record flag needs
@@ -327,11 +347,11 @@ var contactControls = []control{
 	{"Friends-only chat", pattern{any: []string{"friends only", "only friends", "only your friends", "approved friends", "approved contacts"}}},
 	{"Turn chat off or restrict it", pattern{all: [][]string{
 		{"chat", "chats", "chatting"},
-		{"off", "disabl*", "restrict*", "blocked", "hidden", "limited", "no one"},
+		{"off", "disabl*", "restrict*", "block*", "hidden", "limited", "no one"},
 	}}},
 	{"Turn off or limit messaging", pattern{all: [][]string{
 		{"messag*", "communicat*", "contact*", "multiplayer"},
-		{"off", "disabl*", "restrict*", "blocked", "limited"},
+		{"off", "disabl*", "restrict*", "block*", "limit*", "no one"},
 	}}},
 	{"Approve friend requests", pattern{all: [][]string{
 		{"friend*"},
