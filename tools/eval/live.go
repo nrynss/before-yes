@@ -78,10 +78,12 @@ type liveSetting struct {
 // highest figure seen, so the meter errs safe. The thinking switch was
 // confirmed live: enable_thinking false gave 3 output tokens, true gave 18.
 // The judge's max tokens is a runaway guard on a 1M-token-context model, not a
-// tuning knob. The switches are the ones before-yes.toml.example names:
+// tuning knob. The switches and sampling settings match before-yes.toml.example:
 // chat_template_kwargs turns thinking off for Nano and for the judge's first
-// pass, and on for the conflict pass. "ultra" is kept as another name for this
-// set, for the commands that named it during the trial.
+// pass (with repetition_penalty 1.1 to prevent loops on repeated findings), and
+// on for the conflict pass with NVIDIA's recommended reasoning sampling
+// (temperature 0.6, top_p 0.95). "ultra" is kept as another name for this set,
+// for the commands that named it during the trial.
 var liveSets = map[string]liveSetting{
 	"tokenfactory": {
 		reader: model.Settings{
@@ -96,8 +98,15 @@ var liveSets = map[string]liveSetting{
 			MaxTokens: 16000, PerMinute: 60,
 		},
 		keyVar: "NEBIUS_KEY",
-		fast:   map[string]any{"chat_template_kwargs": map[string]any{"enable_thinking": false}},
-		think:  map[string]any{"chat_template_kwargs": map[string]any{"enable_thinking": true}},
+		fast: map[string]any{
+			"chat_template_kwargs": map[string]any{"enable_thinking": false},
+			"repetition_penalty":   1.1,
+		},
+		think: map[string]any{
+			"chat_template_kwargs": map[string]any{"enable_thinking": true},
+			"temperature":          0.6,
+			"top_p":                0.95,
+		},
 	},
 	// The free OpenRouter stand-ins. Neither is Nano or Super. The switch is
 	// reasoning.enabled, which this host reads and chat_template_kwargs ignores.
