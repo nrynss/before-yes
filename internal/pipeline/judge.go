@@ -91,7 +91,16 @@ with exactly one grade per area. Leave "setting" empty unless the level is "ok_w
 }
 
 func judgeUser(title string, age int, areas []checklist.Area, fs []finding.Finding, missing []string) string {
+	user, _ := judgePrompt(title, age, areas, fs, missing, false)
+	return user
+}
+
+// judgePrompt assigns short, stable citation ids for one judge call. The
+// conflict pass includes only the conflicted areas and groups findings under
+// their headings so the model does not need to classify them.
+func judgePrompt(title string, age int, areas []checklist.Area, fs []finding.Finding, missing []string, grouped bool) (string, map[string]string) {
 	var b strings.Builder
+	shortToReal := map[string]string{}
 	fmt.Fprintf(&b, "Title: %s\nChild's age: %d\n", title, age)
 	if len(missing) > 0 {
 		fmt.Fprintf(&b, "Unread sources: %s\n", strings.Join(missing, ", "))
@@ -104,17 +113,44 @@ func judgeUser(title string, age int, areas []checklist.Area, fs []finding.Findi
 		fmt.Fprintf(&b, "Grade only these areas: %s\n", strings.Join(names, ", "))
 	}
 	b.WriteString("\nFindings:\n")
+	shortN := 0
+	groupedAreas := map[checklist.Area]bool{}
 	for _, f := range fs {
 		if !slices.Contains(areas, f.Area) || gateOnly(f) {
 			continue
 		}
+		if grouped {
+			if !groupedAreas[f.Area] {
+				fmt.Fprintf(&b, "\n%s findings:\n", f.Area)
+				groupedAreas[f.Area] = true
+			}
+		}
+		shortN++
+		shortID := fmt.Sprintf("F%d", shortN)
+		shortToReal[shortID] = f.ID
 		src := f.Source.Kind
 		if f.Source.Kind == KindReview {
 			src = fmt.Sprintf("review %d", f.Source.Index)
 		}
-		fmt.Fprintf(&b, "- id=%s area=%s stance=%s source=%s\n  claim: %s\n  quote: %q\n", f.ID, f.Area, f.Stance, src, f.Claim, f.Quote)
+		fmt.Fprintf(&b, "- id=%s area=%s stance=%s source=%s\n  claim: %s\n  quote: %q\n", shortID, f.Area, f.Stance, src, f.Claim, f.Quote)
 	}
-	return b.String()
+	if grouped {
+		b.WriteString("\nThe findings are already grouped by area. Do not re-list findings or re-classify ids.\n")
+	}
+	return b.String(), shortToReal
+}
+
+func mapShortCitations(grades []checklist.Grade, shortToReal map[string]string) []checklist.Grade {
+	out := slices.Clone(grades)
+	for i := range out {
+		out[i].Findings = slices.Clone(out[i].Findings)
+		for n, id := range out[i].Findings {
+			if real, ok := shortToReal[id]; ok {
+				out[i].Findings[n] = real
+			}
+		}
+	}
+	return out
 }
 
 // parseGrades finds the answer in a reply: the last object with grades. A
@@ -214,7 +250,7 @@ var ErrReplyCapped = errors.New("reply reached its token cap")
 // JSON unwritten; this keeps the reasoning on the conflicted areas and puts
 // the answer last.
 const conflictNote = `
-This is a second look at the areas listed above, where the findings pull both ways. Keep your reasoning short and about those areas only: for each one, weigh its risk findings against its mitigation findings once, then decide. Do not restate the findings and do not discuss any other area. End your reply with the JSON object in the shape given, one grade per area listed, and write nothing after it.
+This is a second look at the areas listed above, where the findings pull both ways. Keep your reasoning short and about those areas only: for each one, weigh its risk findings against its mitigation findings once, then decide. The findings are already grouped by area. Do not re-list findings or re-classify ids. Use the short citation ids exactly as shown. Do not discuss any other area. End your reply with the JSON object in the shape given, one grade per area listed, and write nothing after it.
 `
 
 // Judgement is the judge step's result.
@@ -258,9 +294,10 @@ func (j *Judge) Judge(ctx context.Context, title string, age int, ref string, fs
 	for _, a := range checklist.Areas() {
 		all = append(all, a.ID)
 	}
+	firstPrompt, firstIDs := judgePrompt(title, age, all, fs, missing, false)
 	reply, price, err := chat(ctx, j.Meter, j.Model, "judge", ref, []model.Message{
 		{Role: "system", Content: system},
-		{Role: "user", Content: judgeUser(title, age, all, fs, missing)},
+		{Role: "user", Content: firstPrompt},
 	}, model.Options{JSON: true, Extra: j.Fast})
 	out.Cost += price
 	if err != nil {
@@ -270,6 +307,7 @@ func (j *Judge) Judge(ctx context.Context, title string, age int, ref string, fs
 	if err != nil {
 		return out, err
 	}
+	grades = mapShortCitations(grades, firstIDs)
 
 	out.Conflicted = conflicted(fs)
 	firstPass := grades
@@ -279,23 +317,35 @@ func (j *Judge) Judge(ctx context.Context, title string, age int, ref string, fs
 		if max <= 0 {
 			max = DefaultThinkMaxTokens
 		}
-		reply, price, err := chat(ctx, j.Meter, j.Model, "judge_think", ref, []model.Message{
-			{Role: "system", Content: system},
-			{Role: "user", Content: judgeUser(title, age, out.Conflicted, fs, missing) + conflictNote},
-		}, model.Options{Extra: j.Think, MaxTokens: max})
-		out.Cost += price
-		if err == nil {
-			var second []checklist.Grade
-			if second, err = parseGrades(reply.Text); err != nil && reply.Capped(max) {
+		conflictUser, conflictIDs := judgePrompt(title, age, out.Conflicted, fs, missing, true)
+		msgs := []model.Message{{Role: "system", Content: system}, {Role: "user", Content: conflictUser + conflictNote}}
+		call := func() (model.Reply, error) {
+			r, p, e := chat(ctx, j.Meter, j.Model, "judge_think", ref, msgs, model.Options{Extra: j.Think, MaxTokens: max})
+			out.Cost += p
+			return r, e
+		}
+		reply, err = call()
+		second, parseErr := parseGrades(reply.Text)
+		if err == nil && parseErr != nil && reply.Capped(max) {
+			err = fmt.Errorf("judge: the conflict pass reached its %d-token cap (%d output tokens) with no usable grades: %w", max, reply.OutputTokens, ErrReplyCapped)
+		}
+		if errors.Is(err, ErrReplyCapped) && ctx.Err() == nil {
+			reply, err = call()
+			second, parseErr = parseGrades(reply.Text)
+			if err == nil && parseErr != nil && reply.Capped(max) {
 				err = fmt.Errorf("judge: the conflict pass reached its %d-token cap (%d output tokens) with no usable grades: %w", max, reply.OutputTokens, ErrReplyCapped)
 			}
-			if err == nil {
-				if answers(second, out.Conflicted) {
-					grades = replace(grades, second, out.Conflicted)
-					conflictPass = second
-				} else {
-					err = errors.New("judge: the conflict pass graded none of the conflicted areas")
-				}
+		}
+		if err == nil && parseErr != nil {
+			err = parseErr
+		}
+		if err == nil {
+			second = mapShortCitations(second, conflictIDs)
+			if answers(second, out.Conflicted) {
+				grades = replace(grades, second, out.Conflicted)
+				conflictPass = second
+			} else {
+				err = errors.New("judge: the conflict pass graded none of the conflicted areas")
 			}
 		}
 		out.ConflictErr = err

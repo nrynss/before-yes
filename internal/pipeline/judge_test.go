@@ -145,8 +145,11 @@ func TestJudgeConflictPassFlagsContact(t *testing.T) {
 			t.Errorf("prompt misses the age or the unread sources:\n%.200s", u)
 		}
 	}
-	if !strings.Contains(rec.users[0], "source=review 355") || !strings.Contains(rec.users[0], "id="+decisive.ID) {
+	if !strings.Contains(rec.users[0], "source=review 355") || !strings.Contains(rec.users[0], "id=F1") {
 		t.Errorf("first prompt does not show review 355 by number and id")
+	}
+	if !strings.Contains(rec.users[1], "contact findings:") || strings.Contains(rec.users[1], "money findings:") || strings.Contains(rec.users[1], "area=money") {
+		t.Errorf("conflict prompt is not grouped and limited to contact:\n%s", rec.users[1])
 	}
 
 	byArea := map[checklist.Area]checklist.Grade{}
@@ -179,6 +182,39 @@ func TestJudgeConflictPassFlagsContact(t *testing.T) {
 	spent, _ := m.Spent(context.Background(), spend.PoolModel, "check-judge")
 	if got.Cost != 80000 || spent != got.Cost {
 		t.Errorf("cost %d, meter %d", got.Cost, spent)
+	}
+}
+
+func TestShortCitationMappingRoundTripAndUnknown(t *testing.T) {
+	grades := []checklist.Grade{{Area: checklist.Contact, Findings: []string{"F1", "F2", "F99"}}}
+	got := mapShortCitations(grades, map[string]string{"F1": "f_real1", "F2": "f_real2"})
+	want := []checklist.Grade{{Area: checklist.Contact, Findings: []string{"f_real1", "f_real2", "F99"}}}
+	if !reflect.DeepEqual(got, want) {
+		t.Fatalf("mapped citations %+v, want %+v", got, want)
+	}
+	if _, _, thin := checkCitations(got, []finding.Finding{{ID: "f_real1", Area: checklist.Contact, Stance: finding.Risk}, {ID: "f_real2", Area: checklist.Contact, Stance: finding.Risk}}); len(thin) != 0 {
+		t.Fatalf("known short ids failed citation check: %v", thin)
+	}
+	bad, _, thin := checkCitations([]checklist.Grade{{Area: checklist.Contact, Level: checklist.Flag, Findings: []string{"F99"}}}, nil)
+	if len(bad) != 1 || bad[0].Level != checklist.Unknown || len(thin) != 1 {
+		t.Fatalf("unknown short id was accepted: %+v, thin %v", bad, thin)
+	}
+}
+
+func TestConflictPassRetriesCapThenKeepsFirst(t *testing.T) {
+	decisive, _, _, fs := robloxFindings(t)
+	first := gradesJSON(t, checklist.Grade{Area: checklist.Contact, Level: checklist.Flag, Findings: []string{decisive.ID}})
+	capped := model.Reply{Text: "unfinished", OutputTokens: 100, FinishReason: "length"}
+	rec := &superRecorder{replies: []any{first, capped, capped}}
+	got, err := (&Judge{Model: rec, Meter: openTestMeter(t)}).Judge(context.Background(), "Roblox", 9, "c", fs, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(rec.users) != 3 || !errors.Is(got.ConflictErr, ErrReplyCapped) {
+		t.Fatalf("calls %d, ConflictErr %v", len(rec.users), got.ConflictErr)
+	}
+	if g := judgedArea(t, got, checklist.Contact); g.Level != checklist.Flag {
+		t.Fatalf("first pass grade not retained: %+v", g)
 	}
 }
 
@@ -296,7 +332,7 @@ func TestConflictPassCappedIsReported(t *testing.T) {
 	decisive, _, _, fs := robloxFindings(t)
 	first := gradesJSON(t, checklist.Grade{Area: checklist.Contact, Level: checklist.Flag, Findings: []string{decisive.ID}, Reason: "A child predator might ask where the child is."})
 	capped := model.Reply{Text: "Let me weigh the findings again. The first review says", OutputTokens: 100, FinishReason: "length"}
-	rec := &superRecorder{replies: []any{first, capped}}
+	rec := &superRecorder{replies: []any{first, capped, capped}}
 	got, err := (&Judge{Model: rec, Meter: openTestMeter(t)}).Judge(context.Background(), "Roblox", 9, "c", fs, nil)
 	if err != nil {
 		t.Fatal(err)

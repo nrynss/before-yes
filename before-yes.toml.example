@@ -31,7 +31,7 @@ evidence_max_age_hours = 168
 # reasoning = { enabled = false } instead; replace these two lines when using
 # the OpenRouter tables below.
 judge_fast  = { chat_template_kwargs = { enable_thinking = false }, repetition_penalty = 1.1 }
-judge_think = { chat_template_kwargs = { enable_thinking = true }, temperature = 0.6, top_p = 0.95 }
+judge_think = { chat_template_kwargs = { enable_thinking = true }, temperature = 0.6, top_p = 0.95, repetition_penalty = 1.05 }
 
 # Reader: Nemotron 3 Nano on Token Factory. Reads review chunks and sources.
 # Prices are dollars per million tokens. Thinking is on by default on this

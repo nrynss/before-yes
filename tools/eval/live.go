@@ -106,6 +106,7 @@ var liveSets = map[string]liveSetting{
 			"chat_template_kwargs": map[string]any{"enable_thinking": true},
 			"temperature":          0.6,
 			"top_p":                0.95,
+			"repetition_penalty":   1.05,
 		},
 	},
 	// The free OpenRouter stand-ins. Neither is Nano or Super. The switch is
