@@ -127,12 +127,19 @@ var moneyControls = []control{
 // from children without consent, or no way to delete. Sharing with service
 // providers who run the app is deliberately absent: none of these patterns
 // matches it unless the quote also names advertising or marketing.
+var dataSale = pattern{all: [][]string{ // personal data being sold
+	{"sell*", "sold", "resell*", "sale", "monetiz*", "monetis*"},
+	{"data", "information", "personal", "details", "identifier*", "profile*"},
+}}
+
+var dataMarketingShare = pattern{all: [][]string{ // sharing data for others' marketing
+	{"share*", "sharing", "disclos*", "provid*", "send*", "transfer*", "licens*"},
+	{"advertis*", "marketing", "advertiser*", "marketers"},
+}}
+
 var dataRisk = []pattern{
 	{any: []string{"data used to track you"}}, // Apple's privacy-label heading for cross-app tracking
-	{all: [][]string{ // selling or monetising personal data
-		{"sell*", "sold", "resell*", "sale", "monetiz*", "monetis*"},
-		{"data", "information", "personal", "details", "identifier*", "profile*"},
-	}},
+	dataSale,
 	{all: [][]string{ // ad tracking
 		{"track*"},
 		{"advertis*", "ads", "ad", "marketing", "profile*", "across"},
@@ -146,10 +153,7 @@ var dataRisk = []pattern{
 		{"personal information", "information we collect", "your information", "your data", "user data", "data we collect"},
 		{"display ads", "which ads", "show you ads", "show ads", "ads to show", "serve ads", "ads based"},
 	}},
-	{all: [][]string{ // sharing for others' marketing
-		{"share*", "sharing", "disclos*", "provid*", "send*", "transfer*", "licens*"},
-		{"advertis*", "marketing", "advertiser*", "marketers"},
-	}},
+	dataMarketingShare,
 	{any: []string{ // a reported breach
 		"data breach*", "security breach*", "was breached", "were breached", "leaked", "hacked",
 	}},

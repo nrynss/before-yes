@@ -22,8 +22,10 @@ import (
 // about spending, scams or billing (rule D), and treats a regulator action
 // about another product as information, not evidence (rule E). v10: the gate
 // leaves a data concern that rests on one user's report of a hacked account
-// unknown (rule F).
-const Version = "v10"
+// unknown (rule F). v11: the gate turns an App Store ad-tracking label into
+// the Ask App Not to Track setting unless data-sale, marketing-sharing or
+// company-breach evidence keeps the concern flagged (rule G).
+const Version = "v11"
 
 // Area is one checklist area id. The ids are stable wire values.
 type Area string

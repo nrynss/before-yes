@@ -38,6 +38,9 @@ import (
 //     or more independent reports, a breach or leak at the company, or a
 //     quote about selling, tracking, sharing or consentless collection keeps
 //     the flag (rule F).
+//   - A tracking label caps data at ok_with_setting with Ask App Not to Track
+//     when no quote reports sale, marketing sharing, or a company breach.
+//     Those reports keep data at flag (rule G).
 //   - An unknown area is raised to ok when a verified fact settles it: the App
 //     Store lists the title as free with no in-app purchases (money), its
 //     privacy label shows no data linked to the user (data), its age rating is
@@ -64,30 +67,31 @@ import (
 // raise an unknown to ok, and "confirmed" rules record that a grade met its
 // rule and stands.
 const (
-	RuleMoneyNoPurchase    = "money.flag_without_purchase"
-	RuleMoneyCapped        = "money.flag_capped_by_control"
-	RuleMoneyConfirmed     = "money.flag_confirmed"
-	RuleMoneyFree          = "money.free_no_in_app_purchases"
-	RuleDataNoBasis        = "data.flag_without_basis"
-	RuleDataConfirmed      = "data.flag_confirmed"
-	RuleDataNotLinked      = "data.label_not_linked"
-	RuleDataOwnAccount     = "data.own_account_hacked"
-	RuleContentNoHarm      = "content.flag_without_harm"
-	RuleContentConfirmed   = "content.flag_confirmed"
-	RuleContentRated       = "content.rated_for_age"
-	RuleDeveloperNoAction  = "developer_record.flag_without_action"
-	RuleDeveloperConfirmed = "developer_record.flag_confirmed"
-	RuleDeveloperNoStmt    = "developer_record.ok_without_statement"
-	RuleDeveloperClean     = "developer_record.stated_clean"
-	RuleContactNoStranger  = "contact.flag_without_stranger_contact"
-	RuleContactCapped      = "contact.flag_capped_by_control"
-	RuleContactConfirmed   = "contact.flag_confirmed"
-	RuleContactNoChat      = "contact.no_chat_stated"
-	RuleContactKids        = "contact.kids_category_no_contact_report"
-	RuleContentSingleMild  = "content.single_mild_report"
-	RuleAgeGateNoBypass    = "age_gating.flag_without_bypass"
-	RuleAgeGateCapped      = "age_gating.flag_capped_by_control"
-	RuleAgeGateConfirmed   = "age_gating.flag_confirmed"
+	RuleMoneyNoPurchase     = "money.flag_without_purchase"
+	RuleMoneyCapped         = "money.flag_capped_by_control"
+	RuleMoneyConfirmed      = "money.flag_confirmed"
+	RuleMoneyFree           = "money.free_no_in_app_purchases"
+	RuleDataNoBasis         = "data.flag_without_basis"
+	RuleDataConfirmed       = "data.flag_confirmed"
+	RuleDataNotLinked       = "data.label_not_linked"
+	RuleDataOwnAccount      = "data.own_account_hacked"
+	RuleDataTrackingSetting = "data.tracking_setting"
+	RuleContentNoHarm       = "content.flag_without_harm"
+	RuleContentConfirmed    = "content.flag_confirmed"
+	RuleContentRated        = "content.rated_for_age"
+	RuleDeveloperNoAction   = "developer_record.flag_without_action"
+	RuleDeveloperConfirmed  = "developer_record.flag_confirmed"
+	RuleDeveloperNoStmt     = "developer_record.ok_without_statement"
+	RuleDeveloperClean      = "developer_record.stated_clean"
+	RuleContactNoStranger   = "contact.flag_without_stranger_contact"
+	RuleContactCapped       = "contact.flag_capped_by_control"
+	RuleContactConfirmed    = "contact.flag_confirmed"
+	RuleContactNoChat       = "contact.no_chat_stated"
+	RuleContactKids         = "contact.kids_category_no_contact_report"
+	RuleContentSingleMild   = "content.single_mild_report"
+	RuleAgeGateNoBypass     = "age_gating.flag_without_bypass"
+	RuleAgeGateCapped       = "age_gating.flag_capped_by_control"
+	RuleAgeGateConfirmed    = "age_gating.flag_confirmed"
 	// Rule E: the quote is shown as information and supports no grade. The
 	// id's first part is not an area, because the fact is not a grade.
 	RuleRegulatorOtherProduct = "information.regulator_action_other_product"
@@ -167,8 +171,61 @@ func ApplyRules(title string, age int, grades []checklist.Grade, fs []finding.Fi
 	acts := g.otherProductInfo(out)
 	for i, in := range out {
 		out[i], acts = g.area(in, acts)
+		if out[i].Area == checklist.Data {
+			out[i], acts = g.trackingSetting(out[i], acts)
+		}
 	}
 	return out, acts
+}
+
+// trackingSetting applies rule G after the area's flag rules, including rule
+// F. Apple's tracking label can be blocked in iOS settings. Selling data,
+// sharing it for marketing, or a company breach keeps data at flag.
+func (g *gate) trackingSetting(in checklist.Grade, acts []GateAction) (checklist.Grade, []GateAction) {
+	if in.Level != checklist.Flag && in.Level != checklist.Unknown {
+		return in, acts
+	}
+	var label []finding.Finding
+	for _, f := range g.fs {
+		if f.Area == checklist.Data && f.Source.Kind == KindStore && f.Stance == finding.Risk && trackingLabel(g.w(f)) && g.onSubject(f) {
+			label = append(label, f)
+		}
+	}
+	if len(label) == 0 {
+		return in, acts
+	}
+	var saleOrBreach []finding.Finding
+	for _, f := range g.fs {
+		if f.Area != checklist.Data || !g.onSubject(f) {
+			continue
+		}
+		w := g.w(f)
+		sold := dataSale.matches(w, true)
+		marketing := dataMarketingShare.matches(w, true)
+		breach := hitsAny(w, companyBreach, true) && !hitsAny(w, accountHacked, true)
+		if sold || marketing || breach {
+			saleOrBreach = append(saleOrBreach, f)
+		}
+	}
+	if len(saleOrBreach) > 0 {
+		from := in.Level
+		all := append(slices.Clone(saleOrBreach), label...)
+		in.Level, in.Setting, in.Findings = checklist.Flag, "", orderLike(ids(all), all)
+		in.Reason = "A source reports data being sold or shared for marketing, or a company breach or leak."
+		acts = append(acts, GateAction{Area: checklist.Data, Rule: RuleDataTrackingSetting, From: from, To: checklist.Flag, Findings: ids(all), Note: "The App Store label shows the app tracks for ads, and a source reports data being sold or shared for marketing, or a company breach or leak."})
+		return in, acts
+	}
+	from := in.Level
+	in.Level, in.Setting = checklist.OKWithSetting, "Ask App Not to Track"
+	in.Findings = ids(label)
+	in.Reason = "Turn on Ask App Not to Track in iOS Settings → Privacy & Security → Tracking."
+	acts = append(acts, GateAction{Area: checklist.Data, Rule: RuleDataTrackingSetting, From: from, To: checklist.OKWithSetting, Findings: ids(label), Note: "The App Store label shows the app tracks for ads, and iOS lets a parent block it in Settings → Privacy & Security → Tracking."})
+	return in, acts
+}
+
+func trackingLabel(w words) bool {
+	return hitsAny(w, []string{"data used to track you"}, false) ||
+		(pattern{all: [][]string{{"app tracking"}, {"ad", "ads", "advertis*", "advertising", "marketing"}}}).matches(w, false)
 }
 
 // otherProductInfo applies rule E: a cited quote that reports a fine,
@@ -460,7 +517,9 @@ func init() {
 			settle: settleMoney,
 		},
 		checklist.Data: {
-			risk:     func(g *gate, f finding.Finding) bool { return hitsVocab(g.w(f), dataRisk, true) },
+			risk: func(g *gate, f finding.Finding) bool {
+				return trackingLabel(g.w(f)) || hitsVocab(g.w(f), dataRisk, true)
+			},
 			vetoRule: RuleDataNoBasis, vetoNote: "None of the quotes behind this concern describes data being sold, tracked for ads, shared for marketing or breached.",
 			confirmRule: RuleDataConfirmed, confirmWhat: "data being sold, tracked for ads, shared for marketing, breached or collected without consent.",
 			settle: settleData,

@@ -341,6 +341,42 @@ func TestDataFlagNeedsSaleTrackingMarketingOrBreach(t *testing.T) {
 	}
 }
 
+func TestRuleGAppStoreTrackingSetting(t *testing.T) {
+	label := gf{"label", checklist.Data, finding.Risk, KindStore, "https://apps.apple.com/app/sampleland/id1", "Data Used to Track You\nPurchases, Identifiers"}
+	for _, start := range []checklist.Level{checklist.Unknown, checklist.Flag} {
+		gs, acts := run(all(grade(checklist.Data, start, "label")), findings(label), 9)
+		rules := []string{RuleDataTrackingSetting}
+		if start == checklist.Flag {
+			rules = []string{RuleDataConfirmed, RuleDataTrackingSetting}
+		}
+		got := want(t, gs, acts, checklist.Data, checklist.OKWithSetting, rules...)
+		if got.Setting != "Ask App Not to Track" || !slices.Equal(got.Findings, []string{"label"}) {
+			t.Errorf("tracking setting grade = %+v", got)
+		}
+		if !strings.Contains(acts[len(acts)-1].Note, "iOS lets a parent block it") {
+			t.Errorf("tracking action note %q", acts[len(acts)-1].Note)
+		}
+	}
+
+	for _, extra := range []gf{
+		{"sold", checklist.Data, finding.Risk, KindPolicy, "", "Sampleland sells children's personal data to advertisers."},
+		{"breach", checklist.Data, finding.Risk, KindNews, "https://news.example/sampleland-breach", "Sampleland suffered a company data breach that exposed children's names."},
+	} {
+		gs, acts := run(all(grade(checklist.Data, checklist.Unknown, "label", extra.id)), findings(label, extra), 9)
+		got := want(t, gs, acts, checklist.Data, checklist.Flag, RuleDataTrackingSetting)
+		if !slices.Contains(got.Findings, extra.id) || !slices.Contains(got.Findings, "label") {
+			t.Errorf("sale/breach grade cites %v", got.Findings)
+		}
+	}
+
+	gs, acts := run(all(grade(checklist.Data, checklist.Unknown)), nil, 9)
+	want(t, gs, acts, checklist.Data, checklist.Unknown)
+
+	// An existing setting is left to its earlier rule and does not receive G.
+	gs, acts = run(all(grade(checklist.Data, checklist.OKWithSetting, "label")), findings(label), 9)
+	want(t, gs, acts, checklist.Data, checklist.OKWithSetting)
+}
+
 func TestDataServiceProviderSharingNeverFlags(t *testing.T) {
 	q := "We share information with service providers that help us operate the app, such as hosting and customer support."
 	fs := findings(gf{"sp", checklist.Data, finding.Risk, KindPolicy, "", q})

@@ -272,6 +272,16 @@ func pageFacts(pageURL, page string, at time.Time) (StoreFacts, bool) {
 			raws = append(raws, fact(checklist.Data, finding.Risk,
 				"Apple's privacy label shows the developer reports that data may be used to track the user across apps and websites owned by other companies.", track))
 		}
+		for _, l := range label {
+			pl := plain(l)
+			lw := gateWords(pl)
+			if strings.HasPrefix(strings.ToLower(pl), "app tracking:") && trackingLabel(lw) {
+				blocks = append(blocks, l)
+				raws = append(raws, fact(checklist.Data, finding.Risk,
+					"The App Store privacy label shows the developer reports app tracking for ads.", l))
+				break
+			}
+		}
 		if hasLinked {
 			blocks = append(blocks, linked)
 			raws = append(raws, fact(checklist.Data, finding.Neutral,
