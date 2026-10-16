@@ -184,7 +184,7 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 | P3 | 16 / 17 | Closed. T3.13 superseded (draft PR #36 closed unmerged). All exit criteria are ticked. The work after the task list (the Ultra judge, the rule gate, App Store facts, the controls search) is summarised under "Closed" in the phase file. |
 | P4 | 7 / 7 | Closed. `serve` runs the whole server, run end to end live; progress shows during a check and a late page catches up (T4.7). The live visitor-key check moves to P6. |
 | P5 | 9 / 9 | Closed. Every page is built and wired, and its text was rewritten with the user (T5.9); the rules are in `docs/voice.md`. |
-| P6 | 0 / 6 | Not started. |
+| P6 | 0 / 6 | Started: T6.3 (demo cards from the recordings) is claimed. |
 
 ---
 
@@ -192,6 +192,7 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 
 Newest first. One entry per closed task, finding, or split.
 
+- **T6.3 rewritten, by user decision.** Not a live precompute on the host: the three demo cards are computed offline from the recordings set (gather 0) by the current pipeline, pinned by a recompute test, and loaded with a `seed-cards` command so visitors browse them from "Previous checks" without spending. Alternatives and extra common titles are dropped. Claimed by the demo-cards agent.
 - **P4 and P5 closed.** Both phase files end with a "Closed" section. P4's live visitor-key check and the replacement of the server's stored cards move to P6. P5 notes the two card details added after its task list: the "Help page" source label and information-only rule checks.
 - **Diagnose short-id mapping, landed.** The eval's diagnose output now maps the judge's short ids back to finding ids the way the pipeline does (`pipeline.ShortCitationIDs`, `MapShortCitation`), so the false "not a verified finding" lines are gone; one real out-of-area citation they had hidden now shows. Offline only. The tracked diagnosis files under `testdata/` were written by earlier live runs and do not match a replay, so they were left as they are.
 - **P3 closed.** 16 of 17 tasks done, T3.13 superseded, every exit criterion ticked; the phase file ends with a "Closed" section describing the pipeline as it now stands. Its T3.13 note was corrected: draft PR #36 was closed unmerged and the old T3.13 branch is gone.
