@@ -964,11 +964,11 @@ size:       M · frontier
 owns:       internal/pipeline/alternatives.go, internal/pipeline/alternatives_test.go, internal/pipeline/pipeline.go (alternatives wiring and genre propagation only), internal/appstore/ (genre only), testdata/alternatives/
 status:     superseded
 ```
-**Superseded.** The user closed the task list before this landed. The rescoped implementation (Nano names products from the list pages, the App Store confirms them) is in draft PR #36, unmerged; its live clause was never met. `main` keeps T3.12's rule-based alternatives. The genre fix and App Store facts reached `main` by other work.
+**Superseded.** The user closed the task list before this landed. The rescoped implementation (Nano names products from the list pages, the App Store confirms them) was in draft PR #36, closed unmerged; its live clause was never met. `main` keeps T3.12's rule-based alternatives. The genre fix and App Store facts reached `main` by other work. The branch `task-t3.13-outside-platform` no longer exists.
 
 T3.12's live run: Roblox (9) read **no**, and its three candidates were Roblox experiences, so none beat the "no". Tavily finds the right pages (Common Sense Media's "Games Like Minecraft", with its whole text), but the rule-based name parser (T3.12) finds few names and needed three review rounds to keep junk out. The user decided: a "no" on a platform suggests other products, not experiences on the same platform; Tavily keeps finding the pages, Nemotron reads them, and the App Store confirms each name is a real product before any paid check.
 
-This task was first scoped as "alternatives outside the platform" with a rule-based fix; the user stood that version down and rescoped it to this one. Its branch `task-t3.13-outside-platform` holds the genre work, which can be reused.
+This task was first scoped as "alternatives outside the platform" with a rule-based fix; the user stood that version down and rescoped it to this one.
 
 1. **Fill in the genre.** `AppInfo.Genre` is declared and read by the alternatives query but never set, so the query always says "app". Set it from the App Store lookup (its primary genre).
 2. **More pages from Tavily.** Run two or three searches per title instead of one, for example `games like <title> for a <age> year old`, `<title> alternatives for kids` and `best <genre> for <age> year olds` (about 1 credit each, through the meter). Tavily stays load-bearing for alternatives, as the brief requires.
@@ -985,7 +985,18 @@ This task was first scoped as "alternatives outside the platform" with a rule-ba
 - [x] Review 312 decides the card end to end, by test. (Review 355, the captures' equivalent: `TestReview355DecidesTheCard`.)
 - [x] No finding reaches a card without a verified quote. (`finding.Verify` in the reader; the invented R356 quote never reaches the card in `TestReview355DecidesTheCard`.)
 - [x] A second age on cached evidence makes no Tavily or reader call. (`TestReview355DecidesTheCard`: the second age books only the judge.)
-- [x] Alternatives found with Tavily and checked the same way. (T3.12: live Roblox (9) found three candidates and checked each like any title. None beat the "no", so no live card shows one yet; that clause moved to T3.13 by user decision.)
+- [x] Alternatives found with Tavily and checked the same way. (T3.12: live Roblox (9) found three candidates and checked each like any title. None beat the "no", so no live card shows one yet; that clause moved to T3.13, which was superseded.)
 - [x] Offline eval baseline and live Token Factory results recorded. (T3.6b recorded the first live run; T3.9b and T3.10 re-recorded after each prompt change, and every replay pins the numbers.)
 - [x] All four kinds of title handled. (T3.7: ios, android, console_pc and youtube, plus the user-decided unknown kind; one fixture per kind pins each plan.)
 - [x] App Store page reviews stand in when the review feed is empty (T3.8). (Pinned on all four captured pages; a feed error falls back too, by user decision.)
+
+## Closed
+
+P3 is closed: 16 of 17 tasks done, T3.13 superseded, every exit criterion ticked. The task list ended here by user decision; the work after it landed as direct fixes, recorded in the handoff log, and changed the pipeline this file describes:
+
+- **Judge.** Nemotron-3-Ultra, not Super. Thinking calls sample at temperature 0.6, top_p 0.95 with repetition_penalty 1.05; fast calls take repetition_penalty 1.1. The conflict pass gets only the conflicted areas, findings grouped by area with short ids (F1, F2 …) mapped back in code, and one retry when capped. The first pass answers with the grades object alone, at most four ids per grade.
+- **Citations.** Bad ids are pruned one by one; a grade stands while one verified, in-area, fitting citation remains, and a voided conflict-pass grade falls back to the first pass.
+- **Evidence.** App Store facts (age rating, advisories, price, privacy label, Kids category) are verified findings; pages naming only a sibling app are dropped; the gather plan (plan-6) adds a search for the title's parental-control help pages, source kind `help`.
+- **Rule gate.** A deterministic gate between the judge and `checklist.Decide` vetoes, caps, confirms or raises grades from verified evidence, every action on the card under "Rule checks". User-approved rules A to G, plus content and age control caps; checklist v12.
+- **Verdicts.** On the recordings set (gather 0): Roblox **no**, Minecraft **yes with settings**, Khan Academy Kids **yes**, the three the user expects. On the live gathers: Roblox no on both; Minecraft unclear on both, held by contact; Khan unclear on gather 1 and yes on gather 2.
+- **Left as it stands.** Minecraft's contact grade is borderline: re-records fail it at different checks (entailment, the rule gate, grounding), and the thinking pass samples, so each re-record is a new draw. A prompt rule asking for one setting from one quote was tried and dropped: Khan gathered one more yes, Minecraft lost the recordings set. The user stopped further runs.
