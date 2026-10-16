@@ -471,10 +471,15 @@ func TestContactControlCapsAFlag(t *testing.T) {
 	foreign.url = "https://guides.example/othergame-parents"
 	gs, acts = run(all(grade(checklist.Contact, checklist.Flag, "risk")), findings(risk, foreign), 7)
 	want(t, gs, acts, checklist.Contact, checklist.Flag, RuleContactConfirmed)
-	// A control that the reader labelled a risk is not taken as one.
+	// A control is read from its text: the reader's risk label does not hide it.
 	asRisk := ctl
 	asRisk.stance = finding.Risk
 	gs, acts = run(all(grade(checklist.Contact, checklist.Flag, "risk")), findings(risk, asRisk), 7)
+	want(t, gs, acts, checklist.Contact, checklist.OKWithSetting, RuleContactCapped)
+	// Unless the text says the control is missing.
+	absent := ctl
+	absent.quote = "There is no way to set chat to friends only for kids."
+	gs, acts = run(all(grade(checklist.Contact, checklist.Flag, "risk")), findings(risk, absent), 7)
 	want(t, gs, acts, checklist.Contact, checklist.Flag, RuleContactConfirmed)
 }
 
@@ -553,7 +558,7 @@ func TestGateNeverInventsAGradeWithoutCitations(t *testing.T) {
 	quotes := map[checklist.Area][]string{
 		checklist.Money:           {"i bought coins with my birthday money", "please fix it", "Reading games\nFree", "Parents can turn on Ask to Buy so purchases need approval", "he bypassed ask to buy", "the game shows ads"},
 		checklist.Data:            {"We sell personal information to advertisers", "Data Not Linked to You", "We share information with service providers to host the app", "Data Used to Track You", "it is fun"},
-		checklist.Content:         {"Age rating: 4+", "the content is appropriate for young kids", "a scary clown frightened my kid", "yoga conflicts with our beliefs", "violence and blood"},
+		checklist.Content:         {"Age rating: 4+", "Age rating: 12+", "the content is appropriate for young kids", "a scary clown frightened my kid", "yoga conflicts with our beliefs", "violence and blood", "mild cartoon violence", "creepy music"},
 		checklist.DeveloperRecord: {"The FTC fined Sampleland over children's data.", "Sampleland has no known data breaches.", "Sampleland won an award.", "a lawsuit against Otherco"},
 		checklist.Contact:         {"strangers can chat with kids", "set chat to friends only", "even when chat is off strangers get through", "The app has no chat", "kids love it"},
 		checklist.AgeGating:       {"enter any birthday to get in", "the birthday is locked, only a parent can change it", "it only goes up to 2nd grade", "my 9 year old is in the 21+ age group"},
@@ -572,6 +577,11 @@ func TestGateNeverInventsAGradeWithoutCitations(t *testing.T) {
 					Source: finding.Source{Kind: kinds[rng.Intn(len(kinds))], URL: fmt.Sprintf("https://x.example/%d", rng.Intn(3))},
 				})
 			}
+		}
+		if rng.Intn(3) == 0 {
+			k := kidsFact("0–5")
+			k.ID = fmt.Sprintf("f%d", len(fs))
+			fs = append(fs, k)
 		}
 		var in []checklist.Grade
 		for _, a := range checklist.Areas() {

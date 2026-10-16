@@ -43,6 +43,7 @@ const StoreFactRef = "S"
 const (
 	lookupFactsTitle = "App Store listing: price, rating and advisories"
 	pageFactsTitle   = "App Store listing: price line and privacy label"
+	kidsFactsTitle   = "App Store listing: Kids category"
 )
 
 var (
@@ -52,6 +53,8 @@ var (
 	// iPad").
 	priceLine = regexp.MustCompile(`^(Free|[$€£¥]\s?\d[\d.,]*)(\s+·\s+.*)?$`)
 	idInURL   = regexp.MustCompile(`/id(\d+)(?:[/?#]|$)`)
+	// madeForAges is the Kids category line: "Made For Ages 0–5".
+	madeForAges = regexp.MustCompile(`(?i)^made for ages (\d+)\s*[–-]\s*(\d+)$`)
 )
 
 // storeFacts reads the facts of app a. The lookup's own fields always give
@@ -78,6 +81,21 @@ func storeFacts(a *appstore.App, docs []Doc, page string, at time.Time) []StoreF
 	if page != "" {
 		if f, ok := pageFacts(pageURL, page, at); ok {
 			out = append(out, f)
+		}
+	}
+	// The Kids category line is read from the page, and failing that from any
+	// gathered listing of the same app, whatever the storefront: the category
+	// does not change with the country.
+	if f, ok := kidsFacts(pageURL, page, at); ok {
+		out = append(out, f)
+	} else {
+		for _, d := range docs {
+			if d.Source.Kind != KindReview && d.Source.Kind != KindStore && isListingOf(d.Source.URL, a.ID) {
+				if f, ok := kidsFacts(d.Source.URL, d.Text, at); ok {
+					out = append(out, f)
+					break
+				}
+			}
 		}
 	}
 	return out
@@ -265,6 +283,7 @@ func pageFacts(pageURL, page string, at time.Time) (StoreFacts, bool) {
 				"Apple's privacy label shows the developer reports only data not linked to the user's identity, and none used to track the user.", notLinked))
 		}
 	}
+
 	if len(raws) == 0 {
 		return StoreFacts{}, false
 	}
@@ -296,4 +315,39 @@ func storeFactFindings(facts []StoreFacts) ([]finding.Finding, finding.Drops) {
 		drops.Add(d)
 	}
 	return out, drops
+}
+
+// kidsCategoryClaim opens the claim of the Kids category fact. gateOnly keys
+// on it.
+const kidsCategoryClaim = "The App Store lists the title in its Kids category"
+
+// gateOnly reports whether a finding is evidence for a rule of the rule gate
+// and is not shown to the judge, so the judge's prompt, and the recorded
+// replies keyed on it, do not change when such a fact is added.
+func gateOnly(f finding.Finding) bool {
+	return f.Source.Kind == KindStore && f.Area == checklist.Contact && strings.HasPrefix(f.Claim, kidsCategoryClaim)
+}
+
+// kidsFacts reads Apple's Kids category line off a listing page: "Made For
+// Ages 0–5" under Age Rating. The rule gate reads it
+// (contact.kids_category_no_contact_report); the judge is not shown it
+// (gateOnly), because it is evidence for that rule and not a point for the
+// judge to weigh. Neutral: it says where the store lists the title, not what
+// happens in it. The quote is the line itself, a span of the excerpt.
+func kidsFacts(pageURL, page string, at time.Time) (StoreFacts, bool) {
+	for _, l := range strings.Split(strings.ReplaceAll(page, "\r", ""), "\n") {
+		line := strings.TrimSpace(strings.TrimLeft(strings.TrimSpace(l), "*#+ \t"))
+		m := madeForAges.FindStringSubmatch(line)
+		if m == nil {
+			continue
+		}
+		return StoreFacts{
+			Doc: Doc{
+				Source: finding.Source{URL: pageURL, Kind: KindStore, Title: kidsFactsTitle, FetchedAt: at},
+				Text:   line,
+			},
+			Raws: []finding.Raw{fact(checklist.Contact, finding.Neutral, kidsCategoryClaim+", made for ages "+m[1]+"–"+m[2]+".", line)},
+		}, true
+	}
+	return StoreFacts{}, false
 }

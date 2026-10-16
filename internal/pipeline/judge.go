@@ -105,7 +105,7 @@ func judgeUser(title string, age int, areas []checklist.Area, fs []finding.Findi
 	}
 	b.WriteString("\nFindings:\n")
 	for _, f := range fs {
-		if !slices.Contains(areas, f.Area) {
+		if !slices.Contains(areas, f.Area) || gateOnly(f) {
 			continue
 		}
 		src := f.Source.Kind

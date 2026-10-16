@@ -75,7 +75,13 @@ func assertReasonOnlyResults(t *testing.T, before, after []Result) {
 		if a.Err != "" {
 			t.Fatalf("%s: %s", a.Title, a.Err)
 		}
-		if a.Title != b.Title || a.Age != b.Age || a.EvidenceHash != b.EvidenceHash || a.GotVerdict != b.GotVerdict {
+		// The verdict may differ only when the rule gate changed a grade; the
+		// recordings predate it.
+		changed := false
+		for _, act := range a.Gate {
+			changed = changed || act.From != act.To
+		}
+		if a.Title != b.Title || a.Age != b.Age || a.EvidenceHash != b.EvidenceHash || (a.GotVerdict != b.GotVerdict && !changed) {
 			t.Fatalf("evidence/verdict drift %s: %+v %+v", b.Title, b, a)
 		}
 		bg, ag := slices.Clone(b.Grades), slices.Clone(a.Grades)
