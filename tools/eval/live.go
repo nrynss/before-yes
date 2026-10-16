@@ -186,7 +186,7 @@ type liveChatter struct {
 	err  error
 
 	calls, cached, refused, failed, conflict, capped atomic.Int64
-	dry                                      atomic.Int64
+	dry                                              atomic.Int64
 
 	mu      sync.Mutex
 	in, out int64
