@@ -73,8 +73,7 @@ type Stats struct {
 	// subject was a different product of the same developer (T3.10).
 	OffProduct int `json:"off_product"`
 	// ConflictedAreas are the areas the judge re-graded with thinking on.
-	ConflictedAreas []checklist.Area `json:"conflicted_areas"`
-	// MissingKinds are the source kinds that came back empty, such as "policy".
+	ConflictedAreas []checklist.Area `json:"conflicted_areas"`	// MissingKinds are the source kinds that came back empty, such as "policy".
 	MissingKinds  []string `json:"missing_kinds"`
 	TavilyCredits int      `json:"tavily_credits"`
 	// ReadCostNano and JudgeCostNano are in nanodollars (1e-9 USD).

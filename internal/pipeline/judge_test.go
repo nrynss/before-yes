@@ -48,6 +48,9 @@ func (s *superRecorder) Chat(_ context.Context, msgs []model.Message, o model.Op
 	switch r := s.replies[n].(type) {
 	case error:
 		return model.Reply{}, r
+	case model.Reply:
+		r.Price, r.Measured = s.price, true
+		return r, nil
 	default:
 		return model.Reply{Text: r.(string), Price: s.price, Measured: true}, nil
 	}
@@ -131,8 +134,11 @@ func TestJudgeConflictPassFlagsContact(t *testing.T) {
 	if !strings.Contains(rec.users[1], "Grade only these areas: contact\n") || strings.Contains(rec.users[1], "area=money") {
 		t.Errorf("conflict pass prompt:\n%s", rec.users[1])
 	}
-	if !reflect.DeepEqual(rec.opts[0].Extra, j.Fast) || !rec.opts[0].JSON || !reflect.DeepEqual(rec.opts[1].Extra, j.Think) || rec.opts[1].MaxTokens != 16000 {
+	if !reflect.DeepEqual(rec.opts[0].Extra, j.Fast) || !rec.opts[0].JSON || !reflect.DeepEqual(rec.opts[1].Extra, j.Think) || rec.opts[1].MaxTokens != DefaultThinkMaxTokens {
 		t.Errorf("options %+v", rec.opts)
+	}
+	if !strings.HasSuffix(rec.users[1], conflictNote) || strings.Contains(rec.users[0], "write nothing after it") {
+		t.Errorf("the conflict note ends the conflict pass's prompt, and only that one's:\n%s", rec.users[1])
 	}
 	for _, u := range rec.users {
 		if !strings.Contains(u, "Child's age: 9\n") || !strings.Contains(u, "Unread sources: policy\n") {
@@ -281,6 +287,29 @@ func TestConflictPassAnsweringNothingFails(t *testing.T) {
 		if g.Area == checklist.Contact && g.Level != checklist.Flag {
 			t.Errorf("first contact grade did not stand: %+v", g)
 		}
+	}
+}
+
+// A conflict pass cut off at its token cap with no JSON is recorded as capped,
+// not as a plain parse failure, and the first grades stand.
+func TestConflictPassCappedIsReported(t *testing.T) {
+	decisive, _, _, fs := robloxFindings(t)
+	first := gradesJSON(t, checklist.Grade{Area: checklist.Contact, Level: checklist.Flag, Findings: []string{decisive.ID}, Reason: "A child predator might ask where the child is."})
+	capped := model.Reply{Text: "Let me weigh the findings again. The first review says", OutputTokens: 100, FinishReason: "length"}
+	rec := &superRecorder{replies: []any{first, capped}}
+	got, err := (&Judge{Model: rec, Meter: openTestMeter(t)}).Judge(context.Background(), "Roblox", 9, "c", fs, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !errors.Is(got.ConflictErr, ErrReplyCapped) {
+		t.Fatalf("ConflictErr = %v, want ErrReplyCapped", got.ConflictErr)
+	}
+	// The same unparseable reply that was not capped is a plain failure.
+	capped.FinishReason = "stop"
+	rec = &superRecorder{replies: []any{first, capped}}
+	got, err = (&Judge{Model: rec, Meter: openTestMeter(t)}).Judge(context.Background(), "Roblox", 9, "c", fs, nil)
+	if err != nil || got.ConflictErr == nil || errors.Is(got.ConflictErr, ErrReplyCapped) {
+		t.Fatalf("stopped reply: err %v, ConflictErr %v", err, got.ConflictErr)
 	}
 }
 

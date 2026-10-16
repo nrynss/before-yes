@@ -192,10 +192,30 @@ type Judge struct {
 	// the host's thinking switch off and on (judge_fast and judge_think in
 	// the settings file).
 	Fast, Think map[string]any
-	// ThinkMaxTokens caps the conflict pass's reply, thinking included.
-	// Zero means 16000.
+	// ThinkMaxTokens caps the conflict pass's reply, thinking included. It is
+	// a runaway guard and the meter's reservation, not a tuning knob: the
+	// prompt asks for focused reasoning that ends in the JSON. Zero means
+	// DefaultThinkMaxTokens.
 	ThinkMaxTokens int
 }
+
+// DefaultThinkMaxTokens is the conflict pass's reply cap when ThinkMaxTokens
+// is zero. The judge model has a 1M-token context, so this is a generous
+// runaway guard and the meter's reservation, not a limit the pass should meet.
+const DefaultThinkMaxTokens = 64000
+
+// ErrReplyCapped marks a reply that stopped at its token cap and held no
+// usable answer. It is recorded in Judgement.ConflictErr and on the card's
+// stats, so a capped pass is seen and not mistaken for a missing one.
+var ErrReplyCapped = errors.New("reply reached its token cap")
+
+// conflictNote is added to the conflict pass's user message. A thinking
+// reply that reasons at length over every finding can run to its cap with the
+// JSON unwritten; this keeps the reasoning on the conflicted areas and puts
+// the answer last.
+const conflictNote = `
+This is a second look at the areas listed above, where the findings pull both ways. Keep your reasoning short and about those areas only: for each one, weigh its risk findings against its mitigation findings once, then decide. Do not restate the findings and do not discuss any other area. End your reply with the JSON object in the shape given, one grade per area listed, and write nothing after it.
+`
 
 // Judgement is the judge step's result.
 type Judgement struct {
@@ -257,16 +277,19 @@ func (j *Judge) Judge(ctx context.Context, title string, age int, ref string, fs
 	if len(out.Conflicted) > 0 {
 		max := j.ThinkMaxTokens
 		if max <= 0 {
-			max = 16000
+			max = DefaultThinkMaxTokens
 		}
 		reply, price, err := chat(ctx, j.Meter, j.Model, "judge_think", ref, []model.Message{
 			{Role: "system", Content: system},
-			{Role: "user", Content: judgeUser(title, age, out.Conflicted, fs, missing)},
+			{Role: "user", Content: judgeUser(title, age, out.Conflicted, fs, missing) + conflictNote},
 		}, model.Options{Extra: j.Think, MaxTokens: max})
 		out.Cost += price
 		if err == nil {
 			var second []checklist.Grade
-			if second, err = parseGrades(reply.Text); err == nil {
+			if second, err = parseGrades(reply.Text); err != nil && reply.Capped(max) {
+				err = fmt.Errorf("judge: the conflict pass reached its %d-token cap (%d output tokens) with no usable grades: %w", max, reply.OutputTokens, ErrReplyCapped)
+			}
+			if err == nil {
 				if answers(second, out.Conflicted) {
 					grades = replace(grades, second, out.Conflicted)
 					conflictPass = second

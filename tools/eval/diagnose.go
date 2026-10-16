@@ -36,6 +36,8 @@ type traced struct {
 	// err is the call's error, for an entailment call that failed: the
 	// judge then keeps the grade unchecked.
 	err string
+	// capped is set when the reply stopped at its token cap.
+	capped bool
 }
 
 type callTrace struct {
@@ -96,7 +98,11 @@ func (t *tracingChatter) Chat(ctx context.Context, msgs []model.Message, o model
 	case strings.HasPrefix(system, "Write explanations for a parent") || strings.HasPrefix(system, "You check the exact explanation a parent"):
 		// Prose-only calls cannot replace a grading pass in the diagnosis.
 	case t.role == "judge":
-		t.tr.judge = append(t.tr.judge, traced{user: user, reply: r.Text})
+		max := o.MaxTokens
+		if max <= 0 {
+			max = t.inner.Settings().MaxTokens
+		}
+		t.tr.judge = append(t.tr.judge, traced{user: user, reply: r.Text, capped: r.Capped(max)})
 	}
 	t.tr.mu.Unlock()
 	return r, err
@@ -162,6 +168,9 @@ func judgeGrades(tr *callTrace, conflicted []checklist.Area) (map[checklist.Area
 	}
 	second, err := parseReplyGrades(replies[len(replies)-1].reply)
 	if err != nil {
+		if replies[len(replies)-1].capped {
+			return use, firsts, "conflict pass CAPPED at its token limit with no usable grades (" + err.Error() + "); first pass kept"
+		}
 		return use, firsts, "conflict pass unusable (" + err.Error() + "); first pass kept"
 	}
 	answered := false

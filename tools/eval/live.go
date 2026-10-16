@@ -38,7 +38,7 @@ import (
 )
 
 var (
-	liveSet        = flag.String("live-set", "tokenfactory", "with -models live: tokenfactory (Nano and Super on Token Factory), super-vl or ultra (judge candidates on Token Factory), or openrouter (the free stand-ins)")
+	liveSet        = flag.String("live-set", "tokenfactory", "with -models live: tokenfactory, also named ultra (Nano reads and Nemotron-3-Ultra judges, on Token Factory), or openrouter (the free stand-ins)")
 	liveOnly       = flag.String("live-only", "", "with -models live: run only the title with this slug")
 	liveCapUSD     = flag.Float64("live-cap-usd", 1.5, "with -models live: refuse a call that would take the ledger past this many dollars")
 	liveLedger     = flag.String("live-ledger", "", "with -models live: file that holds the running spend in nanodollars, kept outside the repository")
@@ -71,9 +71,17 @@ type liveSetting struct {
 	subdir        string
 }
 
-// The Token Factory set is the one the demo runs on. Its switches are the
-// ones before-yes.toml.example names: chat_template_kwargs turns thinking off
-// for Nano and for the judge's first pass, and on for the conflict pass.
+// The Token Factory set is the one the demo runs on: Nano reads, and
+// Nemotron-3-Ultra-550b-a55b judges. The judge's price is not on the host's
+// model page, which renders empty; the third-party listings (Requesty,
+// TypingMind, LLM Gateway) give $1.00 in and $3.00 out per million tokens, the
+// highest figure seen, so the meter errs safe. The thinking switch was
+// confirmed live: enable_thinking false gave 3 output tokens, true gave 18.
+// The judge's max tokens is a runaway guard on a 1M-token-context model, not a
+// tuning knob. The switches are the ones before-yes.toml.example names:
+// chat_template_kwargs turns thinking off for Nano and for the judge's first
+// pass, and on for the conflict pass. "ultra" is kept as another name for this
+// set, for the commands that named it during the trial.
 var liveSets = map[string]liveSetting{
 	"tokenfactory": {
 		reader: model.Settings{
@@ -84,52 +92,8 @@ var liveSets = map[string]liveSetting{
 		},
 		judge: model.Settings{
 			Provider: "tokenfactory", BaseURL: "https://api.tokenfactory.nebius.com/v1",
-			Model: "nvidia/nemotron-3-super-120b-a12b", InputPerM: 0.30, OutputPerM: 0.90,
-			MaxTokens: 4096, PerMinute: 300,
-		},
-		keyVar: "NEBIUS_KEY",
-		fast:   map[string]any{"chat_template_kwargs": map[string]any{"enable_thinking": false}},
-		think:  map[string]any{"chat_template_kwargs": map[string]any{"enable_thinking": true}},
-	},
-	// Nemotron-3.5-Super-VL on Token Factory, as a judge candidate only. Its
-	// price is the listed $0.30 in and $0.90 out per million tokens. Its
-	// thinking switch was confirmed live: enable_thinking false gave 3 output
-	// tokens, true gave 36 with reasoning. The reader is the same Nano as the
-	// tokenfactory set, but under -live-judge-out it only replays.
-	"super-vl": {
-		reader: model.Settings{
-			Provider: "tokenfactory", BaseURL: "https://api.tokenfactory.nebius.com/v1",
-			Model: "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B", InputPerM: 0.06, OutputPerM: 0.24,
-			MaxTokens: 8192, PerMinute: 100,
-			Extra: map[string]any{"chat_template_kwargs": map[string]any{"enable_thinking": false}},
-		},
-		judge: model.Settings{
-			Provider: "tokenfactory", BaseURL: "https://api.tokenfactory.nebius.com/v1",
-			Model: "nvidia/Nemotron-3.5-Super-VL", InputPerM: 0.30, OutputPerM: 0.90,
-			MaxTokens: 4096, PerMinute: 60,
-		},
-		keyVar: "NEBIUS_KEY",
-		fast:   map[string]any{"chat_template_kwargs": map[string]any{"enable_thinking": false}},
-		think:  map[string]any{"chat_template_kwargs": map[string]any{"enable_thinking": true}},
-	},
-	// Nemotron-3-Ultra-550b-a55b on Token Factory, as a judge candidate only.
-	// Its price is not on the host's model page, which renders empty; the
-	// third-party listings (Requesty, TypingMind, LLM Gateway) give $1.00 in and
-	// $3.00 out per million tokens. That is the highest figure seen, so the cap
-	// errs safe. The thinking switch was confirmed live: enable_thinking false
-	// gave 3 output tokens, true gave 18 (14 of them reasoning). The reader is
-	// the Nano set's, and under -live-judge-out it only replays.
-	"ultra": {
-		reader: model.Settings{
-			Provider: "tokenfactory", BaseURL: "https://api.tokenfactory.nebius.com/v1",
-			Model: "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B", InputPerM: 0.06, OutputPerM: 0.24,
-			MaxTokens: 8192, PerMinute: 100,
-			Extra: map[string]any{"chat_template_kwargs": map[string]any{"enable_thinking": false}},
-		},
-		judge: model.Settings{
-			Provider: "tokenfactory", BaseURL: "https://api.tokenfactory.nebius.com/v1",
 			Model: "nvidia/Nemotron-3-Ultra-550b-a55b", InputPerM: 1.00, OutputPerM: 3.00,
-			MaxTokens: 4096, PerMinute: 60,
+			MaxTokens: 16000, PerMinute: 60,
 		},
 		keyVar: "NEBIUS_KEY",
 		fast:   map[string]any{"chat_template_kwargs": map[string]any{"enable_thinking": false}},
@@ -154,9 +118,11 @@ var liveSets = map[string]liveSetting{
 	},
 }
 
+func init() { liveSets["ultra"] = liveSets["tokenfactory"] }
+
 // conflictMaxTokens is the cap the judge sets on its conflict pass, the
 // second call per check. A call with this cap is counted as a conflict call.
-const conflictMaxTokens = 16000
+const conflictMaxTokens = pipeline.DefaultThinkMaxTokens
 
 // liveWanted reports whether -live-only lets a title run.
 func liveWanted(slug string) bool {
@@ -219,7 +185,7 @@ type liveChatter struct {
 	dir  string
 	err  error
 
-	calls, cached, refused, failed, conflict atomic.Int64
+	calls, cached, refused, failed, conflict, capped atomic.Int64
 	dry                                      atomic.Int64
 
 	mu      sync.Mutex
@@ -251,7 +217,7 @@ func (l *liveChatter) Chat(ctx context.Context, msgs []model.Message, o model.Op
 	if rec, ok := readRecording(path); ok {
 		l.cached.Add(1)
 		l.count(rec.InputTokens, rec.OutputTokens)
-		return model.Reply{Text: rec.Text, InputTokens: rec.InputTokens, OutputTokens: rec.OutputTokens, Price: rec.PriceNano, Measured: rec.Measured}, nil
+		return model.Reply{Text: rec.Text, InputTokens: rec.InputTokens, OutputTokens: rec.OutputTokens, Price: rec.PriceNano, Measured: rec.Measured, FinishReason: rec.FinishReason}, nil
 	}
 	if *liveEntailOnly && (l.role != "judge" || len(msgs) == 0 || !strings.HasPrefix(msgs[0].Content, "You check one grade of a parent checklist") && !strings.HasPrefix(msgs[0].Content, "Classify the observed event in one source quote about age checks.")) {
 		return model.Reply{}, errors.New("live: entail-only refuses uncached reader or grade call")
@@ -295,7 +261,15 @@ func (l *liveChatter) Chat(ctx context.Context, msgs []model.Message, o model.Op
 		return r, err
 	}
 	rec := Recording{Text: r.Text, InputTokens: r.InputTokens, OutputTokens: r.OutputTokens,
-		PriceNano: r.Price, Measured: r.Measured, Model: l.c.Settings().Model}
+		PriceNano: r.Price, Measured: r.Measured, Model: l.c.Settings().Model, FinishReason: r.FinishReason}
+	maxTok := o.MaxTokens
+	if maxTok <= 0 {
+		maxTok = l.c.Settings().MaxTokens
+	}
+	if r.Capped(maxTok) {
+		l.capped.Add(1)
+		fmt.Fprintf(os.Stderr, "live %s: reply reached its %d-token cap (finish_reason %q, %d output tokens), recorded as is\n", l.role, maxTok, r.FinishReason, r.OutputTokens)
+	}
 	if err := writeRecording(l.dir, l.role, key, rec); err != nil {
 		return model.Reply{}, fmt.Errorf("live: record reply: %w", err)
 	}
@@ -422,8 +396,8 @@ func liveSummarise(title string, cs ...pipeline.Chatter) {
 		l.mu.Lock()
 		in, out, booked, dry := l.in, l.out, l.booked, l.dryNano
 		l.mu.Unlock()
-		fmt.Fprintf(os.Stderr, "live %s %s: calls %d (conflict %d), recorded %d, refused %d, failed %d; tokens in %d out %d; booked %s; dry reserve %s\n",
-			title, l.role, l.calls.Load(), l.conflict.Load(), l.cached.Load(), l.refused.Load(), l.failed.Load(),
+		fmt.Fprintf(os.Stderr, "live %s %s: calls %d (conflict %d), recorded %d, refused %d, failed %d, capped %d; tokens in %d out %d; booked %s; dry reserve %s\n",
+			title, l.role, l.calls.Load(), l.conflict.Load(), l.cached.Load(), l.refused.Load(), l.failed.Load(), l.capped.Load(),
 			in, out, usd(booked), usd(dry))
 	}
 }

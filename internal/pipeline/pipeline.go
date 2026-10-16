@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log/slog"
 	"math"
 	"reflect"
 	"strings"
@@ -374,6 +375,14 @@ func (p *Pipeline) Decide(ctx context.Context, ev Evidence, age int, ref string)
 	}
 	card.Stats.MissingKinds = append([]string{}, ev.Stats.MissingKinds...)
 	card.Stats.ConflictedAreas = append([]checklist.Area{}, j.Conflicted...)
+	if j.ConflictErr != nil {
+		// The first pass's grades stand. Say so in the log, capped or not,
+		// so a discarded conflict pass is never silent.
+		slog.Warn("judge: conflict pass did not count", "ref", ref, "capped", errors.Is(j.ConflictErr, ErrReplyCapped), "err", j.ConflictErr)
+	}
+	if j.EntailErr != nil {
+		slog.Warn("judge: an entailment call did not count", "ref", ref, "err", j.EntailErr)
+	}
 	card.Stats.JudgeCostNano = int64(j.Cost)
 	card.Stats.JudgeModel = p.Judge.Model.Settings().Model
 	return card, nil

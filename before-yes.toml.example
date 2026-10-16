@@ -61,18 +61,25 @@ per_minute   = 100
 [reader.extra]
 chat_template_kwargs = { enable_thinking = false }
 
-# Judge: Nemotron 3 Super on Token Factory. Grades the areas on each card.
+# Judge: Nemotron 3 Ultra (550B-A55B) on Token Factory. Grades the areas on
+# each card. The id is the host's own spelling, capitals included. The price is
+# the highest listing seen ($1.00 in, $3.00 out per million tokens): the host's
+# own model page did not render a price. The spend meter reserves and books at
+# these two figures, so change them here and nowhere else.
 [judge]
 provider   = "tokenfactory"
 base_url   = "https://api.tokenfactory.nebius.com/v1"
-# Confirmed at T2.1b against GET /v1/models.
-model      = "nvidia/nemotron-3-super-120b-a12b"
-input_per_m  = 0.30
-output_per_m = 0.90
-max_tokens   = 4096
-# Confirmed at T2.1b: x-ratelimit-limit-requests reports 300 for this model,
-# counted per model rather than per account. The host scales it with load.
-per_minute   = 300
+model      = "nvidia/Nemotron-3-Ultra-550b-a55b"
+input_per_m  = 1.00
+output_per_m = 3.00
+# A runaway guard for the judge's calls that set no cap of their own (the first
+# pass answers in a few thousand tokens). Ultra has a 1M-token context, so this
+# is not a tuning knob. The thinking-on conflict pass has its own, larger guard
+# of 64000 (pipeline.DefaultThinkMaxTokens).
+max_tokens   = 16000
+# Ultra's rate limit was not read from the host; 60 a minute is the figure the
+# live trial ran at without a refusal.
+per_minute   = 60
 
 # Development alternative: build.nvidia.com (free). Uncomment to replace the
 # [reader] and [judge] tables above, and point [secrets.reader] and
