@@ -1,0 +1,9 @@
+{
+  "text": "{\"reason_supported\":false,\"explanation\":\"The explanation claims 'automated filtering of inappropriate images or video' as a concrete safeguard, but the single quote mentioning automatic filtering ('Content is automatically filtered for potentially inappropriate images or video') comes from a forum source discussing Discord server features, not Minecraft. No Minecraft-specific source in the provided set describes automated image/video filtering. Additionally, the phrase 'Reddit reviewers describe Minecraft as very safe...' implies multiple reviewers, yet only one Reddit quote is provided.\"}",
+  "input_tokens": 1931,
+  "output_tokens": 109,
+  "price_nano": 2258000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

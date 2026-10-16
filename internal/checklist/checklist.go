@@ -17,8 +17,15 @@ import (
 // an area's wording or a rule in Decide or Enforce changes, because cached
 // cards record the version they were judged under. v8: the pipeline's rule
 // gate (internal/pipeline/rulegate.go) now settles the grades before Decide,
-// so a card judged under v7 can differ from one judged now.
-const Version = "v8"
+// so a card judged under v7 can differ from one judged now. v9: the gate caps
+// a money flag on a named purchase control even when other quotes complain
+// about spending, scams or billing (rule D), and treats a regulator action
+// about another product as information, not evidence (rule E). v10: the gate
+// leaves a data concern that rests on one user's report of a hacked account
+// unknown (rule F). v11: the gate turns an App Store ad-tracking label into
+// the Ask App Not to Track setting unless data-sale, marketing-sharing or
+// company-breach evidence keeps the concern flagged (rule G).
+const Version = "v11"
 
 // Area is one checklist area id. The ids are stable wire values.
 type Area string

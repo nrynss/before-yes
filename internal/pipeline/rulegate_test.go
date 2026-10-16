@@ -195,6 +195,88 @@ func TestMoneyControlCapsAFlag(t *testing.T) {
 	want(t, gs, acts, checklist.Money, checklist.Flag, RuleMoneyConfirmed)
 }
 
+// ---------------------------------------------------------------- rule D: purchase controls
+
+// Rule D caps a money flag on a purchase control even when the cited quotes
+// are spending, scam and billing complaints: a complaint is not the control
+// failing. Only a quote that says the control itself failed or was bypassed
+// keeps the flag.
+func TestMoneyPurchaseControlCapsAFlagPastComplaints(t *testing.T) {
+	complaints := []gf{
+		{"scam", checklist.Money, finding.Risk, KindReview, "", "i bought 10,000 minecoins and got scammed, i used all my birthday money"},
+		{"billing", checklist.Money, finding.Risk, KindReview, "", "i tried buying them separately which still didn't work and i just got charged 40 dollars"},
+		{"ctl", checklist.Money, finding.Risk, KindRating, "https://guide.example/sampleland-parental-controls", "every Marketplace purchase (paid for with Minecoins) or Realms subscription needs your approval"},
+	}
+	gs, acts := run(all(grade(checklist.Money, checklist.Flag, "scam", "billing")), findings(complaints...), 9)
+	got := want(t, gs, acts, checklist.Money, checklist.OKWithSetting, RuleMoneyCapped)
+	if got.Setting != "Require approval for purchases" {
+		t.Errorf("setting %q", got.Setting)
+	}
+	if !slices.Equal(got.Findings, []string{"scam", "billing", "ctl"}) {
+		t.Errorf("citations %v, want the risks and the control", got.Findings)
+	}
+	if !strings.Contains(acts[0].Note, "purchase control") {
+		t.Errorf("note %q", acts[0].Note)
+	}
+	if checklist.Settings(gs)[0] != got.Setting {
+		t.Errorf("settings %v", checklist.Settings(gs))
+	}
+	if _, err := checklist.Decide(gs); err != nil {
+		t.Errorf("the capped grade set is invalid: %v", err)
+	}
+
+	// A verified quote that says the control was bypassed blocks the cap,
+	// cited or not.
+	failing := append(slices.Clone(complaints), gf{"fail", checklist.Money, finding.Risk, KindReview, "", "my son bought coins without asking even with approval on"})
+	gs, acts = run(all(grade(checklist.Money, checklist.Flag, "scam", "billing")), findings(failing...), 9)
+	want(t, gs, acts, checklist.Money, checklist.Flag, RuleMoneyConfirmed)
+	gs, acts = run(all(grade(checklist.Money, checklist.Flag, "scam", "billing", "fail")), findings(failing...), 9)
+	want(t, gs, acts, checklist.Money, checklist.Flag, RuleMoneyConfirmed)
+
+	// Without a control quote the complaints leave the flag as it is.
+	gs, acts = run(all(grade(checklist.Money, checklist.Flag, "scam", "billing")), findings(complaints[:2]...), 9)
+	want(t, gs, acts, checklist.Money, checklist.Flag, RuleMoneyConfirmed)
+
+	// An ok_with_setting is not revisited: a Roblox-shaped grade stands with
+	// no new action.
+	roblox := checklist.Grade{Area: checklist.Money, Level: checklist.OKWithSetting, Setting: "monthly spending limit",
+		Findings: []string{"m1", "m2"}, Reason: "A source names a control that answers this concern (Set a spending limit)"}
+	fs := findings(
+		gf{"m1", checklist.Money, finding.Risk, KindReview, "", "my kid keeps buying robux, it adds up fast"},
+		gf{"m2", checklist.Money, finding.Risk, KindReview, "", "the game pushes robux offers at children"},
+		gf{"m3", checklist.Money, finding.Mitigation, KindArticle, "https://guide.example/blocks", "parents can set a monthly spending limit"},
+	)
+	gs, acts = run(all(roblox), fs, 9)
+	got = want(t, gs, acts, checklist.Money, checklist.OKWithSetting)
+	if got.Setting != "monthly spending limit" || !slices.Equal(got.Findings, []string{"m1", "m2"}) {
+		t.Errorf("roblox money = %+v", got)
+	}
+	if n := len(actionsFor(acts, checklist.Money)); n != 0 {
+		t.Errorf("%d money actions, want none", n)
+	}
+}
+
+// Rule D reads the control by its text. Each wording names the setting the
+// card shows.
+func TestMoneyPurchaseControlWordings(t *testing.T) {
+	risk := gf{"risk", checklist.Money, finding.Risk, KindReview, "", "my kid bought coins without asking me"}
+	for q, label := range map[string]string{
+		"in your child's Microsoft Family Safety spending settings, turn on \"Ask a parent to buy things\" so every purchase needs your approval": "Ask a parent to approve purchases",
+		"you can require approval for purchases in the family settings":                                                                           "Require approval for purchases",
+		"Microsoft Family Safety purchase controls limit spending":                                                                                "Microsoft Family Safety purchase controls",
+		"the store offers purchase approval before each buy":                                                                                      "Purchase approval",
+		"parents can set a monthly spending limit":                                                                                                "Set a spending limit",
+		"ask a parent before buying":                                                                                                              "Ask a parent to approve purchases",
+		"turn off in-app purchases or block purchases on the child's device":                                                                      "Turn off in-app purchases",
+	} {
+		ctl := gf{"ctl", checklist.Money, finding.Mitigation, KindArticle, "https://guide.example/sampleland-guide", q}
+		gs, acts := run(all(grade(checklist.Money, checklist.Flag, "risk")), findings(risk, ctl), 9)
+		if got := want(t, gs, acts, checklist.Money, checklist.OKWithSetting, RuleMoneyCapped); got.Setting != label {
+			t.Errorf("%q: setting %q, want %q", q, got.Setting, label)
+		}
+	}
+}
+
 func TestMoneyFreeListingSettlesOK(t *testing.T) {
 	free := gf{"free", checklist.Money, finding.Mitigation, KindStore, "https://apps.apple.com/us/app/sampleland/id1", "Reading games for kids\nFree"}
 	// Raised from unknown, citing the listing.
@@ -259,6 +341,42 @@ func TestDataFlagNeedsSaleTrackingMarketingOrBreach(t *testing.T) {
 	}
 }
 
+func TestRuleGAppStoreTrackingSetting(t *testing.T) {
+	label := gf{"label", checklist.Data, finding.Risk, KindStore, "https://apps.apple.com/app/sampleland/id1", "Data Used to Track You\nPurchases, Identifiers"}
+	for _, start := range []checklist.Level{checklist.Unknown, checklist.Flag} {
+		gs, acts := run(all(grade(checklist.Data, start, "label")), findings(label), 9)
+		rules := []string{RuleDataTrackingSetting}
+		if start == checklist.Flag {
+			rules = []string{RuleDataConfirmed, RuleDataTrackingSetting}
+		}
+		got := want(t, gs, acts, checklist.Data, checklist.OKWithSetting, rules...)
+		if got.Setting != "Ask App Not to Track" || !slices.Equal(got.Findings, []string{"label"}) {
+			t.Errorf("tracking setting grade = %+v", got)
+		}
+		if !strings.Contains(acts[len(acts)-1].Note, "iOS lets a parent block it") {
+			t.Errorf("tracking action note %q", acts[len(acts)-1].Note)
+		}
+	}
+
+	for _, extra := range []gf{
+		{"sold", checklist.Data, finding.Risk, KindPolicy, "", "Sampleland sells children's personal data to advertisers."},
+		{"breach", checklist.Data, finding.Risk, KindNews, "https://news.example/sampleland-breach", "Sampleland suffered a company data breach that exposed children's names."},
+	} {
+		gs, acts := run(all(grade(checklist.Data, checklist.Unknown, "label", extra.id)), findings(label, extra), 9)
+		got := want(t, gs, acts, checklist.Data, checklist.Flag, RuleDataTrackingSetting)
+		if !slices.Contains(got.Findings, extra.id) || !slices.Contains(got.Findings, "label") {
+			t.Errorf("sale/breach grade cites %v", got.Findings)
+		}
+	}
+
+	gs, acts := run(all(grade(checklist.Data, checklist.Unknown)), nil, 9)
+	want(t, gs, acts, checklist.Data, checklist.Unknown)
+
+	// An existing setting is left to its earlier rule and does not receive G.
+	gs, acts = run(all(grade(checklist.Data, checklist.OKWithSetting, "label")), findings(label), 9)
+	want(t, gs, acts, checklist.Data, checklist.OKWithSetting)
+}
+
 func TestDataServiceProviderSharingNeverFlags(t *testing.T) {
 	q := "We share information with service providers that help us operate the app, such as hosting and customer support."
 	fs := findings(gf{"sp", checklist.Data, finding.Risk, KindPolicy, "", q})
@@ -278,6 +396,71 @@ func TestDataNewsAboutAnotherCompanyIsNotCounted(t *testing.T) {
 	named := gf{"n", checklist.Data, finding.Risk, KindNews, "https://news.example/story", "Sampleland: " + q}
 	gs, acts = run(all(grade(checklist.Data, checklist.Flag, "n")), findings(named), 5)
 	want(t, gs, acts, checklist.Data, checklist.Flag, RuleDataConfirmed)
+}
+
+// ---------------------------------------------------------------- rule E: another product's regulator action
+
+// Rule E: a cited quote that reports a fine, settlement, lawsuit or regulator
+// action and names the developer, the seller or a platform seller, but not
+// the title, is about another product. It supports no grade: it is removed
+// from the citations and shown as information on the card.
+func TestRegulatorActionAboutAnotherProductIsInformation(t *testing.T) {
+	news := gf{"ftc", checklist.Data, finding.Risk, KindNews, "https://news.example/kq2",
+		"Microsoft will pay a fine of $20 million to settle Federal Trade Commission charges that it illegally collected and retained the data of children who signed up"}
+	names := WithDeveloper("Blocks: Play!", "Mojang AB")
+
+	// The quote was the flag's only support: it is uncited, shown as
+	// information, and the flag falls.
+	gs, acts := ApplyRules("Blocks", 9, all(grade(checklist.Data, checklist.Flag, "ftc")), findings(news), names)
+	got := want(t, gs, acts, checklist.Data, checklist.Unknown, RuleRegulatorOtherProduct, RuleDataNoBasis)
+	if len(got.Findings) != 0 {
+		t.Errorf("veto cites %v", got.Findings)
+	}
+	info := acts[0]
+	if info.Kind != GateKindInfo || info.Rule != RuleRegulatorOtherProduct || info.From != checklist.Flag || info.To != checklist.Flag || !slices.Equal(info.Findings, []string{"ftc"}) {
+		t.Errorf("info action = %+v", info)
+	}
+	if !strings.HasPrefix(info.Note, "Microsoft will pay a fine") || !strings.Contains(info.Note, "not evidence about Blocks") {
+		t.Errorf("info note %q", info.Note)
+	}
+
+	// The quote begins with the name, so the note does not repeat it.
+	if strings.HasPrefix(info.Note, "Microsoft: Microsoft") {
+		t.Errorf("info note repeats the name: %q", info.Note)
+	}
+
+	// With other evidence the flag stands, on the citations that are left.
+	tracked := gf{"tracked", checklist.Data, finding.Risk, KindReview, "", "Sampleland tracks my child across apps to target them with ads"}
+	gs, acts = ApplyRules("Blocks", 9, all(grade(checklist.Data, checklist.Flag, "ftc", "tracked")), findings(news, tracked), names)
+	got = want(t, gs, acts, checklist.Data, checklist.Flag, RuleRegulatorOtherProduct, RuleDataConfirmed)
+	if !slices.Equal(got.Findings, []string{"tracked"}) {
+		t.Errorf("citations %v, want only the quote about the title", got.Findings)
+	}
+	// A hacked-account review beside the stripped quote is rule F's shape:
+	// the flag falls to unknown on the one user report.
+	hacked := gf{"hacked", checklist.Data, finding.Risk, KindReview, "", "I literally got hacked on Blocks by this kid so I'm deleting it"}
+	gs, acts = ApplyRules("Blocks", 9, all(grade(checklist.Data, checklist.Flag, "ftc", "hacked")), findings(news, hacked), names)
+	want(t, gs, acts, checklist.Data, checklist.Unknown, RuleRegulatorOtherProduct, RuleDataOwnAccount)
+
+	// An ok left with nothing to cite falls to unknown, as Enforce's
+	// ok_without_finding does.
+	settle := gf{"settle", checklist.Data, finding.Mitigation, KindNews, "https://news.example/google",
+		"Google agreed to a settlement tightening the children's privacy controls on its platform"}
+	gs, acts = ApplyRules("Blocks", 9, all(grade(checklist.Data, checklist.OK, "settle")), findings(settle), names)
+	want(t, gs, acts, checklist.Data, checklist.Unknown, RuleRegulatorOtherProduct, checklist.RuleOKNoProof)
+
+	// A quote with no regulator action in it is not touched, named seller or
+	// not.
+	soft := gf{"s", checklist.Data, finding.Risk, KindNews, "https://news.example/store", "Google's Play Store lists Blocks in every country"}
+	gs, acts = ApplyRules("Blocks", 9, all(grade(checklist.Data, checklist.Flag, "s")), findings(soft), names)
+	want(t, gs, acts, checklist.Data, checklist.Unknown, RuleDataNoBasis)
+
+	// An uncited regulator quote about another product changes no grade and
+	// takes no action.
+	gs, acts = ApplyRules("Blocks", 9, all(), findings(news), names)
+	if n := len(acts); n != 0 {
+		t.Errorf("%d actions for an uncited quote", n)
+	}
 }
 
 func TestDataLabelSettlesOK(t *testing.T) {
@@ -396,10 +579,22 @@ func TestDeveloperFlagNeedsANewsActionNamingTheDeveloper(t *testing.T) {
 	soft := gf{"n", checklist.DeveloperRecord, finding.Risk, KindNews, "https://news.example/a", "Sampleland announced a new update for children."}
 	gs, acts = run(all(grade(checklist.DeveloperRecord, checklist.Flag, "n")), findings(soft), 9)
 	want(t, gs, acts, checklist.DeveloperRecord, checklist.Unknown, RuleDeveloperNoAction)
-	// The developer's name may come from the store listing.
+	// The developer's name may come from the store listing, but since rule E
+	// a regulator action that names the developer and not the title is about
+	// another product: it is shown as information and the flag falls.
 	listing := gf{"n", checklist.DeveloperRecord, finding.Risk, KindNews, "https://news.example/a", "The FTC fined Mojang Studios for collecting data from children."}
 	gs, acts = ApplyRules("Blocks", 9, all(grade(checklist.DeveloperRecord, checklist.Flag, "n")), findings(listing), WithDeveloper("Blocks: Play!", "Mojang Studios, Inc."))
-	want(t, gs, acts, checklist.DeveloperRecord, checklist.Flag, RuleDeveloperConfirmed)
+	got := want(t, gs, acts, checklist.DeveloperRecord, checklist.Unknown, RuleRegulatorOtherProduct, RuleDeveloperNoAction)
+	if len(got.Findings) != 0 {
+		t.Errorf("veto cites %v", got.Findings)
+	}
+	info := acts[0]
+	if info.Kind != GateKindInfo || info.From != checklist.Flag || info.To != checklist.Flag || !slices.Equal(info.Findings, []string{"n"}) {
+		t.Errorf("info action = %+v", info)
+	}
+	if !strings.Contains(info.Note, "Mojang Studios, Inc.") || !strings.Contains(info.Note, "not evidence about Blocks") {
+		t.Errorf("info note %q", info.Note)
+	}
 }
 
 func TestDeveloperOKNeedsAnExplicitStatement(t *testing.T) {

@@ -1,0 +1,9 @@
+{
+  "text": "{\n  \"criterion\": \"wrong_age_assignment\",\n  \"quote\": \"they put me as 11 when I'm actually 16\",\n  \"actual_age\": \"16\",\n  \"assigned_age\": \"11\"\n}",
+  "input_tokens": 422,
+  "output_tokens": 52,
+  "price_nano": 578000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

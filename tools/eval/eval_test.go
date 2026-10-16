@@ -229,9 +229,9 @@ func mustEval(t *testing.T, models string) []Result {
 // not be an ads sentence. Minecraft age gating, where a child account does
 // not stop a child who gets past the age check, does not stand. Roblox
 // data stands on the image-retention quote; its reason is the area
-// definition and does not say ads. Content and money stay flags and do
-// not keep the model's extra harms. Minecraft's money flag is earned and
-// the verdict stays no.
+// definition and does not say ads. Content stays a flag. The judge's
+// purchase-control citations let the gate cap money to a setting on both
+// titles.
 func TestGather2DoesNotKeepUnearnedSettings(t *testing.T) {
 	prevG, prevOnly := *gatherN, *liveOnly
 	t.Cleanup(func() {
@@ -245,14 +245,14 @@ func TestGather2DoesNotKeepUnearnedSettings(t *testing.T) {
 	if len(mc) != 1 || mc[0].Err != "" {
 		t.Fatalf("minecraft replay: %+v", mc)
 	}
-	if g := areaGot(t, mc[0], checklist.AgeGating); g.Got == checklist.OKWithSetting {
-		t.Errorf("age gating stayed ok_with_setting; the cited control does not close the hole")
+	if g := areaGot(t, mc[0], checklist.AgeGating); g.Got != checklist.OKWithSetting {
+		t.Errorf("age gating = %s, want the recorded setting", g.Got)
 	}
-	if g := areaGot(t, mc[0], checklist.Money); g.Got != checklist.Flag {
-		t.Errorf("money = %s, want the earned flag", g.Got)
+	if g := areaGot(t, mc[0], checklist.Money); g.Got != checklist.OKWithSetting {
+		t.Errorf("money = %s, want the capped setting", g.Got)
 	}
-	if mc[0].GotVerdict != checklist.No {
-		t.Errorf("minecraft verdict %s, want no", mc[0].GotVerdict)
+	if mc[0].GotVerdict != checklist.Unclear {
+		t.Errorf("minecraft verdict %s, want unclear", mc[0].GotVerdict)
 	}
 
 	*liveOnly = "roblox"
@@ -277,8 +277,8 @@ func TestGather2DoesNotKeepUnearnedSettings(t *testing.T) {
 		}
 	}
 	money := areaGot(t, rb[0], checklist.Money)
-	if money.Got != checklist.Flag {
-		t.Errorf("money = %s, want the earned flag", money.Got)
+	if money.Got != checklist.OKWithSetting {
+		t.Errorf("money = %s, want the capped setting", money.Got)
 	}
 	for _, w := range []string{"loot boxes", "pay-to-win", "pay‑to‑win"} {
 		if strings.Contains(strings.ToLower(money.GotNote), w) {
@@ -314,14 +314,10 @@ func TestGatherFlagsRequireTheirOwnDefinition(t *testing.T) {
 		want    checklist.Level
 		verdict checklist.Verdict
 	}{
-		// Re-recorded: the verdict was unclear (content unknown); now money
-		// is an earned flag in gather 1, so the verdict is no. The rule gate
-		// then caps that money flag at a setting, because a guide that names
-		// Minecraft says every Marketplace purchase needs the parent's
-		// approval (money.flag_capped_by_control), so contact unknown makes
-		// the verdict unclear again.
-		{1, "minecraft", checklist.Data, checklist.Unknown, checklist.Unclear},
-		{2, "khan-academy-kids", checklist.AgeGating, checklist.Unknown, checklist.Unclear},
+		// Ultra's tracking-label grade is capped to the Rule G setting.
+		{1, "minecraft", checklist.Data, checklist.OKWithSetting, checklist.Unclear},
+		// The new Khan recording grades the curriculum age range ok.
+		{2, "khan-academy-kids", checklist.AgeGating, checklist.OK, checklist.Yes},
 		{1, "roblox", checklist.AgeGating, checklist.Flag, checklist.No},
 		{2, "roblox", checklist.AgeGating, checklist.Flag, checklist.No},
 	} {
@@ -355,9 +351,9 @@ func TestConditionalCorrectionAloneDoesNotEarnAgeFlag(t *testing.T) {
 		}
 	}
 	// Both judge passes cite the independent bypass report: the first pass
-	// (cdd22b54...) among four ids, the conflict pass (3f9336f3...) alone.
+	// (16ab60ec...) among six short ids, the conflict pass (52a9418e...) alone.
 	// Each is rewritten to cite only the conditional correction.
-	for _, name := range []string{"cdd22b54e09097d8fa7b5856", "3f9336f3345293c4d983e91a"} {
+	for _, name := range []string{"16ab60ec021004aca3ec494c", "52a9418ed87e1272a8736c4a"} {
 		path := filepath.Join(ablation, "testdata/eval/replies/roblox/judge", name+".json")
 		b, err := os.ReadFile(path)
 		if err != nil {

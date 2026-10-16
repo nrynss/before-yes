@@ -207,6 +207,20 @@ type Reply struct {
 	// Measured is false when the host reported no usable usage, so Price is
 	// the estimate rather than a measured cost.
 	Measured bool
+	// FinishReason is the host's finish_reason for the reply ("stop",
+	// "length", ...), or "" when the host sent none or the reply was replayed
+	// from a recording that predates the field.
+	FinishReason string
+}
+
+// Capped reports whether the reply stopped at its max-token cap: the host said
+// "length", or it said nothing and the output tokens reached max. A capped
+// reply may end mid-thought, with no answer in it.
+func (r Reply) Capped(max int) bool {
+	if r.FinishReason != "" {
+		return r.FinishReason == "length"
+	}
+	return max > 0 && r.OutputTokens >= max
 }
 
 // Error is a non-2xx answer from the host.
@@ -403,6 +417,7 @@ func (c *Client) post(ctx context.Context, payload []byte, d time.Duration) (Rep
 			Message struct {
 				Content string `json:"content"`
 			} `json:"message"`
+			FinishReason string `json:"finish_reason"`
 		} `json:"choices"`
 		Usage *usage `json:"usage"`
 		Error *struct {
@@ -434,7 +449,7 @@ func (c *Client) post(ctx context.Context, payload []byte, d time.Duration) (Rep
 		// be permanent.
 		return Reply{}, &Error{Status: http.StatusBadGateway, Body: "no choices in reply"}
 	}
-	r := Reply{Text: out.Choices[0].Message.Content}
+	r := Reply{Text: out.Choices[0].Message.Content, FinishReason: out.Choices[0].FinishReason}
 	if out.Usage.usable() {
 		r.InputTokens = out.Usage.PromptTokens
 		r.OutputTokens = out.Usage.CompletionTokens

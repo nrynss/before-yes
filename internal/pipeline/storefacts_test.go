@@ -119,6 +119,16 @@ func TestStoreFactsFromCapturedPages(t *testing.T) {
 	}
 }
 
+func TestAppTrackingForAdsIsAStoreFact(t *testing.T) {
+	quote := "App Tracking: To deliver personalized ads and improve application experience"
+	page := "Sample App\nThe developer, Example, indicated that the app's privacy practices may include handling of data as described below.\n" + quote + "\nAccessibility\n"
+	f, ok := pageFacts("https://apps.apple.com/us/app/sample/id1", page, fixedNow)
+	if !ok {
+		t.Fatal("no App Tracking fact")
+	}
+	wantFacts(t, verifiedFacts(t, []StoreFacts{f}), []factWant{{checklist.Data, finding.Risk, quote}})
+}
+
 // TestStoreFactsFromTheLookup pins the lookup facts on the captured App Store
 // search: the rating is a neutral content finding, each advisory a content
 // risk, and Roblox's "Loot Boxes" advisory a money risk.

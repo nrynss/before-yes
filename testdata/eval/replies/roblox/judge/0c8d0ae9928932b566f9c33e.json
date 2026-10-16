@@ -1,0 +1,9 @@
+{
+  "text": "{\"reason_supported\":true,\"explanation\":\"The explanation attributes the claim to 'a reviewer' and describes a concrete reported encounter — seeing 'weird avatars showing a lot of skin' — matching the third review quote exactly. It also notes the reporter's observation that reporting them did not work, which is directly supported by the same quote ('I reported them but nothing work'). No generic possibility or unrelated content is introduced.\"}",
+  "input_tokens": 1338,
+  "output_tokens": 89,
+  "price_nano": 1605000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

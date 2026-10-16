@@ -1,76 +1,75 @@
 diagnose Roblox age 9 verdict no findings 194 (conflict pass replaced the conflicted areas (an area the checks then made unknown may fall back to its first-pass grade))
   contact  risks 40 mitigations 13 other 1
-    judge flag setting "" cited 3 [f_ac2eb7da6a842d59 f_371023fe16f1d604 f_ddb3aed4c8616169]
+    conflict pass flag setting "" cited 7 [F16 F20 F33 F73 F74 F125 F126]
+    first-pass fallback: the conflict pass's grade was made unknown by the checks, so the first pass's grade stands
+    judge (first pass) flag setting "" cited 5 [F1 F20 F27 F100 F154]
     card flag setting ""
-    gate contact.flag_confirmed flag -> flag findings [f_371023fe16f1d604 f_ddb3aed4c8616169]
+    gate contact.flag_confirmed flag -> flag findings [f_a8ef6e887203f7cd f_371023fe16f1d604 f_ddb3aed4c8616169]
     check stood
     entail meets_definition=true reason_supported=true
-    reason The cited sources raise a concern here. Read the source quotes before deciding.
+    reason A reviewer reports their child was threatened by a person in an 'adopt me' game and police took the predator into custody. Another reviewer says a 40-50 year old man tried to meet up with a child using the app. Researchers using under-13 accounts reported encountering sexual references and offensive language within minutes. Fairplay and NCOSE said Roblox's voice and text chat features facilitate predation by enabling adult contact with minors. Forum users report that even with chat set to 'no on…
+    quote f_a8ef6e887203f7cd risk review: There are child predators in this game, it allows your child to interact with adults and my kids has been threatened by a person in adopt me and has been scared to play. The police have come and taken the predators under custody but Roblox owner wanted them on there. DO NOT GET THIS APP ESPECIALLY IF YOUR 16 AND UNDER!!!!
+    quote f_f96b271e3765562b risk review: Ive been on this game for as long as i can remember(2017) and throughout all of my experience when i report someone for doing something against the rules roblox never takes it into their own hands to ban them. Ive been called the n word on this game for absolutely no reason. also most people on this game are very sexist. Also the age groups do nothing to keep predators to lie abt their age to groom little children.
     quote f_ac2eb7da6a842d59 risk review: A 40-50 year old man tried to meet up with her using the app and do incredibly disgusting things to her keep children away.
     quote f_371023fe16f1d604 risk forum: even when chat is set to "no one," if a mini-game has chat built into the game itself, it can't be disabled.
     quote f_ddb3aed4c8616169 risk forum: Chatting on "signs" is another way that kids can get around parental controls that disable chats.
+    quote f_4f9892e2ee0ec76a risk news: Researchers using under-13 accounts reported encountering sexual references and offensive language within minutes of entering certain games.
+    quote f_df49bd98c5b84cd2 risk news: Fairplay and the National Center for Online Sexual Exploitation (NCOSE) said Wednesday that Roblox’s voice and text chat features “are a source of substantial harm to children, facilitating predation and abuse by enabling adult contact with minors.”
   money  risks 31 mitigations 2 other 4
-    judge flag setting "" cited 4 [f_1368a2c5a6fe539a f_783661ae59b066c7 f_ef55d9331aff6121 f_838b9aee48cfadd9]
-    card flag setting ""
-    gate money.flag_confirmed flag -> flag findings [f_1368a2c5a6fe539a]
+    judge flag setting "" cited 6 [F14 F41 F128 F129 F130 F156]
+    citation no citation: F14 is not a verified finding
+    card ok_with_setting setting "Set a spending limit"
+    gate money.flag_capped_by_control flag -> ok_with_setting findings [f_8b22a69254003500 f_833aceab249a7079]
     check stood
     entail meets_definition=true reason_supported=true
-    reason A news report states a parent said their 10-year-old daughter spent more than $7,000 in two months despite attempts to limit purchases.
-    quote f_1368a2c5a6fe539a risk review: I don’t know if anyone else has been having the same problem but it will not let me play without paying. When I open up the game it tells me to upgrade it, when I try to upgrade it in the App Store it tells me e that I need to add a payment option. So I go to add my card info, thankfully I added the one with no money, and I looked to see that I got a $46 charge. This is unacceptable when you guys advertise the game as free.
-    quote f_783661ae59b066c7 risk news: A parent said their 10-year-old daughter spent more than $7,000 (£5,200) in two months despite attempts to limit purchases.
-    quote f_ef55d9331aff6121 risk review: Kinda good! I do not like the updates and but also no chat so but I like. The games that you can still play I still like the AI I like the fun
-    quote f_838b9aee48cfadd9 risk news: Roblox, the online video game hugely popular with kids and teenagers, reached a $12 million settlement with Alabama on Tuesday over child safety concerns, the second settlement Roblox has reached with a state in recent weeks as it still faces at least a half dozen lawsuits from other states.
+    reason A source names a purchase control that answers this concern (Set a spending limit), and no verified quote says the control failed or was bypassed. Complaints about spending, scams or billing are not counted against it.
+    quote f_8b22a69254003500 risk store: Content advisory: Loot Boxes
+    quote f_833aceab249a7079 risk forum: You can set a monthly spending limit on how much money your child can spend on Roblox.
   data  risks 15 mitigations 3 other 5
-    conflict pass ok_with_setting setting "turn off ad personalization and data selling" cited 4 [f_642612c1692ab232 f_81873d6371e5c237 f_b4d5eaf5ea37a5fb f_c6830954e456b0a2]
+    conflict pass flag setting "" cited 6 [F43 F49 F53 F70 F137 F143]
     first-pass fallback: the conflict pass's grade was made unknown by the checks, so the first pass's grade stands
-    judge (first pass) flag setting "" cited 17 [f_642612c1692ab232 f_81873d6371e5c237 f_b4d5eaf5ea37a5fb f_3863f822c43eb156 f_37a8bd5d8f222dac f_47cc8d9af40dc95f f_93f7a30cf16fff06 f_e3ccb57519991f5a f_72df7212dd205b98 f_c6830954e456b0a2 f_bfd8eeb81a49ad17 f_d83477d60d3fd88e f_1a95672a7897ce7a f_1a91f32a9169665e f_6ccea0bf1a583a3e f_7fdb8d987e4ff574 f_be740391df21b575]
+    judge (first pass) flag setting "" cited 5 [F53 F55 F61 F105 F172]
     card flag setting ""
     gate data.flag_confirmed flag -> flag findings [f_81873d6371e5c237]
     check stood
-    entail meets_definition=false reason_supported=false; entail meets_definition=true reason_supported=true
-    reason A forum post states images used for age verification may be processed by third-party providers, but Roblox does not publicly guarantee a fixed retention period for the images of children.
-    quote f_642612c1692ab232 risk store: Advanced content filtering and age-appropriate moderation
+    entail meets_definition=true reason_supported=true
+    reason The cited sources raise a concern here. Read the source quotes before deciding.
     quote f_81873d6371e5c237 risk policy: Data will now be sold
     quote f_b4d5eaf5ea37a5fb risk terms: You may be asked to provide information like an email address, phone number, or a government-issued photo identification to access certain Content or features in Roblox Player.
     quote f_3863f822c43eb156 risk terms: Roblox may access and review Content, including Content shared via Communication Features and other non-public Content.
     quote f_37a8bd5d8f222dac risk forum: Images used for age verification may be processed by third-party providers, but Roblox does not publicly guarantee a fixed retention period for the images of children.
-    quote f_47cc8d9af40dc95f risk forum: Images used for age verification may be processed by third-party providers, but Roblox does not publicly guarantee a fixed retention period for the images of children.
-    quote f_93f7a30cf16fff06 risk forum: Images used for age verification may be processed by third-party providers, but Roblox does not publicly guarantee a fixed retention period for the images of children.
-    quote f_e3ccb57519991f5a risk forum: Visibility refers to who can see your kid's current experience and join them.
-    quote f_bfd8eeb81a49ad17 risk forum: Help your child understand why we don't share personal information like full names, school details, or phone numbers. Remind them that keeping certain information private helps keep them safe.
-    quote f_d83477d60d3fd88e risk forum: Help your child understand why we don't share personal information like full names, school details, or phone numbers.
-    quote f_1a95672a7897ce7a risk forum: Help your child understand why we don't share personal information like full names, school details, or phone numbers.
-    quote f_7fdb8d987e4ff574 risk rating: Users are free to opt-out of using facial age estimation if they are not comfortable, though Roblox does say that no information is saved or stored.
     quote f_be740391df21b575 risk news: Roblox told the BBC it is "disappointed" that it is being sued based on "misrepresentations and sensationalised claims". The company's spokesperson said in a statement that it shares Paxton's commitment to keeping children safe online and that it has introduced measures to remove bad actors and protect its users.
+    quote f_428fe5874ed68ea6 risk rating: This involves an ID document check and selfie match.
   age_gating  risks 18 mitigations 7 other 2
-    judge flag setting "" cited 3 [f_f73b923a2223192e f_cc470501d4ba96a2 f_f27d3f03ad121edd]
+    conflict pass flag setting "" cited 4 [F6 F9 F35 F131]
+    first-pass fallback: the conflict pass's grade was made unknown by the checks, so the first pass's grade stands
+    judge (first pass) flag setting "" cited 13 [F6 F9 F22 F28 F30 F31 F39 F46 F101 F114 F121 F130 F159]
     card flag setting ""
-    gate age_gating.flag_confirmed flag -> flag findings [f_f73b923a2223192e f_cc470501d4ba96a2 f_f27d3f03ad121edd]
+    gate age_gating.flag_confirmed flag -> flag findings [f_f73b923a2223192e f_8197a153550302ef]
     check stood
     age-gate event=wrong_age_assignment witness="if a four year old does it and it says that they are twenty five then what do they do" actual_age="four year old" assigned_age="twenty five"
-    reason A review reports a four year old attempted face verification and the system assigned them an age of twenty five.
+    reason A reviewer reports 'if a four year old does it and it says that they are twenty five then what do they do.' Another reviewer says their child was placed in the '28th group.' A reviewer contacting support was told to wait until age 13, but the system showed a birthday of Oct 7, 1985, stating they were 41 while they were younger than 13.
     quote f_f73b923a2223192e risk review: When i was a little kid my cousin played this so much and i begged my mom to get me the app, and now i think i should not have been playing this at that age, the game was fine at first but then the outfits are inappropriate and the games are as well! If you have like 13+ then thats fine but a 4 year old? -ps some of the games are scary! And for some reason it hashtags everything I put and now they have a face verification…if a four year old does it and it says that they are twenty five then wh…
-    quote f_cc470501d4ba96a2 risk forum: Roblox uses this information to estimate or verify a user’s age and place accounts into age-based categories. Under Roblox’s newer system, users age 5 to 8 may be placed into "Roblox Kids" accounts, while users age 9 to 15 may be placed into "Roblox Select" accounts. However, the system can make mistakes.
-    quote f_f27d3f03ad121edd risk forum: Incorrect age estimates may loosen built-in protections, such as chat restrictions or access limits, while some adults may be incorrectly categorized as younger users and face additional restrictions.
+    quote f_8197a153550302ef risk review: The new app updates age group ideas are completely broken plus my child got put in the 28th group. Please fix your game. And plus there’s kind of like disrespectful people and disgusting people on here so please please please fix your game
+    quote f_979e8a567e65fc3b risk review: the pencil icon nor the link parent icon was there so if you could add a feature to ask Roblox themselves to reset your Face ID scan that would be nice and I contacted Roblox support and they said I gotta wait until I’m 13 but the birthday said Oct 7,1985 and I didn’t know how that worked… because it said that I’m 41 but I’m younger than 13
+    quote f_ed2aac5c14c3bb92 risk news: Drew Benvie, chief executive of social media consultancy Battenhall and founder of the youth safety nonprofit Raise, said creating age limits for features will only go so far to keeping children safe on Roblox.
   content  risks 30 mitigations 0 other 6
-    judge flag setting "" cited 21 [f_99d787be8d0bf74c f_d4c614fe03358dea f_2b802b187656359b f_08f1157eb8532858 f_b12f60a545dad3a6 f_984749ba8671edf1 f_cff5ae07353ea541 f_7bfc294c87ff4e36 f_4132e355653730d0 f_cb8c641ae80b5f09 f_6fab8dae3bd61975 f_7552aad2b36d618c f_4bde3c145681082c f_5662cca1c891f2fa f_d473c3ff24182f62 f_8f1be93b269b5300 f_09c37db024437e51 f_807e706a86b8984f f_9a1ab141822489be f_3fb5e60ef6db480e f_9e293112f24a5877]
-    citation citation outside the area: f_9e293112f24a5877 is in money
+    judge flag setting "" cited 19 [F23 F24 F26 F29 F34 F35 F48 F74 F77 F83 F108 F109 F115 F122 F131 F138 F146 F151 F161]
+    citation no citation: F23 is not a verified finding
     card flag setting ""
-    gate content.flag_confirmed flag -> flag findings [f_99d787be8d0bf74c f_d4c614fe03358dea f_08f1157eb8532858 f_b12f60a545dad3a6 f_984749ba8671edf1 f_7bfc294c87ff4e36 f_4132e355653730d0 f_cb8c641ae80b5f09 f_6fab8dae3bd61975 f_7552aad2b36d618c f_4bde3c145681082c f_5662cca1c891f2fa f_d473c3ff24182f62 f_8f1be93b269b5300 f_09c37db024437e51 f_807e706a86b8984f]
+    gate content.flag_confirmed flag -> flag findings [f_99d787be8d0bf74c f_d4c614fe03358dea f_08f1157eb8532858 f_b12f60a545dad3a6 f_984749ba8671edf1 f_7bfc294c87ff4e36 f_6119a505a733c18f f_7552aad2b36d618c f_4bde3c145681082c f_5662cca1c891f2fa f_d473c3ff24182f62 f_8f1be93b269b5300 f_09c37db024437e51 f_807e706a86b8984f f_89d61c88048969ea]
     check stood
     entail meets_definition=true reason_supported=true
-    reason A forum post states within seconds, the 'Street Code' game showed an intense, fiery car accident and prompted the player to decide whether to shoot or save an officer.
+    reason Reviewers report role-play games like Brookhaven involve 'disturbing and inappropriate stuff' and 'online dating.' A forum user describes a 'Baddies' game labeled 5+ that encouraged punching, stomping, and shooting in the opening tutorial. Another forum quote says a 'Street Code' game showed an intense fiery car accident and prompted the player to decide whether to shoot or save an officer within seconds.
     quote f_99d787be8d0bf74c risk review: So much hackers and online dating like 1 because like Roblox’s has harassment in games such as Brookhaven or many rol plays games like I don’t know why and Roblox please ban these online daters/hackers
     quote f_d4c614fe03358dea risk review: Also the role play games such as Brookhaven are a huge problem because half the people in the game are doing very disturbing and innaproprite stuff.
     quote f_2b802b187656359b risk review: Look it’s fun but there are prefers be careful
     quote f_08f1157eb8532858 risk review: very bad because Roblox make horrible updates that everyone hates so not recommend so if you want to download do not DO NO IT IS HORRIBLE THEY SCAM PEOPLE FOR ADDRESS THERE ARE PREDATORS I ABSOLUTELY DO NOT RECOMMEND
     quote f_b12f60a545dad3a6 risk review: The worst game you can die because of the game Don’t get this game playing this game could kill you people kidnap kids and kill . Why because there are bad people in the world I don’t know why they are bad people.
     quote f_984749ba8671edf1 risk review: Genuinely the most money-hungry game I have ever seen This game supports child predators. That’s all I need to say.
-    quote f_cff5ae07353ea541 risk review: Fun, but bad moderation Most games are fun, except slop games like steal a brainrot or ai made games, also the moderation isn’t even human, they are ai that make mistakes all the time and falsely ban people
     quote f_7bfc294c87ff4e36 risk review: god theres so many preds so i do NOT recommend this game for children/teens because there is some bad games where yk so yeah one star
-    quote f_4132e355653730d0 risk forum: Extreme violence, inappropriate language, and sexually explicit content is possible (and quite likely) within the user-created games.
-    quote f_cb8c641ae80b5f09 risk forum: Extreme violence, inappropriate language, and sexually explicit content is possible (and quite likely) within the user-created games.
-    quote f_6fab8dae3bd61975 risk forum: Within seconds, this "Street Code" game showed an intense, fiery car accident and prompted the player to decide whether to shoot or save an officer.
+    quote f_78474b4b434c9d2b risk reddit: Roblox is not safe for kids - they are actively targeting kids.
+    quote f_6119a505a733c18f risk reddit: One of the main risks parents should know about Roblox are user-generated games, or "condo games," that feature adult content, such as
     quote f_7552aad2b36d618c risk forum: This "Baddies" game is labeled for age 5+ and encourages punching, stomping, shooting, and other violence as part of the opening tutorial.
     quote f_4bde3c145681082c risk forum: Within seconds, this "Street Code" game showed an intense, fiery car accident and prompted the player to decide whether to shoot or save an officer.
     quote f_5662cca1c891f2fa risk forum: Extreme violence, inappropriate language, and sexually explicit content is possible (and quite likely) within the user-created games. This advanced content can be limited with the content maturity controls in settings, but much of the adult content that is labeled 5+ may still contain inappropriate content.
@@ -78,15 +77,14 @@ diagnose Roblox age 9 verdict no findings 194 (conflict pass replaced the confli
     quote f_8f1be93b269b5300 risk forum: Because Roblox is user-generated, kids may still run into inappropriate content despite the platform's safety filters. This includes "condo games" (which usually feature adult themes and sexual content), violent games, gambling-style play, and even games that may have bullying or hate speech.
     quote f_09c37db024437e51 risk forum: Because Roblox is user-generated, kids may still run into inappropriate content despite the platform's safety filters. This includes "condo games" (which usually feature adult themes and sexual content), violent games, gambling-style play, and even games that may have bullying or hate speech.
     quote f_807e706a86b8984f risk forum: Because Roblox is user-generated, kids may still run into inappropriate content despite the platform's safety filters. This includes "condo games" (which usually feature adult themes and sexual content), violent games, gambling-style play, and even games that may have bullying or hate speech.
-    quote f_9a1ab141822489be risk forum: Parents should be mindful that [cyberbullying](/node/84823) can still occur in these spaces, whether it's directed at your child or comes from your child, so it's important to stay involved and aware by having conversations with kids about their online behavior and how to react to others.
-    quote f_3fb5e60ef6db480e risk forum: Parents should be mindful that [cyberbullying](/node/84823) can still occur in these spaces, whether it's directed at your child or comes from your child
+    quote f_89d61c88048969ea risk news: The lawsuit alleges that children in Los Angeles County have been repeatedly exposed to sexually explicit content, exploitation and grooming on Roblox because the company chooses to put corporate profit over the safety of children.
   developer_record  risks 12 mitigations 2 other 3
-    judge flag setting "" cited 3 [f_13ff2ba3714f5fe6 f_e204bd321f8845bc f_9b73e24e8700228c]
+    conflict pass flag setting "" cited 1 [F140]
+    first-pass fallback: the conflict pass's grade was made unknown by the checks, so the first pass's grade stands
+    judge (first pass) flag setting "" cited 2 [F169 F177]
     card flag setting ""
     gate developer_record.flag_confirmed flag -> flag findings [f_13ff2ba3714f5fe6]
     check stood
     entail meets_definition=true reason_supported=true
-    reason A news report states Texas Attorney General Ken Paxton says he has sued Roblox over 'flagrantly ignoring' safety laws and 'deceiving parents' about the dangers the online video gaming platform poses to young people.
+    reason Texas Attorney General Ken Paxton says he has sued Roblox over 'flagrantly ignoring' safety laws and 'deceiving parents' about the dangers the platform poses to young people.
     quote f_13ff2ba3714f5fe6 risk news: Texas Attorney General Ken Paxton says he has sued Roblox over "flagrantly ignoring" safety laws and "deceiving parents" about the dangers the online video gaming platform poses to young people.
-    quote f_e204bd321f8845bc risk forum: Roblox uses AI-based age estimation and verification systems for some users. Users over age 13 may be asked to submit a live selfie or upload a government ID to access certain communication features.
-    quote f_9b73e24e8700228c risk forum: Roblox uses AI-based age estimation and verification systems for some users. Users over age 13 may be asked to submit a live selfie or upload a government ID to access certain communication features. Roblox uses this information to estimate or verify a user’s age and place accounts into age-based categories.

@@ -1,0 +1,9 @@
+{
+  "text": "{\"reason_supported\": false, \"explanation\": \"The Reason states 'Parents report their children use the app for ... emotional intelligence, geometry, and logic activities.' Only the second review mentions those themes ('Themes include emotional intelligence, abstract thinking, geometry, logic, reading, and math'), but it does not say the children actually used or encountered those specific activities—only that the themes exist. No other quote reports a concrete encounter with emotional-intelligence, geometry, or logic content. Therefore the claim of reported encounters with those three topics is unsupported.\"}",
+  "input_tokens": 1520,
+  "output_tokens": 116,
+  "price_nano": 1868000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

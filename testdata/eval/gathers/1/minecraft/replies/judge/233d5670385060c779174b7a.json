@@ -1,0 +1,9 @@
+{
+  "text": "{\"reason_supported\": true, \"explanation\": \"The explanation attributes the claim directly to a Reddit reviewer and uses the exact wording from the provided Reddit quote: 'Minecraft is a very safe game, there's next to nothing that could be dangerous or explicit for him.' This is a concrete, attributed report from the specified source type (reddit) describing the reviewer's assessment of the game's safety regarding dangerous or explicit material.\"}",
+  "input_tokens": 1914,
+  "output_tokens": 92,
+  "price_nano": 2190000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

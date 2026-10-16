@@ -88,14 +88,28 @@ var moneyRisk = []pattern{
 	{any: []string{"premium", "paywall*", "dollars"}},    // premium tiers and prices
 }
 
-// moneyControls: a cited mitigation names a working way to stop a child
-// completing a purchase. Label is the setting the card shows.
+// moneyControls: a quote that names a working way to stop a child completing
+// a purchase — rule D's purchase controls, read from the text like rule C's.
+// Label is the setting the card shows. The list order matters: the first
+// entry whose pattern matches names the control and its quotes.
 var moneyControls = []control{
 	{"Ask to Buy (purchase approval)", pattern{any: []string{"ask to buy"}}}, // Apple's purchase approval
+	{"Ask a parent to approve purchases", pattern{all: [][]string{ // "ask a parent to buy things", Microsoft Family Safety's purchase switch
+		{"ask*", "need*"},
+		{"parent*", "guardian*", "adult*", "family*"},
+		{"buy", "buys", "buying", "bought", "purchas*", "spend*", "payment*", "money"},
+	}}},
 	{"Require approval for purchases", pattern{all: [][]string{ // approval, passcode or password to buy
 		{"approv*", "permission", "passcode", "password", "pin"},
 		{"purchas*", "buy", "buying", "spend*", "payment*"},
 		{"parent*", "guardian*", "you", "your", "adult*", "family", "child*", "kid*"}, // approval by a parent, not by the platform
+	}}},
+	{"Microsoft Family Safety purchase controls", pattern{all: [][]string{ // Microsoft's family settings over a child's buying
+		{"family safety"},
+		{"purchas*", "spend*", "buy", "buying", "payment*"},
+	}}},
+	{"Purchase approval", pattern{any: []string{ // the control named outright
+		"purchase approval*", "purchase control*", "approv* purchas*",
 	}}},
 	{"Set a spending limit", pattern{any: []string{ // a cap on spending
 		"spending limit*", "spend limit*", "purchase limit*", "monthly limit*", "spending cap*", "spending control*",
@@ -113,12 +127,19 @@ var moneyControls = []control{
 // from children without consent, or no way to delete. Sharing with service
 // providers who run the app is deliberately absent: none of these patterns
 // matches it unless the quote also names advertising or marketing.
+var dataSale = pattern{all: [][]string{ // personal data being sold
+	{"sell*", "sold", "resell*", "sale", "monetiz*", "monetis*"},
+	{"data", "information", "personal", "details", "identifier*", "profile*"},
+}}
+
+var dataMarketingShare = pattern{all: [][]string{ // sharing data for others' marketing
+	{"share*", "sharing", "disclos*", "provid*", "send*", "transfer*", "licens*"},
+	{"advertis*", "marketing", "advertiser*", "marketers"},
+}}
+
 var dataRisk = []pattern{
 	{any: []string{"data used to track you"}}, // Apple's privacy-label heading for cross-app tracking
-	{all: [][]string{ // selling or monetising personal data
-		{"sell*", "sold", "resell*", "sale", "monetiz*", "monetis*"},
-		{"data", "information", "personal", "details", "identifier*", "profile*"},
-	}},
+	dataSale,
 	{all: [][]string{ // ad tracking
 		{"track*"},
 		{"advertis*", "ads", "ad", "marketing", "profile*", "across"},
@@ -132,10 +153,7 @@ var dataRisk = []pattern{
 		{"personal information", "information we collect", "your information", "your data", "user data", "data we collect"},
 		{"display ads", "which ads", "show you ads", "show ads", "ads to show", "serve ads", "ads based"},
 	}},
-	{all: [][]string{ // sharing for others' marketing
-		{"share*", "sharing", "disclos*", "provid*", "send*", "transfer*", "licens*"},
-		{"advertis*", "marketing", "advertiser*", "marketers"},
-	}},
+	dataMarketingShare,
 	{any: []string{ // a reported breach
 		"data breach*", "security breach*", "was breached", "were breached", "leaked", "hacked",
 	}},
@@ -155,6 +173,33 @@ var dataRisk = []pattern{
 // storefacts.go writes the finding only when neither of the other headings is
 // on the label.
 var dataLabelNotLinked = []string{"data not linked to you"}
+
+// accountHacked: a user's report of their own account being hacked, stolen
+// or compromised. One such report is about the account's security, not about
+// how the company handles children's data, so alone it does not hold a data
+// flag up (rule F). Negated hits ("never got hacked") do not count.
+var accountHacked = []string{
+	"got hacked", "getting hacked", "was hacked", "been hacked", "were hacked", // hacked
+	"account stolen", "accounts stolen", "account was stolen", "account got stolen", "stole my account", "stolen my account", // stolen
+	"account compromised", "accounts compromised", "account was compromised", "account got compromised", "got compromised", "was compromised", "been compromised", // compromised
+}
+
+// companyBreach: a breach or leak at the company itself — "data breach",
+// "leaked", "exposed records" — the words a regulator or news report of a
+// breach carries. Such a quote keeps a data flag standing whatever hack
+// reports sit beside it (rule F). A person's own account being hacked is
+// accountHacked, not this.
+var companyBreach = []string{
+	"data breach*", "security breach*", "was breached", "were breached", "breached",
+	"leaked", "data leak*",
+	"exposed record*", "records exposed", "exposed the data", "data exposed",
+}
+
+// dataMisuse is dataRisk without its breach group and without the no-delete
+// group: data being sold, tracked for ads, shared for marketing, or collected
+// without consent. Any such quote keeps a data flag standing beside a hack
+// report (rule F).
+var dataMisuse = append(append([]pattern{}, dataRisk[:7]...), dataRisk[8:9]...)
 
 // ---------------------------------------------------------------- content
 
@@ -224,6 +269,29 @@ var developerClean = []pattern{
 		"has not been fined", "hasnt been fined", "never been fined", "no fines", "no known fines",
 		"no lawsuits", "no regulatory action*", "no enforcement action*", "clean record",
 	}},
+}
+
+// platformSellers: the companies whose stores and platforms carry thousands
+// of titles. A fine, settlement, lawsuit or regulator action that names one
+// of them, and not the title, is about their platform or another product —
+// Microsoft's Xbox fine on a Minecraft check — so it is information, not
+// evidence (rule E). The store's own seller field names the developer's
+// trading company; these are the sellers a store listing does not give.
+var platformSellers = []struct{ display, term string }{
+	{"Microsoft", "microsoft"},
+	{"Xbox", "xbox"},
+	{"Google", "google"},
+	{"Google Play", "google play"},
+	{"Play Store", "play store"},
+	{"Apple", "apple"},
+	{"App Store", "app store"},
+	{"Sony", "sony"},
+	{"PlayStation", "playstation"},
+	{"Nintendo", "nintendo"},
+	{"Amazon", "amazon"},
+	{"Meta", "meta"},
+	{"Epic Games", "epic games"},
+	{"TikTok", "tiktok"},
 }
 
 // ---------------------------------------------------------------- contact

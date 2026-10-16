@@ -1,0 +1,9 @@
+{
+  "text": "{\n  \"reasons\": [\n    {\n      \"area\": \"money\",\n      \"reason\": \"Reviewers who say they are children report spending birthday money on Minecoins and add-ons, then receiving error messages, duplicate charges, or no items delivered, and one notes a Realms subscription recurs monthly rather than as a one-time payment.\"\n    },\n    {\n      \"area\": \"data\",\n      \"reason\": \"News reports Microsoft paid a $20 million FTC settlement for illegally collecting and retaining children's sign-up data, and the store listing discloses data used to track users across other companies' apps and websites.\"\n    },\n    {\n      \"area\": \"age_gating\",\n      \"reason\": \"A rating source states that if a child originally signed up with a fake adult birthdate, default protections do not apply, and another notes it is very easy for a child to enter a birth year that grants full feature access including purchases.\"\n    },\n    {\n      \"area\": \"content\",\n      \"reason\": \"Reddit reviewers describe Minecraft as very safe with next to nothing dangerous or explicit, and ratings note blocky, bloodless combat with cartoon violence, no sexual content, and automated filtering of inappropriate images or video.\"\n    }\n  ]\n}",
+  "input_tokens": 2881,
+  "output_tokens": 257,
+  "price_nano": 3652000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

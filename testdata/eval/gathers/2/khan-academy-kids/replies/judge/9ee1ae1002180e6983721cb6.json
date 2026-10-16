@@ -1,0 +1,9 @@
+{
+  "text": "{\"reason_supported\":true,\"explanation\":\"Every claim in the Reason is directly supported by the two rating-source quotes. The first rating quote states: \\\"We ask for a name and age at setup, and we recommend using a nickname. We never ask your child for personal information directly.\\\" This supports the claims that the app asks for a name and age at setup, recommends using a nickname, and never asks children for personal information directly. The second rating quote states: \\\"You can update or delete your account information at any time,\\\" which supports the claim that users can update or delete account information at any time. All four claims are explicitly present in the cited rating sources.\"}",
+  "input_tokens": 1333,
+  "output_tokens": 140,
+  "price_nano": 1753000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

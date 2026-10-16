@@ -1,0 +1,9 @@
+{
+  "text": "{\n  \"reasons\": [\n    {\n      \"area\": \"developer_record\",\n      \"reason\": \"No cited source reports a specific enforcement action, lawsuit, breach, or other developer event for this title.\"\n    }\n  ]\n}",
+  "input_tokens": 1218,
+  "output_tokens": 49,
+  "price_nano": 1365000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

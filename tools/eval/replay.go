@@ -25,6 +25,10 @@ type Recording struct {
 	PriceNano    cost.Price `json:"price_nano"`
 	Measured     bool       `json:"measured"`
 	Model        string     `json:"model"`
+	// FinishReason is the host's finish_reason, so a reply cut off at its
+	// token cap is visible in the recording. Recordings made before the
+	// field existed leave it empty.
+	FinishReason string `json:"finish_reason,omitempty"`
 }
 
 // ReplyKey names one call: the role, the messages and the options. The same
@@ -69,7 +73,7 @@ func (r *replayer) Chat(_ context.Context, msgs []model.Message, o model.Options
 		return model.Reply{}, err
 	}
 	r.hits.Add(1)
-	return model.Reply{Text: rec.Text, InputTokens: rec.InputTokens, OutputTokens: rec.OutputTokens, Price: rec.PriceNano, Measured: rec.Measured}, nil
+	return model.Reply{Text: rec.Text, InputTokens: rec.InputTokens, OutputTokens: rec.OutputTokens, Price: rec.PriceNano, Measured: rec.Measured, FinishReason: rec.FinishReason}, nil
 }
 
 // Estimate is the recorded price, so the meter holds and, for an

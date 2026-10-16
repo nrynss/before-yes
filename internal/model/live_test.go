@@ -118,8 +118,8 @@ func (h liveHost) roles() []liveRole {
 		return []liveRole{
 			{name: "reader", model: "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
 				inPerM: 0.06, outPerM: 0.24, perMinute: 100},
-			{name: "judge", model: "nvidia/nemotron-3-super-120b-a12b",
-				inPerM: 0.30, outPerM: 0.90, perMinute: 300},
+			{name: "judge", model: "nvidia/Nemotron-3-Ultra-550b-a55b",
+				inPerM: 1.00, outPerM: 3.00, perMinute: 60},
 		}
 	case "OpenRouter":
 		return []liveRole{

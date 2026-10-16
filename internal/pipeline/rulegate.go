@@ -23,7 +23,24 @@ import (
 //     needs. If none does, the flag is vetoed to unknown (the area is thin).
 //   - A flag in money, contact or age gating is capped at ok_with_setting when
 //     a quote in the area names a working control for it and no cited risk
-//     quote reports that control failing.
+//     quote reports that control failing. In money the control is a purchase
+//     control and the failure test is narrower: a complaint about spending,
+//     scams or billing is not the control failing, so only a quote that says
+//     the control itself failed or was bypassed keeps the flag (rule D).
+//   - A cited quote that reports a fine, settlement, lawsuit or regulator
+//     action, names the developer or seller and does not name the title is
+//     about another product: it supports no grade, is removed from the
+//     citations, and is shown on the card as information (rule E). A regulator
+//     action that names the title itself is still evidence.
+//   - A data flag whose every qualifying quote is one user's report of their
+//     own account being hacked, stolen or compromised falls to unknown: that
+//     is account security, not how the company handles children's data. Two
+//     or more independent reports, a breach or leak at the company, or a
+//     quote about selling, tracking, sharing or consentless collection keeps
+//     the flag (rule F).
+//   - A tracking label caps data at ok_with_setting with Ask App Not to Track
+//     when no quote reports sale, marketing sharing, or a company breach.
+//     Those reports keep data at flag (rule G).
 //   - An unknown area is raised to ok when a verified fact settles it: the App
 //     Store lists the title as free with no in-app purchases (money), its
 //     privacy label shows no data linked to the user (data), its age rating is
@@ -57,6 +74,8 @@ const (
 	RuleDataNoBasis         = "data.flag_without_basis"
 	RuleDataConfirmed       = "data.flag_confirmed"
 	RuleDataNotLinked       = "data.label_not_linked"
+	RuleDataOwnAccount      = "data.own_account_hacked"
+	RuleDataTrackingSetting = "data.tracking_setting"
 	RuleContentNoHarm       = "content.flag_without_harm"
 	RuleContentConfirmed    = "content.flag_confirmed"
 	RuleContentRated        = "content.rated_for_age"
@@ -73,8 +92,17 @@ const (
 	RuleAgeGateNoBypass     = "age_gating.flag_without_bypass"
 	RuleAgeGateCapped       = "age_gating.flag_capped_by_control"
 	RuleAgeGateConfirmed    = "age_gating.flag_confirmed"
-	ruleConfirmedNotePrefix = "A quote behind this grade describes "
+	// Rule E: the quote is shown as information and supports no grade. The
+	// id's first part is not an area, because the fact is not a grade.
+	RuleRegulatorOtherProduct = "information.regulator_action_other_product"
+	ruleConfirmedNotePrefix   = "A quote behind this grade describes "
 )
+
+// Kinds of gate action. The empty kind is a grade action: a rule confirmed,
+// vetoed, capped or settled a grade, and From and To say which. GateKindInfo
+// reports a fact and changes no grade, so the card renders it as plain
+// information under "Rule checks".
+const GateKindInfo = "info"
 
 // GateAction is one thing the rule gate did to a grade. The card carries the
 // list, in the order the actions happened, so a parent can see which grades
@@ -89,6 +117,10 @@ type GateAction struct {
 	Findings []string `json:"findings"`
 	// Note says what the rule found, in plain words for the card.
 	Note string `json:"note"`
+	// Kind is empty for a grade action and GateKindInfo for rule E's
+	// information. Older cards carry no kind; the web reads an absent kind
+	// as a grade action.
+	Kind string `json:"kind,omitempty"`
 }
 
 // Option configures ApplyRules and Judge.Judge.
@@ -127,32 +159,174 @@ func ApplyRules(title string, age int, grades []checklist.Grade, fs []finding.Fi
 	for _, f := range opts {
 		f(&o)
 	}
-	g := newGate(age, append([]string{title}, o.names...), fs)
+	g := newGate(age, title, o.names, fs)
 	g.witness = o.witness
 	out := make([]checklist.Grade, len(grades))
-	var acts []GateAction
 	for i, in := range grades {
 		in.Findings = slices.Clone(in.Findings)
+		out[i] = in
+	}
+	// Rule E runs first, so the per-area rules see the citations that are
+	// left and decide whether each grade still stands on them.
+	acts := g.otherProductInfo(out)
+	for i, in := range out {
 		out[i], acts = g.area(in, acts)
+		if out[i].Area == checklist.Data {
+			out[i], acts = g.trackingSetting(out[i], acts)
+		}
 	}
 	return out, acts
 }
 
+// trackingSetting applies rule G after the area's flag rules, including rule
+// F. Apple's tracking label can be blocked in iOS settings. Selling data,
+// sharing it for marketing, or a company breach keeps data at flag.
+func (g *gate) trackingSetting(in checklist.Grade, acts []GateAction) (checklist.Grade, []GateAction) {
+	if in.Level != checklist.Flag && in.Level != checklist.Unknown {
+		return in, acts
+	}
+	var label []finding.Finding
+	for _, f := range g.fs {
+		if f.Area == checklist.Data && f.Source.Kind == KindStore && f.Stance == finding.Risk && trackingLabel(g.w(f)) && g.onSubject(f) {
+			label = append(label, f)
+		}
+	}
+	if len(label) == 0 {
+		return in, acts
+	}
+	var saleOrBreach []finding.Finding
+	for _, f := range g.fs {
+		if f.Area != checklist.Data || !g.onSubject(f) {
+			continue
+		}
+		w := g.w(f)
+		sold := dataSale.matches(w, true)
+		marketing := dataMarketingShare.matches(w, true)
+		breach := hitsAny(w, companyBreach, true) && !hitsAny(w, accountHacked, true)
+		if sold || marketing || breach {
+			saleOrBreach = append(saleOrBreach, f)
+		}
+	}
+	if len(saleOrBreach) > 0 {
+		from := in.Level
+		all := append(slices.Clone(saleOrBreach), label...)
+		in.Level, in.Setting, in.Findings = checklist.Flag, "", orderLike(ids(all), all)
+		in.Reason = "A source reports data being sold or shared for marketing, or a company breach or leak."
+		acts = append(acts, GateAction{Area: checklist.Data, Rule: RuleDataTrackingSetting, From: from, To: checklist.Flag, Findings: ids(all), Note: "The App Store label shows the app tracks for ads, and a source reports data being sold or shared for marketing, or a company breach or leak."})
+		return in, acts
+	}
+	from := in.Level
+	in.Level, in.Setting = checklist.OKWithSetting, "Ask App Not to Track"
+	in.Findings = ids(label)
+	in.Reason = "Turn on Ask App Not to Track in iOS Settings → Privacy & Security → Tracking."
+	acts = append(acts, GateAction{Area: checklist.Data, Rule: RuleDataTrackingSetting, From: from, To: checklist.OKWithSetting, Findings: ids(label), Note: "The App Store label shows the app tracks for ads, and iOS lets a parent block it in Settings → Privacy & Security → Tracking."})
+	return in, acts
+}
+
+func trackingLabel(w words) bool {
+	return hitsAny(w, []string{"data used to track you"}, false) ||
+		(pattern{all: [][]string{{"app tracking"}, {"ad", "ads", "advertis*", "advertising", "marketing"}}}).matches(w, false)
+}
+
+// otherProductInfo applies rule E: a cited quote that reports a fine,
+// settlement, lawsuit or regulator action, names the developer or seller and
+// does not name the title is about another product. It supports no grade, so
+// it is removed from the citations, and it becomes one information action on
+// the card. What stands without it is the existing rules' decision: a flag is
+// held to its remaining citations in area, and an ok or ok_with_setting left
+// with nothing to cite falls to unknown, as checklist.Enforce's
+// ok_without_finding does.
+func (g *gate) otherProductInfo(gs []checklist.Grade) []GateAction {
+	var acts []GateAction
+	seen := map[string]bool{}
+	for i := range gs {
+		kept := make([]string, 0, len(gs[i].Findings))
+		for _, id := range gs[i].Findings {
+			f, ok := g.find(id)
+			if ok {
+				if name, other := g.otherProduct(f); other {
+					if !seen[id] {
+						seen[id] = true
+						acts = append(acts, g.infoAction(f, gs[i].Level, name))
+					}
+					continue
+				}
+			}
+			kept = append(kept, id)
+		}
+		if len(kept) == len(gs[i].Findings) {
+			continue
+		}
+		gs[i].Findings = kept
+		if len(kept) == 0 && (gs[i].Level == checklist.OK || gs[i].Level == checklist.OKWithSetting) {
+			acts = append(acts, GateAction{Area: gs[i].Area, Rule: checklist.RuleOKNoProof, From: gs[i].Level, To: checklist.Unknown,
+				Findings: []string{}, Note: checklist.Reasons[checklist.RuleOKNoProof]})
+			gs[i] = unknownGrade(gs[i])
+		}
+	}
+	return acts
+}
+
+// otherProduct reports whether a finding is a fine, settlement, lawsuit or
+// regulator action about another product: it names the developer, the seller
+// or a platform seller, and does not name the title. It returns the name the
+// quote uses, for the card. A regulator action that names the title is
+// evidence, as before.
+func (g *gate) otherProduct(f finding.Finding) (string, bool) {
+	w := g.w(f)
+	if !hitsVocab(w, legalAction, true) {
+		return "", false
+	}
+	if i := g.namedFrom(w, 0); i >= 0 && i < g.titleN {
+		return "", false
+	}
+	if i := g.namedFrom(w, g.titleN); i >= 0 {
+		return g.raw[i], true
+	}
+	for _, s := range platformSellers {
+		if termHit(w, []string{s.term}, false) {
+			return s.display, true
+		}
+	}
+	return "", false
+}
+
+// infoAction is rule E's card line: the quote itself as information, with
+// whose product it is about and what the gate did with it. The name leads
+// only when the quote does not begin with it.
+func (g *gate) infoAction(f finding.Finding, level checklist.Level, name string) GateAction {
+	note := fmt.Sprintf("%s — a different product, so this is shown as information and is not evidence about %s.", f.Quote, g.title)
+	if !matchAt(g.w(f), 0, parseTerm(name)) {
+		note = name + ": " + note
+	}
+	return GateAction{
+		Area: f.Area, Rule: RuleRegulatorOtherProduct, Kind: GateKindInfo,
+		From: level, To: level, Findings: []string{f.ID},
+		Note: note,
+	}
+}
+
 // gate is one run's view of the evidence.
 type gate struct {
-	age    int
+	age   int
+	title string
+	// names holds the title's variants first, then the developer's and
+	// seller's; titleN is how many are the title's. raw parallels names with
+	// the name each variant came from, for the card.
 	names  [][]string // each name as normalised words
 	squash []string   // each name with every non-alphanumeric removed, for URLs
+	titleN int
+	raw    []string
 	fs     []finding.Finding
 	words  map[string]words
 	// witness holds the age-gate witness quotes entailment verified.
 	witness []string
 }
 
-func newGate(age int, names []string, fs []finding.Finding) *gate {
-	g := &gate{age: age, fs: fs, words: make(map[string]words, len(fs))}
+func newGate(age int, title string, developer []string, fs []finding.Finding) *gate {
+	g := &gate{age: age, title: title, fs: fs, words: make(map[string]words, len(fs))}
 	seen := map[string]bool{}
-	for _, raw := range names {
+	add := func(raw string) {
 		for _, n := range nameVariants(raw) {
 			w := gateWords(n)
 			sq := strings.Join(w, "")
@@ -162,7 +336,13 @@ func newGate(age int, names []string, fs []finding.Finding) *gate {
 			seen[sq] = true
 			g.names = append(g.names, w)
 			g.squash = append(g.squash, sq)
+			g.raw = append(g.raw, raw)
 		}
+	}
+	add(title)
+	g.titleN = len(g.names)
+	for _, n := range developer {
+		add(n)
 	}
 	return g
 }
@@ -209,17 +389,21 @@ func (g *gate) w(f finding.Finding) words {
 	return w
 }
 
-// named reports whether the words carry one of the title's names.
-func (g *gate) named(w words) bool {
-	for _, n := range g.names {
-		for i := range w {
-			if matchAt(w, i, n) {
-				return true
+// namedFrom reports the index of the first name, from variant lo upwards,
+// that the words carry, or -1. Variants below g.titleN are the title's own.
+func (g *gate) namedFrom(w words, lo int) int {
+	for i := lo; i < len(g.names); i++ {
+		for j := range w {
+			if matchAt(w, j, g.names[i]) {
+				return i
 			}
 		}
 	}
-	return false
+	return -1
 }
+
+// named reports whether the words carry one of the title's names.
+func (g *gate) named(w words) bool { return g.namedFrom(w, 0) >= 0 }
 
 // onSubject reports whether a finding is evidence about the title and not
 // about somebody else. See the file comment.
@@ -293,6 +477,10 @@ type areaSpec struct {
 	// the flag. Nil controls means the area has no cap.
 	controls []control
 	capRule  string
+	// purchaseControl marks the money cap (rule D): a complaint about
+	// spending, scams or billing does not stop it, only a quote that says
+	// the control itself failed or was bypassed does.
+	purchaseControl bool
 	// settle tries to settle an unknown area to ok. Nil means none.
 	settle func(g *gate, cur checklist.Grade) *settlement
 }
@@ -325,11 +513,13 @@ func init() {
 			risk:     func(g *gate, f finding.Finding) bool { return hitsVocab(g.w(f), moneyRisk, true) },
 			vetoRule: RuleMoneyNoPurchase, vetoNote: "None of the quotes behind this concern describes a purchase, a subscription or an ad.",
 			confirmRule: RuleMoneyConfirmed, confirmWhat: "a purchase, a subscription or an ad.",
-			controls: moneyControls, capRule: RuleMoneyCapped,
+			controls: moneyControls, capRule: RuleMoneyCapped, purchaseControl: true,
 			settle: settleMoney,
 		},
 		checklist.Data: {
-			risk:     func(g *gate, f finding.Finding) bool { return hitsVocab(g.w(f), dataRisk, true) },
+			risk: func(g *gate, f finding.Finding) bool {
+				return trackingLabel(g.w(f)) || hitsVocab(g.w(f), dataRisk, true)
+			},
 			vetoRule: RuleDataNoBasis, vetoNote: "None of the quotes behind this concern describes data being sold, tracked for ads, shared for marketing or breached.",
 			confirmRule: RuleDataConfirmed, confirmWhat: "data being sold, tracked for ads, shared for marketing, breached or collected without consent.",
 			settle: settleData,
@@ -387,9 +577,17 @@ func (g *gate) area(in checklist.Grade, acts []GateAction) (checklist.Grade, []G
 				return g2, append(acts, act)
 			}
 		}
+		if len(support) > 0 && in.Area == checklist.Data {
+			if g2, act, done := g.ownAccountReport(in, support); done {
+				return g2, append(acts, act)
+			}
+		}
 		if len(support) > 0 {
 			if c, label, ctl := g.cap(in, spec, support); ctl != nil {
 				note := fmt.Sprintf("A source names a control that answers this concern (%s), and no cited quote says the control fails.", label)
+				if spec.purchaseControl {
+					note = fmt.Sprintf("A source names a purchase control that answers this concern (%s), and no verified quote says the control failed or was bypassed. Complaints about spending, scams or billing are not counted against it.", label)
+				}
 				acts = append(acts, GateAction{Area: in.Area, Rule: spec.capRule, From: checklist.Flag, To: checklist.OKWithSetting, Findings: ids(append(slices.Clone(support), ctl...)), Note: note})
 				c.Reason = note
 				return c, acts
@@ -462,13 +660,21 @@ func unknownGrade(in checklist.Grade) checklist.Grade {
 // the area's harm. A cap relaxes a flag, so every test errs toward leaving
 // the flag. The returned grade cites the supporting risks and the control
 // quotes; ctl is nil when there is no cap.
+//
+// Rule D narrows the failure test for money: a complaint about spending,
+// scams or billing ("charged three times", "the add-on never turned up") is
+// not the control failing, so the cited-failure check below is skipped and
+// only a quote that speaks of a control and says it failed or was bypassed
+// ("bought without asking even with approval on") blocks the cap.
 func (g *gate) cap(in checklist.Grade, spec areaSpec, support []finding.Finding) (checklist.Grade, string, []finding.Finding) {
 	if len(spec.controls) == 0 {
 		return in, "", nil
 	}
-	for _, id := range in.Findings {
-		if f, ok := g.find(id); ok && f.Stance == finding.Risk && hitsAny(g.w(f), controlFailure, false) {
-			return in, "", nil
+	if !spec.purchaseControl {
+		for _, id := range in.Findings {
+			if f, ok := g.find(id); ok && f.Stance == finding.Risk && hitsAny(g.w(f), controlFailure, false) {
+				return in, "", nil
+			}
 		}
 	}
 	// A report that the control fails also counts when the flag does not cite
@@ -853,4 +1059,40 @@ func (g *gate) singleMild(in checklist.Grade, support []finding.Finding) (checkl
 	out.Level, out.Setting, out.Reason = checklist.OK, "", note
 	out.Findings = []string{rating.ID, witness.ID}
 	return out, GateAction{Area: in.Area, Rule: RuleContentSingleMild, From: checklist.Flag, To: checklist.OK, Findings: []string{rating.ID, witness.ID}, Note: note}, true
+}
+
+// ownAccountReport is data.own_account_hacked. A data flag whose every
+// qualifying citation is a user's report of their own account being hacked,
+// stolen or compromised does not stand: one person's hacked account is about
+// account security, not about how the company handles children's data, so the
+// area is left open rather than flagged. The flag stays when two or more
+// independent hack reports exist anywhere in the area's verified risk quotes
+// about the title, or when a quote behind the flag itself describes a breach
+// or leak at the company, or data being sold, tracked for ads, shared for
+// marketing or collected without consent — a quote that reads "hacked" and
+// "leaked" together is reporting both.
+func (g *gate) ownAccountReport(in checklist.Grade, support []finding.Finding) (checklist.Grade, GateAction, bool) {
+	for _, f := range support {
+		if !hitsAny(g.w(f), accountHacked, true) {
+			return in, GateAction{}, false
+		}
+	}
+	sources := map[string]bool{}
+	for _, f := range g.riskIn(checklist.Data, func(f finding.Finding) bool { return hitsAny(g.w(f), accountHacked, true) }) {
+		sources[f.Source.URL+"#"+strconv.Itoa(f.Source.Index)] = true
+	}
+	if len(sources) >= 2 {
+		return in, GateAction{}, false
+	}
+	for _, id := range in.Findings {
+		f, ok := g.find(id)
+		if !ok || f.Stance != finding.Risk || !g.onSubject(f) {
+			continue
+		}
+		if hitsAny(g.w(f), companyBreach, true) || hitsVocab(g.w(f), dataMisuse, true) {
+			return in, GateAction{}, false
+		}
+	}
+	return unknownGrade(in), GateAction{Area: in.Area, Rule: RuleDataOwnAccount, From: checklist.Flag, To: checklist.Unknown, Findings: []string{},
+		Note: "One user reports that their own account was hacked, stolen or compromised. That is about the account's security, not about how the company handles children's data, so it is not enough evidence to concern the app."}, true
 }

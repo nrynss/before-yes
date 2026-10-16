@@ -1,0 +1,9 @@
+{
+  "text": "{\"reason_supported\":true,\"explanation\":\"The explanation attributes the claim to a news report and describes exactly what that report alleges: that Roblox tracks user data without consent and monetizes the collected information to display targeted content or provide it to third‑party advertisers. Both points appear verbatim in the two cited news quotes, so the factual assertions are fully supported by the supplied sources.\"}",
+  "input_tokens": 1289,
+  "output_tokens": 82,
+  "price_nano": 1535000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

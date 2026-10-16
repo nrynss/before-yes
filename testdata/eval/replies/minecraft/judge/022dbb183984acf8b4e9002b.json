@@ -1,0 +1,9 @@
+{
+  "text": "{\n  \"reasons\": [\n    {\n      \"area\": \"content\",\n      \"reason\": \"A rating source reports single-player Minecraft has no blood and features blocky combat.\"\n    }\n  ]\n}",
+  "input_tokens": 1392,
+  "output_tokens": 44,
+  "price_nano": 1524000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

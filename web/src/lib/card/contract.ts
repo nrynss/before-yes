@@ -4,7 +4,7 @@ export const verdicts = { yes: 'Yes', yes_with_settings: 'Yes, with these settin
 export const levels = { ok: 'OK', ok_with_setting: 'Needs a setting change', flag: 'Concern', unknown: 'Not enough evidence' };
 export type Finding = { id: string; area: Area; claim: string; stance: 'risk' | 'mitigation' | 'neutral'; quote: string; source: { url: string; kind: string; index?: number; title?: string; fetched_at: string } };
 export type Grade = { area: Area; level: keyof typeof levels; findings: string[]; reason?: string; setting?: string };
-export type GateAction = { area: Area; rule: string; from: keyof typeof levels; to: keyof typeof levels; findings: string[]; note: string };
+export type GateAction = { area: Area; rule: string; from: keyof typeof levels; to: keyof typeof levels; findings: string[]; note: string; kind?: 'info' };
 export type Card = { id: string; title: string; kind: string; kind_label: string; age: number; checklist_version: string; checked_at: string; collected_at: string; verdict: keyof typeof verdicts; grades: Grade[]; gate?: GateAction[]; settings: string[]; findings: Finding[]; alternatives: { title: string; reason: string; card_id: string; verdict: keyof typeof verdicts; status: string }[]; alternatives_note?: string; stats: { sources: number; reviews: number; review_source: string; chunks: number; failed_chunks: number; drops: { bad_area: number; bad_stance: number; no_quote: number; unquoted: number; duplicates: number }; conflicted_areas: Area[]; missing_kinds: string[]; tavily_credits: number; read_cost_nano: number; judge_cost_nano: number; reader_model: string; judge_model: string } };
 const record = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null && !Array.isArray(v);
 const text = (v: unknown): v is string => typeof v === 'string' && !!v.trim();
@@ -44,9 +44,10 @@ export function parseCard(value: unknown, id: string): Card {
   require(g.level !== 'ok_with_setting' || (text(g.setting) && g.findings.length > 0));
  }
  // The rule gate's actions are optional (older cards have none). Each names an area, two grade levels and findings that are on the card.
+ // A kind of "info" reports a fact and changes no grade; an absent kind is a grade action.
  if (c.gate !== undefined) {
   require(Array.isArray(c.gate));
-  for (const a of c.gate) require(record(a) && area(a.area) && text(a.rule) && text(a.note) && typeof a.from === 'string' && Object.hasOwn(levels, a.from) && typeof a.to === 'string' && Object.hasOwn(levels, a.to) && strings(a.findings) && a.findings.every(fid => findings.get(fid)?.area === a.area));
+  for (const a of c.gate) require(record(a) && area(a.area) && text(a.rule) && text(a.note) && typeof a.from === 'string' && Object.hasOwn(levels, a.from) && typeof a.to === 'string' && Object.hasOwn(levels, a.to) && strings(a.findings) && a.findings.every(fid => findings.get(fid)?.area === a.area) && (a.kind === undefined || a.kind === 'info'));
  }
  require(new Set(c.settings).size === c.settings.length);
  require(c.settings.every(s => (c.grades as Record<string, unknown>[]).some(g => g.level === 'ok_with_setting' && g.setting === s)));

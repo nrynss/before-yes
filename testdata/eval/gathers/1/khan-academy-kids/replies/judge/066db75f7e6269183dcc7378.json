@@ -1,0 +1,9 @@
+{
+  "text": "{\"reason_supported\":true,\"explanation\":\"The rating source states the mobile app is '100% free, with no ads or subscriptions,' directly addressing the absence of subscription mechanisms and implied purchase mechanics like loot boxes or pay-to-win. The store listing corroborates this by labeling the app 'Free.' Both sources are attributed as claims about the product's pricing model, not verified behavioral outcomes. No completed child spending events are reported or inferred, and no assumptions about parental permission or pressure are made.\"}",
+  "input_tokens": 1124,
+  "output_tokens": 106,
+  "price_nano": 1442000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

@@ -1,0 +1,9 @@
+{
+  "text": "{\n  \"reasons\": [\n    {\n      \"area\": \"content\",\n      \"reason\": \"Reviewers report role-play games like Brookhaven involve 'disturbing and inappropriate stuff' and 'online dating.' A forum user describes a 'Baddies' game labeled 5+ that encouraged punching, stomping, and shooting in the opening tutorial. Another forum quote says a 'Street Code' game showed an intense fiery car accident and prompted the player to decide whether to shoot or save an officer within seconds.\"\n    }\n  ]\n}",
+  "input_tokens": 2230,
+  "output_tokens": 112,
+  "price_nano": 2566000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

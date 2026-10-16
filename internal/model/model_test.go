@@ -869,3 +869,21 @@ func TestNewRequiresBaseURLAndModel(t *testing.T) {
 		})
 	}
 }
+
+func TestReplyCapped(t *testing.T) {
+	for _, c := range []struct {
+		r    Reply
+		max  int
+		want bool
+	}{
+		{Reply{FinishReason: "length"}, 100, true},
+		{Reply{FinishReason: "stop", OutputTokens: 100}, 100, false},
+		{Reply{OutputTokens: 100}, 100, true},
+		{Reply{OutputTokens: 99}, 100, false},
+		{Reply{}, 0, false},
+	} {
+		if got := c.r.Capped(c.max); got != c.want {
+			t.Errorf("%+v.Capped(%d) = %v, want %v", c.r, c.max, got, c.want)
+		}
+	}
+}

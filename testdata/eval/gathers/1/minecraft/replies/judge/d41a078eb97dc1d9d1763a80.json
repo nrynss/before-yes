@@ -1,0 +1,9 @@
+{
+  "text": "{\n  \"reasons\": [\n    {\n      \"area\": \"content\",\n      \"reason\": \"A Reddit reviewer says Minecraft is a very safe game with next to nothing that could be dangerous or explicit for a child.\"\n    }\n  ]\n}",
+  "input_tokens": 2117,
+  "output_tokens": 53,
+  "price_nano": 2276000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

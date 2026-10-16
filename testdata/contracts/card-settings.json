@@ -4,7 +4,7 @@
   "kind": "ios",
   "kind_label": "iOS app",
   "age": 9,
-  "checklist_version": "v8",
+  "checklist_version": "v11",
   "checked_at": "2026-10-13T18:58:40Z",
   "collected_at": "2026-10-13T18:58:00Z",
   "verdict": "yes_with_settings",
@@ -53,6 +53,19 @@
       "level": "unknown",
       "findings": [],
       "reason": "No developer record found."
+    }
+  ],
+  "gate": [
+    {
+      "area": "developer_record",
+      "rule": "information.regulator_action_other_product",
+      "from": "unknown",
+      "to": "unknown",
+      "findings": [
+        "f_5a11dac90327afc1"
+      ],
+      "note": "Google: FTC refunds are paid in real money, not V-Bucks. The Apple and Google cases pay no consumer anything, so a message offering you a share of an Apple or Google ruling is invented. — a different product, so this is shown as information and is not evidence about Minecraft.",
+      "kind": "info"
     }
   ],
   "settings": [
@@ -108,6 +121,19 @@
         "url": "https://virtual-addiction.com/online-safety/minecraft",
         "kind": "article",
         "title": "Minecraft Age Rating - Is Minecraft Safe for Kids?",
+        "fetched_at": "2026-10-13T18:57:30Z"
+      }
+    },
+    {
+      "id": "f_5a11dac90327afc1",
+      "area": "developer_record",
+      "claim": "The FTC refunds and the Apple and Google cases are about other products",
+      "stance": "risk",
+      "quote": "FTC refunds are paid in real money, not V-Bucks. The Apple and Google cases pay no consumer anything, so a message offering you a share of an Apple or Google ruling is invented.",
+      "source": {
+        "url": "https://settlementinsight.com/epic-games-lawsuit",
+        "kind": "news",
+        "title": "Epic Games Lawsuit: Fortnite Refunds, Apple at the Supreme Court | Settlement Insight",
         "fetched_at": "2026-10-13T18:57:30Z"
       }
     }

@@ -314,7 +314,9 @@ func runOne(root, models string, e Expectation) (res Result) {
 		var buf strings.Builder
 		diagnose(&buf, card, ev, tr)
 		fmt.Fprint(os.Stderr, buf.String())
-		if *gatherN > 0 {
+		// Only a fresh live recording writes the gather's diagnosis. A replay
+		// and a judge-only trial leave the tracked file alone.
+		if *gatherN > 0 && models == "live" && !*reuseGather {
 			_ = os.WriteFile(filepath.Join(capDir, "diagnosis.txt"), []byte(buf.String()), 0o644)
 		}
 	}

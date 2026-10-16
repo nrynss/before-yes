@@ -7,7 +7,7 @@ Two pools are metered (`internal/spend`):
 - **model**: Token Factory spend, in USD nanodollars. Lifetime ceiling.
 - **tavily**: Tavily credits, in thousandths of a credit. Monthly ceiling.
 
-Model figures are **measured**: the T3.11 fixture replay on Token Factory (reader and judge passes from the T3.10 recordings, entailment re-recorded on Super), checked against the recorded replies (`testdata/eval/replies/`). Tavily figures are fixture-measured and live-measured: T3.11's six gathers reported 7 or 8 credits each. Figures from a transcript or fixture manifest are marked as such.
+Model figures are **measured**: the current Ultra run replayed the Nano reader and recorded Nemotron-3-Ultra judge replies for all three titles on gathers 0, 1 and 2. The nine offline replays reproduced every recorded call. The older T3.11 figures below are historical. Tavily figures are fixture-measured and live-measured: T3.11's six gathers reported 7 or 8 credits each. Figures from a transcript or fixture manifest are marked as such.
 
 ## Summary
 
@@ -16,21 +16,21 @@ Model figures are **measured**: the T3.11 fixture replay on Token Factory (reade
 | Model lifetime ceiling | **$20** of the $25 credit | `model`, lifetime (`cost.None`) | Leaves $5 (20%) for re-runs (T3.9), demo pre-computation and measurement error. |
 | Tavily monthly ceiling | **900 credits** of the 1,000 free | `tavily`, monthly UTC (`cost.MonthlyUTC`) | 100 credits (10%) kept for a live check above the measured 7 to 8. |
 | Daily cap on fresh checks, judging | **5 checks per UTC day** | `checks_daily`, daily UTC | Confirmed by the rule: 5 x 15 x 8 = 600 credits, under 900. |
-| Cost per fresh check | **$0.042598 model** (fixture replay after T3.11, mean of three titles; $0.039498 to $0.044894 by title; T3.10 measured $0.040580, T3.9b $0.035349, T3.6b $0.030861). **7 to 8 Tavily credits** (fixture-measured, and the same range on T3.11's six live gathers). | not a ceiling | Input to every ceiling above. |
-| Checks covered | **469** by the model ceiling (492 at T3.10, 565 at T3.9b, 648 at T3.6b); **112 to 128 a month** by Tavily | derived | Tavily binds, as it did at the estimate. |
+| Cost per fresh check | **$0.112840 model** (Ultra, mean of nine title/gather checks; $0.093468 to $0.134856 by title). **7 to 8 Tavily credits** (fixture-measured, and the same range on T3.11's six live gathers). | not a ceiling | Input to every ceiling above. |
+| Checks covered | **177** by the model ceiling (469 at T3.11, 492 at T3.10, 565 at T3.9b, 648 at T3.6b); **112 to 128 a month** by Tavily | derived | Tavily binds, as it did at the estimate. |
 
-No ceiling or the cap changed. The per-check model cost rose 14.8% at T3.10 ($0.035349 to $0.040580: the definitions and the reader's larger finding sets made the judge prompt longer, two conflict passes ran to their cap, and the entailment check added Nano calls), which cut the checks the $20 ceiling covers from 565 to 492 and the reserve's fresh checks from 141 to 123. T3.11 runs that check on Super instead of Nano. The fixture replay mean is $0.042598, which cuts the model pool from 492 checks to 469 and the reserve's fresh checks from 123 to 117. Neither forces a change: Tavily still binds by a wide margin, and the settings file needs no change.
+No ceiling or the cap changed. The current Ultra mean is $0.112840 per check, covering 177 checks from the $20 model ceiling. Tavily still binds at 112 to 128 checks a month, and the $5 model reserve covers about 44 checks at the Ultra mean.
 
 ## Model pool: lifetime ceiling and reserve
 
 **Ceiling: $20.** The Token Factory credit is $25 in total and is not renewed (the Devpost FAQ and the brief's Budget section). The $20 ceiling is 80% of it.
 
 **Reserve: $5.** It covers:
-- re-runs of the live eval on real Nano and Super, which book their spend through the same meter. A three-title run costs $0.127795 on the T3.11 fixture replay (T3.10: $0.121741, T3.9b: $0.1060, T3.6b: $0.0926), so $5 covers about 39 such runs (`5 / 0.127795`). Reader output alone, at the 8,192-token reply cap, bounds a three-title run at $0.197 (100 reader calls x 8,192 x $0.24 per million), so even that worst case leaves about 25 runs (`5 / 0.196608`);
-- pre-computing the demo titles and alternatives. At the measured mean, $5 pays for about 117 fresh checks (`5 / 0.042598`);
-- error in the per-check figure. The figure is the T3.11 fixture replay, so this error is small. A reader or judge prompt change re-opens it (see the T3.11 section).
+- re-runs of the live eval on Nano and Ultra, which book their spend through the same meter. A three-title run costs about $0.338519 at the current per-title means, so $5 covers about 14 such runs (`5 / 0.338519`);
+- pre-computing the demo titles and alternatives. At the measured Ultra mean, $5 pays for about 44 fresh checks (`5 / 0.112840`);
+- error in the per-check figure. The figure is the current nine-check Ultra replay; a reader or judge prompt change re-opens it.
 
-**Spent so far.** About $0.7778 of the $20 ceiling: about $0.0018 across the three T2.1b live runs (handoff log; the probe alone booked $0.00060618, `dev-diary/live/t2.1b-transcript.txt`), $0.092584 for the three titles in T3.6b, $0.106048 for the T3.9b re-record of the same three titles, $0.209723 for T3.10's re-record rounds (the task's live ledger; the final recordings those rounds ended with replay at $0.121741, the rest paid for superseded rounds and the entailment clarification), and $0.367638 on T3.11's ledger (six live gathers at $0.236605, then entailment re-records and round-3 and round-4 classification attempts on the judge model, including superseded paid replies). The rest is unspent headroom.
+**Spent so far.** About $1.6799 of the $20 ceiling: about $0.0018 across the three T2.1b live runs (handoff log; the probe alone booked $0.00060618, `dev-diary/live/t2.1b-transcript.txt`), $0.092584 for the three titles in T3.6b, $0.106048 for the T3.9b re-record of the same three titles, $0.209723 for T3.10's re-record rounds (the task's live ledger; the final recordings those rounds ended with replay at $0.121741, the rest paid for superseded rounds and the entailment clarification), $0.367638 on T3.11's ledger, and $0.902061 on the Ultra re-record ledger (nine eval sets, LEGO Worlds, Scratch and five additional ablation-test calls). The rest is unspent headroom.
 
 **Why a lifetime pool and not a monthly one.** The credit is one lump sum. A monthly window on the model pool would let the account spend $20 a month, which the credit cannot pay for. `cost.None` is the right period for this pool, and it is the default when `PoolConfig.Period` is unset.
 
@@ -57,16 +57,16 @@ A fresh check is one run of the pipeline on a title and age with no cache hit. A
 
 ### Formula
 
-Model cost per check, in USD:
+Model cost per check, in USD, using the current Nano reader and Ultra judge rates:
 
 ```
-C_model = (R_in * 0.06 + R_out * 0.24 + J_in * 0.30 + J_out * 0.90 + E_in * 0.30 + E_out * 0.90) / 1,000,000
+C_model = (R_in * 0.06 + R_out * 0.24 + J_in * 1.00 + J_out * 3.00 + E_in * 1.00 + E_out * 3.00) / 1,000,000
 ```
 
 - `R_in`, `R_out`: reader (Nano) input and output tokens per check, summed over all reader calls.
-- `J_in`, `J_out`: judge (Super) input and output tokens per check, summed over all judge calls. **The conflict pass is inside these totals**: the judge count is 2 calls per title, the main pass and one conflict pass (`K = 1`). Do not add `K * C_conflict` on top; that double-counts it.
-- `E_in`, `E_out`: entailment-check tokens per check (Super, the judge model, one call per standing non-age grade; age flags check cited risks independently; T3.11 moved the check off Nano).
-- Prices, dollars per million tokens, from `before-yes.toml.example`: Nano input 0.06, output 0.24; Super input 0.30, output 0.90.
+- `J_in`, `J_out`: judge (Ultra) input and output tokens per check, summed over all judge calls. **The conflict pass is inside these totals**: the judge count is 2 calls per title, the main pass and one conflict pass (`K = 1`). Do not add `K * C_conflict` on top; that double-counts it.
+- `E_in`, `E_out`: entailment-check tokens per check (Ultra, the judge model, one call per standing non-age grade; age flags check cited risks independently).
+- Prices, dollars per million tokens: Nano input 0.06, output 0.24; Ultra input 1.00, output 3.00 (assumed, per the measurement run).
 
 Tavily cost per check, in credits:
 
@@ -76,7 +76,20 @@ C_tavily = sum over the check's search and extract calls of usage.credits, as Ta
 
 Use Tavily's reported `usage.credits`, not the price list (PHASE-3, T3.1). Measured 7 to 8 on the fixtures and on T3.11's live gathers (see the Tavily pool section).
 
-### Measured figures
+### Current Ultra figures
+
+These are nine fresh checks from one judge-only Ultra re-record, with the reader replayed. The costs combine the recorded Nano reader cost and Ultra judge cost. Ultra was priced at the assumed $1/$3 per million input/output tokens.
+
+| Title | Gather 0 | Gather 1 | Gather 2 | Mean per check |
+|---|---:|---:|---:|---:|
+| Roblox | $0.138448 | $0.130641 | $0.135481 | $0.134856 |
+| Minecraft | $0.109894 | $0.143752 | $0.076941 | $0.110195 |
+| Khan Academy Kids | $0.085197 | $0.078477 | $0.116730 | $0.093468 |
+| **Mean per check** |  |  |  | **$0.112840** |
+
+The nine checks booked $0.878257 in Ultra judge spend. Their replayed Nano reader component totals $0.137301, giving a measured model cost of $1.015558 across the nine. The two outside cases cost $0.013516, and five additional ablation-test judge calls cost $0.010288. Total paid Ultra spend for this re-record sequence was $0.902061; outside and test-only calls are excluded from the nine-check average.
+
+### Historical T3.11 figures
 
 From the T3.11 fixture replay on Token Factory (the recorded replies in `testdata/eval/replies/` reproduce every token count and price below). Reader and judge-pass tokens are the T3.10 recordings; entailment was re-recorded on Super. T3.10's mean was $0.040580. T3.9b's figures were: Roblox $0.033910, Minecraft $0.047094, Khan $0.025044, mean $0.035349. T3.6b's: Roblox $0.031991, Minecraft $0.040029, Khan $0.020564, mean $0.030861.
 
@@ -154,7 +167,7 @@ The counter is built in T2.4b: `Meter.BeginCheck(ctx, ref)` returns a `*Check`, 
 - `daily_fresh_checks = 5`: matches the daily cap, read by `BeginCheck` (T2.4b).
 - The period for each pool is not a settings key. The code pins it (`cost.None` for model, `cost.MonthlyUTC` for tavily, `cost.DailyUTC` for `checks_daily`).
 
-## Sensitivity: Minecraft-sized titles dominate
+## Historical T3.11 sensitivity: Minecraft-sized titles dominate
 
 Minecraft is the costliest title: 45 reader calls, $0.044894 per check, and 7 Tavily credits. If every check is Minecraft-sized:
 

@@ -4,56 +4,106 @@
     "grades": [
       {
         "area": "contact",
-        "level": "unknown",
-        "findings": [],
-        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+        "level": "ok",
+        "findings": [
+          "f_a929fbbe3b46cd00"
+        ],
+        "reason": "A forum post describes a recording feature for practicing storytelling and language skills but does not mention any stranger messaging, chat, or voice channels."
       },
       {
         "area": "money",
-        "level": "unknown",
-        "findings": [],
-        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+        "level": "ok",
+        "findings": [
+          "f_fafdd7902651ab6c",
+          "f_89db524fdd8e695c",
+          "f_387f8d26016b57a8",
+          "f_003fd420c7916ae7",
+          "f_cf8eb62de16e903e",
+          "f_36f50762f4f49220",
+          "f_b42defec3738fd8b"
+        ],
+        "reason": "Multiple reviewers and the store listing state the app is completely free with no ads, no subscriptions, and no purchases required."
       },
       {
         "area": "data",
-        "level": "unknown",
-        "findings": [],
-        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+        "level": "ok",
+        "findings": [
+          "f_3fe6efaf031edd7d",
+          "f_1a2bd4787d51ce19",
+          "f_b7cc30c0abfcbb5f",
+          "f_c58cc821303e27ae",
+          "f_bc2083d95bb9e37a",
+          "f_e59af715c3f85545",
+          "f_f1c79a5004fb71a6"
+        ],
+        "reason": "A rating source says the app asks for a name and age at setup, recommends using a nickname, never asks children for personal information directly, and lets users update or delete account information at any time."
       },
       {
         "area": "age_gating",
-        "level": "unknown",
-        "findings": [],
-        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+        "level": "ok",
+        "findings": [
+          "f_a075f8d33d54f973",
+          "f_139acf331537f05c",
+          "f_ce24bf4118c5a3ef",
+          "f_c8082f9e37966da9",
+          "f_41c741e625336937",
+          "f_441dc1b839059767"
+        ],
+        "reason": "A forum post reports that parents must provide and confirm an email address to begin using the app, and the rating source lists the target audience as ages two to eight; neither source describes an age-gate mechanism, an assigned age, or a bypass for a five-year-old."
       },
       {
         "area": "content",
-        "level": "unknown",
+        "level": "ok",
         "findings": [
-          "f_9d6c0e4c5638b99b",
-          "f_5fab2037293141c8",
-          "f_a5a18337beca7677"
+          "f_43a16fd98c20e150",
+          "f_9ad992fe913a8629",
+          "f_76685c25ae9169a2",
+          "f_44c5661eba5fc3c3",
+          "f_829a0ba61e9e6992",
+          "f_df2c20a3e3997907",
+          "f_903337b22d80f6de",
+          "f_7fa8597d4a9333c9"
         ],
-        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+        "reason": "Reviewers describe their kindergartner, pre-K granddaughter, and three-year-old grandson enjoying age-appropriate activities, songs, and stories, and a forum post lists curriculum topics including math, ELA, executive function, socio-emotional learning, and creative expression up to first grade with some second-grade lessons; none of the cited sources report a child encountering unsuitable material."
       },
       {
         "area": "developer_record",
-        "level": "unknown",
+        "level": "ok",
         "findings": [],
         "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+      }
+    ],
+    "gate": [
+      {
+        "area": "money",
+        "rule": "money.free_no_in_app_purchases",
+        "from": "ok",
+        "to": "ok",
+        "findings": [
+          "f_b42defec3738fd8b"
+        ],
+        "note": "The App Store lists this app as free with no in-app purchases, and no checked quote reports purchases or ads."
+      },
+      {
+        "area": "developer_record",
+        "rule": "developer_record.ok_without_statement",
+        "from": "ok",
+        "to": "unknown",
+        "findings": [],
+        "note": "No source states that the developer has no fines, lawsuits or breaches. Having no news is not evidence."
       }
     ],
     "evidence_sha256": "9cf08a4acb385f8cda37b097803631d5d329be4e536c62f74a27e785b1187fdf",
     "age": 5,
     "models": "recorded-reader + recorded-judge",
     "want_verdict": "yes",
-    "got_verdict": "unclear",
+    "got_verdict": "yes",
     "areas": [
       {
         "area": "contact",
         "want": "ok",
-        "got": "unknown",
-        "agree": false,
+        "got": "ok",
+        "agree": true,
         "found": [],
         "missed": [
           {
@@ -61,13 +111,13 @@
             "quote": "Made For Ages 0–5"
           }
         ],
-        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+        "got_reason": "A forum post describes a recording feature for practicing storytelling and language skills but does not mention any stranger messaging, chat, or voice channels."
       },
       {
         "area": "money",
         "want": "ok",
-        "got": "unknown",
-        "agree": false,
+        "got": "ok",
+        "agree": true,
         "found": [],
         "missed": [
           {
@@ -75,13 +125,13 @@
             "quote": "Always 100% free, no ads, no subscriptions—just safe, joyful learning kids and parents love."
           }
         ],
-        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+        "got_reason": "Multiple reviewers and the store listing state the app is completely free with no ads, no subscriptions, and no purchases required."
       },
       {
         "area": "data",
         "want": "ok",
-        "got": "unknown",
-        "agree": false,
+        "got": "ok",
+        "agree": true,
         "found": [],
         "missed": [
           {
@@ -89,13 +139,13 @@
             "quote": "We don't show ads in the app, and we don't let third parties track your child across other apps or websites."
           }
         ],
-        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+        "got_reason": "A rating source says the app asks for a name and age at setup, recommends using a nickname, never asks children for personal information directly, and lets users update or delete account information at any time."
       },
       {
         "area": "age_gating",
         "want": "ok",
-        "got": "unknown",
-        "agree": false,
+        "got": "ok",
+        "agree": true,
         "found": [],
         "missed": [
           {
@@ -103,13 +153,13 @@
             "quote": "A free educational app for children ages 2–8, with games, books, and lessons"
           }
         ],
-        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+        "got_reason": "A forum post reports that parents must provide and confirm an email address to begin using the app, and the rating source lists the target audience as ages two to eight; neither source describes an age-gate mechanism, an assigned age, or a bypass for a five-year-old."
       },
       {
         "area": "content",
         "want": "ok",
-        "got": "unknown",
-        "agree": false,
+        "got": "ok",
+        "agree": true,
         "found": [],
         "missed": [
           {
@@ -117,7 +167,7 @@
             "quote": "My 4 year old loves this. It has everything and isn’t overstimulating AND it has no ads."
           }
         ],
-        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+        "got_reason": "Reviewers describe their kindergartner, pre-K granddaughter, and three-year-old grandson enjoying age-appropriate activities, songs, and stories, and a forum post lists curriculum topics including math, ELA, executive function, socio-emotional learning, and creative expression up to first grade with some second-grade lessons; none of the cited sources report a child encountering unsuitable material."
       },
       {
         "area": "developer_record",
@@ -129,7 +179,7 @@
         "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       }
     ],
-    "agreed": 1,
+    "agreed": 6,
     "decisive_found": 0,
     "decisive_total": 5,
     "findings": 195,
@@ -148,7 +198,7 @@
     ],
     "tavily_credits": 9,
     "read_cost_nano": 11541720,
-    "judge_cost_nano": 23844900
+    "judge_cost_nano": 105188000
   },
   {
     "title": "Minecraft",
@@ -156,40 +206,59 @@
       {
         "area": "contact",
         "level": "unknown",
-        "findings": [],
+        "findings": [
+          "f_6a1a0ef028865ef4",
+          "f_10ea2db645489ab8",
+          "f_1e24b73e7fa966bc",
+          "f_3e0ca7934cf2f129"
+        ],
         "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       },
       {
         "area": "money",
         "level": "flag",
+        "setting": "Ask a parent to approve purchases",
         "findings": [
           "f_bbdd451071f6eabc",
           "f_4f0d24b3b6bb0948",
+          "f_fe600dad41e0a6a9",
+          "f_a24eb25dc2e2b26a",
+          "f_a26d11797694d812",
           "f_5adae5391d64ec0f",
           "f_197d5537975444c2",
-          "f_52134516877ae723"
+          "f_02a62ae497f0923a",
+          "f_52134516877ae723",
+          "f_2b2fc8326518dc5f",
+          "f_a48075e87f6b9b45",
+          "f_4a54c224e3cfb420"
         ],
-        "reason": "Multiple reviewers report being scammed while attempting purchases: one paid $1.09 for a mod but received nothing and had to pay $15.99 more, another aged 10 spent all birthday money on 10,000 Minecoins feeling scammed, a third was repeatedly charged $40 total for a failed $6.99 villager add-on purchase, and a fourth states 'I Bought Minecoins it scam me'."
+        "reason": "A source names a purchase control that answers this concern (Ask a parent to approve purchases), and no verified quote says the control failed or was bypassed. Complaints about spending, scams or billing are not counted against it."
       },
       {
         "area": "data",
-        "level": "unknown",
-        "findings": [],
-        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+        "level": "flag",
+        "setting": "Ask App Not to Track",
+        "findings": [
+          "f_62d7413616ee25d9",
+          "f_8e957f57d0977f8f"
+        ],
+        "reason": "Turn on Ask App Not to Track in iOS Settings → Privacy & Security → Tracking."
       },
       {
         "area": "age_gating",
-        "level": "unknown",
-        "findings": [],
-        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+        "level": "flag",
+        "setting": "Lock the account's birth date",
+        "findings": [
+          "f_92fbddec97da99ee",
+          "f_6ba7572225c7dd9e"
+        ],
+        "reason": "A source names a control that answers this concern (Lock the account's birth date), and no cited quote says the control fails."
       },
       {
         "area": "content",
-        "level": "flag",
-        "findings": [
-          "f_c9072b9921500c3f"
-        ],
-        "reason": "A reviewer reports the game called them the n word, which is a racist slur."
+        "level": "unknown",
+        "findings": [],
+        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       },
       {
         "area": "developer_record",
@@ -198,11 +267,68 @@
         "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       }
     ],
+    "gate": [
+      {
+        "area": "money",
+        "rule": "money.flag_capped_by_control",
+        "from": "flag",
+        "to": "ok_with_setting",
+        "findings": [
+          "f_bbdd451071f6eabc",
+          "f_4f0d24b3b6bb0948",
+          "f_fe600dad41e0a6a9",
+          "f_a24eb25dc2e2b26a",
+          "f_a26d11797694d812",
+          "f_5adae5391d64ec0f",
+          "f_197d5537975444c2",
+          "f_02a62ae497f0923a",
+          "f_52134516877ae723",
+          "f_2b2fc8326518dc5f",
+          "f_a48075e87f6b9b45",
+          "f_4a54c224e3cfb420",
+          "f_52134516877ae723"
+        ],
+        "note": "A source names a purchase control that answers this concern (Ask a parent to approve purchases), and no verified quote says the control failed or was bypassed. Complaints about spending, scams or billing are not counted against it."
+      },
+      {
+        "area": "data",
+        "rule": "data.flag_confirmed",
+        "from": "flag",
+        "to": "flag",
+        "findings": [
+          "f_62d7413616ee25d9",
+          "f_8e957f57d0977f8f"
+        ],
+        "note": "A quote behind this grade describes data being sold, tracked for ads, shared for marketing, breached or collected without consent."
+      },
+      {
+        "area": "data",
+        "rule": "data.tracking_setting",
+        "from": "flag",
+        "to": "ok_with_setting",
+        "findings": [
+          "f_62d7413616ee25d9",
+          "f_8e957f57d0977f8f"
+        ],
+        "note": "The App Store label shows the app tracks for ads, and iOS lets a parent block it in Settings → Privacy & Security → Tracking."
+      },
+      {
+        "area": "age_gating",
+        "rule": "age_gating.flag_capped_by_control",
+        "from": "flag",
+        "to": "ok_with_setting",
+        "findings": [
+          "f_92fbddec97da99ee",
+          "f_6ba7572225c7dd9e"
+        ],
+        "note": "A source names a control that answers this concern (Lock the account's birth date), and no cited quote says the control fails."
+      }
+    ],
     "evidence_sha256": "4c38b6eae120adbdaea59027bbfccf2ea17cf0110cb22b1c8f545a56a853c589",
     "age": 9,
     "models": "recorded-reader + recorded-judge",
     "want_verdict": "yes_with_settings",
-    "got_verdict": "no",
+    "got_verdict": "unclear",
     "areas": [
       {
         "area": "contact",
@@ -226,7 +352,7 @@
       {
         "area": "money",
         "want": "ok",
-        "got": "flag",
+        "got": "ok_with_setting",
         "agree": false,
         "found": [],
         "missed": [
@@ -235,21 +361,21 @@
             "quote": "there is no ads to interrupt me and I can get friends"
           }
         ],
-        "got_reason": "Multiple reviewers report being scammed while attempting purchases: one paid $1.09 for a mod but received nothing and had to pay $15.99 more, another aged 10 spent all birthday money on 10,000 Minecoins feeling scammed, a third was repeatedly charged $40 total for a failed $6.99 villager add-on purchase, and a fourth states 'I Bought Minecoins it scam me'."
+        "got_reason": "A source names a purchase control that answers this concern (Ask a parent to approve purchases), and no verified quote says the control failed or was bypassed. Complaints about spending, scams or billing are not counted against it."
       },
       {
         "area": "data",
         "want": "unknown",
-        "got": "unknown",
-        "agree": true,
+        "got": "ok_with_setting",
+        "agree": false,
         "found": [],
         "missed": [],
-        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+        "got_reason": "Turn on Ask App Not to Track in iOS Settings → Privacy & Security → Tracking."
       },
       {
         "area": "age_gating",
         "want": "ok",
-        "got": "unknown",
+        "got": "ok_with_setting",
         "agree": false,
         "found": [
           {
@@ -258,12 +384,12 @@
           }
         ],
         "missed": [],
-        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+        "got_reason": "A source names a control that answers this concern (Lock the account's birth date), and no cited quote says the control fails."
       },
       {
         "area": "content",
         "want": "ok",
-        "got": "flag",
+        "got": "unknown",
         "agree": false,
         "found": [],
         "missed": [
@@ -272,7 +398,7 @@
             "quote": "Because combat is part of the game, there are some elements of mild violence."
           }
         ],
-        "got_reason": "A reviewer reports the game called them the n word, which is a racist slur."
+        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       },
       {
         "area": "developer_record",
@@ -284,7 +410,7 @@
         "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       }
     ],
-    "agreed": 2,
+    "agreed": 1,
     "decisive_found": 2,
     "decisive_total": 5,
     "findings": 148,
@@ -303,7 +429,7 @@
     ],
     "tavily_credits": 7,
     "read_cost_nano": 13780620,
-    "judge_cost_nano": 22821600
+    "judge_cost_nano": 63160000
   },
   {
     "title": "Roblox",
@@ -312,52 +438,49 @@
         "area": "contact",
         "level": "flag",
         "findings": [
+          "f_a8ef6e887203f7cd",
+          "f_f96b271e3765562b",
           "f_ac2eb7da6a842d59",
           "f_371023fe16f1d604",
-          "f_ddb3aed4c8616169"
+          "f_ddb3aed4c8616169",
+          "f_4f9892e2ee0ec76a",
+          "f_df49bd98c5b84cd2"
         ],
-        "reason": "The cited sources raise a concern here. Read the source quotes before deciding."
+        "reason": "A reviewer reports their child was threatened by a person in an 'adopt me' game and police took the predator into custody. Another reviewer says a 40-50 year old man tried to meet up with a child using the app. Researchers using under-13 accounts reported encountering sexual references and offensive language within minutes. Fairplay and NCOSE said Roblox's voice and text chat features facilitate predation by enabling adult contact with minors. Forum users report that even with chat set to 'no one,' mini-games with built-in chat cannot be disabled, and chatting on 'signs' lets kids bypass parental controls."
       },
       {
         "area": "money",
         "level": "flag",
+        "setting": "Set a spending limit",
         "findings": [
-          "f_1368a2c5a6fe539a",
-          "f_783661ae59b066c7",
-          "f_ef55d9331aff6121",
-          "f_838b9aee48cfadd9"
+          "f_8b22a69254003500",
+          "f_833aceab249a7079"
         ],
-        "reason": "A news report states a parent said their 10-year-old daughter spent more than $7,000 in two months despite attempts to limit purchases."
+        "reason": "A source names a purchase control that answers this concern (Set a spending limit), and no verified quote says the control failed or was bypassed. Complaints about spending, scams or billing are not counted against it."
       },
       {
         "area": "data",
         "level": "flag",
         "findings": [
-          "f_642612c1692ab232",
           "f_81873d6371e5c237",
           "f_b4d5eaf5ea37a5fb",
           "f_3863f822c43eb156",
           "f_37a8bd5d8f222dac",
-          "f_47cc8d9af40dc95f",
-          "f_93f7a30cf16fff06",
-          "f_e3ccb57519991f5a",
-          "f_bfd8eeb81a49ad17",
-          "f_d83477d60d3fd88e",
-          "f_1a95672a7897ce7a",
-          "f_7fdb8d987e4ff574",
-          "f_be740391df21b575"
+          "f_be740391df21b575",
+          "f_428fe5874ed68ea6"
         ],
-        "reason": "A forum post states images used for age verification may be processed by third-party providers, but Roblox does not publicly guarantee a fixed retention period for the images of children."
+        "reason": "The cited sources raise a concern here. Read the source quotes before deciding."
       },
       {
         "area": "age_gating",
         "level": "flag",
         "findings": [
           "f_f73b923a2223192e",
-          "f_cc470501d4ba96a2",
-          "f_f27d3f03ad121edd"
+          "f_8197a153550302ef",
+          "f_979e8a567e65fc3b",
+          "f_ed2aac5c14c3bb92"
         ],
-        "reason": "A review reports a four year old attempted face verification and the system assigned them an age of twenty five."
+        "reason": "A reviewer reports 'if a four year old does it and it says that they are twenty five then what do they do.' Another reviewer says their child was placed in the '28th group.' A reviewer contacting support was told to wait until age 13, but the system showed a birthday of Oct 7, 1985, stating they were 41 while they were younger than 13."
       },
       {
         "area": "content",
@@ -369,11 +492,9 @@
           "f_08f1157eb8532858",
           "f_b12f60a545dad3a6",
           "f_984749ba8671edf1",
-          "f_cff5ae07353ea541",
           "f_7bfc294c87ff4e36",
-          "f_4132e355653730d0",
-          "f_cb8c641ae80b5f09",
-          "f_6fab8dae3bd61975",
+          "f_78474b4b434c9d2b",
+          "f_6119a505a733c18f",
           "f_7552aad2b36d618c",
           "f_4bde3c145681082c",
           "f_5662cca1c891f2fa",
@@ -381,20 +502,97 @@
           "f_8f1be93b269b5300",
           "f_09c37db024437e51",
           "f_807e706a86b8984f",
-          "f_9a1ab141822489be",
-          "f_3fb5e60ef6db480e"
+          "f_89d61c88048969ea"
         ],
-        "reason": "A forum post states within seconds, the 'Street Code' game showed an intense, fiery car accident and prompted the player to decide whether to shoot or save an officer."
+        "reason": "Reviewers report role-play games like Brookhaven involve 'disturbing and inappropriate stuff' and 'online dating.' A forum user describes a 'Baddies' game labeled 5+ that encouraged punching, stomping, and shooting in the opening tutorial. Another forum quote says a 'Street Code' game showed an intense fiery car accident and prompted the player to decide whether to shoot or save an officer within seconds."
       },
       {
         "area": "developer_record",
         "level": "flag",
         "findings": [
-          "f_13ff2ba3714f5fe6",
-          "f_e204bd321f8845bc",
-          "f_9b73e24e8700228c"
+          "f_13ff2ba3714f5fe6"
         ],
-        "reason": "A news report states Texas Attorney General Ken Paxton says he has sued Roblox over 'flagrantly ignoring' safety laws and 'deceiving parents' about the dangers the online video gaming platform poses to young people."
+        "reason": "Texas Attorney General Ken Paxton says he has sued Roblox over 'flagrantly ignoring' safety laws and 'deceiving parents' about the dangers the platform poses to young people."
+      }
+    ],
+    "gate": [
+      {
+        "area": "contact",
+        "rule": "contact.flag_confirmed",
+        "from": "flag",
+        "to": "flag",
+        "findings": [
+          "f_a8ef6e887203f7cd",
+          "f_371023fe16f1d604",
+          "f_ddb3aed4c8616169"
+        ],
+        "note": "A quote behind this grade describes strangers being able to message, chat with or reach a child."
+      },
+      {
+        "area": "money",
+        "rule": "money.flag_capped_by_control",
+        "from": "flag",
+        "to": "ok_with_setting",
+        "findings": [
+          "f_8b22a69254003500",
+          "f_833aceab249a7079"
+        ],
+        "note": "A source names a purchase control that answers this concern (Set a spending limit), and no verified quote says the control failed or was bypassed. Complaints about spending, scams or billing are not counted against it."
+      },
+      {
+        "area": "data",
+        "rule": "data.flag_confirmed",
+        "from": "flag",
+        "to": "flag",
+        "findings": [
+          "f_81873d6371e5c237"
+        ],
+        "note": "A quote behind this grade describes data being sold, tracked for ads, shared for marketing, breached or collected without consent."
+      },
+      {
+        "area": "age_gating",
+        "rule": "age_gating.flag_confirmed",
+        "from": "flag",
+        "to": "flag",
+        "findings": [
+          "f_f73b923a2223192e",
+          "f_8197a153550302ef"
+        ],
+        "note": "A quote behind this grade describes the age check being bypassed or a child being placed in the wrong age group."
+      },
+      {
+        "area": "content",
+        "rule": "content.flag_confirmed",
+        "from": "flag",
+        "to": "flag",
+        "findings": [
+          "f_99d787be8d0bf74c",
+          "f_d4c614fe03358dea",
+          "f_08f1157eb8532858",
+          "f_b12f60a545dad3a6",
+          "f_984749ba8671edf1",
+          "f_7bfc294c87ff4e36",
+          "f_6119a505a733c18f",
+          "f_7552aad2b36d618c",
+          "f_4bde3c145681082c",
+          "f_5662cca1c891f2fa",
+          "f_d473c3ff24182f62",
+          "f_8f1be93b269b5300",
+          "f_09c37db024437e51",
+          "f_807e706a86b8984f",
+          "f_89d61c88048969ea"
+        ],
+        "note": "A quote behind this grade describes violence, sexual content, self-harm, predators, gambling, drugs or frightening material."
+      },
+      {
+        "area": "developer_record",
+        "rule": "developer_record.flag_confirmed",
+        "from": "flag",
+        "to": "flag",
+        "findings": [
+          "f_13ff2ba3714f5fe6"
+        ],
+        "note": "A quote behind this grade describes a fine, lawsuit, breach or regulator action against the developer."
       }
     ],
     "evidence_sha256": "1cdccedebf2a4479389936bc080ccbe300b5963cafdb809b7a6b3dd2566b455d",
@@ -419,13 +617,13 @@
             "quote": "they can’t stop the child predators and E-Daters"
           }
         ],
-        "got_reason": "The cited sources raise a concern here. Read the source quotes before deciding."
+        "got_reason": "A reviewer reports their child was threatened by a person in an 'adopt me' game and police took the predator into custody. Another reviewer says a 40-50 year old man tried to meet up with a child using the app. Researchers using under-13 accounts reported encountering sexual references and offensive language within minutes. Fairplay and NCOSE said Roblox's voice and text chat features facilitate predation by enabling adult contact with minors. Forum users report that even with chat set to 'no one,' mini-games with built-in chat cannot be disabled, and chatting on 'signs' lets kids bypass parental controls."
       },
       {
         "area": "money",
         "want": "flag",
-        "got": "flag",
-        "agree": true,
+        "got": "ok_with_setting",
+        "agree": false,
         "found": [],
         "missed": [
           {
@@ -433,7 +631,7 @@
             "quote": "I got Robux and I got only 246 Robux instead of 1800"
           }
         ],
-        "got_reason": "A news report states a parent said their 10-year-old daughter spent more than $7,000 in two months despite attempts to limit purchases."
+        "got_reason": "A source names a purchase control that answers this concern (Set a spending limit), and no verified quote says the control failed or was bypassed. Complaints about spending, scams or billing are not counted against it."
       },
       {
         "area": "data",
@@ -442,7 +640,7 @@
         "agree": false,
         "found": [],
         "missed": [],
-        "got_reason": "A forum post states images used for age verification may be processed by third-party providers, but Roblox does not publicly guarantee a fixed retention period for the images of children."
+        "got_reason": "The cited sources raise a concern here. Read the source quotes before deciding."
       },
       {
         "area": "age_gating",
@@ -456,7 +654,7 @@
             "quote": "Im 14 but it said 9-12 on the age check"
           }
         ],
-        "got_reason": "A review reports a four year old attempted face verification and the system assigned them an age of twenty five."
+        "got_reason": "A reviewer reports 'if a four year old does it and it says that they are twenty five then what do they do.' Another reviewer says their child was placed in the '28th group.' A reviewer contacting support was told to wait until age 13, but the system showed a birthday of Oct 7, 1985, stating they were 41 while they were younger than 13."
       },
       {
         "area": "content",
@@ -470,7 +668,7 @@
             "quote": "It’s also a very inappropriate game with all the horror games"
           }
         ],
-        "got_reason": "A forum post states within seconds, the 'Street Code' game showed an intense, fiery car accident and prompted the player to decide whether to shoot or save an officer."
+        "got_reason": "Reviewers report role-play games like Brookhaven involve 'disturbing and inappropriate stuff' and 'online dating.' A forum user describes a 'Baddies' game labeled 5+ that encouraged punching, stomping, and shooting in the opening tutorial. Another forum quote says a 'Street Code' game showed an intense fiery car accident and prompted the player to decide whether to shoot or save an officer within seconds."
       },
       {
         "area": "developer_record",
@@ -484,10 +682,10 @@
             "quote": "This lawsuit alleges that Roblox has violated the privacy of its users by tracking data without consent."
           }
         ],
-        "got_reason": "A news report states Texas Attorney General Ken Paxton says he has sued Roblox over 'flagrantly ignoring' safety laws and 'deceiving parents' about the dangers the online video gaming platform poses to young people."
+        "got_reason": "Texas Attorney General Ken Paxton says he has sued Roblox over 'flagrantly ignoring' safety laws and 'deceiving parents' about the dangers the platform poses to young people."
       }
     ],
-    "agreed": 5,
+    "agreed": 4,
     "decisive_found": 0,
     "decisive_total": 6,
     "findings": 194,
@@ -504,6 +702,6 @@
     "missing_kinds": [],
     "tavily_credits": 8,
     "read_cost_nano": 17948820,
-    "judge_cost_nano": 34847700
+    "judge_cost_nano": 117532000
   }
 ]

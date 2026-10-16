@@ -48,6 +48,9 @@ func (s *superRecorder) Chat(_ context.Context, msgs []model.Message, o model.Op
 	switch r := s.replies[n].(type) {
 	case error:
 		return model.Reply{}, r
+	case model.Reply:
+		r.Price, r.Measured = s.price, true
+		return r, nil
 	default:
 		return model.Reply{Text: r.(string), Price: s.price, Measured: true}, nil
 	}
@@ -131,16 +134,22 @@ func TestJudgeConflictPassFlagsContact(t *testing.T) {
 	if !strings.Contains(rec.users[1], "Grade only these areas: contact\n") || strings.Contains(rec.users[1], "area=money") {
 		t.Errorf("conflict pass prompt:\n%s", rec.users[1])
 	}
-	if !reflect.DeepEqual(rec.opts[0].Extra, j.Fast) || !rec.opts[0].JSON || !reflect.DeepEqual(rec.opts[1].Extra, j.Think) || rec.opts[1].MaxTokens != 16000 {
+	if !reflect.DeepEqual(rec.opts[0].Extra, j.Fast) || !rec.opts[0].JSON || !reflect.DeepEqual(rec.opts[1].Extra, j.Think) || rec.opts[1].MaxTokens != DefaultThinkMaxTokens {
 		t.Errorf("options %+v", rec.opts)
+	}
+	if !strings.HasSuffix(rec.users[1], conflictNote) || strings.Contains(rec.users[0], "write nothing after it") {
+		t.Errorf("the conflict note ends the conflict pass's prompt, and only that one's:\n%s", rec.users[1])
 	}
 	for _, u := range rec.users {
 		if !strings.Contains(u, "Child's age: 9\n") || !strings.Contains(u, "Unread sources: policy\n") {
 			t.Errorf("prompt misses the age or the unread sources:\n%.200s", u)
 		}
 	}
-	if !strings.Contains(rec.users[0], "source=review 355") || !strings.Contains(rec.users[0], "id="+decisive.ID) {
+	if !strings.Contains(rec.users[0], "source=review 355") || !strings.Contains(rec.users[0], "id=F1") {
 		t.Errorf("first prompt does not show review 355 by number and id")
+	}
+	if !strings.Contains(rec.users[1], "contact findings:") || strings.Contains(rec.users[1], "money findings:") || strings.Contains(rec.users[1], "area=money") {
+		t.Errorf("conflict prompt is not grouped and limited to contact:\n%s", rec.users[1])
 	}
 
 	byArea := map[checklist.Area]checklist.Grade{}
@@ -173,6 +182,39 @@ func TestJudgeConflictPassFlagsContact(t *testing.T) {
 	spent, _ := m.Spent(context.Background(), spend.PoolModel, "check-judge")
 	if got.Cost != 80000 || spent != got.Cost {
 		t.Errorf("cost %d, meter %d", got.Cost, spent)
+	}
+}
+
+func TestShortCitationMappingRoundTripAndUnknown(t *testing.T) {
+	grades := []checklist.Grade{{Area: checklist.Contact, Findings: []string{"F1", "F2", "F99"}}}
+	got := mapShortCitations(grades, map[string]string{"F1": "f_real1", "F2": "f_real2"})
+	want := []checklist.Grade{{Area: checklist.Contact, Findings: []string{"f_real1", "f_real2", "F99"}}}
+	if !reflect.DeepEqual(got, want) {
+		t.Fatalf("mapped citations %+v, want %+v", got, want)
+	}
+	if _, _, thin := checkCitations(got, []finding.Finding{{ID: "f_real1", Area: checklist.Contact, Stance: finding.Risk}, {ID: "f_real2", Area: checklist.Contact, Stance: finding.Risk}}); len(thin) != 0 {
+		t.Fatalf("known short ids failed citation check: %v", thin)
+	}
+	bad, _, thin := checkCitations([]checklist.Grade{{Area: checklist.Contact, Level: checklist.Flag, Findings: []string{"F99"}}}, nil)
+	if len(bad) != 1 || bad[0].Level != checklist.Unknown || len(thin) != 1 {
+		t.Fatalf("unknown short id was accepted: %+v, thin %v", bad, thin)
+	}
+}
+
+func TestConflictPassRetriesCapThenKeepsFirst(t *testing.T) {
+	decisive, _, _, fs := robloxFindings(t)
+	first := gradesJSON(t, checklist.Grade{Area: checklist.Contact, Level: checklist.Flag, Findings: []string{decisive.ID}})
+	capped := model.Reply{Text: "unfinished", OutputTokens: 100, FinishReason: "length"}
+	rec := &superRecorder{replies: []any{first, capped, capped}}
+	got, err := (&Judge{Model: rec, Meter: openTestMeter(t)}).Judge(context.Background(), "Roblox", 9, "c", fs, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(rec.users) != 3 || !errors.Is(got.ConflictErr, ErrReplyCapped) {
+		t.Fatalf("calls %d, ConflictErr %v", len(rec.users), got.ConflictErr)
+	}
+	if g := judgedArea(t, got, checklist.Contact); g.Level != checklist.Flag {
+		t.Fatalf("first pass grade not retained: %+v", g)
 	}
 }
 
@@ -281,6 +323,29 @@ func TestConflictPassAnsweringNothingFails(t *testing.T) {
 		if g.Area == checklist.Contact && g.Level != checklist.Flag {
 			t.Errorf("first contact grade did not stand: %+v", g)
 		}
+	}
+}
+
+// A conflict pass cut off at its token cap with no JSON is recorded as capped,
+// not as a plain parse failure, and the first grades stand.
+func TestConflictPassCappedIsReported(t *testing.T) {
+	decisive, _, _, fs := robloxFindings(t)
+	first := gradesJSON(t, checklist.Grade{Area: checklist.Contact, Level: checklist.Flag, Findings: []string{decisive.ID}, Reason: "A child predator might ask where the child is."})
+	capped := model.Reply{Text: "Let me weigh the findings again. The first review says", OutputTokens: 100, FinishReason: "length"}
+	rec := &superRecorder{replies: []any{first, capped, capped}}
+	got, err := (&Judge{Model: rec, Meter: openTestMeter(t)}).Judge(context.Background(), "Roblox", 9, "c", fs, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !errors.Is(got.ConflictErr, ErrReplyCapped) {
+		t.Fatalf("ConflictErr = %v, want ErrReplyCapped", got.ConflictErr)
+	}
+	// The same unparseable reply that was not capped is a plain failure.
+	capped.FinishReason = "stop"
+	rec = &superRecorder{replies: []any{first, capped}}
+	got, err = (&Judge{Model: rec, Meter: openTestMeter(t)}).Judge(context.Background(), "Roblox", 9, "c", fs, nil)
+	if err != nil || got.ConflictErr == nil || errors.Is(got.ConflictErr, ErrReplyCapped) {
+		t.Fatalf("stopped reply: err %v, ConflictErr %v", err, got.ConflictErr)
 	}
 }
 
@@ -538,33 +603,32 @@ func TestRecordedRepliesGradesRestOnVerifiedQuotes(t *testing.T) {
 		levels  []checklist.Level // in card order, after every demotion
 		thin    []checklist.Area
 	}{
-		// Roblox (re-recorded with the data-flag definition, the App Store
-		// fact findings and the first-pass fallback): money, age_gating,
-		// content and developer_record stand. money's flag rests in part on
-		// the listing's "Loot Boxes" advisory (a store fact). contact and
-		// data are flag_not_earned and land thin. Verdict no.
-		// (Before: content was thin too, so content unknown.)
-		{demos[0], 9, checklist.No, L(unk, flag, unk, flag, flag, flag), []checklist.Area{"contact", "data"}},
-		// Minecraft (re-recorded): contact stands as ok_with_setting
-		// (multiplayer off by default on child accounts) and money stands as
-		// a flag. data and age_gating are flag_not_earned and land thin;
-		// content and developer_record are the judge's own unknowns. Money
-		// flagged makes the verdict no. (Before: contact, money, age_gating
-		// and content were all thin, and the verdict was unclear.)
-		{demos[1], 9, checklist.No, L(set, flag, unk, unk, unk, unk), []checklist.Area{"data", "age_gating"}},
-		// Khan (re-recorded): money is ok on the listing's price line and the
-		// developer's own words; contact, age_gating and content are thin or
-		// unknown. The rule gate raises data to ok: the listing's privacy
-		// label says "Data Not Linked to You" and no quote reports selling,
-		// ad tracking or a breach (data.label_not_linked), and contact to ok
-		// on the listing's Kids category line with no contact report
-		// (contact.kids_category_no_contact_report). Content unknown keeps
-		// the verdict unclear. (Before the gate: data and contact were thin,
-		// so four areas were unknown.)
-		{demos[2], 5, checklist.Unclear, L(ok, ok, ok, unk, unk, unk), []checklist.Area{"age_gating", "content"}},
+		// Current Ultra replay: contact and data are flag_not_earned and land
+		// thin; developer_record is the judge's own unknown. The remaining
+		// flags stand. Verdict no.
+		{demos[0], 9, checklist.No, L(unk, flag, unk, flag, flag, unk), []checklist.Area{"contact", "data", "developer_record"}},
+		// Current Ultra replay: the App Store tracking label raises data to
+		// Ask App Not to Track. Contact, money, age_gating and
+		// developer_record are thin; content is ok. Verdict unclear.
+		{demos[1], 9, checklist.Unclear, L(unk, unk, set, unk, ok, unk), []checklist.Area{"contact", "money", "age_gating", "developer_record"}},
+		// Current Ultra replay: the listing's Kids category and privacy label
+		// raise contact and data to ok. The judge grades age_gating and content
+		// ok; developer_record remains unknown. Verdict yes.
+		{demos[2], 5, checklist.Yes, L(ok, ok, ok, ok, ok, unk), []checklist.Area{"developer_record"}},
 	}
 	tokenFactory := func(on bool) map[string]any {
-		return map[string]any{"chat_template_kwargs": map[string]any{"enable_thinking": on}}
+		if on {
+			return map[string]any{
+				"chat_template_kwargs": map[string]any{"enable_thinking": true},
+				"temperature":          0.6,
+				"top_p":                0.95,
+				"repetition_penalty":   1.05,
+			}
+		}
+		return map[string]any{
+			"chat_template_kwargs": map[string]any{"enable_thinking": false},
+			"repetition_penalty":   1.1,
+		}
 	}
 	for _, c := range cases {
 		t.Run(c.d.slug, func(t *testing.T) {
@@ -619,7 +683,10 @@ func TestRecordedRepliesGradesRestOnVerifiedQuotes(t *testing.T) {
 					}
 					settingBacked = settingBacked || (f.Stance == finding.Mitigation && settingIn(normWords(f.Quote), normWords(g.Setting)))
 				}
-				if g.Level == checklist.OKWithSetting && !settingBacked {
+				trackingSetting := g.Area == checklist.Data && g.Setting == "Ask App Not to Track" && len(g.Findings) > 0 && slices.ContainsFunc(card.Gate, func(a GateAction) bool {
+					return a.Rule == "data.tracking_setting" && slices.Contains(a.Findings, g.Findings[0])
+				})
+				if g.Level == checklist.OKWithSetting && !settingBacked && !trackingSetting {
 					t.Errorf("%s: setting %q is in no cited mitigation quote", g.Area, g.Setting)
 				}
 			}
@@ -977,8 +1044,16 @@ func replayDemo(t *testing.T, d demo, age int) Card {
 		Reader:   &Reader{Model: reader, Meter: m},
 		Judge: &Judge{
 			Model: judge, Meter: m,
-			Fast:   map[string]any{"chat_template_kwargs": map[string]any{"enable_thinking": false}},
-			Think:  map[string]any{"chat_template_kwargs": map[string]any{"enable_thinking": true}},
+			Fast: map[string]any{
+				"chat_template_kwargs": map[string]any{"enable_thinking": false},
+				"repetition_penalty":   1.1,
+			},
+			Think: map[string]any{
+				"chat_template_kwargs": map[string]any{"enable_thinking": true},
+				"temperature":          0.6,
+				"top_p":                0.95,
+				"repetition_penalty":   1.05,
+			},
 			Entail: judge,
 		},
 		Now: now,

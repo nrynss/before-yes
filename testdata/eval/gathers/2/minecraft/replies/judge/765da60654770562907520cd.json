@@ -1,0 +1,9 @@
+{
+  "text": "{\"reason_supported\":true,\"explanation\":\"The explanation attributes two distinct claims to their respective sources. First, it states that the store listing says the app may use data to track users across other companies' apps and websites for personalized ads; this is directly supported by the store quotes \\\"App Tracking: To deliver personalized ads and improve application experience\\\" and \\\"Data Used to Track You\\\\nThe following data may be used to track you across apps and websites owned by other companies:\\\". Second, it states that a news source notes hacking claims linked to old data breaches; this is supported by the news quote \\\"The FTC calls the hacking claims \\\\u201call talk.\\\\u201d The password usually comes from an old data breach.\\\" Both claims are accurately attributed and no additional unsupported assertions are made.\"}",
+  "input_tokens": 1185,
+  "output_tokens": 174,
+  "price_nano": 1707000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}
