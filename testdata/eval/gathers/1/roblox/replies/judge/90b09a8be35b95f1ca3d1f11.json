@@ -1,0 +1,8 @@
+{
+  "text": "{\"reason_supported\": true, \"explanation\": \"News source: 'A kid who wants to dodge all of the above can simply enter any birthdate before September 2007.' This directly describes a reported bypass where a child can evade age verification by entering a false birthdate, demonstrating an explicit actual/assigned-age mismatch.\"}",
+  "input_tokens": 2090,
+  "output_tokens": 73,
+  "price_nano": 692700,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

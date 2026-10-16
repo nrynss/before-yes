@@ -1,0 +1,8 @@
+{
+  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D513]\",\n      \"area\": \"age_gating\",\n      \"claim\": \"A parent reports the app is intended for ages 3+ and up\",\n      \"stance\": \"neutral\",\n      \"quote\": \"age 3+\"\n    },\n    {\n      \"ref\": \"[D513]\",\n      \"area\": \"content\",\n      \"claim\": \"A parent reports the app includes creative early-learning activities\",\n      \"stance\": \"neutral\",\n      \"quote\": \"Creative early-learning activities engage and inspire.\"\n    },\n    {\n      \"ref\": \"[D513]\",\n      \"area\": \"developer_record\",\n      \"claim\": \"A parent reports Khan Academy Kids has no known fines, breaches, lawsuits or regulatory actions\",\n      \"stance\": \"mitigation\",\n      \"quote\": \"Khan Academy Kids\"\n    }\n  ]\n}",
+  "input_tokens": 5073,
+  "output_tokens": 197,
+  "price_nano": 351660,
+  "measured": true,
+  "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B"
+}

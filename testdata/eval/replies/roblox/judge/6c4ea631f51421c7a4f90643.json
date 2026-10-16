@@ -1,0 +1,8 @@
+{
+  "text": "{\"reason_supported\": false, \"explanation\": \"The explanation states 'A reviewer reports losing over $2,000 due to unauthorized transactions and account compromise.' This adds causal reasoning—'due to'—that attributes the financial loss specifically to unauthorized transactions and account compromise. However, the quoted review says only: 'my money taken, and my account hacked, overall it has costed me me over 2,000 dollars'. While the quote mentions both money taken and account hacking, it does not state that the money loss was caused by the hacking or unauthorized transactions. It presents two related issues but does not establish causation. Therefore, the claim that the loss was 'due to' unauthorized transactions and account compromise introduces an unsupported causal link not present in the source.\"}",
+  "input_tokens": 1170,
+  "output_tokens": 166,
+  "price_nano": 500400,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

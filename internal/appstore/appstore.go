@@ -52,13 +52,18 @@ func New(baseURL, country string) *Client {
 
 // App is one hit from the search API.
 type App struct {
-	ID          int64  `json:"trackId"`
-	Name        string `json:"trackName"`
-	Seller      string `json:"sellerName"`
-	SellerURL   string `json:"sellerUrl"`
-	StoreURL    string `json:"trackViewUrl"`
-	AgeRating   string `json:"trackContentRating"`
-	Description string `json:"description"`
+	ID        int64  `json:"trackId"`
+	Name      string `json:"trackName"`
+	Seller    string `json:"sellerName"`
+	SellerURL string `json:"sellerUrl"`
+	StoreURL  string `json:"trackViewUrl"`
+	AgeRating string `json:"trackContentRating"`
+	// FormattedPrice is the listing's price as Apple prints it ("Free").
+	FormattedPrice string `json:"formattedPrice"`
+	// Advisories are Apple's content advisories for the rating ("Infrequent/
+	// Mild Sexual Content and Nudity"); none for a plain 4+ app.
+	Advisories  []string `json:"advisories"`
+	Description string   `json:"description"`
 }
 
 // Find searches the storefront for title and returns the hits, best first.

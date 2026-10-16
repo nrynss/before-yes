@@ -146,7 +146,20 @@ func TestReview355DecidesTheCard(t *testing.T) {
 	if contact.Level != checklist.Flag || len(contact.Findings) != 1 {
 		t.Fatalf("contact = %+v", contact)
 	}
-	if len(card.Findings) != 1 || card.Findings[0].ID != contact.Findings[0] || card.Findings[0].Source.Index != 355 {
+	// The card shows the cited finding and every risk finding. Besides review
+	// 355 the risks are the App Store's own advisories for Roblox (storefacts.go),
+	// each a verified quote of the listing.
+	var own []finding.Finding
+	for _, f := range card.Findings {
+		if f.Source.Kind == KindStore {
+			if f.Stance != finding.Risk || f.Source.URL != "https://apps.apple.com/us/app/roblox/id431946152?uo=4" {
+				t.Errorf("store fact on the card = %+v, want a risk finding of the listing", f)
+			}
+			continue
+		}
+		own = append(own, f)
+	}
+	if len(own) != 1 || own[0].ID != contact.Findings[0] || own[0].Source.Index != 355 {
 		t.Fatalf("card findings = %+v", card.Findings)
 	}
 	if card.Stats.Drops.Unquoted != 1 || card.Stats.Reviews != 500 || card.Stats.Chunks == 0 {
@@ -197,8 +210,13 @@ func TestReview355DecidesTheCard(t *testing.T) {
 
 // Without review 355 the same evidence is unclear: it is that review that
 // decides the card.
+//
+// The App Store's own advisories for Roblox are risk findings, and the rule
+// judge flags any risk, so this test drops them (plainStore) to isolate what
+// the reader found; the facts have their own tests in storefacts_test.go.
 func TestWithoutReview355Unclear(t *testing.T) {
 	e := newE2E(t, demos[0], map[string][]finding.Raw{})
+	e.p.Gatherer.Store = plainStore{e.p.Gatherer.Store}
 	card, err := e.p.Run(context.Background(), Request{Title: "Roblox", Age: 9}, "c")
 	if err != nil {
 		t.Fatal(err)
@@ -388,4 +406,19 @@ func TestKeyVersionsAreHashes(t *testing.T) {
 	if len(cs) < 2 || !strings.Contains(readerUser("Sample Title", cs[0], docs), "[R1]") {
 		t.Errorf("sample does not exercise the chunker: %d chunks", len(cs))
 	}
+}
+
+// plainStore answers the lookup without Apple's content advisories, so no
+// App Store fact finding reaches a stand-in judge that flags every risk.
+type plainStore struct{ Store }
+
+func (p plainStore) Storefront() string { return "us" }
+
+func (p plainStore) Find(ctx context.Context, title string, limit int) ([]appstore.App, error) {
+	apps, err := p.Store.Find(ctx, title, limit)
+	for i := range apps {
+		apps[i].Advisories = nil
+		apps[i].StoreURL = "" // no listing page to read, so no page facts
+	}
+	return apps, err
 }

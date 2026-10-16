@@ -6,31 +6,35 @@
         "area": "contact",
         "level": "unknown",
         "findings": [],
-        "reason": "Changed to unknown: no verified finding supports ok."
+        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       },
       {
         "area": "money",
         "level": "ok",
         "findings": [
-          "f_fafdd7902651ab6c",
-          "f_2b5396534308f22c",
-          "f_1da121f28cdd8761"
+          "f_1743367afa774fb8",
+          "f_b42defec3738fd8b"
         ],
-        "reason": "The app is free with no in-app purchases, loot boxes, or subscriptions."
+        "reason": "The rating states the mobile app is 100% free with no ads or subscriptions."
       },
       {
         "area": "data",
-        "level": "ok",
+        "level": "flag",
         "findings": [
-          "f_03a93704589b927b"
+          "f_b677ef9f38aa3b5b",
+          "f_cf3c5c65071d1c6e",
+          "f_73d64adad97808eb"
         ],
-        "reason": "The app is COPPA-compliant and collects no personally identifiable information."
+        "reason": "Regulators allege the app collected children's names, email addresses, and birth dates without parental consent."
       },
       {
         "area": "age_gating",
-        "level": "unknown",
-        "findings": [],
-        "reason": "Changed to unknown: the cited quotes do not meet this area's flag definition."
+        "level": "ok",
+        "findings": [
+          "f_41c741e625336937",
+          "f_44b2975820f1807f"
+        ],
+        "reason": "No source quote reports how age is collected, verified, or circumvented during sign-up or use."
       },
       {
         "area": "content",
@@ -38,16 +42,16 @@
         "findings": [
           "f_0fcffd8da2e19a5b"
         ],
-        "reason": "parents or reviewers report children actually meeting unsuitable material on this title"
+        "reason": "A review reports a grid of scary devil faces and men tied up with mouths taped shut appeared for about 15 seconds while a child worked on math."
       },
       {
         "area": "developer_record",
         "level": "unknown",
         "findings": [],
-        "reason": "Changed to unknown: no verified finding supports ok."
+        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       }
     ],
-    "evidence_sha256": "f8536883e5b76febfdb8ea044925652b40c8c12476eeaab14ca4f63e4f25a723",
+    "evidence_sha256": "cf5dfdaa77eae360e84dadd33c629bd21136e8314b96ddc8362e9452cb4c970b",
     "age": 5,
     "models": "recorded-reader + recorded-judge",
     "want_verdict": "yes",
@@ -65,7 +69,7 @@
             "quote": "Made For Ages 0–5"
           }
         ],
-        "got_reason": "Changed to unknown: no verified finding supports ok."
+        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       },
       {
         "area": "money",
@@ -79,13 +83,13 @@
             "quote": "Always 100% free, no ads, no subscriptions—just safe, joyful learning kids and parents love."
           }
         ],
-        "got_reason": "The app is free with no in-app purchases, loot boxes, or subscriptions."
+        "got_reason": "The rating states the mobile app is 100% free with no ads or subscriptions."
       },
       {
         "area": "data",
         "want": "ok",
-        "got": "ok",
-        "agree": true,
+        "got": "flag",
+        "agree": false,
         "found": [],
         "missed": [
           {
@@ -93,13 +97,13 @@
             "quote": "We don't show ads in the app, and we don't let third parties track your child across other apps or websites."
           }
         ],
-        "got_reason": "The app is COPPA-compliant and collects no personally identifiable information."
+        "got_reason": "Regulators allege the app collected children's names, email addresses, and birth dates without parental consent."
       },
       {
         "area": "age_gating",
         "want": "ok",
-        "got": "unknown",
-        "agree": false,
+        "got": "ok",
+        "agree": true,
         "found": [],
         "missed": [
           {
@@ -107,7 +111,7 @@
             "quote": "A free educational app for children ages 2–8, with games, books, and lessons"
           }
         ],
-        "got_reason": "Changed to unknown: the cited quotes do not meet this area's flag definition."
+        "got_reason": "No source quote reports how age is collected, verified, or circumvented during sign-up or use."
       },
       {
         "area": "content",
@@ -121,7 +125,7 @@
             "quote": "My 4 year old loves this. It has everything and isn’t overstimulating AND it has no ads."
           }
         ],
-        "got_reason": "parents or reviewers report children actually meeting unsuitable material on this title"
+        "got_reason": "A review reports a grid of scary devil faces and men tied up with mouths taped shut appeared for about 15 seconds while a child worked on math."
       },
       {
         "area": "developer_record",
@@ -130,30 +134,30 @@
         "agree": true,
         "found": [],
         "missed": [],
-        "got_reason": "Changed to unknown: no verified finding supports ok."
+        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       }
     ],
     "agreed": 3,
     "decisive_found": 0,
     "decisive_total": 5,
-    "findings": 155,
+    "findings": 146,
     "drops": {
-      "bad_area": 12,
+      "bad_area": 11,
       "bad_stance": 0,
-      "no_quote": 7,
-      "unquoted": 51,
-      "duplicates": 3
+      "no_quote": 3,
+      "unquoted": 30,
+      "duplicates": 7
     },
-    "drop_rate": 0.3201754385964912,
-    "chunks": 28,
-    "failed_chunks": 2,
+    "drop_rate": 0.25888324873096447,
+    "chunks": 17,
+    "failed_chunks": 1,
     "missing_kinds": [
       "policy",
       "terms"
     ],
-    "tavily_credits": 8,
-    "read_cost_nano": 16476300,
-    "judge_cost_nano": 25510200
+    "tavily_credits": 9,
+    "read_cost_nano": 10957500,
+    "judge_cost_nano": 24500400
   },
   {
     "title": "Minecraft",
@@ -161,45 +165,61 @@
       {
         "area": "contact",
         "level": "unknown",
-        "findings": [],
-        "reason": "Changed to unknown: the cited quotes do not meet this area's flag definition."
+        "findings": [
+          "f_0c5317397f85dce9",
+          "f_c064483b3c617727"
+        ],
+        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       },
       {
         "area": "money",
-        "level": "unknown",
-        "findings": [],
-        "reason": "Changed to unknown: the cited quotes do not meet this area's flag definition."
+        "level": "flag",
+        "findings": [
+          "f_4f0d24b3b6bb0948",
+          "f_fe600dad41e0a6a9",
+          "f_a24eb25dc2e2b26a"
+        ],
+        "reason": "A reviewer who says they are 10 years old reports buying 10,000 Minecoins using birthday money and feeling scammed."
       },
       {
         "area": "data",
         "level": "unknown",
-        "findings": [],
-        "reason": "Changed to unknown: the cited quotes do not meet this area's flag definition."
+        "findings": [
+          "f_6b7cc1eed85a38ff",
+          "f_588749e106d02d39"
+        ],
+        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       },
       {
         "area": "age_gating",
         "level": "unknown",
-        "findings": [],
-        "reason": "Changed to unknown: the cited quotes do not meet this area's flag definition."
+        "findings": [
+          "f_88d325d4c1d10860",
+          "f_4f6dcadc29660484"
+        ],
+        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       },
       {
         "area": "content",
-        "level": "unknown",
-        "findings": [],
-        "reason": "Changed to unknown: the cited quotes do not meet this area's flag definition."
+        "level": "ok",
+        "findings": [
+          "f_b2135a43fe79f014",
+          "f_bc14515a00b12a6a"
+        ],
+        "reason": "Read the cited source quotes before deciding; we couldn’t verify a plain-language explanation for this area."
       },
       {
         "area": "developer_record",
         "level": "unknown",
         "findings": [],
-        "reason": "Changed to unknown: the cited quotes do not meet this area's flag definition."
+        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       }
     ],
-    "evidence_sha256": "d42026185dc69cd24f9fc7d264ca08e1ca187c017c9b6e7bf5c2e858630ff0c0",
+    "evidence_sha256": "79fc9915228572286709ce8f65c33b9a79e1e4bbb02e7de3027d78bb4a88fe3c",
     "age": 9,
     "models": "recorded-reader + recorded-judge",
     "want_verdict": "yes_with_settings",
-    "got_verdict": "unclear",
+    "got_verdict": "no",
     "areas": [
       {
         "area": "contact",
@@ -218,12 +238,12 @@
             "quote": "offer child accounts that empower parents to manage and monitor gameplay, multiplayer access, chat settings, and friend requests"
           }
         ],
-        "got_reason": "Changed to unknown: the cited quotes do not meet this area's flag definition."
+        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       },
       {
         "area": "money",
         "want": "ok",
-        "got": "unknown",
+        "got": "flag",
         "agree": false,
         "found": [],
         "missed": [
@@ -232,7 +252,7 @@
             "quote": "there is no ads to interrupt me and I can get friends"
           }
         ],
-        "got_reason": "Changed to unknown: the cited quotes do not meet this area's flag definition."
+        "got_reason": "A reviewer who says they are 10 years old reports buying 10,000 Minecoins using birthday money and feeling scammed."
       },
       {
         "area": "data",
@@ -241,7 +261,7 @@
         "agree": true,
         "found": [],
         "missed": [],
-        "got_reason": "Changed to unknown: the cited quotes do not meet this area's flag definition."
+        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       },
       {
         "area": "age_gating",
@@ -255,13 +275,13 @@
             "quote": "On a child account, multiplayer starts off, and you choose whether others can communicate with your child"
           }
         ],
-        "got_reason": "Changed to unknown: the cited quotes do not meet this area's flag definition."
+        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       },
       {
         "area": "content",
         "want": "ok",
-        "got": "unknown",
-        "agree": false,
+        "got": "ok",
+        "agree": true,
         "found": [
           {
             "source": "https://www.minecraft.net/en-us/article/parents--guide-minecraft",
@@ -269,7 +289,7 @@
           }
         ],
         "missed": [],
-        "got_reason": "Changed to unknown: the cited quotes do not meet this area's flag definition."
+        "got_reason": "Read the cited source quotes before deciding; we couldn’t verify a plain-language explanation for this area."
       },
       {
         "area": "developer_record",
@@ -278,13 +298,13 @@
         "agree": true,
         "found": [],
         "missed": [],
-        "got_reason": "Changed to unknown: the cited quotes do not meet this area's flag definition."
+        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       }
     ],
-    "agreed": 2,
+    "agreed": 3,
     "decisive_found": 2,
     "decisive_total": 5,
-    "findings": 221,
+    "findings": 227,
     "drops": {
       "bad_area": 17,
       "bad_stance": 2,
@@ -292,7 +312,7 @@
       "unquoted": 98,
       "duplicates": 1
     },
-    "drop_rate": 0.36127167630057805,
+    "drop_rate": 0.35511363636363635,
     "chunks": 48,
     "failed_chunks": 1,
     "missing_kinds": [
@@ -300,51 +320,127 @@
     ],
     "tavily_credits": 7,
     "read_cost_nano": 20037600,
-    "judge_cost_nano": 24652800
+    "judge_cost_nano": 24484200
   },
   {
     "title": "Roblox",
     "grades": [
       {
         "area": "contact",
-        "level": "unknown",
-        "findings": [],
-        "reason": "Changed to unknown: the cited quotes do not meet this area's flag definition."
+        "level": "flag",
+        "findings": [
+          "f_371023fe16f1d604",
+          "f_e2d85c5060eeed02",
+          "f_7cce8a2d0c3802d5",
+          "f_0ccddeb5171ebfbc",
+          "f_b2104017700b95ff"
+        ],
+        "reason": "A forum post reports that chats built into specific mini-games cannot be disabled even when chat is set to 'no one,' and users can write text on signs visible to all players regardless of age."
       },
       {
         "area": "money",
         "level": "unknown",
         "findings": [],
-        "reason": "Changed to unknown: the cited quotes do not meet this area's flag definition."
+        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       },
       {
         "area": "data",
-        "level": "unknown",
-        "findings": [],
-        "reason": "Changed to unknown: the reason says more than the cited quotes support."
+        "level": "flag",
+        "findings": [
+          "f_642612c1692ab232",
+          "f_81873d6371e5c237",
+          "f_df8c67f0c4f7babe",
+          "f_a65eaa30ecb963fc",
+          "f_6e122c3255b2cc9d",
+          "f_ab4205ee789a5155",
+          "f_0fc65fce86b7d447",
+          "f_01ff78ed9b8396ae",
+          "f_e0dae60c77c9a637",
+          "f_3736de7279c1643d",
+          "f_428fe5874ed68ea6",
+          "f_2985ff0dc225b094",
+          "f_6e61cfcbe7176301",
+          "f_1a91f32a9169665e",
+          "f_93f7a30cf16fff06",
+          "f_37a8bd5d8f222dac",
+          "f_d20b0e8546d5bfac",
+          "f_a97668e787093080"
+        ],
+        "reason": "A forum post states that images used for age verification may be processed by third-party providers without a publicly guaranteed retention period for children's images."
       },
       {
         "area": "age_gating",
         "level": "flag",
         "findings": [
-          "f_3e1e4d584522e5a9"
+          "f_1a25f23c2a7d04ae",
+          "f_3ca480204e8d6f50",
+          "f_11a798444ff65e2e",
+          "f_7d38ece9ae718771",
+          "f_78faeba1984508c0",
+          "f_6ecb8625d3d2ac6c",
+          "f_ec9fb914d5fc5d57",
+          "f_de9b9f1b5ac6adeb",
+          "f_d8950f2c1e34a1ef",
+          "f_56879b0304ca9d4c",
+          "f_06b8f8168a9115be",
+          "f_3e1e4d584522e5a9",
+          "f_1d3a5282c27e5a4c",
+          "f_6ad8072dfffccb64"
         ],
-        "reason": "the age gate fails in practice"
+        "reason": "A news quote states that a kid who wants to dodge age verification can simply enter any birthdate before September 2007."
       },
       {
         "area": "content",
-        "level": "unknown",
-        "findings": [],
-        "reason": "Changed to unknown: the cited quotes do not meet this area's flag definition."
+        "level": "flag",
+        "findings": [
+          "f_ae2e6d3011e64586",
+          "f_dc7f900e9aeaae61",
+          "f_520ad246117eac7c",
+          "f_3dd67dca7a728b40",
+          "f_08f1157eb8532858",
+          "f_7bfc294c87ff4e36",
+          "f_d645bb96b33922b9",
+          "f_f2b7559ba5ba9f55",
+          "f_6f5978e777802365",
+          "f_5fbebe0a470abb2b",
+          "f_6fab8dae3bd61975",
+          "f_b9e5d7c85a77a858",
+          "f_8f1be93b269b5300",
+          "f_d473c3ff24182f62",
+          "f_09c37db024437e51",
+          "f_1246fdc29ba3e15a",
+          "f_2fd33511a57744d9",
+          "f_807e706a86b8984f",
+          "f_6119a505a733c18f",
+          "f_6cf0ca6c09a4bc75",
+          "f_7b6c98dcaa4abf47",
+          "f_e8dd6a69458053b0",
+          "f_9a1ab141822489be",
+          "f_c08803667125253a",
+          "f_889cc4faaf42e42a",
+          "f_fa9e07bb929c6e95"
+        ],
+        "reason": "A forum post describes that within seconds, the 'Street Code' game showed an intense, fiery car accident and prompted the player to decide whether to shoot or save an officer."
       },
       {
         "area": "developer_record",
-        "level": "unknown",
-        "findings": [],
-        "reason": "Changed to unknown: the cited quotes do not meet this area's flag definition."
+        "level": "flag",
+        "findings": [
+          "f_36d826992acf4266",
+          "f_b4bf19322a6df69d",
+          "f_005ff9ce800de2bf",
+          "f_57b49e01b949bdc1",
+          "f_7124f060b141bae7",
+          "f_837b631743dfa7a6",
+          "f_5e51e899aa373856",
+          "f_def610c472adb7ff",
+          "f_34091d180fb18e53",
+          "f_1a5ce1f0b0d7b819"
+        ],
+        "reason": "A news quote reports that Los Angeles County filed a civil lawsuit against Roblox Corporation alleging the company falsely marketed its platform as safe for children while knowingly allowing it to become a hunting ground for predators."
       }
     ],
-    "evidence_sha256": "e7c67c61bd9cdebb2f7678444aa6f1599ebee26886f15626178947bc4d14db63",
+    "evidence_sha256": "1d3bf255f443dc0e6f480e5ddc8e3823f7c5cbe986c307def6b1545d68d0b728",
     "age": 9,
     "models": "recorded-reader + recorded-judge",
     "want_verdict": "no",
@@ -353,8 +449,8 @@
       {
         "area": "contact",
         "want": "flag",
-        "got": "unknown",
-        "agree": false,
+        "got": "flag",
+        "agree": true,
         "found": [],
         "missed": [
           {
@@ -366,7 +462,7 @@
             "quote": "they can’t stop the child predators and E-Daters"
           }
         ],
-        "got_reason": "Changed to unknown: the cited quotes do not meet this area's flag definition."
+        "got_reason": "A forum post reports that chats built into specific mini-games cannot be disabled even when chat is set to 'no one,' and users can write text on signs visible to all players regardless of age."
       },
       {
         "area": "money",
@@ -380,16 +476,16 @@
             "quote": "I got Robux and I got only 246 Robux instead of 1800"
           }
         ],
-        "got_reason": "Changed to unknown: the cited quotes do not meet this area's flag definition."
+        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       },
       {
         "area": "data",
         "want": "unknown",
-        "got": "unknown",
-        "agree": true,
+        "got": "flag",
+        "agree": false,
         "found": [],
         "missed": [],
-        "got_reason": "Changed to unknown: the reason says more than the cited quotes support."
+        "got_reason": "A forum post states that images used for age verification may be processed by third-party providers without a publicly guaranteed retention period for children's images."
       },
       {
         "area": "age_gating",
@@ -403,13 +499,13 @@
             "quote": "Im 14 but it said 9-12 on the age check"
           }
         ],
-        "got_reason": "the age gate fails in practice"
+        "got_reason": "A news quote states that a kid who wants to dodge age verification can simply enter any birthdate before September 2007."
       },
       {
         "area": "content",
         "want": "flag",
-        "got": "unknown",
-        "agree": false,
+        "got": "flag",
+        "agree": true,
         "found": [],
         "missed": [
           {
@@ -417,13 +513,13 @@
             "quote": "It’s also a very inappropriate game with all the horror games"
           }
         ],
-        "got_reason": "Changed to unknown: the cited quotes do not meet this area's flag definition."
+        "got_reason": "A forum post describes that within seconds, the 'Street Code' game showed an intense, fiery car accident and prompted the player to decide whether to shoot or save an officer."
       },
       {
         "area": "developer_record",
         "want": "flag",
-        "got": "unknown",
-        "agree": false,
+        "got": "flag",
+        "agree": true,
         "found": [],
         "missed": [
           {
@@ -431,13 +527,13 @@
             "quote": "This lawsuit alleges that Roblox has violated the privacy of its users by tracking data without consent."
           }
         ],
-        "got_reason": "Changed to unknown: the cited quotes do not meet this area's flag definition."
+        "got_reason": "A news quote reports that Los Angeles County filed a civil lawsuit against Roblox Corporation alleging the company falsely marketed its platform as safe for children while knowingly allowing it to become a hunting ground for predators."
       }
     ],
-    "agreed": 2,
+    "agreed": 4,
     "decisive_found": 0,
     "decisive_total": 6,
-    "findings": 200,
+    "findings": 207,
     "drops": {
       "bad_area": 3,
       "bad_stance": 0,
@@ -445,12 +541,12 @@
       "unquoted": 93,
       "duplicates": 0
     },
-    "drop_rate": 0.3288590604026846,
+    "drop_rate": 0.32131147540983607,
     "chunks": 46,
     "failed_chunks": 0,
     "missing_kinds": [],
     "tavily_credits": 8,
     "read_cost_nano": 17831700,
-    "judge_cost_nano": 22192200
+    "judge_cost_nano": 39635100
   }
 ]

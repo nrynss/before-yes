@@ -49,6 +49,8 @@ type fixture struct {
 	mu       sync.Mutex
 	searches []tavily.Search
 	extracts [][]string
+	// storePageReads counts the extracts of the listing page.
+	storePageReads int
 }
 
 func newFixture(t *testing.T, d demo) (*fixture, *httptest.Server) {
@@ -151,6 +153,25 @@ func (f *fixture) extract(w http.ResponseWriter, r *http.Request) {
 	f.mu.Lock()
 	f.extracts = append(f.extracts, req.URLs)
 	f.mu.Unlock()
+	// The listing page itself is answered from its own capture (the US page
+	// text), the way a live extract of it would be.
+	if len(req.URLs) == 1 {
+		if b, err := os.ReadFile(filepath.Join(f.dir, "tavily-extract-storepage.json")); err == nil {
+			var page struct {
+				Results []struct {
+					URL string `json:"url"`
+				} `json:"results"`
+			}
+			if json.Unmarshal(b, &page) == nil && len(page.Results) > 0 && page.Results[0].URL == req.URLs[0] {
+				f.mu.Lock()
+				f.storePageReads++
+				f.mu.Unlock()
+				w.Header().Set("Content-Type", "application/json")
+				_, _ = w.Write(b)
+				return
+			}
+		}
+	}
 	var rec struct {
 		Results []map[string]any `json:"results"`
 		Usage   map[string]any   `json:"usage"`
@@ -194,8 +215,11 @@ func (f *fixture) credits() float64 {
 	}
 	f.mu.Lock()
 	defer f.mu.Unlock()
-	if len(f.extracts) > 0 {
+	if len(f.extracts) > f.storePageReads {
 		add("tavily-extract.json")
+	}
+	if f.storePageReads > 0 {
+		add("tavily-extract-storepage.json")
 	}
 	return total
 }
@@ -296,11 +320,13 @@ func TestGatherFixtures(t *testing.T) {
 		},
 		"khan-academy-kids": {
 			host: "khankids.org", from: "seller_url", app: 1378467217,
-			// T3.10's off-product filter drops 10 sibling pages (see
-			// TestOffProductFilterFixtures): 8 reddit threads and the
-			// internetmatters and Common Sense pages about Khan Academy, the
-			// website, not the Kids app.
-			kinds: map[string]int{KindReview: 500, KindStore: 1, KindReddit: 8, KindForum: 4, KindNews: 1, KindRating: 5},
+			// The off-product filter drops 15 sibling pages (see
+			// TestOffProductFilterFixtures): T3.10's 10 (8 reddit threads and
+			// the internetmatters and Common Sense pages about Khan Academy,
+			// the website, not the Kids app) and, by the shorter-sibling text
+			// rule, 2 reddit threads and 3 Common Sense articles that name
+			// Khan Academy and never Khan Academy Kids.
+			kinds: map[string]int{KindReview: 500, KindStore: 1, KindReddit: 6, KindForum: 1, KindNews: 1, KindRating: 5},
 			// Both searches return only the homepage, which is skipped, so
 			// no extract call is made.
 			missing: []string{KindPolicy, KindTerms},
@@ -409,13 +435,19 @@ func TestGatherFixtures(t *testing.T) {
 // demo captures: Khan Academy Kids drops the sibling Khan Academy pages and
 // counts them in OffProduct, keeps its own pages (the org's kids page, its
 // helpdesk host, its stores, its named reviews of the app), and never drops a
-// review or the store description. Roblox and Minecraft drop nothing: their
-// brand is a single word, so any page naming the brand names the product.
+// review or the store description. Roblox, Minecraft and Toca drop nothing:
+// their brand is a single word (or has no shorter sibling), so any page
+// naming the brand names the product.
+//
+// The shorter-sibling rule adds 5 drops to T3.10's 10: pages whose subject
+// names neither app but whose text names "Khan Academy" (the sibling whose
+// name is a strict part of "Khan Academy Kids") and never "Khan Academy
+// Kids".
 func TestOffProductFilterFixtures(t *testing.T) {
 	khan := demos[2]
 	got, _, _ := gatherFixture(t, khan)
-	if got.OffProduct != 10 {
-		t.Errorf("OffProduct = %d, want 10 (8 reddit, 1 forum, 1 rating sibling pages)", got.OffProduct)
+	if got.OffProduct != 15 {
+		t.Errorf("OffProduct = %d, want 15 (T3.10's 10, plus 2 reddit and 3 Common Sense pages naming only the shorter sibling)", got.OffProduct)
 	}
 	dropped := []string{
 		// The Khan Academy website, not the Kids app.
@@ -430,6 +462,13 @@ func TestOffProductFilterFixtures(t *testing.T) {
 		"https://www.reddit.com/r/personalfinance/comments/5n4xhp/reminder_khan_academy_still_has_basic",
 		"https://www.reddit.com/r/math/comments/1de3z2q/i_feel_like_khan_academy_is_garbage_for_learning",
 		"https://www.reddit.com/r/learnmath/comments/1jbq4dk/why_does_my_math_teacher_hate_khan_academy",
+		// The shorter-sibling rule: the subject names neither app, the text
+		// names Khan Academy only.
+		"https://www.reddit.com/r/mathteachers/comments/1bf2j6j/how_do_you_convince_a_parentsspouse_that_kumon",
+		"https://www.reddit.com/r/learnmath/comments/vvb3s9/is_brilliantorg_worth_it",
+		"https://www.commonsensemedia.org/articles/parents-ultimate-guide-to-youtube-kids",
+		"https://www.commonsensemedia.org/articles/parents-ultimate-guide-to-google-classroom",
+		"https://www.commonsensemedia.org/articles/how-to-keep-kids-learning-when-theyre-stuck-at-home",
 	}
 	for _, u := range dropped {
 		if d, ok := docByURL(got.Docs, u); ok {
@@ -467,6 +506,9 @@ func TestOffProductFilterFixtures(t *testing.T) {
 		t.Errorf("missing = %v: no kind lost every document", got.Missing)
 	}
 
+	// Nothing new drops for the other captures: neither Roblox, Minecraft
+	// nor Toca Life World has a same-seller app whose name is a strict part of
+	// the title's, so the text rule never runs for them.
 	for _, d := range []demo{demos[0], demos[1], demos[3]} {
 		got, _, _ := gatherFixture(t, d)
 		if got.OffProduct != 0 {
@@ -524,6 +566,30 @@ func TestOffProductClassifier(t *testing.T) {
 		if _, ok := docByURL(kept, d.Source.URL); !ok {
 			t.Errorf("doc %d (%s) dropped, want kept", i, d.Source.URL)
 		}
+	}
+
+	// The shorter-sibling text rule: a page whose subject names neither app
+	// (a score for a title, as Common Sense titles its privacy evaluations)
+	// and whose text names only "Khan Academy" is about the website.
+	text := []Doc{
+		{Source: finding.Source{Kind: KindRating, Title: "Privacy Evaluation: 78%", URL: "https://privacy.commonsense.org/evaluation/1021"}, Text: "Khan Academy. We may share information with our trusted vendors. Khan Academy is a nonprofit."},
+		{Source: finding.Source{Kind: KindRating, Title: "Privacy Evaluation: 80%", URL: "https://privacy.commonsense.org/evaluation/9999"}, Text: "Khan Academy and Khan Academy Kids are covered by one policy."},
+		{Source: finding.Source{Kind: KindRating, Title: "Privacy Evaluation: 64%", URL: "https://privacy.commonsense.org/evaluation/5555"}, Text: "Seesaw for families."},
+		{Source: finding.Source{Kind: KindPolicy, Title: "Privacy Policy", URL: "https://www.khankids.org/privacy"}, Text: "Khan Academy collects."},
+		{Source: finding.Source{Kind: KindReview, Title: "Great", URL: "https://itunes.apple.com/x", Index: 1}, Text: "Khan Academy is the same."},
+		{Source: finding.Source{Kind: KindStore, Title: "Khan", URL: "https://apps.apple.com/us/app/khan-academy-kids/id1378467217"}, Text: "Khan Academy nonprofit."},
+	}
+	keptText, droppedText := offProduct(apps, kids, host, text)
+	if droppedText != 1 {
+		t.Errorf("text rule: dropped = %d, want 1 (the evaluation naming only Khan Academy)", droppedText)
+	}
+	if _, ok := docByURL(keptText, text[0].Source.URL); ok {
+		t.Error("text rule: a page naming only the shorter sibling was kept")
+	}
+	// A seller whose other app is not a part of the title's name never
+	// triggers the text rule.
+	if _, n := offProduct([]appstore.App{{Name: "Khan Academy Kids", Seller: "Khan Academy"}, {Name: "Khan Math", Seller: "Khan Academy"}}, kids, host, text[:1]); n != 0 {
+		t.Errorf("text rule: dropped %d for a sibling that is not part of the title's name, want 0", n)
 	}
 
 	// No sibling beside the product: nothing drops, whatever the subject.

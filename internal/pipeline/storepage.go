@@ -146,31 +146,37 @@ func doubledBlock(sec []string, i int) (n, resp, used int) {
 	return 0, 0, 0
 }
 
-// storePageDocs reads the listing's web page with one basic extract and
-// turns its reviews into documents, kind review, with the page URL as the
-// source and the page position as the index. The extract is metered under
-// ref like any Tavily call. It returns the documents and, when there are
-// none, why.
-func (g *Gatherer) storePageDocs(ctx context.Context, ref string, a *appstore.App, at time.Time) ([]Doc, float64, string, bool) {
+// readStorePage reads the listing's web page with one basic extract, metered
+// under ref like any Tavily call. It returns the page text and the credits
+// used. When the page could not be read it returns an empty text, why, and
+// failed true for an errored call (the evidence is then not cached) or false
+// when there is simply no page URL.
+func (g *Gatherer) readStorePage(ctx context.Context, ref string, a *appstore.App) (page string, used float64, why string, failed bool) {
 	if a.StoreURL == "" {
-		return nil, 0, "no App Store page URL to read reviews from", false
+		return "", 0, "no App Store page URL to read reviews from", false
 	}
 	ex, used, err := g.extract(ctx, ref, []string{a.StoreURL})
 	if err != nil {
-		return nil, used, "App Store page could not be read: " + err.Error(), true
+		return "", used, "App Store page could not be read: " + err.Error(), true
 	}
-	var page string
 	for _, p := range ex.Pages {
 		if p.URL == a.StoreURL {
 			page = p.RawContent
 		}
 	}
 	if page == "" {
-		return nil, used, "App Store page could not be read: " + a.StoreURL, true
+		return "", used, "App Store page could not be read: " + a.StoreURL, true
 	}
+	return page, used, "", false
+}
+
+// storePageDocs turns the reviews on the listing's page text into documents,
+// kind review, with the page URL as the source and the page position as the
+// index. It returns the documents and, when there are none, why.
+func storePageDocs(page string, a *appstore.App, at time.Time) ([]Doc, string) {
 	reviews := ParseStorePage(page)
 	if len(reviews) == 0 {
-		return nil, used, "App Store page shows no reviews", false
+		return nil, "App Store page shows no reviews"
 	}
 	docs := make([]Doc, 0, len(reviews))
 	for _, r := range reviews {
@@ -179,5 +185,5 @@ func (g *Gatherer) storePageDocs(ctx context.Context, ref string, a *appstore.Ap
 			Text:   r.Title + "\n" + r.Body,
 		})
 	}
-	return docs, used, "", false
+	return docs, ""
 }

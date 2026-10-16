@@ -1,0 +1,8 @@
+{
+  "text": "{\"reason_supported\": true, \"explanation\": \"A store listing explicitly states '100% free—no ads, no subscriptions.' This directly addresses the money area by confirming there are no paid mechanisms such as loot boxes, pay-to-win features, or subscription charges that could lead to child spending. The explanation preserves the qualification by citing the store source verbatim and does not infer intent, implementation, or effectiveness beyond what is stated.\"}",
+  "input_tokens": 1277,
+  "output_tokens": 94,
+  "price_nano": 467700,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

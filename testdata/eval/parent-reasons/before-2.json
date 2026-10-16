@@ -6,40 +6,44 @@
         "area": "contact",
         "level": "unknown",
         "findings": [],
-        "reason": "Changed to unknown: no verified finding supports ok."
+        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       },
       {
         "area": "money",
         "level": "unknown",
         "findings": [],
-        "reason": "Changed to unknown: no verified finding supports ok."
+        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       },
       {
         "area": "data",
         "level": "unknown",
         "findings": [],
-        "reason": "Changed to unknown: no verified finding supports ok."
+        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       },
       {
         "area": "age_gating",
         "level": "unknown",
         "findings": [],
-        "reason": "Changed to unknown: the cited quotes do not meet this area's flag definition."
+        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       },
       {
         "area": "content",
         "level": "unknown",
-        "findings": [],
-        "reason": "Changed to unknown: no verified finding supports ok."
+        "findings": [
+          "f_9d6c0e4c5638b99b",
+          "f_5fab2037293141c8",
+          "f_a5a18337beca7677"
+        ],
+        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       },
       {
         "area": "developer_record",
         "level": "unknown",
         "findings": [],
-        "reason": "Changed to unknown: no verified finding supports ok."
+        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       }
     ],
-    "evidence_sha256": "a20799400e16b7f69f0d5d7ac89df040ad0b1969c9285c2ec4bceb1e30c1007c",
+    "evidence_sha256": "9cf08a4acb385f8cda37b097803631d5d329be4e536c62f74a27e785b1187fdf",
     "age": 5,
     "models": "recorded-reader + recorded-judge",
     "want_verdict": "yes",
@@ -57,7 +61,7 @@
             "quote": "Made For Ages 0–5"
           }
         ],
-        "got_reason": "Changed to unknown: no verified finding supports ok."
+        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       },
       {
         "area": "money",
@@ -71,7 +75,7 @@
             "quote": "Always 100% free, no ads, no subscriptions—just safe, joyful learning kids and parents love."
           }
         ],
-        "got_reason": "Changed to unknown: no verified finding supports ok."
+        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       },
       {
         "area": "data",
@@ -85,7 +89,7 @@
             "quote": "We don't show ads in the app, and we don't let third parties track your child across other apps or websites."
           }
         ],
-        "got_reason": "Changed to unknown: no verified finding supports ok."
+        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       },
       {
         "area": "age_gating",
@@ -99,7 +103,7 @@
             "quote": "A free educational app for children ages 2–8, with games, books, and lessons"
           }
         ],
-        "got_reason": "Changed to unknown: the cited quotes do not meet this area's flag definition."
+        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       },
       {
         "area": "content",
@@ -113,7 +117,7 @@
             "quote": "My 4 year old loves this. It has everything and isn’t overstimulating AND it has no ads."
           }
         ],
-        "got_reason": "Changed to unknown: no verified finding supports ok."
+        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       },
       {
         "area": "developer_record",
@@ -122,29 +126,29 @@
         "agree": true,
         "found": [],
         "missed": [],
-        "got_reason": "Changed to unknown: no verified finding supports ok."
+        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       }
     ],
     "agreed": 1,
     "decisive_found": 0,
     "decisive_total": 5,
-    "findings": 226,
+    "findings": 195,
     "drops": {
       "bad_area": 22,
       "bad_stance": 0,
       "no_quote": 8,
-      "unquoted": 73,
-      "duplicates": 1
+      "unquoted": 53,
+      "duplicates": 3
     },
-    "drop_rate": 0.3151515151515151,
-    "chunks": 33,
+    "drop_rate": 0.30604982206405695,
+    "chunks": 21,
     "failed_chunks": 0,
     "missing_kinds": [
       "terms"
     ],
-    "tavily_credits": 8,
-    "read_cost_nano": 15595740,
-    "judge_cost_nano": 31344000
+    "tavily_credits": 9,
+    "read_cost_nano": 11541720,
+    "judge_cost_nano": 23844900
   },
   {
     "title": "Minecraft",
@@ -153,43 +157,48 @@
         "area": "contact",
         "level": "unknown",
         "findings": [],
-        "reason": "Changed to unknown: the cited quotes do not meet this area's flag definition."
+        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       },
       {
         "area": "money",
         "level": "flag",
         "findings": [
+          "f_bbdd451071f6eabc",
           "f_4f0d24b3b6bb0948",
+          "f_5adae5391d64ec0f",
+          "f_197d5537975444c2",
           "f_52134516877ae723"
         ],
-        "reason": "the title pushes purchases at children"
+        "reason": "Multiple reviewers report being scammed while attempting purchases: one paid $1.09 for a mod but received nothing and had to pay $15.99 more, another aged 10 spent all birthday money on 10,000 Minecoins feeling scammed, a third was repeatedly charged $40 total for a failed $6.99 villager add-on purchase, and a fourth states 'I Bought Minecoins it scam me'."
       },
       {
         "area": "data",
         "level": "unknown",
         "findings": [],
-        "reason": "Changed to unknown: the cited quotes do not meet this area's flag definition."
+        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       },
       {
         "area": "age_gating",
         "level": "unknown",
         "findings": [],
-        "reason": "Changed to unknown: the reason says more than the cited quotes support."
+        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       },
       {
         "area": "content",
-        "level": "unknown",
-        "findings": [],
-        "reason": "Changed to unknown: the evidence was thin. No verified quote backs the reason the judge gave."
+        "level": "flag",
+        "findings": [
+          "f_c9072b9921500c3f"
+        ],
+        "reason": "A reviewer reports the game called them the n word, which is a racist slur."
       },
       {
         "area": "developer_record",
         "level": "unknown",
         "findings": [],
-        "reason": "Changed to unknown: the evidence was thin. No verified quote backs the reason the judge gave."
+        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       }
     ],
-    "evidence_sha256": "33482fb5a746f56f3528ed0c91780bf771791321fd9f09e57a95857ea47e6d96",
+    "evidence_sha256": "4c38b6eae120adbdaea59027bbfccf2ea17cf0110cb22b1c8f545a56a853c589",
     "age": 9,
     "models": "recorded-reader + recorded-judge",
     "want_verdict": "yes_with_settings",
@@ -212,7 +221,7 @@
             "quote": "offer child accounts that empower parents to manage and monitor gameplay, multiplayer access, chat settings, and friend requests"
           }
         ],
-        "got_reason": "Changed to unknown: the cited quotes do not meet this area's flag definition."
+        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       },
       {
         "area": "money",
@@ -226,7 +235,7 @@
             "quote": "there is no ads to interrupt me and I can get friends"
           }
         ],
-        "got_reason": "the title pushes purchases at children"
+        "got_reason": "Multiple reviewers report being scammed while attempting purchases: one paid $1.09 for a mod but received nothing and had to pay $15.99 more, another aged 10 spent all birthday money on 10,000 Minecoins feeling scammed, a third was repeatedly charged $40 total for a failed $6.99 villager add-on purchase, and a fourth states 'I Bought Minecoins it scam me'."
       },
       {
         "area": "data",
@@ -235,7 +244,7 @@
         "agree": true,
         "found": [],
         "missed": [],
-        "got_reason": "Changed to unknown: the cited quotes do not meet this area's flag definition."
+        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       },
       {
         "area": "age_gating",
@@ -249,12 +258,12 @@
           }
         ],
         "missed": [],
-        "got_reason": "Changed to unknown: the reason says more than the cited quotes support."
+        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       },
       {
         "area": "content",
         "want": "ok",
-        "got": "unknown",
+        "got": "flag",
         "agree": false,
         "found": [],
         "missed": [
@@ -263,7 +272,7 @@
             "quote": "Because combat is part of the game, there are some elements of mild violence."
           }
         ],
-        "got_reason": "Changed to unknown: the evidence was thin. No verified quote backs the reason the judge gave."
+        "got_reason": "A reviewer reports the game called them the n word, which is a racist slur."
       },
       {
         "area": "developer_record",
@@ -272,13 +281,13 @@
         "agree": true,
         "found": [],
         "missed": [],
-        "got_reason": "Changed to unknown: the evidence was thin. No verified quote backs the reason the judge gave."
+        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       }
     ],
     "agreed": 2,
     "decisive_found": 2,
     "decisive_total": 5,
-    "findings": 142,
+    "findings": 148,
     "drops": {
       "bad_area": 7,
       "bad_stance": 0,
@@ -286,7 +295,7 @@
       "unquoted": 77,
       "duplicates": 1
     },
-    "drop_rate": 0.37719298245614036,
+    "drop_rate": 0.36752136752136755,
     "chunks": 43,
     "failed_chunks": 0,
     "missing_kinds": [
@@ -294,7 +303,7 @@
     ],
     "tavily_credits": 7,
     "read_cost_nano": 13780620,
-    "judge_cost_nano": 18823200
+    "judge_cost_nano": 22821600
   },
   {
     "title": "Roblox",
@@ -303,40 +312,52 @@
         "area": "contact",
         "level": "flag",
         "findings": [
-          "f_a8ef6e887203f7cd",
-          "f_936c4f1c94f5d7a9"
+          "f_ac2eb7da6a842d59",
+          "f_371023fe16f1d604",
+          "f_ddb3aed4c8616169"
         ],
-        "reason": "strangers can reach this child by message, chat or voice, and no control a parent can set shuts that door"
+        "reason": "The cited sources raise a concern here. Read the source quotes before deciding."
       },
       {
         "area": "money",
         "level": "flag",
         "findings": [
-          "f_ef55d9331aff6121",
+          "f_1368a2c5a6fe539a",
           "f_783661ae59b066c7",
-          "f_1368a2c5a6fe539a"
+          "f_ef55d9331aff6121",
+          "f_838b9aee48cfadd9"
         ],
-        "reason": "the title pushes purchases at children"
+        "reason": "A news report states a parent said their 10-year-old daughter spent more than $7,000 in two months despite attempts to limit purchases."
       },
       {
         "area": "data",
         "level": "flag",
         "findings": [
           "f_642612c1692ab232",
+          "f_81873d6371e5c237",
+          "f_b4d5eaf5ea37a5fb",
           "f_3863f822c43eb156",
-          "f_37a8bd5d8f222dac"
+          "f_37a8bd5d8f222dac",
+          "f_47cc8d9af40dc95f",
+          "f_93f7a30cf16fff06",
+          "f_e3ccb57519991f5a",
+          "f_bfd8eeb81a49ad17",
+          "f_d83477d60d3fd88e",
+          "f_1a95672a7897ce7a",
+          "f_7fdb8d987e4ff574",
+          "f_be740391df21b575"
         ],
-        "reason": "children's data is collected and used in ways a parent cannot control"
+        "reason": "A forum post states images used for age verification may be processed by third-party providers, but Roblox does not publicly guarantee a fixed retention period for the images of children."
       },
       {
         "area": "age_gating",
         "level": "flag",
         "findings": [
-          "f_8197a153550302ef",
-          "f_979e8a567e65fc3b",
-          "f_ed2aac5c14c3bb92"
+          "f_f73b923a2223192e",
+          "f_cc470501d4ba96a2",
+          "f_f27d3f03ad121edd"
         ],
-        "reason": "the age gate fails in practice"
+        "reason": "A review reports a four year old attempted face verification and the system assigned them an age of twenty five."
       },
       {
         "area": "content",
@@ -345,40 +366,38 @@
           "f_99d787be8d0bf74c",
           "f_d4c614fe03358dea",
           "f_2b802b187656359b",
+          "f_08f1157eb8532858",
           "f_b12f60a545dad3a6",
           "f_984749ba8671edf1",
           "f_cff5ae07353ea541",
           "f_7bfc294c87ff4e36",
           "f_4132e355653730d0",
+          "f_cb8c641ae80b5f09",
           "f_6fab8dae3bd61975",
           "f_7552aad2b36d618c",
           "f_4bde3c145681082c",
-          "f_cb8c641ae80b5f09",
           "f_5662cca1c891f2fa",
           "f_d473c3ff24182f62",
           "f_8f1be93b269b5300",
           "f_09c37db024437e51",
           "f_807e706a86b8984f",
-          "f_5155ff1fef99e775",
-          "f_5dbde9119960002b",
-          "f_89d61c88048969ea",
           "f_9a1ab141822489be",
-          "f_a5a8c01e1052649e",
-          "f_08f1157eb8532858",
-          "f_81a68c8fe941e881"
+          "f_3fb5e60ef6db480e"
         ],
-        "reason": "parents or reviewers report children actually meeting unsuitable material on this title"
+        "reason": "A forum post states within seconds, the 'Street Code' game showed an intense, fiery car accident and prompted the player to decide whether to shoot or save an officer."
       },
       {
         "area": "developer_record",
         "level": "flag",
         "findings": [
-          "f_13ff2ba3714f5fe6"
+          "f_13ff2ba3714f5fe6",
+          "f_e204bd321f8845bc",
+          "f_9b73e24e8700228c"
         ],
-        "reason": "this title's developer has a record of enforcement over how it treats children or their data"
+        "reason": "A news report states Texas Attorney General Ken Paxton says he has sued Roblox over 'flagrantly ignoring' safety laws and 'deceiving parents' about the dangers the online video gaming platform poses to young people."
       }
     ],
-    "evidence_sha256": "feb56959d7ade79df1b9715bacd6b46947d3d19dd5c39f81ab8a6e6092fa52b4",
+    "evidence_sha256": "1cdccedebf2a4479389936bc080ccbe300b5963cafdb809b7a6b3dd2566b455d",
     "age": 9,
     "models": "recorded-reader + recorded-judge",
     "want_verdict": "no",
@@ -400,7 +419,7 @@
             "quote": "they can’t stop the child predators and E-Daters"
           }
         ],
-        "got_reason": "strangers can reach this child by message, chat or voice, and no control a parent can set shuts that door"
+        "got_reason": "The cited sources raise a concern here. Read the source quotes before deciding."
       },
       {
         "area": "money",
@@ -414,7 +433,7 @@
             "quote": "I got Robux and I got only 246 Robux instead of 1800"
           }
         ],
-        "got_reason": "the title pushes purchases at children"
+        "got_reason": "A news report states a parent said their 10-year-old daughter spent more than $7,000 in two months despite attempts to limit purchases."
       },
       {
         "area": "data",
@@ -423,7 +442,7 @@
         "agree": false,
         "found": [],
         "missed": [],
-        "got_reason": "children's data is collected and used in ways a parent cannot control"
+        "got_reason": "A forum post states images used for age verification may be processed by third-party providers, but Roblox does not publicly guarantee a fixed retention period for the images of children."
       },
       {
         "area": "age_gating",
@@ -437,7 +456,7 @@
             "quote": "Im 14 but it said 9-12 on the age check"
           }
         ],
-        "got_reason": "the age gate fails in practice"
+        "got_reason": "A review reports a four year old attempted face verification and the system assigned them an age of twenty five."
       },
       {
         "area": "content",
@@ -451,7 +470,7 @@
             "quote": "It’s also a very inappropriate game with all the horror games"
           }
         ],
-        "got_reason": "parents or reviewers report children actually meeting unsuitable material on this title"
+        "got_reason": "A forum post states within seconds, the 'Street Code' game showed an intense, fiery car accident and prompted the player to decide whether to shoot or save an officer."
       },
       {
         "area": "developer_record",
@@ -465,13 +484,13 @@
             "quote": "This lawsuit alleges that Roblox has violated the privacy of its users by tracking data without consent."
           }
         ],
-        "got_reason": "this title's developer has a record of enforcement over how it treats children or their data"
+        "got_reason": "A news report states Texas Attorney General Ken Paxton says he has sued Roblox over 'flagrantly ignoring' safety laws and 'deceiving parents' about the dangers the online video gaming platform poses to young people."
       }
     ],
     "agreed": 5,
     "decisive_found": 0,
     "decisive_total": 6,
-    "findings": 187,
+    "findings": 194,
     "drops": {
       "bad_area": 7,
       "bad_stance": 0,
@@ -479,12 +498,12 @@
       "unquoted": 92,
       "duplicates": 2
     },
-    "drop_rate": 0.35294117647058826,
+    "drop_rate": 0.34459459459459457,
     "chunks": 39,
     "failed_chunks": 1,
     "missing_kinds": [],
     "tavily_credits": 8,
     "read_cost_nano": 17948820,
-    "judge_cost_nano": 27872400
+    "judge_cost_nano": 34847700
   }
 ]

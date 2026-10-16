@@ -8,37 +8,37 @@
         "findings": [
           "f_outside_lego-worlds"
         ],
-        "reason": "The comparison guide states there is no open chat with strangers."
+        "reason": "The comparison guide reports there is no open chat with strangers."
       },
       {
         "area": "money",
         "level": "unknown",
         "findings": [],
-        "reason": "No findings were provided about in-app purchases, monetization, or financial risks."
+        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       },
       {
         "area": "data",
         "level": "unknown",
         "findings": [],
-        "reason": "No findings were provided about data collection, tracking, or privacy practices."
+        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       },
       {
         "area": "age_gating",
         "level": "unknown",
         "findings": [],
-        "reason": "No findings were provided about age verification or age-gating effectiveness."
+        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       },
       {
         "area": "content",
         "level": "unknown",
         "findings": [],
-        "reason": "No findings were provided about exposure to unsuitable content such as violence, horror, or harassment."
+        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       },
       {
         "area": "developer_record",
         "level": "unknown",
         "findings": [],
-        "reason": "No findings were provided about the developer's history of fines, breaches, lawsuits, or regulatory actions."
+        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       }
     ],
     "evidence_sha256": "35556ae247099f92d0d3ec3b2e78c2b56bd5aed98787bcc5c0ea4eff133c7620",
@@ -54,7 +54,7 @@
         "agree": false,
         "found": null,
         "missed": null,
-        "got_reason": "The comparison guide states there is no open chat with strangers."
+        "got_reason": "The comparison guide reports there is no open chat with strangers."
       },
       {
         "area": "money",
@@ -63,7 +63,7 @@
         "agree": false,
         "found": null,
         "missed": null,
-        "got_reason": "No findings were provided about in-app purchases, monetization, or financial risks."
+        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       },
       {
         "area": "data",
@@ -72,7 +72,7 @@
         "agree": false,
         "found": null,
         "missed": null,
-        "got_reason": "No findings were provided about data collection, tracking, or privacy practices."
+        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       },
       {
         "area": "age_gating",
@@ -81,7 +81,7 @@
         "agree": false,
         "found": null,
         "missed": null,
-        "got_reason": "No findings were provided about age verification or age-gating effectiveness."
+        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       },
       {
         "area": "content",
@@ -90,7 +90,7 @@
         "agree": false,
         "found": null,
         "missed": null,
-        "got_reason": "No findings were provided about exposure to unsuitable content such as violence, horror, or harassment."
+        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       },
       {
         "area": "developer_record",
@@ -99,7 +99,7 @@
         "agree": false,
         "found": null,
         "missed": null,
-        "got_reason": "No findings were provided about the developer's history of fines, breaches, lawsuits, or regulatory actions."
+        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       }
     ],
     "agreed": 0,
@@ -119,7 +119,7 @@
     "missing_kinds": null,
     "tavily_credits": 0,
     "read_cost_nano": 0,
-    "judge_cost_nano": 700800
+    "judge_cost_nano": 1440600
   },
   {
     "title": "Scratch",
@@ -128,7 +128,7 @@
         "area": "contact",
         "level": "unknown",
         "findings": [],
-        "reason": "No findings were provided about whether strangers can message or voice chat with the child, or about controls to shut that door."
+        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       },
       {
         "area": "money",
@@ -136,31 +136,31 @@
         "findings": [
           "f_outside_scratch"
         ],
-        "reason": "The description emphasizes Scratch as a free, educational coding platform with no mention of in-app purchases, loot boxes, or financial pressure on children."
+        "reason": "The comparison guide calls Scratch MIT's free, block-based coding platform."
       },
       {
         "area": "data",
         "level": "unknown",
         "findings": [],
-        "reason": "No findings were provided about data collection, tracking, third-party sharing, or deletion controls."
+        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       },
       {
         "area": "age_gating",
         "level": "unknown",
         "findings": [],
-        "reason": "No findings were provided about whether the age gate works in practice or if children under the stated age can access the platform."
+        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       },
       {
         "area": "content",
         "level": "unknown",
         "findings": [],
-        "reason": "No findings were provided about whether children encounter unsuitable material such as sexual content, violence, horror, harassment, or self-harm."
+        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       },
       {
         "area": "developer_record",
         "level": "unknown",
         "findings": [],
-        "reason": "No findings were provided about the developer's history of fines, breaches, lawsuits, or regulatory actions regarding children or their data."
+        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       }
     ],
     "evidence_sha256": "dd2bb91632b3dc85039a4efd517378655dcd379b266d085b82bbc757e482e5d7",
@@ -176,7 +176,7 @@
         "agree": false,
         "found": null,
         "missed": null,
-        "got_reason": "No findings were provided about whether strangers can message or voice chat with the child, or about controls to shut that door."
+        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       },
       {
         "area": "money",
@@ -185,7 +185,7 @@
         "agree": false,
         "found": null,
         "missed": null,
-        "got_reason": "The description emphasizes Scratch as a free, educational coding platform with no mention of in-app purchases, loot boxes, or financial pressure on children."
+        "got_reason": "The comparison guide calls Scratch MIT's free, block-based coding platform."
       },
       {
         "area": "data",
@@ -194,7 +194,7 @@
         "agree": false,
         "found": null,
         "missed": null,
-        "got_reason": "No findings were provided about data collection, tracking, third-party sharing, or deletion controls."
+        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       },
       {
         "area": "age_gating",
@@ -203,7 +203,7 @@
         "agree": false,
         "found": null,
         "missed": null,
-        "got_reason": "No findings were provided about whether the age gate works in practice or if children under the stated age can access the platform."
+        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       },
       {
         "area": "content",
@@ -212,7 +212,7 @@
         "agree": false,
         "found": null,
         "missed": null,
-        "got_reason": "No findings were provided about whether children encounter unsuitable material such as sexual content, violence, horror, harassment, or self-harm."
+        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       },
       {
         "area": "developer_record",
@@ -221,7 +221,7 @@
         "agree": false,
         "found": null,
         "missed": null,
-        "got_reason": "No findings were provided about the developer's history of fines, breaches, lawsuits, or regulatory actions regarding children or their data."
+        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       }
     ],
     "agreed": 0,
@@ -241,6 +241,6 @@
     "missing_kinds": null,
     "tavily_credits": 0,
     "read_cost_nano": 0,
-    "judge_cost_nano": 745500
+    "judge_cost_nano": 2397300
   }
 ]

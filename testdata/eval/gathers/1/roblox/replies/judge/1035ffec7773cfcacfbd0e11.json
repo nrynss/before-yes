@@ -1,0 +1,8 @@
+{
+  "text": "{\"criterion\": \"wrong_age_assignment\", \"quote\": \"However, the system can make mistakes. Incorrect age estimates may loosen built-in protections, such as chat restrictions or access limits, while some adults may be incorrectly categorized as younger users and face additional restrictions.\", \"actual_age\": \"\", \"assigned_age\": \"\"}",
+  "input_tokens": 528,
+  "output_tokens": 68,
+  "price_nano": 219600,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

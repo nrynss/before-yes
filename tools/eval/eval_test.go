@@ -165,7 +165,9 @@ func TestReplayMissesReported(t *testing.T) {
 // T3.6 notes together. T3.10 moved only Khan's chunks (22 to 19): the
 // off-product filter drops its ten sibling pages, and the entailment check,
 // answered by the stand-in reader with {"findings": []}, keeps every grade
-// (an unparseable entailment reply never demotes).
+// (an unparseable entailment reply never demotes). The shorter-sibling
+// rule (a page naming "Khan Academy" and never "Khan Academy Kids") moved
+// only Khan's chunks again (19 to 13): five more pages leave the reading.
 func TestStandinBaselinePinned(t *testing.T) {
 	rs, err := evaluate(root, "standin")
 	if err != nil {
@@ -174,7 +176,7 @@ func TestStandinBaselinePinned(t *testing.T) {
 	want := map[string][4]int{ // agreed/6, decisive found/total, chunks
 		"Roblox":            {4, 3, 6, 36},
 		"Minecraft":         {0, 2, 5, 45},
-		"Khan Academy Kids": {3, 1, 5, 19},
+		"Khan Academy Kids": {3, 1, 5, 13},
 	}
 	agreed, found, total := 0, 0, 0
 	for _, r := range rs {
@@ -304,7 +306,9 @@ func TestGatherFlagsRequireTheirOwnDefinition(t *testing.T) {
 		want    checklist.Level
 		verdict checklist.Verdict
 	}{
-		{1, "minecraft", checklist.Data, checklist.Unknown, checklist.Unclear},
+		// Re-recorded: the verdict was unclear (content unknown); now money
+		// is an earned flag in gather 1, so the verdict is no.
+		{1, "minecraft", checklist.Data, checklist.Unknown, checklist.No},
 		{2, "khan-academy-kids", checklist.AgeGating, checklist.Unknown, checklist.Unclear},
 		{1, "roblox", checklist.AgeGating, checklist.Flag, checklist.No},
 		{2, "roblox", checklist.AgeGating, checklist.Flag, checklist.No},
@@ -338,42 +342,47 @@ func TestConditionalCorrectionAloneDoesNotEarnAgeFlag(t *testing.T) {
 			t.Fatal(err)
 		}
 	}
-	path := filepath.Join(ablation, "testdata/eval/replies/roblox/judge/676482d61df7c5506c686663.json")
-	b, err := os.ReadFile(path)
-	if err != nil {
-		t.Fatal(err)
-	}
-	var rec Recording
-	if err := json.Unmarshal(b, &rec); err != nil {
-		t.Fatal(err)
-	}
-	var reply struct {
-		Grades []rawGrade `json:"grades"`
-	}
-	if err := json.Unmarshal([]byte(rec.Text), &reply); err != nil {
-		t.Fatal(err)
-	}
-	changed := false
-	for i := range reply.Grades {
-		if reply.Grades[i].Area == "age_gating" {
-			reply.Grades[i].Findings = []string{"f_3832ce49d8ba54a2"}
-			changed = true
+	// Both judge passes cite the independent bypass report: the first pass
+	// (cdd22b54...) among four ids, the conflict pass (3f9336f3...) alone.
+	// Each is rewritten to cite only the conditional correction.
+	for _, name := range []string{"cdd22b54e09097d8fa7b5856", "3f9336f3345293c4d983e91a"} {
+		path := filepath.Join(ablation, "testdata/eval/replies/roblox/judge", name+".json")
+		b, err := os.ReadFile(path)
+		if err != nil {
+			t.Fatal(err)
 		}
-	}
-	if !changed {
-		t.Fatal("recorded age grade not found")
-	}
-	b, err = json.Marshal(reply)
-	if err != nil {
-		t.Fatal(err)
-	}
-	rec.Text = string(b)
-	b, err = json.Marshal(rec)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if err := os.WriteFile(path, b, 0600); err != nil {
-		t.Fatal(err)
+		var rec Recording
+		if err := json.Unmarshal(b, &rec); err != nil {
+			t.Fatal(err)
+		}
+		var reply struct {
+			Grades []rawGrade `json:"grades"`
+		}
+		if err := json.Unmarshal([]byte(rec.Text), &reply); err != nil {
+			t.Fatal(err)
+		}
+		changed := false
+		for i := range reply.Grades {
+			if reply.Grades[i].Area == "age_gating" {
+				reply.Grades[i].Findings = []string{"f_3832ce49d8ba54a2"}
+				changed = true
+			}
+		}
+		if !changed {
+			t.Fatalf("recorded age grade not found in %s", name)
+		}
+		b, err = json.Marshal(reply)
+		if err != nil {
+			t.Fatal(err)
+		}
+		rec.Text = string(b)
+		b, err = json.Marshal(rec)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if err := os.WriteFile(path, b, 0600); err != nil {
+			t.Fatal(err)
+		}
 	}
 	log, err := os.CreateTemp(t.TempDir(), "diagnosis")
 	if err != nil {
@@ -387,14 +396,56 @@ func TestConditionalCorrectionAloneDoesNotEarnAgeFlag(t *testing.T) {
 	if err != nil || len(rs) != 1 || rs[0].Err != "" {
 		t.Fatalf("replay: %+v %v", rs, err)
 	}
-	if a := areaGot(t, rs[0], checklist.AgeGating); a.Got != checklist.Unknown {
-		t.Fatalf("conditional correction alone earned %s", a.Got)
-	}
 	trace, err := os.ReadFile(log.Name())
 	if err != nil {
 		t.Fatal(err)
 	}
+	if a := areaGot(t, rs[0], checklist.AgeGating); a.Got != checklist.Unknown {
+		t.Fatalf("conditional correction alone earned %s:\n%s", a.Got, trace)
+	}
 	if !strings.Contains(string(trace), `age-gate event=none witness=""`) {
 		t.Fatalf("actual saved none reply was not replayed: %s", trace)
+	}
+}
+
+// A replay with an unrecorded entailment call is reported as a miss. The
+// misses were once counted on the replayer but lost: runOne set Err in a
+// deferred function on an unnamed result, so the caller never saw it and the
+// run looked clean while the grade was kept unchecked. Here every entailment
+// recording of the Roblox set is removed from a copy, and the replay must
+// say so.
+func TestReplayReportsUnrecordedEntailment(t *testing.T) {
+	prevG, prevOnly := *gatherN, *liveOnly
+	t.Cleanup(func() { *gatherN = prevG; *liveOnly = prevOnly })
+	*gatherN, *liveOnly = 0, "roblox"
+	tmp := t.TempDir()
+	for _, dir := range []string{"testdata/eval", "testdata/titles/roblox"} {
+		if err := os.CopyFS(filepath.Join(tmp, dir), os.DirFS(filepath.Join(root, dir))); err != nil {
+			t.Fatal(err)
+		}
+	}
+	removed := 0
+	files, _ := filepath.Glob(filepath.Join(tmp, "testdata/eval/replies/roblox/judge/*.json"))
+	for _, f := range files {
+		b, err := os.ReadFile(f)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if strings.Contains(string(b), "meets_definition") {
+			if err := os.Remove(f); err != nil {
+				t.Fatal(err)
+			}
+			removed++
+		}
+	}
+	if removed == 0 {
+		t.Fatal("no entailment recordings found to remove")
+	}
+	rs, err := evaluate(tmp, "replay")
+	if err != nil || len(rs) != 1 {
+		t.Fatalf("replay: %+v %v", rs, err)
+	}
+	if !strings.Contains(rs[0].Err, "no recording for judge") {
+		t.Errorf("Err = %q, want the replay miss with %d entailment recordings removed", rs[0].Err, removed)
 	}
 }

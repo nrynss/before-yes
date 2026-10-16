@@ -1,0 +1,8 @@
+{
+  "text": "{\"reasons\": [{\"area\": \"contact\", \"reason\": \"A review reports a 40-50 year old man tried to meet up with her using the app.\"}]}",
+  "input_tokens": 1265,
+  "output_tokens": 41,
+  "price_nano": 416400,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

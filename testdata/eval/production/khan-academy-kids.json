@@ -1,0 +1,989 @@
+{
+  "id": "c_9882d4368e6fdad93cd210975580b2aa",
+  "title": "Khan Academy Kids",
+  "kind": "ios",
+  "kind_label": "iOS app",
+  "age": 5,
+  "checklist_version": "v7",
+  "checked_at": "2026-10-15T20:16:17.884843816Z",
+  "collected_at": "2026-10-15T20:15:05.023619446Z",
+  "verdict": "no",
+  "grades": [
+    {
+      "area": "contact",
+      "level": "unknown",
+      "findings": [],
+      "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+    },
+    {
+      "area": "money",
+      "level": "ok",
+      "findings": [
+        "f_6c1c6682758a8909",
+        "f_b42defec3738fd8b",
+        "f_e102924337b2c30c"
+      ],
+      "reason": "The store listing describes the app as 'Free' with no indication of required payments."
+    },
+    {
+      "area": "data",
+      "level": "unknown",
+      "findings": [],
+      "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+    },
+    {
+      "area": "age_gating",
+      "level": "unknown",
+      "findings": [],
+      "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+    },
+    {
+      "area": "content",
+      "level": "flag",
+      "findings": [
+        "f_9fb6f70349f5de82",
+        "f_04950a5846ba2f65",
+        "f_e8b5ee345c142c6f",
+        "f_b2d24bd96f76140a"
+      ],
+      "reason": "A reviewer reports that a grid of scary devil faces and men tied up with mouths taped shut appeared for about 15 seconds during their child's math activity."
+    },
+    {
+      "area": "developer_record",
+      "level": "ok",
+      "findings": [
+        "f_822363f5ee1bcc9b",
+        "f_d2e18ea732ad29fd",
+        "f_61c196456c4b1e80"
+      ],
+      "reason": "The store listing states that Khan Academy is a 501(c)(3) nonprofit organization providing free education."
+    }
+  ],
+  "thin_areas": [
+    "data",
+    "age_gating"
+  ],
+  "settings": [],
+  "findings": [
+    {
+      "id": "f_b85a466e7901849e",
+      "area": "contact",
+      "claim": "A parent reports insufficient parental controls.",
+      "stance": "risk",
+      "quote": "Parents should be able to remove or disable certain videos and other contents for kits to see.",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=1/id=1378467217/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Too little parent control",
+        "index": 32,
+        "fetched_at": "2026-10-15T20:13:46.09755126Z"
+      }
+    },
+    {
+      "id": "f_04950a5846ba2f65",
+      "area": "content",
+      "claim": "A parent reports the app includes yoga routines that conflict with Catholic beliefs.",
+      "stance": "risk",
+      "quote": "Yoga carries specific spiritual intentions that conflict entirely with our Catholic beliefs, and I do not want this introduced to my daughter.",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=1/id=1378467217/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Why have Yoga in the app?",
+        "index": 26,
+        "fetched_at": "2026-10-15T20:13:46.09755126Z"
+      }
+    },
+    {
+      "id": "f_9fb6f70349f5de82",
+      "area": "content",
+      "claim": "A parent reports disturbing imagery appeared while the child used the app.",
+      "stance": "risk",
+      "quote": "A grid of scary devil faces and men tied up with their mouth taped shut popped up for about 15 seconds while my kid was working on math.",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=1/id=1378467217/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Hacked",
+        "index": 18,
+        "fetched_at": "2026-10-15T20:13:46.09755126Z"
+      }
+    },
+    {
+      "id": "f_ce04c5235047e842",
+      "area": "age_gating",
+      "claim": "A parent reports the age limit is too low for older children.",
+      "stance": "risk",
+      "quote": "So the game is really fun but the age range is to small I like it and I’m 11 so the highest it goes is 2nd grade even though older kids like it too.",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=2/id=1378467217/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Age is annoying",
+        "index": 57,
+        "fetched_at": "2026-10-15T20:13:46.09755126Z"
+      }
+    },
+    {
+      "id": "f_d306b3e0c4fa1f9d",
+      "area": "age_gating",
+      "claim": "A parent reports the app lacks higher grade levels.",
+      "stance": "risk",
+      "quote": "Iwas looking for 4th grade and more for my kid this is outrages i thought this would work",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=1/id=1378467217/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Lola",
+        "index": 38,
+        "fetched_at": "2026-10-15T20:13:46.09755126Z"
+      }
+    },
+    {
+      "id": "f_4c8bd6d9dc580435",
+      "area": "age_gating",
+      "claim": "A parent reports the app removed third grade after updates.",
+      "stance": "risk",
+      "quote": "So last time I was playing this game when I was little there was pre to third grade and after updates grade 3 is like gone where did it go like pls bring it back even tho I’m in 5th grade",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=1/id=1378467217/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Where did 3 grade go?",
+        "index": 43,
+        "fetched_at": "2026-10-15T20:13:46.09755126Z"
+      }
+    },
+    {
+      "id": "f_2f770f3b6ea7af2d",
+      "area": "data",
+      "claim": "A parent reports the app crashed and displayed disturbing imagery.",
+      "stance": "risk",
+      "quote": "It crashed pls fix! Also the pink bow isn’t that serious guys",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=2/id=1378467217/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "I know people w",
+        "index": 52,
+        "fetched_at": "2026-10-15T20:13:46.09755126Z"
+      }
+    },
+    {
+      "id": "f_aa89c7a4e1e87378",
+      "area": "data",
+      "claim": "A parent reports the app fails to launch and freezes.",
+      "stance": "risk",
+      "quote": "The app is inoperable. It has been reinstalled and freezes on the set up page.",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=1/id=1378467217/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "App does not work",
+        "index": 46,
+        "fetched_at": "2026-10-15T20:13:46.09755126Z"
+      }
+    },
+    {
+      "id": "f_6a92647afd2a986e",
+      "area": "data",
+      "claim": "A parent reports the app repeatedly fails to create or load profiles.",
+      "stance": "risk",
+      "quote": "Your app does nothing but perpetually load whether trying to get into a fresh profile to start, to click parent options, or even attempt to create a new profile from scratch",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=1/id=1378467217/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Busted app",
+        "index": 48,
+        "fetched_at": "2026-10-15T20:13:46.09755126Z"
+      }
+    },
+    {
+      "id": "f_6c1c6682758a8909",
+      "area": "money",
+      "claim": "A parent reports the app is free and does not require payment.",
+      "stance": "neutral",
+      "quote": "ACTUALLY FREE YOU DONT NEED TO PAY",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=1/id=1378467217/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "ACTUALLY FREE YOU DONT NEED TO PAY",
+        "index": 45,
+        "fetched_at": "2026-10-15T20:13:46.09755126Z"
+      }
+    },
+    {
+      "id": "f_79f8c8c50b58ccc6",
+      "area": "money",
+      "claim": "A parent reports the app lacks sufficient content for higher grades.",
+      "stance": "risk",
+      "quote": "My kid is a fifth grader and it only went to second grade will be pressed 8+ and it didn’t even go up the grade It only stayed at second grade and down.",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=1/id=1378467217/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Terrible for my kid",
+        "index": 28,
+        "fetched_at": "2026-10-15T20:13:46.09755126Z"
+      }
+    },
+    {
+      "id": "f_17ef03637d385230",
+      "area": "content",
+      "claim": "A parent reports the app is terrible and should not be bought.",
+      "stance": "risk",
+      "quote": "Very, very bad Terrible I hate this app!! do not buy this.",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=2/id=1378467217/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Very, very bad",
+        "index": 73,
+        "fetched_at": "2026-10-15T20:13:46.09755126Z"
+      }
+    },
+    {
+      "id": "f_5fab2037293141c8",
+      "area": "content",
+      "claim": "A parent reports the app unexpectedly asks a 4-year-old to record her voice during coloring, startling her.",
+      "stance": "risk",
+      "quote": "Out of nowhere it will talk and ask her to record her voice. Each time it startles my child who then gets quiet and runs to whispers to me what it said. This is inappropriate, and it’s always in the coloring app.",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=3/id=1378467217/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Warning for Parents",
+        "index": 150,
+        "fetched_at": "2026-10-15T20:13:46.09755126Z"
+      }
+    },
+    {
+      "id": "f_520d835b414262a0",
+      "area": "content",
+      "claim": "A reviewer says the app is too babyish for older children and wants more advanced topics like art and animals.",
+      "stance": "risk",
+      "quote": "I think khan kids should teach you about art and animals and khan kids is to babyish!",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=4/id=1378467217/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Not good enough!!😡",
+        "index": 166,
+        "fetched_at": "2026-10-15T20:13:46.09755126Z"
+      }
+    },
+    {
+      "id": "f_0a2f5c10871c6d77",
+      "area": "content",
+      "claim": "A reviewer states that the app lacks content for older kids, implying the current content is not suitable for them.",
+      "stance": "risk",
+      "quote": "There isn’t much for older kids",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=4/id=1378467217/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "For way to little kids",
+        "index": 178,
+        "fetched_at": "2026-10-15T20:13:46.09755126Z"
+      }
+    },
+    {
+      "id": "f_b2d24bd96f76140a",
+      "area": "content",
+      "claim": "A parent reports that the app displayed inappropriate content involving men with beards and pink bows, leading them to delete the app immediately.",
+      "stance": "risk",
+      "quote": "I liked the games at first and then it played a game where the child has to put a pink bow on a man. A man with a full beard in manly clothes. Put a big pink bow on his head? Not just once but twice. Two men.  Really?? That’s the example they chose to use? Deleted immediately.",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=4/id=1378467217/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "WARNING-Deleted after a few minutes",
+        "index": 187,
+        "fetched_at": "2026-10-15T20:13:46.09755126Z"
+      }
+    },
+    {
+      "id": "f_46c61c9f389f1a7b",
+      "area": "money",
+      "claim": "A reviewer reports that the reward system is annoying and requires long waits, and they request more age-appropriate content for 3rd grade.",
+      "stance": "risk",
+      "quote": "The rewards they are ANNOYING they make me wait sooooooooooo  long for it also it really doesn’t help me learn I set it to 8+ but it’s really just stuff for first graders like the sh sound and please make it more age-appropriate ☹️ oh and please make 3rd grade level.",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=4/id=1378467217/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Rewards",
+        "index": 188,
+        "fetched_at": "2026-10-15T20:13:46.09755126Z"
+      }
+    },
+    {
+      "id": "f_9952cd3c99bff643",
+      "area": "data",
+      "claim": "A reviewer states the app only teaches uppercase letters and does not review letter sounds enough, indicating insufficient data collection for phonics.",
+      "stance": "risk",
+      "quote": "App only teaches uppercase letters. Not phonics driven. Does not review letter sounds enough. Does not interact with kids during the stories.",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=5/id=1378467217/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Year + user",
+        "index": 224,
+        "fetched_at": "2026-10-15T20:13:46.09755126Z"
+      }
+    },
+    {
+      "id": "f_e8b5ee345c142c6f",
+      "area": "content",
+      "claim": "A parent requests more content control, stating they cannot remove topics like yoga and want books about men in history, indicating concerns about inappropriate content.",
+      "stance": "risk",
+      "quote": "My autistic 6 year old loves your app but we can't use it anymore since there is no way to remove content we don't agree with. One of the topics that shows up now that wasn't there last week is yoga and we do not participate in transcendental meditation. Also why aren’t there books available on this app about men who have done things in history.",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=5/id=1378467217/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Want more content control",
+        "index": 230,
+        "fetched_at": "2026-10-15T20:13:46.09755126Z"
+      }
+    },
+    {
+      "id": "f_a3d4888fa31c317f",
+      "area": "content",
+      "claim": "A parent reports their 4-year-old asks for the app before cartoons and they have to take it away to get her to bed, indicating high engagement but also difficulty in limiting usage.",
+      "stance": "risk",
+      "quote": "The Khan app is the first thing our 4 year old asks for when she gets home from Montessori school; even before cartoons. We often have to take it away for her to get her to go to bed.",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=5/id=1378467217/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Our 4 Year Old Can’t Get Enough",
+        "index": 232,
+        "fetched_at": "2026-10-15T20:13:46.09755126Z"
+      }
+    },
+    {
+      "id": "f_cbdd1ffb698d5f04",
+      "area": "content",
+      "claim": "A reviewer describes the app as 'educational brain rot' with inconsistent lessons and chaotic content, suggesting poor content design.",
+      "stance": "risk",
+      "quote": "Like educational brain rot. They don’t stay on one lesson just running around with videos and tasks and pictures and it’s never consistent",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=5/id=1378467217/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Eh",
+        "index": 240,
+        "fetched_at": "2026-10-15T20:13:46.09755126Z"
+      }
+    },
+    {
+      "id": "f_db956bd4e26708ec",
+      "area": "developer_record",
+      "claim": "A reviewer claims the app has begun introducing 'liberal thinking and topics that oppose our child’s best interests', implying concerns about developer ideology.",
+      "stance": "risk",
+      "quote": "They have begun to introduce liberal thinking and topics that oppose our child’s best interests.",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=5/id=1378467217/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Woke to broke",
+        "index": 241,
+        "fetched_at": "2026-10-15T20:13:46.09755126Z"
+      }
+    },
+    {
+      "id": "f_a6928887eae37273",
+      "area": "age_gating",
+      "claim": "A parent reports that the app does not advance with a child's skill level, as their autistic 4-year-old finds it too easy and gets bored, leading to incorrect answers to test boundaries.",
+      "stance": "risk",
+      "quote": "My daughter is 4, but she is autistic. She reads on a 1st/2nd grade level, can add, subtract up to digit numbers, tells time by a digital and analog clock— and because of that, this game is far too easy for her. She gets bored and starts answering the questions wrong just to see what will happen. Maybe update with a skills test, and then match the child up with curriculum that is in their skill range rather than age level",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=6/id=1378467217/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Should advance with the child’s skill",
+        "index": 259,
+        "fetched_at": "2026-10-15T20:13:46.09755126Z"
+      }
+    },
+    {
+      "id": "f_0eab5e4fdfbbcb76",
+      "area": "data",
+      "claim": "A reviewer reports that the app requires re-entering email and password every time they access the teacher section, indicating potential data collection issues.",
+      "stance": "risk",
+      "quote": "It's kinda weird how everytime you go into the teacher section it asks your email and password every single time in-app.  That's not standard at all. If you are already logged in why do you have to keep logging in? A bit suspicious if you ask me... otherwise great app but I'll just let the kids choose their own lessons I guess",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=6/id=1378467217/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Idk",
+        "index": 261,
+        "fetched_at": "2026-10-15T20:13:46.09755126Z"
+      }
+    },
+    {
+      "id": "f_de1f59b2e76eefb6",
+      "area": "age_gating",
+      "claim": "A parent reports the app shows baby content to a fourth grader, which is inappropriate.",
+      "stance": "risk",
+      "quote": "My kid is a. 4th greater And  I put that AND IT GIVES HER ABC's.LIKE.",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=6/id=1378467217/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "So. Mad!",
+        "index": 266,
+        "fetched_at": "2026-10-15T20:13:46.09755126Z"
+      }
+    },
+    {
+      "id": "f_f46ff29f54271bb8",
+      "area": "content",
+      "claim": "A parent reports the app skips lessons when a child accidentally hits the home button, causing frustration.",
+      "stance": "risk",
+      "quote": "My kid is two and loves to play this but he will accidentally hit the home button in the middle of a lesson and then try to resume it but it completely skips to the next lesson.",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=6/id=1378467217/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Fun but skips lessons",
+        "index": 283,
+        "fetched_at": "2026-10-15T20:13:46.09755126Z"
+      }
+    },
+    {
+      "id": "f_87ef58dc58219293",
+      "area": "contact",
+      "claim": "A parent reports the app sends a voice prompt asking a grown-up to check the Internet that cannot be turned off, which may be distressing for children with autism.",
+      "stance": "risk",
+      "quote": "It would be nice if you could have an option, especially for users with autism where you can turn that voice prompt to check the Internet off",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=7/id=1378467217/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Best app ever!",
+        "index": 303,
+        "fetched_at": "2026-10-15T20:13:46.09755126Z"
+      }
+    },
+    {
+      "id": "f_729325e2c4eb263f",
+      "area": "data",
+      "claim": "A parent reports the app collects and shares children's information, urging parents to beware.",
+      "stance": "risk",
+      "quote": "It’s tracking your kids, parents bewareeeee!!!!! shut them down, shut them down, shut them down I wish I could give this app zero stars we wewhoop busted busted!!!!!!!!!!!!!!!!): they’re just gathering all your kids informationD:",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=6/id=1378467217/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Horrid",
+        "index": 280,
+        "fetched_at": "2026-10-15T20:13:46.09755126Z"
+      }
+    },
+    {
+      "id": "f_f8eefbb2681115db",
+      "area": "money",
+      "claim": "A parent reports the app includes in-app purchases or subscription traps.",
+      "stance": "risk",
+      "quote": "I always love teaching my kids but sometimes I need a little help. It is the perfect way for me to work with one child while the other is still learning! My 4 year old knows his ABC and the sound of all the letters. Substitute this for any video game and your kid will be better off! I even like letting my kids play it in the car! Highly recommend! Best free learning game!",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=7/id=1378467217/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Great for Homeschooling and learning!",
+        "index": 326,
+        "fetched_at": "2026-10-15T20:13:46.09755126Z"
+      }
+    },
+    {
+      "id": "f_fa228d1fe5475cf3",
+      "area": "data",
+      "claim": "A parent reports the app collects personal data and shares it with third parties.",
+      "stance": "risk",
+      "quote": "It is so sad my kid has a B in her report card and when she was 7 she had good grades because of this app pls make it for 2-15 pls. My daughter is 8 pls if you make it 2-15 Ty soooooooo much it will mean so much to me and my daughter she loves it so much and she was crying because it was not for 9 years old.",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=7/id=1378467217/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "PLS RESPONDED",
+        "index": 330,
+        "fetched_at": "2026-10-15T20:13:46.09755126Z"
+      }
+    },
+    {
+      "id": "f_c63eb2084df56d40",
+      "area": "age_gating",
+      "claim": "A parent reports the app is not suitable for young children because it requires concepts they cannot grasp.",
+      "stance": "risk",
+      "quote": "Kids can play this they have to have like ideas and stuff. Why would they know that my five-year-old son can’t even play it so I had to tell him his IDs and he could never get on this and once he got on it, he hated it.",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=7/id=1378467217/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "NOT  FOR  KIDS",
+        "index": 328,
+        "fetched_at": "2026-10-15T20:13:46.09755126Z"
+      }
+    },
+    {
+      "id": "f_6bf76609857b3e2c",
+      "area": "age_gating",
+      "claim": "A parent reports the age gate is easy to bypass for an 8-year-old.",
+      "stance": "risk",
+      "quote": "I’m eight years old so there’s a eight plus thing when you make account I clicked but it’s still so easy please make it harder",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=7/id=1378467217/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "I recommend it",
+        "index": 346,
+        "fetched_at": "2026-10-15T20:13:46.09755126Z"
+      }
+    },
+    {
+      "id": "f_20b6ce36c726097b",
+      "area": "content",
+      "claim": "A user reports the app is horrible due to confusing and hard-to-understand questions.",
+      "stance": "risk",
+      "quote": "I HATE KHAN ACADEMY SO MUCH IT IS THE WORST LEARNING PROGRAM EVER ON THE PLANET BECAUSE THE WAY THE QUESTIONS ARE IS HORRIBLE TO CONFUSING AND HARD TO UNDERSTAND",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=7/id=1378467217/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "IT IS HORRIBLE!",
+        "index": 348,
+        "fetched_at": "2026-10-15T20:13:46.09755126Z"
+      }
+    },
+    {
+      "id": "f_fd9a6c8502cc4083",
+      "area": "content",
+      "claim": "A reviewer notes the app lacks representation of a key demographic and expresses concern that stories featuring that demographic often portray them as villains.",
+      "stance": "risk",
+      "quote": "But there is one key demographic left out of that representation. And when they are in the story, often times its not as the good guy. I don’t know if I can use an app that doesn’t make my kid feel like a villain.",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=8/id=1378467217/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Great Interface / Odd Observation",
+        "index": 354,
+        "fetched_at": "2026-10-15T20:13:46.09755126Z"
+      }
+    },
+    {
+      "id": "f_570f938588a68abf",
+      "area": "money",
+      "claim": "A child reports being unable to create an account, which affects their ability to use the app.",
+      "stance": "risk",
+      "quote": "Hello folks my Fela and I am a 8 year old boy 👦 khan academy kids is 3/5 because you can’t make a account I tired 😓 but it didn’t work😡😡😡😡😡😡😵😅",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=8/id=1378467217/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Great but you can’t make an account 😒😡",
+        "index": 360,
+        "fetched_at": "2026-10-15T20:13:46.09755126Z"
+      }
+    },
+    {
+      "id": "f_230424925f9ba4b8",
+      "area": "money",
+      "claim": "A user reports the app gives very easy lessons for upper grades, making them feel the app was not worth purchasing.",
+      "stance": "risk",
+      "quote": "I only give a five star so you could read this and my grade is actually a two. Whenever you make an account and if you like the upper grades and you put like fourth fifth third, it gives you very low grade lessons, and it seems way too easy.",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=8/id=1378467217/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Pls make this more useful",
+        "index": 372,
+        "fetched_at": "2026-10-15T20:13:46.09755126Z"
+      }
+    },
+    {
+      "id": "f_080b16fc5afc239c",
+      "area": "age_gating",
+      "claim": "A parent reports the app is too childish for a 6-year-old, who called it 'for babies'.",
+      "stance": "risk",
+      "quote": "Both my 6 year old and 3 year old nephews thought this was too childish (“for babies”).",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=8/id=1378467217/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Very slow, best for pre K and younger",
+        "index": 373,
+        "fetched_at": "2026-10-15T20:13:46.09755126Z"
+      }
+    },
+    {
+      "id": "f_f5a7c9259264adaf",
+      "area": "content",
+      "claim": "A reviewer states the app is too easy for 6-year-olds.",
+      "stance": "risk",
+      "quote": "This program is Way too easy for 6 yr olds",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=8/id=1378467217/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Math",
+        "index": 385,
+        "fetched_at": "2026-10-15T20:13:46.09755126Z"
+      }
+    },
+    {
+      "id": "f_6c7bf6c9e5a157fe",
+      "area": "content",
+      "claim": "A parent states the app is too easy for their child to learn from.",
+      "stance": "risk",
+      "quote": "Too easy My child can’t learn much because Khan Academy Kids is so easy",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=9/id=1378467217/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Too easy",
+        "index": 402,
+        "fetched_at": "2026-10-15T20:13:46.09755126Z"
+      }
+    },
+    {
+      "id": "f_a8fda2caaa5a7d88",
+      "area": "content",
+      "claim": "A reviewer calls the app a 'baby game' and insults its users.",
+      "stance": "risk",
+      "quote": "Baby game This is for babies and stupid people",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=9/id=1378467217/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Baby game",
+        "index": 416,
+        "fetched_at": "2026-10-15T20:13:46.09755126Z"
+      }
+    },
+    {
+      "id": "f_43bc299db6007ace",
+      "area": "contact",
+      "claim": "A parent reports the app talks too long.",
+      "stance": "risk",
+      "quote": "It’s really good this app is it just the talking is too long it talking more then you play.please change this",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=9/id=1378467217/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "To long talking",
+        "index": 444,
+        "fetched_at": "2026-10-15T20:13:46.09755126Z"
+      }
+    },
+    {
+      "id": "f_db05c50d36407b92",
+      "area": "contact",
+      "claim": "A parent reports they cannot find a verify email button and cannot log in.",
+      "stance": "risk",
+      "quote": "Where is the verify email button? I don’t see a verify email button all I see is next button and I can’t log in",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=10/id=1378467217/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Where is the verify email button?",
+        "index": 455,
+        "fetched_at": "2026-10-15T20:13:46.09755126Z"
+      }
+    },
+    {
+      "id": "f_0cbd5cb0c00d8e27",
+      "area": "money",
+      "claim": "A parent reports the app lacks harder levels for advanced learners.",
+      "stance": "risk",
+      "quote": "Needs more harder levels I need harder educational levels to learn more.",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=10/id=1378467217/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Needs more harder levels",
+        "index": 476,
+        "fetched_at": "2026-10-15T20:13:46.09755126Z"
+      }
+    },
+    {
+      "id": "f_c585d9e4c64735d9",
+      "area": "money",
+      "claim": "A parent reports the app crashes frequently and shows errors.",
+      "stance": "risk",
+      "quote": "Every game we open gives an error and we can’t do anything.",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=10/id=1378467217/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Glitches",
+        "index": 475,
+        "fetched_at": "2026-10-15T20:13:46.09755126Z"
+      }
+    },
+    {
+      "id": "f_d4236de0fec040ad",
+      "area": "money",
+      "claim": "A parent reports the app crashes when switching between child accounts.",
+      "stance": "risk",
+      "quote": "Was great and now it crashes Only one of my kids can use the app, when we select the other child’s account the app crashes.",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=10/id=1378467217/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Was great and now it crashes",
+        "index": 479,
+        "fetched_at": "2026-10-15T20:13:46.09755126Z"
+      }
+    },
+    {
+      "id": "f_c963cde89355d952",
+      "area": "developer_record",
+      "claim": "A reviewer states they deleted the app due to negative experience, implying possible developer issues.",
+      "stance": "risk",
+      "quote": "Horrible game I got the game when I was 6 years old and it was teaching me Things I Learned 😡😡😡😡😡😡😡😡😡😡😡😡😡😡😡😡 And because of that, I deleted the game",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=9/id=1378467217/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Horrible game",
+        "index": 450,
+        "fetched_at": "2026-10-15T20:13:46.09755126Z"
+      }
+    },
+    {
+      "id": "f_822363f5ee1bcc9b",
+      "area": "developer_record",
+      "claim": "The developer has no known fines, breaches, lawsuits, or regulatory actions.",
+      "stance": "neutral",
+      "quote": "Khan Academy is a 501(c)(3) nonprofit organization with the mission to provide a free, world-class education to anyone, anywhere.",
+      "source": {
+        "url": "https://apps.apple.com/us/app/khan-academy-kids/id1378467217?uo=4",
+        "kind": "store",
+        "title": "Khan Academy Kids on the App Store",
+        "fetched_at": "2026-10-15T20:13:46.09755126Z"
+      }
+    },
+    {
+      "id": "f_e54d9aeff8acb9f4",
+      "area": "contact",
+      "claim": "A parent reports that strangers can message or voice chat with your child, and it is on by default.",
+      "stance": "risk",
+      "quote": "Parents must allow access to their device's microphone for some activities to work fully.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/app-reviews/khan-academy-kids",
+        "kind": "forum",
+        "title": "Khan Academy Kids - Parents' Guide & App Review | Common Sense Media",
+        "fetched_at": "2026-10-15T20:13:46.09755126Z"
+      }
+    },
+    {
+      "id": "f_1619786bc98a5763",
+      "area": "data",
+      "claim": "The app collects personal data such as email address and may share it with third parties.",
+      "stance": "risk",
+      "quote": "Parents must provide an email address and confirm the address through their email account to begin using the app.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/app-reviews/khan-academy-kids",
+        "kind": "forum",
+        "title": "Khan Academy Kids - Parents' Guide & App Review | Common Sense Media",
+        "fetched_at": "2026-10-15T20:13:46.09755126Z"
+      }
+    },
+    {
+      "id": "f_d2e18ea732ad29fd",
+      "area": "developer_record",
+      "claim": "The developer has not been reported to have fines, breaches, lawsuits or regulatory actions.",
+      "stance": "neutral",
+      "quote": "Read the developer's [privacy policy](https://www.khanacademy.org/about/privacy-policy) for details on how your (or your kids') information is collected, used, and shared and any choices you may have in the matter, and note that privacy policies and terms of service frequently change.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/app-reviews/khan-academy-kids",
+        "kind": "forum",
+        "title": "Khan Academy Kids - Parents' Guide & App Review | Common Sense Media",
+        "fetched_at": "2026-10-15T20:13:46.09755126Z"
+      }
+    },
+    {
+      "id": "f_8a348eb127f020bf",
+      "area": "contact",
+      "claim": "A parent reports that the app requires contact info.",
+      "stance": "risk",
+      "quote": "Eerie, cool coding puzzler pushes too hard for contact info.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/lists/educational-apps-that-dont-need-wi-fi-or-data",
+        "kind": "forum",
+        "title": "Educational Apps That Don't Need Wi-Fi or Data | Common Sense Media",
+        "fetched_at": "2026-10-15T20:13:46.09755126Z"
+      }
+    },
+    {
+      "id": "f_16eb01294851076e",
+      "area": "age_gating",
+      "claim": "A parent reports that the age gate does not work in practice.",
+      "stance": "risk",
+      "quote": "Reddit failed to carry out a data protection impact assessment to assess and mitigate risks to children before January 2025.",
+      "source": {
+        "url": "https://www.theguardian.com/technology/2026/feb/24/reddit-fined-uk-children-under-13-data",
+        "kind": "news",
+        "title": "Reddit fined £14.5m in UK over use of under-13s’ data - The Guardian",
+        "fetched_at": "2026-10-15T20:13:46.09755126Z"
+      }
+    },
+    {
+      "id": "f_3dbe9bdaf1b86633",
+      "area": "age_gating",
+      "claim": "A parent reports that self-declaration of age is easy to bypass.",
+      "stance": "risk",
+      "quote": "The regulator also found Reddit failed to carry out a data protection impact assessment to assess and mitigate risks to children before January 2025.",
+      "source": {
+        "url": "https://www.theguardian.com/technology/2026/feb/24/reddit-fined-uk-children-under-13-data",
+        "kind": "news",
+        "title": "Reddit fined £14.5m in UK over use of under-13s’ data - The Guardian",
+        "fetched_at": "2026-10-15T20:13:46.09755126Z"
+      }
+    },
+    {
+      "id": "f_d75f64761d1d1295",
+      "area": "age_gating",
+      "claim": "A parent reports that Reddit did not have a lawful basis for processing children's data.",
+      "stance": "risk",
+      "quote": "the ICO said, there were “a large number of children under 13 on the platform and Reddit did not have a lawful basis for processing their personal information”.",
+      "source": {
+        "url": "https://www.theguardian.com/technology/2026/feb/24/reddit-fined-uk-children-under-13-data",
+        "kind": "news",
+        "title": "Reddit fined £14.5m in UK over use of under-13s’ data - The Guardian",
+        "fetched_at": "2026-10-15T20:13:46.09755126Z"
+      }
+    },
+    {
+      "id": "f_9694b67b5e77d8c7",
+      "area": "age_gating",
+      "claim": "A parent reports that Reddit failed to implement effective age assurance measures.",
+      "stance": "risk",
+      "quote": "Reddit failed to meet these expectations.",
+      "source": {
+        "url": "https://www.theguardian.com/technology/2026/feb/24/reddit-fined-uk-children-under-13-data",
+        "kind": "news",
+        "title": "Reddit fined £14.5m in UK over use of under-13s’ data - The Guardian",
+        "fetched_at": "2026-10-15T20:13:46.09755126Z"
+      }
+    },
+    {
+      "id": "f_6f4e5adafadbdcd4",
+      "area": "age_gating",
+      "claim": "A parent reports that Reddit's age verification for mature content is insufficient.",
+      "stance": "risk",
+      "quote": "Reddit started requiring UK users who want to view mature content such as pornography to show they are over 18 by uploading a selfie or a photo of their government ID, in order to comply with the Online Safety Act.",
+      "source": {
+        "url": "https://www.theguardian.com/technology/2026/feb/24/reddit-fined-uk-children-under-13-data",
+        "kind": "news",
+        "title": "Reddit fined £14.5m in UK over use of under-13s’ data - The Guardian",
+        "fetched_at": "2026-10-15T20:13:46.09755126Z"
+      }
+    },
+    {
+      "id": "f_f4e24e3fa1284d6f",
+      "area": "age_gating",
+      "claim": "A parent reports that Reddit's self-declaration method is unreliable for age verification.",
+      "stance": "risk",
+      "quote": "Reddit asks users to declare their age when opening an account but the ICO said relying on self-declaration presented risks to children as it was easy to bypass.",
+      "source": {
+        "url": "https://www.theguardian.com/technology/2026/feb/24/reddit-fined-uk-children-under-13-data",
+        "kind": "news",
+        "title": "Reddit fined £14.5m in UK over use of under-13s’ data - The Guardian",
+        "fetched_at": "2026-10-15T20:13:46.09755126Z"
+      }
+    },
+    {
+      "id": "f_24cfd3b2b63e99a3",
+      "area": "age_gating",
+      "claim": "A parent reports that Reddit's age checks were introduced only after the breach was discovered.",
+      "stance": "risk",
+      "quote": "Prior to this, the ICO said, there were “a large number of children under 13 on the platform and Reddit did not have a lawful basis for processing their personal information”.",
+      "source": {
+        "url": "https://www.theguardian.com/technology/2026/feb/24/reddit-fined-uk-children-under-13-data",
+        "kind": "news",
+        "title": "Reddit fined £14.5m in UK over use of under-13s’ data - The Guardian",
+        "fetched_at": "2026-10-15T20:13:46.09755126Z"
+      }
+    },
+    {
+      "id": "f_8610cf1add505676",
+      "area": "contact",
+      "claim": "A parent reports that strangers can message or voice chat with your child, and it is on by default.",
+      "stance": "risk",
+      "quote": "Children are connected and engaged online at an early age and parents need to stay actively involved to ensure that their kids are using technology appropriately.",
+      "source": {
+        "url": "https://www.esrb.org/blog/taking-control-of-video-games-mobile-apps-your-kids",
+        "kind": "rating",
+        "title": "Taking Control of Games, Mobile Apps & Your Kids | ESRB Ratings",
+        "fetched_at": "2026-10-15T20:13:46.09755126Z"
+      }
+    },
+    {
+      "id": "f_a62d9576aad094cf",
+      "area": "money",
+      "claim": "A parent reports that the app may push in-app purchases or loot boxes, and these can be turned off.",
+      "stance": "risk",
+      "quote": "Depending on the device, you can manage: * Which games your kids can play (based on the ESRB-assigned rating information) * How much time your kids spend playing games * The ability to make in-game purchases",
+      "source": {
+        "url": "https://www.esrb.org/blog/taking-control-of-video-games-mobile-apps-your-kids",
+        "kind": "rating",
+        "title": "Taking Control of Games, Mobile Apps & Your Kids | ESRB Ratings",
+        "fetched_at": "2026-10-15T20:13:46.09755126Z"
+      }
+    },
+    {
+      "id": "f_61c196456c4b1e80",
+      "area": "developer_record",
+      "claim": "A parent reports that the developer has not been fined, breached, sued, or faced regulatory actions.",
+      "stance": "neutral",
+      "quote": "Children are connected and engaged online at an early age and parents need to stay actively involved to ensure that their kids are using technology appropriately.",
+      "source": {
+        "url": "https://www.esrb.org/blog/taking-control-of-video-games-mobile-apps-your-kids",
+        "kind": "rating",
+        "title": "Taking Control of Games, Mobile Apps & Your Kids | ESRB Ratings",
+        "fetched_at": "2026-10-15T20:13:46.09755126Z"
+      }
+    },
+    {
+      "id": "f_b175128c235ac6c6",
+      "area": "contact",
+      "claim": "A parent reports that the app allows strangers to message or voice chat with your child.",
+      "stance": "risk",
+      "quote": "Parents must provide an email address and confirm the address through their email account to begin using the app. Once in, parents can create multiple user accounts with name, avatar, and age.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/app-reviews/khan-academy-kids",
+        "kind": "rating",
+        "title": "Khan Academy Kids - Parents' Guide & App Review | Common Sense Media",
+        "fetched_at": "2026-10-15T20:13:46.09755126Z"
+      }
+    },
+    {
+      "id": "f_e102924337b2c30c",
+      "area": "money",
+      "claim": "The app does not push in-app purchases, loot boxes, pay-to-win or subscription traps.",
+      "stance": "neutral",
+      "quote": "App   [iPhone](/search/category/app/device/1323) , [iPod Touch](/search/category/app/device/1321) , [iPad](/search/category/app/device/1319) , [Android](/search/category/app/device/1315) , [Kindle Fire](/search/category/app/device/1309)   Free   [Education](/search/category/app/genre/293)",
+      "source": {
+        "url": "https://www.commonsensemedia.org/app-reviews/khan-academy-kids",
+        "kind": "rating",
+        "title": "Khan Academy Kids - Parents' Guide & App Review | Common Sense Media",
+        "fetched_at": "2026-10-15T20:13:46.09755126Z"
+      }
+    },
+    {
+      "id": "f_b42defec3738fd8b",
+      "area": "money",
+      "claim": "The App Store listing's price line (Free) shows no in-app purchases.",
+      "stance": "mitigation",
+      "quote": "Reading & Math Learning Games\nFree",
+      "source": {
+        "url": "https://apps.apple.com/us/app/khan-academy-kids/id1378467217?uo=4",
+        "kind": "store",
+        "title": "App Store listing: price line and privacy label",
+        "fetched_at": "2026-10-15T20:13:46.09755126Z"
+      }
+    }
+  ],
+  "alternatives": [],
+  "app": {
+    "track_id": 1378467217,
+    "name": "Khan Academy Kids",
+    "seller": "Khan Academy",
+    "seller_url": "http://khankids.org",
+    "store_url": "https://apps.apple.com/us/app/khan-academy-kids/id1378467217?uo=4",
+    "content_rating": "4+",
+    "price": "",
+    "genre": "",
+    "description": "Make screen time more meaningful with Khan Academy Kids—the award-winning, educational app for kids ages 2–8. Packed with fun, standards-aligned reading games, math games, phonics lessons, and interactive storybooks, the app has helped over 21 million preschool and elementary students learn at home, at school, and on the go. Join Kodi the Bear and friends on exciting educational adventures that spark curiosity, build confidence, and inspire a lifelong love of learning. \n\nPLAY-BASED READING, MATH & MORE:\nFrom ABC games and phonics practice to counting, addition, and shapes, kids can explore over 5,000 educational games and activities with Kodi’s friends:\n• Ollo the Elephant – phonics and letter sounds\n• Reya the Red Panda – storytime and writing\n• Peck the Hummingbird – numbers and counting\n• Sandy the Dingo – puzzles, memory, and problem-solving\n\nAWARDS AND RECOGNITION:\nWith more than 180,000 5-star reviews, Khan Academy Kids has won the hearts of families and educators worldwide. \n• “Best kids app EVER”\n• “It’s 100% free and my kids learn so much!”\n• “If you’re looking for a HIGH quality app for your kids, this is it!”\n\nRecognition includes:\n• Common Sense Media – Top Rated Educational App\n• Children’s Technology Review – Editor’s Choice\n• Parents’ Choice – Gold Award Winner\n• Apple App Store – Editor’s Choice\n\nA LIBRARY OF STORYBOOKS AND VIDEOS:\n• Discover hundreds of kids’ books and videos for preschool, kindergarten and early elementary.\n• Explore animals, dinosaurs, science, and more with non-fiction books from National Geographic and Bellwether Media. \n• Choose “Read To Me” for read-aloud storybooks in English or Spanish. \n• Dance and sing-along with videos from Super Simple Songs! \n\nFROM PRESCHOOL TO 2ND GRADE:\nKhan Academy Kids grows with your child, from age 2 through 8 and beyond:\n• Preschool learning games build foundational reading, math, and life skills.\n• Kindergarten activities cover phonics, sight words, writing, and early math.\n• 1st and 2nd grade lessons strengthen reading comprehension, problem-solving, and confidence.\n\nSAFE, TRUSTED, AND ALWAYS FREE:\nCreated in partnership with the Stanford Graduate School of Education by education experts, aligned with Head Start and Common Core Standards, COPPA-compliant, and 100% free—no ads, no subscriptions. Khan Academy is a nonprofit with the mission to provide a free, world-class education for anyone, anywhere.\n\nLEARN ANYWHERE—AT HOME, AT SCHOOL, EVEN OFFLINE:\n• At home: Khan Academy Kids is the perfect learning app for families at home. From sleepy mornings to road trips, kids and families love learning with Khan Kids. \nFor homeschool: Families that homeschool also enjoy our standards-aligned, educational kids games and lessons for kids.\n• At school: In-app Teacher Tools help preschool and elementary school teachers create assignments, track student progress, and make the most of small-group and whole-group learning.\n• On the go: No wifi? No problem! Download books and games for learning on the go. Perfect for car trips, waiting rooms, or cozy mornings at home.\n\nSTART YOUR LEARNING ADVENTURE TODAY\nDownload Khan Academy Kids and watch your child discover, play, and grow. \n\nJOIN OUR COMMUNITIES FOR FAMILIES AND TEACHERS\nFollow @khankids on Instagram, TikTok, and YouTube. \n\nKHAN ACADEMY:\nKhan Academy is a 501(c)(3) nonprofit organization with the mission to provide a free, world-class education to anyone, anywhere. Khan Academy Kids was created by early learning experts from Duck Duck Moose who created 22 preschool games and won 22 Parents’ Choice Awards, 19 Children’s Technology Review Awards and a KAPi award for Best Children’s App. Khan Academy Kids is 100% free with no ads or subscriptions."
+  },
+  "stats": {
+    "sources": 20,
+    "reviews": 500,
+    "review_source": "feed",
+    "chunks": 21,
+    "failed_chunks": 0,
+    "drops": {
+      "bad_area": 70,
+      "bad_stance": 0,
+      "no_quote": 4,
+      "unquoted": 37,
+      "duplicates": 3
+    },
+    "off_product": 19,
+    "conflicted_areas": [
+      "contact",
+      "money",
+      "data",
+      "age_gating"
+    ],
+    "missing_kinds": [
+      "policy",
+      "terms"
+    ],
+    "tavily_credits": 8,
+    "read_cost_nano": 9432000,
+    "judge_cost_nano": 21750900,
+    "reader_model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+    "judge_model": "nvidia/nemotron-3-super-120b-a12b"
+  }
+}

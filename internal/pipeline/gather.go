@@ -164,6 +164,14 @@ type Gathered struct {
 	// sibling App Store listing's pages, not this title's. The card's small
 	// print carries it as Stats.OffProduct.
 	OffProduct int
+	// StoreFacts are the App Store's own statements about the title, kept
+	// as documents with the findings read off them (storefacts.go). They are
+	// not given to the reader.
+	StoreFacts []StoreFacts
+
+	// storePage is the listing's page text when the gatherer extracted it
+	// for the reviews (the feed fallback).
+	storePage string
 }
 
 // Gatherer runs the source plan for one title.
@@ -362,6 +370,9 @@ func (g *Gatherer) Gather(ctx context.Context, title, ref string) (Gathered, err
 			}
 		}
 	}
+	if out.App != nil {
+		out.StoreFacts = storeFacts(out.App, out.Docs, out.storePage, at)
+	}
 	return out, nil
 }
 
@@ -554,6 +565,18 @@ func (g *Gatherer) storeDocs(ctx context.Context, ref string, a *appstore.App, a
 	if pages <= 0 {
 		pages = appstore.MaxPages
 	}
+	// The listing's page is read for every title: its price line and privacy
+	// label are the store facts (storefacts.go), and when the feed has no
+	// reviews its reviews stand in. One extract, one credit. A page that
+	// cannot be read costs the facts, not the gather: it is noted and
+	// counted as a failed call, so the evidence is not cached.
+	page, used, pageWhy, pageFailed := g.readStorePage(ctx, ref, a)
+	out.Credits += used
+	out.storePage = page
+	if pageFailed {
+		out.Failures = append(out.Failures, "store_page")
+		out.Notes = append(out.Notes, pageWhy)
+	}
 	reviews, err := g.Store.Reviews(ctx, a.ID, pages)
 	if err != nil || len(reviews) == 0 {
 		// User decision: a feed error falls back to the web page as an
@@ -567,10 +590,10 @@ func (g *Gatherer) storeDocs(ctx context.Context, ref string, a *appstore.App, a
 		} else {
 			out.Notes = append(out.Notes, "App Store review feed returned no reviews; reading the App Store page")
 		}
-		docs, used, why, failed := g.storePageDocs(ctx, ref, a, at)
-		out.Credits += used
-		if failed {
-			out.Failures = append(out.Failures, "store_page")
+		var docs []Doc
+		why := pageWhy
+		if page != "" {
+			docs, why = storePageDocs(page, a, at)
 		}
 		if len(docs) == 0 {
 			if err != nil {
@@ -803,13 +826,24 @@ func namesProduct(subject, product []string, rawURL, host string) bool {
 // namesProduct is checked first, so the page is kept before the sibling rule
 // runs. The sibling rule catches sibling-named pages only when the product's
 // name is absent from them ("Khan Academy" pages beside "Khan Academy
-// Kids"). The input is not modified.
+// Kids").
+//
+// Shorter siblings, read by text (limit of the subject rule above): the
+// subject is only a title and a URL, and a page about the main Khan Academy
+// site can carry neither the sibling's name nor the product's there (a Common
+// Sense privacy evaluation of khanacademy.org is titled by its score), while
+// its text says "Khan Academy" throughout. So when the same seller has an app
+// whose name is a strict part of the product's name ("Khan Academy" in "Khan
+// Academy Kids"), a document that is not on the official host and whose text
+// names that shorter sibling but never the product's full name is dropped as
+// well. A page that names the full name anywhere is about the product (or
+// about both), and is kept. The input is not modified.
 func offProduct(apps []appstore.App, picked *appstore.App, host string, docs []Doc) ([]Doc, int) {
 	if picked == nil || strings.TrimSpace(picked.Seller) == "" {
 		return docs, 0
 	}
 	product := nameTokens(picked.Name)
-	var siblings [][]string
+	var siblings, shorter [][]string
 	sibHosts := map[string]bool{}
 	for i := range apps {
 		a := &apps[i]
@@ -822,6 +856,9 @@ func offProduct(apps []appstore.App, picked *appstore.App, host string, docs []D
 		if ts := nameTokens(a.Name); len(ts) > 0 {
 			siblings = append(siblings, ts)
 			sibHosts[strings.Join(ts, "")] = true
+			if len(ts) < len(product) && runIn(product, ts) {
+				shorter = append(shorter, ts)
+			}
 		}
 	}
 	if len(siblings) == 0 {
@@ -850,6 +887,17 @@ func offProduct(apps []appstore.App, picked *appstore.App, host string, docs []D
 			if u, err := url.Parse(d.Source.URL); err == nil {
 				for _, part := range strings.Split(strings.TrimSuffix(strings.ToLower(u.Hostname()), "."), ".") {
 					if sibHosts[part] {
+						off = true
+						break
+					}
+				}
+			}
+		}
+		if !off && len(shorter) > 0 {
+			text := normWords(d.Text)
+			if !runIn(text, product) {
+				for _, sib := range shorter {
+					if runIn(text, sib) {
 						off = true
 						break
 					}

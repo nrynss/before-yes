@@ -1,0 +1,8 @@
+{
+  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D509]\",\n      \"area\": \"data\",\n      \"claim\": \"The FTC alleges the Weight Watchers diet app collected data on kids as young as 8 without parental consent.\",\n      \"stance\": \"risk\",\n      \"quote\": \"WW unit allegedly violated child privacy law by collecting personal information without parental consent.\"\n    }\n  ]\n}",
+  "input_tokens": 3498,
+  "output_tokens": 89,
+  "price_nano": 231240,
+  "measured": true,
+  "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B"
+}

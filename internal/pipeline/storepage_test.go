@@ -172,16 +172,24 @@ func TestGatherFallsBackToStorePage(t *testing.T) {
 	}
 }
 
-// User decision: the page stands in when the feed is empty or errors, and
-// only then.
+// User decision: the page stands in for the reviews when the feed is empty
+// or errors, and only then. The page is read on every gather for its store
+// facts (one extract), so a feed with reviews reads it too, but takes no
+// review from it.
 func TestStorePageFallbackOnEmptyOrError(t *testing.T) {
 	a := robloxApp()
-	// A feed with reviews: no page read, source feed.
+	// A feed with reviews: the page is read once, for the facts; the reviews
+	// are the feed's, source feed.
 	s := &pageSearch{url: a.StoreURL, slug: "roblox", t: t}
 	g := &Gatherer{Store: feedStub{apps: []appstore.App{a}, reviews: []appstore.Review{{Index: 1, Title: "t", Body: "b"}}}, Search: s, Meter: openTestMeter(t)}
 	got, _ := g.Gather(context.Background(), "Roblox", "c")
-	if s.pageReads != 0 || got.ReviewSource != ReviewsFromFeed {
+	if s.pageReads != 1 || got.ReviewSource != ReviewsFromFeed {
 		t.Errorf("feed with reviews: page reads %d, source %q", s.pageReads, got.ReviewSource)
+	}
+	for _, d := range got.Docs {
+		if d.Source.Kind == KindReview && d.Source.URL == a.StoreURL {
+			t.Errorf("a page review was taken beside the feed's: %+v", d.Source)
+		}
 	}
 	// A feed error: the page is read and gives the reviews, source page;
 	// the failed call is still recorded, so the evidence is not cached.

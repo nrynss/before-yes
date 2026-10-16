@@ -5,43 +5,57 @@
       {
         "area": "contact",
         "level": "unknown",
-        "findings": [],
-        "reason": "Changed to unknown: no verified finding supports ok."
+        "findings": [
+          "f_8db7cba3d64ab14c",
+          "f_14a67dda51af2929"
+        ],
+        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       },
       {
         "area": "money",
-        "level": "unknown",
-        "findings": [],
-        "reason": "Changed to unknown: no verified finding supports ok."
+        "level": "ok",
+        "findings": [
+          "f_098724068cfee8e6",
+          "f_4ac857304b6a4b3e",
+          "f_bf9f90f44491980e",
+          "f_54f0702b2c8d86df",
+          "f_dac832e9624239d3",
+          "f_b42defec3738fd8b"
+        ],
+        "reason": "A store listing says '100% free—no ads, no subscriptions.'"
       },
       {
         "area": "data",
         "level": "unknown",
-        "findings": [],
-        "reason": "Changed to unknown: no verified finding supports ok."
+        "findings": [
+          "f_50b57459bdec6845",
+          "f_f17a01d32bb4914a"
+        ],
+        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       },
       {
         "area": "age_gating",
         "level": "unknown",
         "findings": [
-          "f_a6928887eae37273"
+          "f_633b51fb48e9cd33",
+          "f_f5a3edbc4d0bc7c7"
         ],
-        "reason": "Changed to unknown: the evidence was thin. No verified quote names the setting."
+        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       },
       {
         "area": "content",
         "level": "unknown",
         "findings": [],
-        "reason": "Changed to unknown: the cited quotes do not meet this area's flag definition."
+        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       },
       {
         "area": "developer_record",
         "level": "unknown",
         "findings": [],
-        "reason": "Changed to unknown: no verified finding supports ok."
+        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       }
     ],
-    "evidence_sha256": "97ba24b12f125dc38051f3be22d31962aeeae8a3dcbb9ef92471091a2f4455c0",
+    "evidence_sha256": "3412387c2c5ea1fb24c06c6af49baae55a891c276c130c01f53b956dd08f1a20",
     "age": 5,
     "models": "recorded-reader + recorded-judge",
     "want_verdict": "yes",
@@ -59,13 +73,13 @@
             "quote": "Made For Ages 0–5"
           }
         ],
-        "got_reason": "Changed to unknown: no verified finding supports ok."
+        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       },
       {
         "area": "money",
         "want": "ok",
-        "got": "unknown",
-        "agree": false,
+        "got": "ok",
+        "agree": true,
         "found": [],
         "missed": [
           {
@@ -73,7 +87,7 @@
             "quote": "Always 100% free, no ads, no subscriptions—just safe, joyful learning kids and parents love."
           }
         ],
-        "got_reason": "Changed to unknown: no verified finding supports ok."
+        "got_reason": "A store listing says '100% free—no ads, no subscriptions.'"
       },
       {
         "area": "data",
@@ -87,7 +101,7 @@
             "quote": "We don't show ads in the app, and we don't let third parties track your child across other apps or websites."
           }
         ],
-        "got_reason": "Changed to unknown: no verified finding supports ok."
+        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       },
       {
         "area": "age_gating",
@@ -101,7 +115,7 @@
             "quote": "A free educational app for children ages 2–8, with games, books, and lessons"
           }
         ],
-        "got_reason": "Changed to unknown: the evidence was thin. No verified quote names the setting."
+        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       },
       {
         "area": "content",
@@ -115,7 +129,7 @@
             "quote": "My 4 year old loves this. It has everything and isn’t overstimulating AND it has no ads."
           }
         ],
-        "got_reason": "Changed to unknown: the cited quotes do not meet this area's flag definition."
+        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       },
       {
         "area": "developer_record",
@@ -124,82 +138,108 @@
         "agree": true,
         "found": [],
         "missed": [],
-        "got_reason": "Changed to unknown: no verified finding supports ok."
+        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       }
     ],
-    "agreed": 1,
+    "agreed": 2,
     "decisive_found": 0,
     "decisive_total": 5,
-    "findings": 212,
+    "findings": 155,
     "drops": {
       "bad_area": 22,
       "bad_stance": 0,
-      "no_quote": 3,
-      "unquoted": 39,
-      "duplicates": 51
+      "no_quote": 2,
+      "unquoted": 38,
+      "duplicates": 0
     },
-    "drop_rate": 0.3516819571865443,
-    "chunks": 19,
+    "drop_rate": 0.2857142857142857,
+    "chunks": 13,
     "failed_chunks": 0,
     "missing_kinds": [
       "policy",
       "terms"
     ],
-    "tavily_credits": 7,
-    "read_cost_nano": 11594220,
-    "judge_cost_nano": 27904200
+    "tavily_credits": 8,
+    "read_cost_nano": 8494560,
+    "judge_cost_nano": 27447900
   },
   {
     "title": "Minecraft",
     "grades": [
       {
         "area": "contact",
-        "level": "unknown",
-        "findings": [],
-        "reason": "Changed to unknown: the cited quotes do not meet this area's flag definition."
+        "level": "ok_with_setting",
+        "setting": "multiplayer off by default on child accounts",
+        "findings": [
+          "f_1e24b73e7fa966bc",
+          "f_c1b9a8a8c51c31b1"
+        ],
+        "reason": "Multiplayer is off by default on child accounts in both Java Edition and Bedrock Edition."
       },
       {
         "area": "money",
-        "level": "unknown",
-        "findings": [],
-        "reason": "Changed to unknown: the cited quotes do not meet this area's flag definition."
+        "level": "flag",
+        "findings": [
+          "f_6721f2cc2e961a3d",
+          "f_76bd624cd481f959",
+          "f_6524150ac053f5ac",
+          "f_92bb526ec1395b4e",
+          "f_1ce66ebd047befa1",
+          "f_266f2a1092f279d9",
+          "f_928d4110bea3cbbd",
+          "f_2cfa1fb06efcd2f7",
+          "f_f8a5cd996b31f282",
+          "f_a48075e87f6b9b45",
+          "f_37367369cca5a85e",
+          "f_fb8e58e95a0d6582",
+          "f_27da0ab3733f6cd4",
+          "f_58da4a5305bc3f8e",
+          "f_65fb0e4dd249ff98",
+          "f_e4080b3a8ecd644d"
+        ],
+        "reason": "Attempted to buy add ons like I have in the past, it wasn’t working and after the third attempt for the same product, I was charged for buying the same add on 3 times."
       },
       {
         "area": "data",
         "level": "unknown",
-        "findings": [],
-        "reason": "The findings are too thin to say."
+        "findings": [
+          "f_52a91d1a995301f9",
+          "f_2a52c4cbf84ab666",
+          "f_521ccf70081f7171",
+          "f_6280e9590e48906f"
+        ],
+        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       },
       {
         "area": "age_gating",
         "level": "unknown",
         "findings": [],
-        "reason": "Changed to unknown: the cited quotes do not meet this area's flag definition."
+        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       },
       {
         "area": "content",
         "level": "unknown",
         "findings": [],
-        "reason": "Changed to unknown: the cited quotes do not meet this area's flag definition."
+        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       },
       {
         "area": "developer_record",
         "level": "unknown",
         "findings": [],
-        "reason": "The findings are too thin to say."
+        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       }
     ],
-    "evidence_sha256": "c3f24a88fe1f18ae245f473e5bf7b6f771fc43561e1885c3ddcc89b6a47e5ac8",
+    "evidence_sha256": "8747fff9edd55f51eba952719bcc55f31ea6497f556fd1d2654f29e3d9b76c06",
     "age": 9,
     "models": "recorded-reader + recorded-judge",
     "want_verdict": "yes_with_settings",
-    "got_verdict": "unclear",
+    "got_verdict": "no",
     "areas": [
       {
         "area": "contact",
         "want": "ok_with_setting",
-        "got": "unknown",
-        "agree": false,
+        "got": "ok_with_setting",
+        "agree": true,
         "found": [
           {
             "source": "https://virtual-addiction.com/online-safety/minecraft",
@@ -212,12 +252,12 @@
             "quote": "offer child accounts that empower parents to manage and monitor gameplay, multiplayer access, chat settings, and friend requests"
           }
         ],
-        "got_reason": "Changed to unknown: the cited quotes do not meet this area's flag definition."
+        "got_reason": "Multiplayer is off by default on child accounts in both Java Edition and Bedrock Edition."
       },
       {
         "area": "money",
         "want": "ok",
-        "got": "unknown",
+        "got": "flag",
         "agree": false,
         "found": [],
         "missed": [
@@ -226,7 +266,7 @@
             "quote": "there is no ads to interrupt me and I can get friends"
           }
         ],
-        "got_reason": "Changed to unknown: the cited quotes do not meet this area's flag definition."
+        "got_reason": "Attempted to buy add ons like I have in the past, it wasn’t working and after the third attempt for the same product, I was charged for buying the same add on 3 times."
       },
       {
         "area": "data",
@@ -235,7 +275,7 @@
         "agree": true,
         "found": [],
         "missed": [],
-        "got_reason": "The findings are too thin to say."
+        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       },
       {
         "area": "age_gating",
@@ -249,7 +289,7 @@
           }
         ],
         "missed": [],
-        "got_reason": "Changed to unknown: the cited quotes do not meet this area's flag definition."
+        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       },
       {
         "area": "content",
@@ -263,7 +303,7 @@
             "quote": "Because combat is part of the game, there are some elements of mild violence."
           }
         ],
-        "got_reason": "Changed to unknown: the cited quotes do not meet this area's flag definition."
+        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       },
       {
         "area": "developer_record",
@@ -272,13 +312,13 @@
         "agree": true,
         "found": [],
         "missed": [],
-        "got_reason": "The findings are too thin to say."
+        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       }
     ],
-    "agreed": 2,
+    "agreed": 3,
     "decisive_found": 2,
     "decisive_total": 5,
-    "findings": 259,
+    "findings": 265,
     "drops": {
       "bad_area": 44,
       "bad_stance": 0,
@@ -286,7 +326,7 @@
       "unquoted": 95,
       "duplicates": 1
     },
-    "drop_rate": 0.3589108910891089,
+    "drop_rate": 0.35365853658536583,
     "chunks": 45,
     "failed_chunks": 1,
     "missing_kinds": [
@@ -295,7 +335,7 @@
     ],
     "tavily_credits": 7,
     "read_cost_nano": 20989800,
-    "judge_cost_nano": 23904300
+    "judge_cost_nano": 32141700
   },
   {
     "title": "Roblox",
@@ -304,7 +344,7 @@
         "area": "contact",
         "level": "unknown",
         "findings": [],
-        "reason": "Changed to unknown: the cited quotes do not meet this area's flag definition."
+        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       },
       {
         "area": "money",
@@ -312,44 +352,46 @@
         "findings": [
           "f_1f8ad057919885d2",
           "f_617ef30b88662b85",
-          "f_8e63e88f4f3ed463"
+          "f_8b22a69254003500",
+          "f_acf01b453e137c83"
         ],
-        "reason": "the title pushes purchases at children"
+        "reason": "The cited sources raise a concern here. Read the source quotes before deciding."
       },
       {
         "area": "data",
         "level": "unknown",
         "findings": [],
-        "reason": "Changed to unknown: the cited quotes do not meet this area's flag definition."
+        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       },
       {
         "area": "age_gating",
         "level": "flag",
         "findings": [
-          "f_3832ce49d8ba54a2",
-          "f_3e1e4d584522e5a9",
-          "f_6d5f412b40fb55a0"
+          "f_14c1c754192531b7"
         ],
-        "reason": "the age gate fails in practice"
+        "reason": "The cited sources raise a concern here. Read the source quotes before deciding."
       },
       {
         "area": "content",
-        "level": "unknown",
-        "findings": [],
-        "reason": "Changed to unknown: the cited quotes do not meet this area's flag definition."
+        "level": "flag",
+        "findings": [
+          "f_ecde10fa049b2ec4"
+        ],
+        "reason": "The cited sources raise a concern here. Read the source quotes before deciding."
       },
       {
         "area": "developer_record",
         "level": "flag",
         "findings": [
-          "f_936fa34c97679429",
           "f_def610c472adb7ff",
-          "f_e6456ac7986e1e75"
+          "f_e6456ac7986e1e75",
+          "f_936fa34c97679429",
+          "f_da54c53ccf586165"
         ],
-        "reason": "this title's developer has a record of enforcement over how it treats children or their data"
+        "reason": "The cited sources raise a concern here. Read the source quotes before deciding."
       }
     ],
-    "evidence_sha256": "85d83d14229bd9ca2694671989827df650d2cb8675da1de4deba7a47656537fb",
+    "evidence_sha256": "fc6d7fe9bbd5ac0ac3e353ff00ce2af290de707b5aa2b14a070647a417218806",
     "age": 9,
     "models": "recorded-reader + recorded-judge",
     "want_verdict": "no",
@@ -371,7 +413,7 @@
             "quote": "they can’t stop the child predators and E-Daters"
           }
         ],
-        "got_reason": "Changed to unknown: the cited quotes do not meet this area's flag definition."
+        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       },
       {
         "area": "money",
@@ -385,7 +427,7 @@
             "quote": "I got Robux and I got only 246 Robux instead of 1800"
           }
         ],
-        "got_reason": "the title pushes purchases at children"
+        "got_reason": "The cited sources raise a concern here. Read the source quotes before deciding."
       },
       {
         "area": "data",
@@ -394,7 +436,7 @@
         "agree": true,
         "found": [],
         "missed": [],
-        "got_reason": "Changed to unknown: the cited quotes do not meet this area's flag definition."
+        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       },
       {
         "area": "age_gating",
@@ -408,13 +450,13 @@
             "quote": "Im 14 but it said 9-12 on the age check"
           }
         ],
-        "got_reason": "the age gate fails in practice"
+        "got_reason": "The cited sources raise a concern here. Read the source quotes before deciding."
       },
       {
         "area": "content",
         "want": "flag",
-        "got": "unknown",
-        "agree": false,
+        "got": "flag",
+        "agree": true,
         "found": [],
         "missed": [
           {
@@ -422,7 +464,7 @@
             "quote": "It’s also a very inappropriate game with all the horror games"
           }
         ],
-        "got_reason": "Changed to unknown: the cited quotes do not meet this area's flag definition."
+        "got_reason": "The cited sources raise a concern here. Read the source quotes before deciding."
       },
       {
         "area": "developer_record",
@@ -436,13 +478,13 @@
             "quote": "This lawsuit alleges that Roblox has violated the privacy of its users by tracking data without consent."
           }
         ],
-        "got_reason": "this title's developer has a record of enforcement over how it treats children or their data"
+        "got_reason": "The cited sources raise a concern here. Read the source quotes before deciding."
       }
     ],
-    "agreed": 4,
+    "agreed": 5,
     "decisive_found": 0,
     "decisive_total": 6,
-    "findings": 165,
+    "findings": 172,
     "drops": {
       "bad_area": 2,
       "bad_stance": 0,
@@ -450,7 +492,7 @@
       "unquoted": 75,
       "duplicates": 4
     },
-    "drop_rate": 0.3319838056680162,
+    "drop_rate": 0.3228346456692913,
     "chunks": 36,
     "failed_chunks": 1,
     "missing_kinds": [
@@ -458,6 +500,6 @@
     ],
     "tavily_credits": 8,
     "read_cost_nano": 15718860,
-    "judge_cost_nano": 27683400
+    "judge_cost_nano": 27369900
   }
 ]

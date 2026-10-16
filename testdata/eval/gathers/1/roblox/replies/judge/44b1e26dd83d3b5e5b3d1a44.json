@@ -1,0 +1,8 @@
+{
+  "text": "{\"reason_supported\": true, \"explanation\": \"A forum post states: 'Within seconds, this \\\"Street Code\\\" game showed an intense, fiery car accident and prompted the player to decide whether to shoot or save an officer.' This directly reports a concrete encounter with extreme violence—an intense, fiery car accident followed by a prompt to commit violence—that the user actually saw and was prompted to act upon.\"}",
+  "input_tokens": 2290,
+  "output_tokens": 85,
+  "price_nano": 763500,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}

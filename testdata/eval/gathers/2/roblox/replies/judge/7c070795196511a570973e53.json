@@ -1,0 +1,8 @@
+{
+  "text": "{\"reason_supported\": true, \"explanation\": \"From a news source: 'A parent said their 10-year-old daughter spent more than $7,000 (£5,200) in two months despite attempts to limit purchases.' This directly describes a completed child spending event involving significant monetary expenditure, preserving the qualification that attempts to limit purchases were made but does not assert those attempts succeeded or that controls were in place.\"}",
+  "input_tokens": 1344,
+  "output_tokens": 93,
+  "price_nano": 486900,
+  "measured": true,
+  "model": "nvidia/nemotron-3-super-120b-a12b"
+}
