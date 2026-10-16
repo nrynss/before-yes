@@ -1,0 +1,9 @@
+{
+  "text": "{\n  \"reasons\": [\n    {\n      \"area\": \"data\",\n      \"reason\": \"A rating source says the app asks for a name and age at setup, recommends using a nickname, never asks children for personal information directly, and lets users update or delete account information at any time.\"\n    }\n  ]\n}",
+  "input_tokens": 1601,
+  "output_tokens": 67,
+  "price_nano": 1802000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

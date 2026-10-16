@@ -1,0 +1,9 @@
+{
+  "text": "{\n  \"criterion\": \"wrong_age_assignment\",\n  \"quote\": \"Incorrect age estimates may loosen built-in protections, such as chat restrictions or access limits, while some adults may be incorrectly categorized as younger users and face additional restrictions.\",\n  \"actual_age\": \"adults\",\n  \"assigned_age\": \"younger users\"\n}",
+  "input_tokens": 528,
+  "output_tokens": 73,
+  "price_nano": 747000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

@@ -1,0 +1,9 @@
+{
+  "text": "{\n  \"reasons\": [\n    {\n      \"area\": \"contact\",\n      \"reason\": \"A comparison guide reports there is no open chat with strangers in LEGO Worlds.\"\n    }\n  ]\n}",
+  "input_tokens": 1124,
+  "output_tokens": 44,
+  "price_nano": 1256000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

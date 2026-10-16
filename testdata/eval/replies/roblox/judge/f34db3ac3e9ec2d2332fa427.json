@@ -1,0 +1,9 @@
+{
+  "text": "{\n  \"reasons\": [\n    {\n      \"area\": \"content\",\n      \"reason\": \"A reviewer reports seeing weird avatars showing a lot of skin and that reporting them did not work.\"\n    }\n  ]\n}",
+  "input_tokens": 1821,
+  "output_tokens": 48,
+  "price_nano": 1965000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

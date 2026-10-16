@@ -1,0 +1,9 @@
+{
+  "text": "{\"reason_supported\":true,\"explanation\":\"Each claim in the Reason is directly supported by a cited quote. The first sentence ('A reviewer reports...') matches the first review quote where the writer describes a scenario in which a four‑year‑old’s face verification returns an age of twenty‑five. The second sentence ('Another reviewer says their child was placed in the \\u201828th group.\\u2019') matches the second review quote that states the child was put in the 28th group. The third sentence ('A reviewer contacting support was told to wait until age 13, but the system showed a birthday of Oct 7, 1985, stating they were 41 while they were younger than 13') matches the third review quote describing the support interaction, the displayed birth date, the calculated age of 41, and the reporter’s assertion that they are younger than 13. All three concrete claims are explicitly present in the supplied sources.\"}",
+  "input_tokens": 1497,
+  "output_tokens": 212,
+  "price_nano": 2133000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

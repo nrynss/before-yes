@@ -1,0 +1,9 @@
+{
+  "text": "{\"reason_supported\":true,\"explanation\":\"The explanation directly attributes the claim to the quoted source ('Texas Attorney General Ken Paxton says...') and reproduces the specific allegation language from the quote ('flagrantly ignoring safety laws', 'deceiving parents'). It correctly frames this as an allegation by the Attorney General, distinguishing it from a court finding.\"}",
+  "input_tokens": 1077,
+  "output_tokens": 76,
+  "price_nano": 1305000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

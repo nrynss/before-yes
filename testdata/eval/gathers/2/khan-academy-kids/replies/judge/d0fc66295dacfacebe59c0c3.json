@@ -1,0 +1,9 @@
+{
+  "text": "{\"reason_supported\":true,\"explanation\":\"All three reviews explicitly say the app costs nothing and contains no ads or subscriptions: one calls it 'ACTUALLY FREE YOU DONT NEED TO PAY', another says 'everything is included at no cost' and 'Coasts no money! Free from adds!', and a third notes 'NO ADDS!!!!!'. The store listing confirms 'Free' pricing, and the rating summary states 'No ads, no subscriptions'. Together these sources directly support the claim that the app has no loot boxes, pay-to-win mechanics, subscriptions, or completed child spending events.\"}",
+  "input_tokens": 1347,
+  "output_tokens": 130,
+  "price_nano": 1737000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

@@ -1,0 +1,9 @@
+{
+  "text": "{\n  \"reasons\": [\n    {\n      \"area\": \"money\",\n      \"reason\": \"Reviewers who say they are children report spending real money on Minecoins or Marketplace add-ons and then not receiving the purchased items, including one who says they lost $40 after repeated 'successful' purchase messages and another who spent all their birthday money.\"\n    },\n    {\n      \"area\": \"data\",\n      \"reason\": \"The store listing says the app may use data to track users across other companies' apps and websites for personalized ads, and a news source notes hacking claims linked to old data breaches.\"\n    },\n    {\n      \"area\": \"age_gating\",\n      \"reason\": \"A forum poster reports that the age check at sign-up only verifies a birthdate and that it is pretty easy for a savvy kid to fake their birthdate to gain access.\"\n    }\n  ]\n}",
+  "input_tokens": 2035,
+  "output_tokens": 190,
+  "price_nano": 2605000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

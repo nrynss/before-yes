@@ -1,59 +1,87 @@
-diagnose Khan Academy Kids age 5 verdict unclear findings 195 (conflict pass unusable (no grades); first pass kept)
+diagnose Khan Academy Kids age 5 verdict yes findings 195 (conflict pass replaced the conflicted areas (an area the checks then made unknown may fall back to its first-pass grade))
   contact  risks 7 mitigations 3 other 3
-    judge ok setting "" cited 0 []
-    card unknown setting ""
-    check ok_without_finding
-    reason We don’t have enough evidence to assess this area. Don’t assume it is safe.
-  money  risks 6 mitigations 4 other 22
-    conflict pass ok setting "" cited 0 []
+    conflict pass ok setting "" cited 2 [F161 F162]
     first-pass fallback: the conflict pass's grade was made unknown by the checks, so the first pass's grade stands
-    judge (first pass) ok setting "" cited 0 []
+    judge (first pass) ok setting "" cited 2 [F167 F162]
     card ok setting ""
-    gate money.free_no_in_app_purchases unknown -> ok findings [f_b42defec3738fd8b]
-    check ok_without_finding
-    reason The App Store lists this app as free with no in-app purchases, and no checked quote reports purchases or ads.
+    check stood
+    reason A forum post describes a recording feature for practicing storytelling and language skills but does not mention any stranger messaging, chat, or voice channels.
+    quote f_a929fbbe3b46cd00 neutral forum: Recording feature lets them practice storytelling, executive function, language skills.
+  money  risks 6 mitigations 4 other 22
+    conflict pass ok setting "" cited 7 [F3 F7 F9 F21 F28 F192 F194]
+    first-pass fallback: the conflict pass's grade was made unknown by the checks, so the first pass's grade stands
+    judge (first pass) ok setting "" cited 7 [F3 F7 F9 F77 F106 F143 F162]
+    card ok setting ""
+    gate money.free_no_in_app_purchases ok -> ok findings [f_b42defec3738fd8b]
+    check stood
+    reason Multiple reviewers and the store listing state the app is completely free with no ads, no subscriptions, and no purchases required.
+    quote f_fafdd7902651ab6c neutral review: ACTUALLY FREE YOU DONT NEED TO PAY Thank goodness I use khan academy for school work so when I found out they had a learning games for kids I was so happy and I thought “ they teach fee videos on YouTube “ and it absolutely was free glad to know someone cares for our youth
+    quote f_89db524fdd8e695c neutral review: This is our kids go to App- so many activities and endless fun! We appreciate that its layout and activities are very well structured for kids- plus everything is included at no cost!
+    quote f_387f8d26016b57a8 neutral review: This is a very great game, and I recommend it 💯 percent! Coasts no money! Free from adds! GET THIS GAME NOW! You will be sorry if you don’t get this game right now!!! Khan academy kids download now for free on App Store! 📱5 STARS!
+    quote f_003fd420c7916ae7 mitigation review: NO ADDS!!!!!
+    quote f_cf8eb62de16e903e mitigation review: My son loves it and asks to play it everyday! Today we learned about nouns! Thank you for making a fantastic free learning app!
+    quote f_36f50762f4f49220 mitigation rating: No ads, no subscriptions - just high-quality learning for every child, at home or in the classroom.
     quote f_b42defec3738fd8b mitigation store: Reading & Math Learning Games Free
   data  risks 5 mitigations 13 other 5
-    conflict pass ok setting "" cited 0 []
-    first-pass fallback: the conflict pass's grade was made unknown by the checks, so the first pass's grade stands
-    judge (first pass) ok setting "" cited 0 []
+    judge ok setting "" cited 7 [F160 F167 F190 F191 F171 F172 F173]
     card ok setting ""
-    gate data.label_not_linked unknown -> ok findings [f_95d0754500916e2d]
-    check ok_without_finding
-    reason The App Store privacy label says the developer reports no data linked to the user and none used to track them, and no checked quote reports data being sold, tracked for ads or shared for marketing.
-    quote f_95d0754500916e2d mitigation store: Data Not Linked to You The following data, which may be collected but is not linked to your identity, may be used for the following purposes:
+    check stood
+    reason A rating source says the app asks for a name and age at setup, recommends using a nickname, never asks children for personal information directly, and lets users update or delete account information at any time.
+    quote f_3fe6efaf031edd7d mitigation reddit: Khan Academy Kids is available on iPhone, iPad, Google Play, and Amazon. It’s 100% free—no ads, no subscriptions.
+    quote f_1a2bd4787d51ce19 mitigation forum: Your privacy is important to us. We won't share this comment without your permission. If you chose to provide an email address, it will only be used to contact you about your comment. See our [privacy policy](/about-us/our-mission/privacy-policy) .
+    quote f_b7cc30c0abfcbb5f mitigation rating: We ask for a name and age at setup, and we recommend using a nickname. We never ask your child for personal information directly.
+    quote f_c58cc821303e27ae mitigation rating: You can update or delete your account information at any time.
+    quote f_bc2083d95bb9e37a mitigation news: delete or destroy covered information within 90 days if retaining it is not reasonably necessary to provide products or services under customer contracts
+    quote f_e59af715c3f85545 mitigation news: obtain initial and biennial assessments from an independent third‑party professional for 10 years after issuance of the order
+    quote f_f1c79a5004fb71a6 mitigation news: within 14 days of notifying any federal, state or local government entity about a covered incident, Illuminate must submit a report to the commission
   age_gating  risks 26 mitigations 2 other 7
-    judge flag setting "" cited 16 [f_c130cb709d7b6d05 f_d977c3d7c01daf8a f_2ed72bf5cc14d74b f_de1f59b2e76eefb6 f_a6928887eae37273 f_4bd8df2d54f82513 f_a69e194698f6b29b f_3ea7cb6813dacd99 f_c63eb2084df56d40 f_1fa09bf014966950 f_f31ccecec31b4c6c f_b95573267eabed03 f_ea2bd4d42dd675c5 f_d79b70a1dd1aa8c2 f_ccc2d027a266e5eb f_a38e580fc7e48feb]
-    card unknown setting ""
-    check entail: flag_not_earned
-    age-gate event=none witness="" actual_age="" assigned_age=""; age-gate event=none witness="" actual_age="" assigned_age=""; age-gate event=none witness="" actual_age="" assigned_age=""; age-gate event=none witness="" actual_age="" assigned_age=""; age-gate event=none witness="" actual_age="" assigned_age=""; age-gate event=none witness="" actual_age="" assigned_age=""; age-gate event=none witness="" actual_age="" assigned_age=""; age-gate event=none witness="" actual_age="" assigned_age=""; age-gate event=none witness="" actual_age="" assigned_age=""; age-gate event=none witness="" actual_age="" assigned_age=""; age-gate event=none witness="" actual_age="" assigned_age=""; age-gate event=none witness="" actual_age="" assigned_age=""; age-gate event=none witness="" actual_age="" assigned_age=""; age-gate event=none witness="" actual_age="" assigned_age=""; age-gate event=none witness="" actual_age="" assigned_age=""; age-gate event=none witness="" actual_age="" assigned_age=""
-    reason We don’t have enough evidence to assess this area. Don’t assume it is safe.
-    quote f_c130cb709d7b6d05 risk review: Good but limited Good for 5 YEAR OLDS it only goes up to second grade and I am going to third grade so I need something more advanced but it is still a very good kid learning app
-    quote f_d977c3d7c01daf8a risk review: Terrible for my kid My kid is a fifth grader and it only went to second grade will be pressed 8+ and it didn’t even go up the grade It only stayed at second grade and down.
-    quote f_2ed72bf5cc14d74b risk review: I can’t give my older kid any harder challenges because it will not gosse up to second grade
-    quote f_de1f59b2e76eefb6 risk review: My kid is a. 4th greater And I put that AND IT GIVES HER ABC's.LIKE.
-    quote f_a6928887eae37273 risk review: My daughter is 4, but she is autistic. She reads on a 1st/2nd grade level, can add, subtract up to digit numbers, tells time by a digital and analog clock— and because of that, this game is far too easy for her. She gets bored and starts answering the questions wrong just to see what will happen. Maybe update with a skills test, and then match the child up with curriculum that is in their skill range rather than age level
-    quote f_4bd8df2d54f82513 risk review: Does not have third,fourth,or,fifth grade on it
-    quote f_a69e194698f6b29b risk review: I gave the review four stars solely for the reason that this fantastic app sadly cuts off learning for children above second grade. My daughter absolutely loves this app for learning through fun and games. She has been playing this app for years and sadly it cannot take her any further. I can’t seem to find anything like it for her educational level and it’s sad. PLEASE PLEASE PLEASE AT LEAST GO UP TO GRADE 5!
-    quote f_3ea7cb6813dacd99 risk review: So I was looking for math games for my ten year old and this popped up. I went though and it had super easy questions. I looked and it was ages two though eight. Not saying this is bad but third grade and up should not play.
-    quote f_c63eb2084df56d40 risk review: Kids can play this they have to have like ideas and stuff. Why would they know that my five-year-old son can’t even play it so I had to tell him his IDs and he could never get on this and once he got on it, he hated it.
-    quote f_1fa09bf014966950 risk review: I’m eight years old so there’s a eight plus thing when you make account I clicked but it’s still so easy please make it harder but overall it’s pretty good, totally recommend it and for kindergarten and lower grades awesome but first grade second a little easy and above way too easy just please make it harder
-    quote f_f31ccecec31b4c6c risk review: Is this app good for 5th grade students? I am a fifth grader in middle school and I have ADHD. My sister is in first grade and she has this app so I was wondering if I could learn from it too because she was improving her grades a lot more and it made me want to try it. I would really appreciate an answer as soon as possible because I don’t want a bad grade on my report card. Thank you for reading this!
-    quote f_b95573267eabed03 risk review: Hi. Developers. I’m 8 I like the app just one thing can you make the highest grade 3 please
-    quote f_ea2bd4d42dd675c5 risk review: Amazing! I wish I would have found this app sooner its so easy to use and when my daughter goes intk 3rd grade im going to be sad cause it only goes up to 2nd
-    quote f_d79b70a1dd1aa8c2 risk review: Four star review Very fun and educational there are books that you can read or it can read for you there are NO adds I don’t know if it goes up to third grade but if it doesn’t than please make this amazing educational game have third grade work please buy this educational game awesome game
-    quote f_ccc2d027a266e5eb risk review: Love this app! Hoping it could be more challenging one day….maybe some AI learning for kids who excel quicker in different areas? Still a great app!
-    quote f_a38e580fc7e48feb risk reddit: Quiero probar "Khan Academy Kids" para nuestros pequeños, pero me preocupa el tiempo de pantalla.
+    conflict pass ok setting "" cited 6 [F30 F94 F97 F103 F163 F188]
+    first-pass fallback: the conflict pass's grade was made unknown by the checks, so the first pass's grade stands
+    judge (first pass) ok setting "" cited 3 [F157 F188 F177]
+    card ok setting ""
+    check stood
+    reason A forum post reports that parents must provide and confirm an email address to begin using the app, and the rating source lists the target audience as ages two to eight; neither source describes an age-gate mechanism, an assigned age, or a bypass for a five-year-old.
+    quote f_a075f8d33d54f973 neutral review: Suitable for fifth graders and two year olds
+    quote f_139acf331537f05c neutral review: I loved khan academy kids when I was younger like about 3 or 2 I played this game and let me tell you that it was amazing it taught me so much about how to do math and reading I learned so much from khan academy kids it was so much fun i loved all the characters it was amazing to see this app was so entertaining it helped me grow and I loved doing math and the reading in this app
+    quote f_ce24bf4118c5a3ef neutral review: Best app for pre schoolers.
+    quote f_c8082f9e37966da9 neutral review: I’m the parents of two beautiful girls five and seven and they love this game. They are learning and having fun.
+    quote f_41c741e625336937 neutral forum: Parents must provide an email address and confirm the address through their email account to begin using the app.
+    quote f_441dc1b839059767 neutral rating: for kids ages two to eight
   content  risks 24 mitigations 7 other 51
-    judge ok_with_setting setting "Parental control over which holiday themes they want to expose their child to" cited 3 [f_9d6c0e4c5638b99b f_5fab2037293141c8 f_a5a18337beca7677]
-    card unknown setting ""
-    check ground: setting_without_quote
-    reason We don’t have enough evidence to assess this area. Don’t assume it is safe.
-    quote f_9d6c0e4c5638b99b risk review: Instead of just standard kids' games or exercises, the app features and pushes yoga routines. Yoga carries specific spiritual intentions that conflict entirely with our Catholic beliefs, and I do not want this introduced to my daughter. App developers need to be transparent when blending spiritual practices into children's entertainment. Uninstalled immediately.
-    quote f_5fab2037293141c8 risk review: Out of nowhere it will talk and ask her to record her voice. Each time it startles my child who then gets quiet and runs to whispers to me what it said. This is inappropriate, and it’s always in the coloring app.
-    quote f_a5a18337beca7677 mitigation review: I wish it was mindful on what families do and do not celebrate in terms of holidays. I hope that in the near future it allows parents the opportunity to control which holiday themes they want to expose their child to (or withhold) depending on the family’s preferences and values.
+    conflict pass ok setting "" cited 9 [F61 F63 F65 F79 F80 F81 F157 F164 F168]
+    first-pass fallback: the conflict pass's grade was made unknown by the checks, so the first pass's grade stands
+    judge (first pass) ok setting "" cited 8 [F2 F80 F86 F145 F155 F156 F157 F164]
+    card ok setting ""
+    check stood
+    reason Reviewers describe their kindergartner, pre-K granddaughter, and three-year-old grandson enjoying age-appropriate activities, songs, and stories, and a forum post lists curriculum topics including math, ELA, executive function, socio-emotional learning, and creative expression up to first grade with some second-grade lessons; none of the cited sources report a child encountering unsuitable material.
+    quote f_43a16fd98c20e150 neutral review: Excellent app! This app not only is educational for my daughter who is a new Kindergartener this year but she requests to play it!
+    quote f_9ad992fe913a8629 neutral review: My granddaughter will be entering pre-K in the fall. I downloaded this app so she could build her skills before she goes to school. She loves it.
+    quote f_76685c25ae9169a2 neutral review: My 3 year old grandson loves it. The variety of activities is awesome and very age appropriate. He also loves the songs and stories!
+    quote f_44c5661eba5fc3c3 risk review: Never play is Boring and annoying
+    quote f_829a0ba61e9e6992 neutral review: You made a good choice for a learning app guys good job
+    quote f_df2c20a3e3997907 neutral store: Khan Academy Kids grows with your child, from age 2 through 8 and beyond
+    quote f_903337b22d80f6de neutral forum: Content includes activities in math, ELA, executive function, socio-emotional learning, and creative expression, and the content stretches up to first grade, with some math and ELA lessons for second graders as well.
+    quote f_7fa8597d4a9333c9 neutral forum: Creative early-learning activities engage and inspire.
   developer_record  risks 2 mitigations 1 other 7
-    judge (not in the reply)
+    judge ok setting "" cited 3 [F165 F169 F189]
     card unknown setting ""
-    check skipped_area
+    gate developer_record.ok_without_statement ok -> unknown findings []
+    check stood
     reason We don’t have enough evidence to assess this area. Don’t assume it is safe.
+    quote F165 (missing)
+    quote F169 (missing)
+    quote F189 (missing)
+2026/10/16 18:10:58 INFO sqlite: applied migration namespace=cost_model filename=0001_cost.sql
+2026/10/16 18:10:58 INFO sqlite: applied migration namespace=cost_model filename=0002_cost_owner.sql
+2026/10/16 18:10:58 INFO sqlite: applied migration namespace=cost_model filename=0003_cost_settle.sql
+2026/10/16 18:10:58 INFO sqlite: applied migration namespace=cost_model filename=0004_cost_denomination.sql
+2026/10/16 18:10:58 INFO sqlite: applied migration namespace=cost_model filename=0005_cost_quote.sql
+2026/10/16 18:10:58 INFO sqlite: applied migration namespace=cost_model filename=0006_cost_settle_once.sql
+2026/10/16 18:10:58 INFO sqlitestore: opened namespace=cost_model limit=1000000000000 denomination="" expired_reservations=0 expired_quotes=0
+2026/10/16 18:10:58 INFO sqlite: applied migration namespace=cost_tavily filename=0001_cost.sql
+2026/10/16 18:10:58 INFO sqlite: applied migration namespace=cost_tavily filename=0002_cost_owner.sql
+2026/10/16 18:10:58 INFO sqlite: applied migration namespace=cost_tavily filename=0003_cost_settle.sql
+2026/10/16 18:10:58 INFO sqlite: applied migration namespace=cost_tavily filename=0004_cost_denomination.sql
+2026/10/16 18:10:58 INFO sqlite: applied migration namespace=cost_tavily filename=0005_cost_quote.sql
+2026/10/16 18:10:58 INFO sqlite: applied migration namespace=cost_tavily filename=0006_cost_settle_once.sql
+2026/10/16 18:10:58 INFO sqlitestore: opened namespace=cost_tavily limit=1000000 denomination=tavily.credit expired_reservations=0 expired_quotes=0

@@ -1,0 +1,9 @@
+{
+  "text": "{\"reason_supported\":true,\"explanation\":\"The explanation correctly attributes the forum quote stating that parents must provide and confirm an email address to start the app, and the rating quote listing the target audience as ages two to eight. It then notes that neither source describes an age-gate mechanism, an assigned age, or a bypass for a five-year-old. All claims are directly supported by the cited sources.\"}",
+  "input_tokens": 1258,
+  "output_tokens": 84,
+  "price_nano": 1510000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

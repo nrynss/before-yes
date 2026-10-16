@@ -1,0 +1,9 @@
+{
+  "text": "{\"reason_supported\":false,\"explanation\":\"The explanation mixes concrete reported encounters with generic possibility statements. The forum quotes stating 'kids may still run into inappropriate content' and listing categories like 'condo games,' 'violent games,' 'gambling-style play,' and 'bullying or hate speech' are forward-looking risk descriptions, not reports of something someone actually saw, was shown, or accessed. The lawsuit quote alleges repeated exposure but does not describe a specific observed encounter. Only the 'Baddies' tutorial and 'Street Code' prompt quotes, plus the reviewers' accounts of 'disturbing and inappropriate stuff' and 'online dating' in Brookhaven, meet the required standard. Because the explanation presents the generic 'may run into' material as if it were a concrete encounter, it is not fully supported.\"}",
+  "input_tokens": 1981,
+  "output_tokens": 172,
+  "price_nano": 2497000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

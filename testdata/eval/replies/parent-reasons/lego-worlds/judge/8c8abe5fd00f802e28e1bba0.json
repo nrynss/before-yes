@@ -1,0 +1,9 @@
+{
+  "text": "{\"reason_supported\":true,\"explanation\":\"The explanation attributes the single claim — that there is no open chat with strangers — directly to the comparison guide, matching the quoted sentence 'There's no open chat with strangers' exactly.\"}",
+  "input_tokens": 1114,
+  "output_tokens": 49,
+  "price_nano": 1261000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

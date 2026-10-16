@@ -1,54 +1,102 @@
 diagnose Minecraft age 9 verdict unclear findings 227 (conflict pass replaced the conflicted areas (an area the checks then made unknown may fall back to its first-pass grade))
   contact  risks 27 mitigations 11 other 2
-    judge ok_with_setting setting "child accounts disable chat by default until a parent enables them through account settings" cited 2 [f_0c5317397f85dce9 f_c064483b3c617727]
-    card unknown setting ""
-    check ground: setting_without_quote
-    entail meets_definition=false reason_supported=false
-    reason We don’t have enough evidence to assess this area. Don’t assume it is safe.
-    quote f_0c5317397f85dce9 risk terms: Please watch out if you are talking to people in our games. It is hard for either you or us to know for sure that what people say is true, or even if people are really who they say they are. You should think twice about giving out information about yourself.
-    quote f_c064483b3c617727 risk forum: With child accounts (for players under 16), chat features and multiplayer options are disabled by default until a parent enables them through account settings.
-  money  risks 61 mitigations 4 other 6
-    judge ok_with_setting setting "Control Spending" cited 2 [f_d34b991c87235fe5 f_6b222f7ec75ab54a]
-    card ok_with_setting setting "Require approval for purchases"
-    gate money.flag_capped_by_control flag -> ok_with_setting findings [f_4f0d24b3b6bb0948 f_fe600dad41e0a6a9 f_a24eb25dc2e2b26a f_e65861da00e0e77e]
-    check stood
-    entail meets_definition=false reason_supported=false; entail meets_definition=true reason_supported=true
-    reason A source names a control that answers this concern (Require approval for purchases), and no cited quote says the control fails.
-    quote f_4f0d24b3b6bb0948 risk review: i bought 10,000 minecoins and im litterly a kid im only 10 and i got scammed i litterly used all my birthday money! FRICK YOU MINECRAFT
-    quote f_fe600dad41e0a6a9 risk review: I bought an avatar for my character and I look through my inventory and everything and i never got my avatar. I spent money for what?other than that it’s a good game.(I still want my money back)
-    quote f_a24eb25dc2e2b26a risk review: I love this game, but I just spent money on the game TWICE and I still didn’t get the stuff I wanted
-    quote f_e65861da00e0e77e risk rating: every Marketplace purchase (paid for with Minecoins) or Realms subscription needs your approval
-  data  risks 22 mitigations 2 other 11
-    judge ok_with_setting setting "data can be deleted" cited 2 [f_6b7cc1eed85a38ff f_588749e106d02d39]
-    card unknown setting ""
-    check ground: setting_without_quote
-    entail meets_definition=false reason_supported=false
-    reason We don’t have enough evidence to assess this area. Don’t assume it is safe.
-    quote f_6b7cc1eed85a38ff risk review: I play Microsoft flight simulator 2024 but all my friends played Minecraft so I decided to try it out
-    quote f_588749e106d02d39 mitigation terms: The Microsoft Privacy Statement applies to all Minecraft Services.
-  age_gating  risks 10 mitigations 2 other 8
-    judge ok_with_setting setting "child accounts that a parent manages" cited 2 [f_88d325d4c1d10860 f_4f6dcadc29660484]
-    card unknown setting ""
-    check ground: setting_without_quote
-    reason We don’t have enough evidence to assess this area. Don’t assume it is safe.
-    quote f_88d325d4c1d10860 risk review: Can you make the game available for +5 year-old?
-    quote f_4f6dcadc29660484 mitigation rating: In the US and EU, Minecraft treats every account for someone under 16 as a child account that a parent manages.[[4]](#sources)
-  content  risks 20 mitigations 2 other 16
-    conflict pass ok_with_setting setting "block access to games based on the ESRB-assigned rating information" cited 2 [f_3cad9aec44591175 f_81363ff213c488f0]
-    first-pass fallback: the conflict pass's grade was made unknown by the checks, so the first pass's grade stands
-    judge (first pass) ok setting "" cited 2 [f_b2135a43fe79f014 f_bc14515a00b12a6a]
-    card ok setting ""
-    check stood
-    entail meets_definition=false reason_supported=false
-    reason Read the cited source quotes before deciding; we couldn’t verify a plain-language explanation for this area.
-    quote f_b2135a43fe79f014 risk rating: The game’s blocky visuals and non-graphic style make the violence less intense than many action games, but the combat is still present.
-    quote f_bc14515a00b12a6a neutral rating: There is no drinking, drugs, or sexual content, and the fighting is bloodless.
-  developer_record  risks 12 mitigations 1 other 10
-    judge flag setting "" cited 3 [f_895e1f4c7ea107f6 f_84aa4cf4beb17e84 f_6cbd67ec5122f903]
+    judge ok_with_setting setting "Restrict Communication" cited 2 [F195 F218]
+    citation no citation: F195 is not a verified finding
     card unknown setting ""
     check entail: flag_not_earned
     entail meets_definition=false reason_supported=false
     reason We don’t have enough evidence to assess this area. Don’t assume it is safe.
-    quote f_895e1f4c7ea107f6 risk review: BAN YOUR STUPID GAME
-    quote f_84aa4cf4beb17e84 risk rating: Microsoft. (n.d.). [Frequently asked questions about Microsoft account age assurance](https://support.microsoft.com/en-us/accounts-billing/manage/about-microsoft-account-age-verification). Accessed October 2, 2026.
-    quote f_6cbd67ec5122f903 risk review: please return to China Wangyi company taking Minecraft badly so I wish this game can return to China by Microsoft
+    quote F195 (missing)
+    quote F218 (missing)
+  money  risks 61 mitigations 4 other 6
+    judge ok_with_setting setting "Control Spending" cited 3 [F1 F21 F219]
+    citation no citation: F1 is not a verified finding
+    card ok_with_setting setting "Require approval for purchases"
+    gate money.flag_capped_by_control flag -> ok_with_setting findings [f_4f0d24b3b6bb0948 f_fe600dad41e0a6a9 f_a24eb25dc2e2b26a f_b5f00eeb33f5c878 f_20283187b3bd9eac f_463ba7ca4dad3f1f f_597028b85a96600c f_d34b991c87235fe5 f_469eb3b32d840f08 f_e65861da00e0e77e]
+    check stood
+    entail meets_definition=false reason_supported=false; entail meets_definition=true reason_supported=true
+    reason A source names a purchase control that answers this concern (Require approval for purchases), and no verified quote says the control failed or was bypassed. Complaints about spending, scams or billing are not counted against it.
+    quote f_4f0d24b3b6bb0948 risk review: i bought 10,000 minecoins and im litterly a kid im only 10 and i got scammed i litterly used all my birthday money! FRICK YOU MINECRAFT
+    quote f_fe600dad41e0a6a9 risk review: I bought an avatar for my character and I look through my inventory and everything and i never got my avatar. I spent money for what?other than that it’s a good game.(I still want my money back)
+    quote f_a24eb25dc2e2b26a risk review: I love this game, but I just spent money on the game TWICE and I still didn’t get the stuff I wanted
+    quote f_b5f00eeb33f5c878 risk review: i tried buying them separately too which still didn’t work and i thought this all was really weird because every single time it said the purchase was successful and i tried it again tonight and just got charged 40 dollars. i still don’t have the add on btw.
+    quote f_20283187b3bd9eac risk review: I bought realms and when I returned to make one it says “error” try again later and I can’t get a refund beacause it’s through Apple
+    quote f_463ba7ca4dad3f1f risk review: I bought this morph add-on. I really don’t like it so I deleted it and it didn’t give me my mine coins back
+    quote f_597028b85a96600c risk review: Attempted to buy add ons like I have in the past, it wasn’t working and after the third attempt for the same product, I was charged for buying the same add on 3 times. The next day I attempted to just buy coins, only one attempt. Says it went through and never got that product either. Had to submit refund requests for the first three, and the purchase today isn’t even showing to get a refund for yet. The app is up to date. The phone is up to date. The phone has been restarted. This isn’t a…
+    quote f_d34b991c87235fe5 risk review: I think it’s pretty scummy to not state up front that this is a monthly charge, not a one-and-done payment.
+    quote f_469eb3b32d840f08 risk terms: Realms is a subscription service and the cost is as detailed on the applicable purchase pages and / or platform at the time of purchase, or the purchase price of the redeemable card or gift code.
+    quote f_e65861da00e0e77e risk rating: every Marketplace purchase (paid for with Minecoins) or Realms subscription needs your approval
+  data  risks 22 mitigations 2 other 11
+    judge flag setting "" cited 2 [F165 F226]
+    citation no citation: F165 is not a verified finding
+    card ok_with_setting setting "Ask App Not to Track"
+    gate information.regulator_action_other_product flag -> flag findings [f_796e7220c1a87086]
+    gate data.flag_confirmed flag -> flag findings [f_8e957f57d0977f8f]
+    gate data.tracking_setting flag -> ok_with_setting findings [f_62d7413616ee25d9 f_8e957f57d0977f8f]
+    check stood
+    entail meets_definition=true reason_supported=true
+    reason Turn on Ask App Not to Track in iOS Settings → Privacy & Security → Tracking.
+    quote f_62d7413616ee25d9 risk store: App Tracking: To deliver personalized ads and improve application experience
+    quote f_8e957f57d0977f8f risk store: Data Used to Track You The following data may be used to track you across apps and websites owned by other companies:
+  age_gating  risks 10 mitigations 2 other 8
+    conflict pass flag setting "" cited 2 [F197 F206]
+    first-pass fallback: the conflict pass's grade was made unknown by the checks, so the first pass's grade stands
+    judge (first pass) ok_with_setting setting "child accounts (for players under 16) — automatically created and linked to a parent Microsoft account, locking multiplayer and chat until a parent enables them" cited 6 [F106 F113 F197 F202 F206 F212]
+    card ok_with_setting setting "Lock the account's birth date"
+    gate age_gating.flag_capped_by_control flag -> ok_with_setting findings [f_dd41b8cccbfa00d7 f_6ba7572225c7dd9e]
+    check stood
+    age-gate event=access_bypass witness="If your child originally signed up with a fake adult birthdate, none of those defaults apply" actual_age="" assigned_age=""
+    reason A source names a control that answers this concern (Lock the account's birth date), and no cited quote says the control fails.
+    quote f_dd41b8cccbfa00d7 risk rating: If your child originally signed up with a fake adult birthdate, none of those defaults apply
+    quote f_6ba7572225c7dd9e risk rating: If the game registers that you are under 13 then certain elements are locked, including making in-game purchases. However, it is very easy for a child to be aware of these restrictions and choose to enter a birth year that allows them full access to all the features.
+  content  risks 20 mitigations 2 other 16
+    conflict pass flag setting "" cited 4 [F107 F109 F119 F162]
+    first-pass fallback: the conflict pass's grade was made unknown by the checks, so the first pass's grade stands
+    judge (first pass) ok setting "" cited 130 [F90 F98 F99 F100 F101 F102 F103 F104 F105 F107 F108 F109 F110 F111 F112 F113 F114 F115 F116 F117 F118 F119 F120 F121 F122 F123 F124 F125 F126 F127 F128 F129 F130 F131 F132 F133 F134 F135 F136 F137 F138 F139 F140 F141 F142 F143 F144 F145 F146 F147 F148 F149 F150 F151 F152 F153 F154 F155 F156 F157 F158 F159 F160 F161 F162 F163 F164 F165 F166 F167 F168 F169 F170 F171 F172 F173 F174 F175 F176 F177 F178 F179 F180 F181 F182 F183 F184 F185 F186 F187 F188 F189 F190 F191 F192 F193 F194 F195 F196 F197 F198 F199 F200 F201 F202 F203 F204 F205 F206 F207 F208 F209 F210 F211 F212 F213 F214 F215 F216 F217 F218 F219 F220 F221 F222 F223 F224 F225 F226 F227]
+    card ok setting ""
+    check stood
+    entail meets_definition=false reason_supported=false
+    reason A Reddit reviewer says Minecraft is a very safe game with next to nothing that could be dangerous or explicit for a child.
+    quote f_f00f7ae6def70413 neutral reddit: Minecraft is a very safe game, there's next to nothing that could be dangerous or explicit for him.
+    quote f_d5d61c60cf7d7cef risk reddit: Minecraft admitting their moderators can suspend or ban people who say cuss words: "When a user is banned, they will receive a message letting
+    quote f_0ca3653a14b2a95a risk reddit: False bans can be common. Players can pretend as if they were harassed, use mass reports, or utilize other manipulative ways to trick the
+    quote f_729d50084abd98b3 neutral forum: The game has an ESRB rating of E10+ (Everyone 10+) based on some fantasy violence in the game, which is cartoonish rather than realistic. (For example, when creatures are defeated, they simply disappear without blood or gore.)
+    quote f_18b4ecd8c3e0e986 risk forum: No violence in the app itself, however user-generated content could contain references to or images of violence.
+    quote f_521fb879d6845cb7 neutral forum: the app's emphasis on representation and item collection, since it encourages status-seeking and materialism.
+    quote f_8f1be93b269b5300 risk forum: Because Roblox is user-generated, kids may still run into inappropriate content despite the platform's safety filters. This includes "condo games" (which usually feature adult themes and sexual content), violent games, gambling-style play, and even games that may have bullying or hate speech.
+    quote f_f2680b7fba79f48c neutral forum: Fascination with games and pets, but limited understanding of online risks.
+    quote f_23455a185bb62608 neutral forum: Tweens are more socially aware and often focus on connecting with friends and building a unique digital identity on Roblox.
+    quote f_e6f13f72d6da3026 mitigation forum: Content is automatically filtered for potentially inappropriate images or video
+    quote f_ed5582a64e35fd49 risk forum: Servers labeled "NSFW" or "age-restricted" in their descriptions
+    quote f_15be9e412d03dc88 risk forum: Talking about self-harm or feeling hopeless (always take this seriously and seek professional support right away; see below).
+    quote f_ad067f18d2af0775 risk forum: Chat is full of suggestive comments and creative profanity, since swearing is blocked by the game.
+    quote f_d49bc44ee3907f30 risk forum: Avatars can be dressed in underwear or bikinis but don't do anything suggestive or sexual; however, chat feature is rife with flirting and suggestive comments.
+    quote f_d454a1950a3ba059 risk news: A sextortion email is a blackmail message sent to huge numbers of people at once. It claims the sender has sexual images or video of you, often recorded while you watched adult websites, and threatens to send it to your friends, family or coworkers unless you pay.
+    quote f_b2135a43fe79f014 risk rating: The game’s blocky visuals and non-graphic style make the violence less intense than many action games, but the combat is still present.
+    quote f_bc14515a00b12a6a neutral rating: There is no drinking, drugs, or sexual content, and the fighting is bloodless.
+    quote f_df1b941077fe86e0 risk rating: There’s an aspect of combat in Minecraft’s gameplay. Because combat is part of the game, there are some elements of mild violence. Players can hit and defeat (essentially, kill) both passive and hostile creatures (also known as ‘mobs’), as well as other players (if playing in multiplayer mode).
+    quote f_7777e61d7940c9f0 neutral rating: The combat within the game is very simple, with damage being taken off of your health bar if you are hit by a monster or their weapon (and vice versa if you are attacking a monster). If you choose to fight, hearts appear around the monster to show damage is being taken instead of any visible injuries or blood. The only truly ‘scary’ element to the game could arguably be the night-time and the audio of unseen monsters (with zombies making stereotypical moans and skeletons rattling), but this …
+    quote f_f7cfbeb289f056b5 neutral rating: your child to play on multiplayer servers.
+    quote f_81363ff213c488f0 mitigation rating: block access to games based on the ESRB-assigned rating information
+    quote f_25709ee242b2784f neutral store: Age rating: 9+
+    quote f_1f41e784925d13d4 risk store: Content advisory: Infrequent/Mild Cartoon or Fantasy Violence
+    quote f_322afb3bd2789d74 risk store: Content advisory: Infrequent/Mild Contests
+  developer_record  risks 12 mitigations 1 other 10
+    judge unknown setting "" cited 0 []
+    card unknown setting ""
+    check stood
+    reason We don’t have enough evidence to assess this area. Don’t assume it is safe.
+2026/10/16 18:10:49 INFO sqlite: applied migration namespace=cost_model filename=0001_cost.sql
+2026/10/16 18:10:49 INFO sqlite: applied migration namespace=cost_model filename=0002_cost_owner.sql
+2026/10/16 18:10:49 INFO sqlite: applied migration namespace=cost_model filename=0003_cost_settle.sql
+2026/10/16 18:10:49 INFO sqlite: applied migration namespace=cost_model filename=0004_cost_denomination.sql
+2026/10/16 18:10:49 INFO sqlite: applied migration namespace=cost_model filename=0005_cost_quote.sql
+2026/10/16 18:10:49 INFO sqlite: applied migration namespace=cost_model filename=0006_cost_settle_once.sql
+2026/10/16 18:10:49 INFO sqlitestore: opened namespace=cost_model limit=1000000000000 denomination="" expired_reservations=0 expired_quotes=0
+2026/10/16 18:10:49 INFO sqlite: applied migration namespace=cost_tavily filename=0001_cost.sql
+2026/10/16 18:10:49 INFO sqlite: applied migration namespace=cost_tavily filename=0002_cost_owner.sql
+2026/10/16 18:10:49 INFO sqlite: applied migration namespace=cost_tavily filename=0003_cost_settle.sql
+2026/10/16 18:10:49 INFO sqlite: applied migration namespace=cost_tavily filename=0004_cost_denomination.sql
+2026/10/16 18:10:49 INFO sqlite: applied migration namespace=cost_tavily filename=0005_cost_quote.sql
+2026/10/16 18:10:49 INFO sqlite: applied migration namespace=cost_tavily filename=0006_cost_settle_once.sql
+2026/10/16 18:10:49 INFO sqlitestore: opened namespace=cost_tavily limit=1000000 denomination=tavily.credit expired_reservations=0 expired_quotes=0

@@ -1,0 +1,9 @@
+{
+  "text": "{\"reason_supported\":true,\"explanation\":\"The explanation attributes two distinct pieces of evidence to their respective sources. First, it cites the news quote stating \\\"Microsoft will pay a fine of $20 million to settle Federal Trade Commission charges that it illegally collected and retained the data of children who signed up,\\\" which directly supports the claim of a third-party handling violation involving children's information and a retention gap. Second, it cites the store quote disclosing \\\"Data Used to Track You... across apps and websites owned by other companies,\\\" which supports the claim about ad tracking disclosure. Both claims are explicitly sourced and no additional unsupported assertions are made.\"}",
+  "input_tokens": 1137,
+  "output_tokens": 134,
+  "price_nano": 1539000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

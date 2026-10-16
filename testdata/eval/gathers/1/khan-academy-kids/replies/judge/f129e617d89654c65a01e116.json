@@ -1,0 +1,9 @@
+{
+  "text": "{\n  \"reasons\": [\n    {\n      \"area\": \"contact\",\n      \"reason\": \"The rating describes a learning path and browsing activities but does not quote any stranger messaging, chat, or voice channel. The forum quote suggests offline activities like library visits and singing, not in-app communication.\"\n    },\n    {\n      \"area\": \"money\",\n      \"reason\": \"The rating states the mobile app is 100% free with no ads or subscriptions, and the store listing confirms it is free.\"\n    },\n    {\n      \"area\": \"data\",\n      \"reason\": \"Regulators allege the app collected children's names, email addresses, and birth dates without parental consent.\"\n    },\n    {\n      \"area\": \"age_gating\",\n      \"reason\": \"The forum notes parents must provide and confirm an email address to begin using the app, with no quoted bypass or explicit actual/assigned-age mismatch reported.\"\n    },\n    {\n      \"area\": \"content\",\n      \"reason\": \"A reviewer reports a grid of scary devil faces and men tied up with mouths taped shut appeared for about 15 seconds while their kid worked on math.\"\n    },\n    {\n      \"area\": \"developer_record\",\n      \"reason\": \"Reviewers praise the app as an excellent free educational resource used by young children, with no quoted enforcement, lawsuit, or breach reported.\"\n    }\n  ]\n}",
+  "input_tokens": 1957,
+  "output_tokens": 288,
+  "price_nano": 2821000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

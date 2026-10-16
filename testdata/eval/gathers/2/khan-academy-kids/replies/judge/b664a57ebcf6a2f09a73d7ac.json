@@ -1,0 +1,9 @@
+{
+  "text": "{\"reason_supported\":false,\"explanation\":\"The forum quote does not say the privacy policy 'explains collection, use, sharing, and choices'; it only states the comment will not be shared without permission and that an email would be used solely to contact the commenter, then provides a link. The three news quotes describe regulatory obligations placed on 'Illuminate' (deletion within 90 days, independent assessments for 10 years, incident reporting within 14 days), but they contain no indication that those rules apply to Khan Academy Kids or its developer, so attributing them to the app is unsupported.\"}",
+  "input_tokens": 1396,
+  "output_tokens": 128,
+  "price_nano": 1780000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

@@ -1,0 +1,9 @@
+{
+  "text": "{\n  \"reasons\": [\n    {\n      \"area\": \"data\",\n      \"reason\": \"A news report alleges Roblox tracks user data without consent and monetizes the collected information to display targeted content or provide it to third-party advertisers.\"\n    }\n  ]\n}",
+  "input_tokens": 1618,
+  "output_tokens": 58,
+  "price_nano": 1792000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

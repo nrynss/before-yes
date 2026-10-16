@@ -1,22 +1,27 @@
-diagnose Khan Academy Kids age 5 verdict unclear findings 146 (conflict pass replaced the conflicted areas (an area the checks then made unknown may fall back to its first-pass grade))
+diagnose Khan Academy Kids age 5 verdict yes findings 146 (conflict pass replaced the conflicted areas (an area the checks then made unknown may fall back to its first-pass grade))
   contact  risks 7 mitigations 1 other 5
-    judge flag setting "" cited 2 [f_e54d9aeff8acb9f4 f_60d4826ad9d69d44]
-    card unknown setting ""
-    check entail: flag_not_earned
-    entail meets_definition=false reason_supported=false
-    reason We don’t have enough evidence to assess this area. Don’t assume it is safe.
-    quote f_e54d9aeff8acb9f4 risk forum: Parents must allow access to their device's microphone for some activities to work fully.
-    quote f_60d4826ad9d69d44 risk rating: My 4-year old is working on Khan Academy Kids app this morning and loving it. The combo of school facts along with social/emotional content is outstanding.
+    conflict pass ok setting "" cited 2 [F115 F124]
+    first-pass fallback: the conflict pass's grade was made unknown by the checks, so the first pass's grade stands
+    judge (first pass) ok setting "" cited 1 [F134]
+    card ok setting ""
+    check stood
+    reason The rating describes a learning path and browsing activities but does not quote any stranger messaging, chat, or voice channel. The forum quote suggests offline activities like library visits and singing, not in-app communication.
+    quote f_882345ab1c9fcc1c neutral forum: Provide fun, stimulating learning opportunities off the screen as well. It doesn't have to cost anything to get kids learning. Fill your days with books (visit your local library), songs (it's free to sing), arts activities (all you need is scratch paper and crayon), language (talk about what you're doing together), and sensory experiences (take a walk in a local park).
+    quote f_42fd5006b9bb0d2d neutral rating: Kids can follow a learning path, which automatically presents varied activities based on age and past performance, or browse the database for videos, games, books, songs, and more.
   money  risks 3 mitigations 4 other 10
-    judge ok setting "" cited 2 [f_1743367afa774fb8 f_b42defec3738fd8b]
+    conflict pass ok setting "" cited 2 [F132 F134]
+    first-pass fallback: the conflict pass's grade was made unknown by the checks, so the first pass's grade stands
+    judge (first pass) ok setting "" cited 3 [F9 F76 F142]
     card ok setting ""
     gate money.free_no_in_app_purchases ok -> ok findings [f_b42defec3738fd8b]
     check stood
-    reason The rating states the mobile app is 100% free with no ads or subscriptions.
+    reason The rating states the mobile app is 100% free with no ads or subscriptions, and the store listing confirms it is free.
     quote f_1743367afa774fb8 mitigation rating: Is Khan Academy Kids really free? Yes — the mobile app is 100% free, with no ads or subscriptions.
     quote f_b42defec3738fd8b mitigation store: Reading & Math Learning Games Free
   data  risks 10 mitigations 8 other 7
-    judge flag setting "" cited 3 [f_b677ef9f38aa3b5b f_cf3c5c65071d1c6e f_73d64adad97808eb]
+    conflict pass flag setting "" cited 3 [F112 F121 F125]
+    first-pass fallback: the conflict pass's grade was made unknown by the checks, so the first pass's grade stands
+    judge (first pass) ok setting "" cited 5 [F10 F11 F12 F140 F146]
     card ok setting ""
     gate data.flag_without_basis flag -> unknown findings []
     gate data.label_not_linked unknown -> ok findings [f_95d0754500916e2d]
@@ -25,14 +30,17 @@ diagnose Khan Academy Kids age 5 verdict unclear findings 146 (conflict pass rep
     reason The App Store privacy label says the developer reports no data linked to the user and none used to track them, and no checked quote reports data being sold, tracked for ads or shared for marketing.
     quote f_95d0754500916e2d mitigation store: Data Not Linked to You The following data, which may be collected but is not linked to your identity, may be used for the following purposes:
   age_gating  risks 14 mitigations 1 other 5
-    judge ok setting "" cited 2 [f_41c741e625336937 f_44b2975820f1807f]
+    conflict pass ok setting "" cited 2 [F113 F124]
+    first-pass fallback: the conflict pass's grade was made unknown by the checks, so the first pass's grade stands
+    judge (first pass) ok setting "" cited 4 [F138 F16 F37 F97]
     card ok setting ""
     check stood
-    reason No source quote reports how age is collected, verified, or circumvented during sign-up or use.
+    reason The forum notes parents must provide and confirm an email address to begin using the app, with no quoted bypass or explicit actual/assigned-age mismatch reported.
     quote f_41c741e625336937 mitigation forum: Parents must provide an email address and confirm the address through their email account to begin using the app.
-    quote f_44b2975820f1807f neutral store: Packed with fun, standards-aligned reading games, math games, phonics lessons, and interactive storybooks, the app has helped over 21 million preschool and elementary students learn at home, at school, and on the go. Join Kodi the Bear and friends on exciting educational adventures that spark curiosity, build confidence, and inspire a lifelong love of learning.
   content  risks 19 mitigations 3 other 38
-    judge flag setting "" cited 1 [f_0fcffd8da2e19a5b]
+    conflict pass flag setting "" cited 1 [F8]
+    first-pass fallback: the conflict pass's grade was made unknown by the checks, so the first pass's grade stands
+    judge (first pass) ok setting "" cited 5 [F16 F37 F76 F90 F139]
     card ok setting ""
     gate content.single_mild_report flag -> ok findings [f_e2528faff963297a f_94dbe3a0b9b9ea4d]
     check stood
@@ -41,7 +49,26 @@ diagnose Khan Academy Kids age 5 verdict unclear findings 146 (conflict pass rep
     quote f_e2528faff963297a neutral store: Age rating: 4+
     quote f_94dbe3a0b9b9ea4d neutral review: I am currently in 5th grade, and my 2 year old sister does love to play it almost all the time! Though I am 11 years old, I still wanted to try it to see how fun it could get for my sister. It was pretty fun, but I know it ment for kids. I recommend nothing to change because the content is appropriate, and fun for a learning environment. Me and my sister really enjoyed playing, thank you Khan Academy Kids
   developer_record  risks 0 mitigations 1 other 10
-    judge ok setting "" cited 0 []
+    judge ok setting "" cited 4 [F13 F14 F15 F123]
     card unknown setting ""
-    check ok_without_finding
+    gate developer_record.ok_without_statement ok -> unknown findings []
+    check stood
     reason We don’t have enough evidence to assess this area. Don’t assume it is safe.
+    quote F13 (missing)
+    quote F14 (missing)
+    quote F15 (missing)
+    quote F123 (missing)
+2026/10/16 18:10:49 INFO sqlite: applied migration namespace=cost_model filename=0001_cost.sql
+2026/10/16 18:10:49 INFO sqlite: applied migration namespace=cost_model filename=0002_cost_owner.sql
+2026/10/16 18:10:49 INFO sqlite: applied migration namespace=cost_model filename=0003_cost_settle.sql
+2026/10/16 18:10:49 INFO sqlite: applied migration namespace=cost_model filename=0004_cost_denomination.sql
+2026/10/16 18:10:49 INFO sqlite: applied migration namespace=cost_model filename=0005_cost_quote.sql
+2026/10/16 18:10:49 INFO sqlite: applied migration namespace=cost_model filename=0006_cost_settle_once.sql
+2026/10/16 18:10:49 INFO sqlitestore: opened namespace=cost_model limit=1000000000000 denomination="" expired_reservations=0 expired_quotes=0
+2026/10/16 18:10:49 INFO sqlite: applied migration namespace=cost_tavily filename=0001_cost.sql
+2026/10/16 18:10:49 INFO sqlite: applied migration namespace=cost_tavily filename=0002_cost_owner.sql
+2026/10/16 18:10:49 INFO sqlite: applied migration namespace=cost_tavily filename=0003_cost_settle.sql
+2026/10/16 18:10:49 INFO sqlite: applied migration namespace=cost_tavily filename=0004_cost_denomination.sql
+2026/10/16 18:10:49 INFO sqlite: applied migration namespace=cost_tavily filename=0005_cost_quote.sql
+2026/10/16 18:10:49 INFO sqlite: applied migration namespace=cost_tavily filename=0006_cost_settle_once.sql
+2026/10/16 18:10:49 INFO sqlitestore: opened namespace=cost_tavily limit=1000000 denomination=tavily.credit expired_reservations=0 expired_quotes=0

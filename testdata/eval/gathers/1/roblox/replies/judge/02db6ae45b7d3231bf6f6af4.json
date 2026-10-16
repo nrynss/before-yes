@@ -1,0 +1,9 @@
+{
+  "text": "{\"reason_supported\":true,\"explanation\":\"The first sentence is directly supported by the first review quote, which describes a child being threatened in 'Adopt Me' and police involvement. The second sentence is supported by the fourth and sixth forum quotes: the fourth states that chats built into specific mini-games cannot be disabled by parental settings, and the sixth states that any user can write text on signs to communicate regardless of age or chat preferences.\"}",
+  "input_tokens": 1491,
+  "output_tokens": 92,
+  "price_nano": 1767000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

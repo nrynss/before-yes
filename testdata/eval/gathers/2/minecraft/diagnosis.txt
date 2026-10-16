@@ -1,58 +1,90 @@
-diagnose Minecraft age 9 verdict no findings 148 (conflict pass replaced the conflicted areas (an area the checks then made unknown may fall back to its first-pass grade))
+diagnose Minecraft age 9 verdict unclear findings 148 (conflict pass replaced the conflicted areas (an area the checks then made unknown may fall back to its first-pass grade))
   contact  risks 26 mitigations 7 other 0
-    judge ok_with_setting setting "Multiplayer is off by default on child accounts in both Java Edition and Bedrock Edition" cited 2 [f_10ea2db645489ab8 f_1e24b73e7fa966bc]
+    judge ok_with_setting setting "Multiplayer off by default on child accounts; set 'Others can communicate with voice, text, or invites' to 'Block' or 'Friends' and turn 'You can join multiplayer games' off" cited 4 [F24 F72 F81 F70]
+    citation no citation: F24 is not a verified finding
     card unknown setting ""
-    check entail: flag_not_earned
-    entail meets_definition=false reason_supported=false
+    check ground: setting_without_quote
     reason We don’t have enough evidence to assess this area. Don’t assume it is safe.
-    quote f_10ea2db645489ab8 risk rating: To make sure they have the best and safest experience possible, we have several resources and tools that you can utilize to tailor your child’s multiplayer experience.
-    quote f_1e24b73e7fa966bc mitigation rating: Multiplayer is off by default on child accounts in both Java Edition and Bedrock Edition.
+    quote F24 (missing)
+    quote F72 (missing)
+    quote F81 (missing)
+    quote F70 (missing)
   money  risks 31 mitigations 0 other 7
-    judge flag setting "" cited 5 [f_bbdd451071f6eabc f_4f0d24b3b6bb0948 f_5adae5391d64ec0f f_197d5537975444c2 f_52134516877ae723]
-    card flag setting ""
-    gate money.flag_confirmed flag -> flag findings [f_bbdd451071f6eabc f_4f0d24b3b6bb0948 f_5adae5391d64ec0f f_197d5537975444c2 f_52134516877ae723]
+    judge flag setting "" cited 13 [F7 F13 F14 F15 F16 F18 F19 F53 F113 F117 F120 F131 F135]
+    citation no citation: F7 is not a verified finding
+    card ok_with_setting setting "Ask a parent to approve purchases"
+    gate money.flag_capped_by_control flag -> ok_with_setting findings [f_bbdd451071f6eabc f_4f0d24b3b6bb0948 f_fe600dad41e0a6a9 f_a24eb25dc2e2b26a f_a26d11797694d812 f_5adae5391d64ec0f f_197d5537975444c2 f_02a62ae497f0923a f_52134516877ae723 f_2b2fc8326518dc5f f_a48075e87f6b9b45 f_4a54c224e3cfb420 f_52134516877ae723]
     check stood
     entail meets_definition=true reason_supported=true
-    reason Multiple reviewers report being scammed while attempting purchases: one paid $1.09 for a mod but received nothing and had to pay $15.99 more, another aged 10 spent all birthday money on 10,000 Minecoins feeling scammed, a third was repeatedly charged $40 total for a failed $6.99 villager add-on purchase, and a fourth states 'I Bought Minecoins it scam me'.
+    reason A source names a purchase control that answers this concern (Ask a parent to approve purchases), and no verified quote says the control failed or was bypassed. Complaints about spending, scams or billing are not counted against it.
     quote f_bbdd451071f6eabc risk review: Scam This dumb Mining game spent me 1.09$ for a mod thean because I got 0 mine coins I have to pay 15.99$ so my mom got scammed 1.09$
     quote f_4f0d24b3b6bb0948 risk review: i bought 10,000 minecoins and im litterly a kid im only 10 and i got scammed i litterly used all my birthday money! FRICK YOU MINECRAFT
+    quote f_fe600dad41e0a6a9 risk review: I bought an avatar for my character and I look through my inventory and everything and i never got my avatar. I spent money for what?other than that it’s a good game.(I still want my money back)
+    quote f_a24eb25dc2e2b26a risk review: I love this game, but I just spent money on the game TWICE and I still didn’t get the stuff I wanted
+    quote f_a26d11797694d812 risk review: I bought an add on and it would not download no matter what I did. It kept saying “couldn’t connect to the App Store” It’s still fun but disappointing when you can’t download the add ons
     quote f_5adae5391d64ec0f risk review: okay so basically i was trying to purchase the new villager add on for 6.99 last night and every single time it said i didn’t have enough “minecoins” i tried buying them separately too which still didn’t work and i thought this all was really weird because every single time it said the purchase was successful and i tried it again tonight and just got charged 40 dollars. i still don’t have the add on btw.
     quote f_197d5537975444c2 risk review: I Bought Minecoins it scam me he is a scammer
+    quote f_02a62ae497f0923a risk forum: Kids face constant pressure to buy items, especially during limited-time events or when friends have premium items.
     quote f_52134516877ae723 risk rating: In your child’s spending settings, turn on “Ask a parent to buy things” so every Marketplace purchase (paid for with Minecoins) or Realms subscription needs your approval, or remove the saved payment method from the account entirely.
+    quote f_2b2fc8326518dc5f risk rating: In Bedrock Edition, you can access [Minecraft Marketplace](https://www.minecraft.net/marketplace) – a hub of purchasable maps, skins, and mini-games bought with the currency Minecoins, all of which are curated to ensure quality and safety.
+    quote f_a48075e87f6b9b45 risk rating: Bedrock Edition’s Marketplace sells maps, skins and mini-games for Minecoins, an in-game currency bought with real money.
+    quote f_4a54c224e3cfb420 risk rating: Yes. Bedrock Edition’s Marketplace sells maps, skins and mini-games for Minecoins, which are bought with real money, and Realms is a paid subscription.
   data  risks 9 mitigations 2 other 6
-    judge ok_with_setting setting "child accounts automatically provide guardrails against the collection of some data" cited 2 [f_62d7413616ee25d9 f_7bff118ec684f6e0]
-    card unknown setting ""
-    check entail: flag_not_earned
-    entail meets_definition=false reason_supported=false; entail meets_definition=false reason_supported=false
-    reason We don’t have enough evidence to assess this area. Don’t assume it is safe.
-    quote f_62d7413616ee25d9 risk store: App Tracking: To deliver personalized ads and improve application experience
-    quote f_7bff118ec684f6e0 mitigation rating: child accounts automatically provide guardrails against the collection of some data
-  age_gating  risks 11 mitigations 4 other 6
-    judge ok_with_setting setting "Players younger than 16 will automatically have a 'child account,' which must be linked to an adult account" cited 2 [f_e9731cf660fbf00c f_ee415e54d7a54a34]
-    card unknown setting ""
-    check entail: flag_not_earned
-    entail meets_definition=false reason_supported=false; entail meets_definition=false reason_supported=false
-    reason We don’t have enough evidence to assess this area. Don’t assume it is safe.
-    quote f_e9731cf660fbf00c risk forum: When setting up an account it checks to verify age requirements, but it's pretty easy for a savvy kid to fake their birthdate to gain access.
-    quote f_ee415e54d7a54a34 mitigation forum: Players younger than 16 will automatically have a "child account," which must be linked to an adult account.
-  content  risks 13 mitigations 1 other 9
-    conflict pass ok_with_setting setting "The chat option is pre-set: Kids have to choose from certain words or phrases, or use emojis" cited 2 [f_9a4e2614f4dde78a f_1a136a5457e77c50]
+    conflict pass flag setting "" cited 4 [F11 F63 F93 F82]
     first-pass fallback: the conflict pass's grade was made unknown by the checks, so the first pass's grade stands
-    judge (first pass) flag setting "" cited 1 [f_c9072b9921500c3f]
-    card flag setting ""
-    gate content.flag_confirmed flag -> flag findings [f_c9072b9921500c3f]
+    judge (first pass) ok_with_setting setting "Child account linked to a parent Microsoft account" cited 4 [F147 F132 F136 F140]
+    card ok_with_setting setting "Ask App Not to Track"
+    gate data.flag_confirmed flag -> flag findings [f_62d7413616ee25d9 f_8e957f57d0977f8f]
+    gate data.tracking_setting flag -> ok_with_setting findings [f_62d7413616ee25d9 f_8e957f57d0977f8f]
     check stood
     entail meets_definition=true reason_supported=true
-    reason A reviewer reports the game called them the n word, which is a racist slur.
-    quote f_c9072b9921500c3f risk review: Racist It called me the n word
-  developer_record  risks 12 mitigations 0 other 4
-    judge flag setting "" cited 4 [f_de8b2f2e9b3dc91e f_67deee1afa40eb39 f_796e7220c1a87086 f_c5ec48a6801685f6]
-    citation citation outside the area: f_796e7220c1a87086 is in data
+    reason Turn on Ask App Not to Track in iOS Settings → Privacy & Security → Tracking.
+    quote f_62d7413616ee25d9 risk store: App Tracking: To deliver personalized ads and improve application experience
+    quote f_8e957f57d0977f8f risk store: Data Used to Track You The following data may be used to track you across apps and websites owned by other companies:
+  age_gating  risks 11 mitigations 4 other 6
+    conflict pass flag setting "" cited 3 [F59 F71 F92]
+    first-pass fallback: the conflict pass's grade was made unknown by the checks, so the first pass's grade stands
+    judge (first pass) ok_with_setting setting "Child account linked to a parent Microsoft account; ESRB rating blocks on console" cited 7 [F118 F122 F125 F128 F129 F137 F141]
+    card ok_with_setting setting "Lock the account's birth date"
+    gate age_gating.flag_capped_by_control flag -> ok_with_setting findings [f_92fbddec97da99ee f_6ba7572225c7dd9e]
+    check stood
+    age-gate event=access_bypass witness="it's pretty easy for a savvy kid to fake their birthdate to gain access." actual_age="" assigned_age=""
+    reason A source names a control that answers this concern (Lock the account's birth date), and no cited quote says the control fails.
+    quote f_92fbddec97da99ee risk rating: If your child originally signed up with a fake adult birthdate, none of those defaults apply, and you will need to create a proper child account.
+    quote f_6ba7572225c7dd9e risk rating: If the game registers that you are under 13 then certain elements are locked, including making in-game purchases. However, it is very easy for a child to be aware of these restrictions and choose to enter a birth year that allows them full access to all the features.
+  content  risks 13 mitigations 1 other 9
+    judge flag setting "" cited 1 [F6]
+    citation no citation: F6 is not a verified finding
     card unknown setting ""
     check entail: flag_not_earned
     entail meets_definition=false reason_supported=false
     reason We don’t have enough evidence to assess this area. Don’t assume it is safe.
-    quote f_de8b2f2e9b3dc91e risk store: App Tracking: To deliver personalized ads and improve application experience
-    quote f_67deee1afa40eb39 risk terms: The Microsoft Privacy Statement applies to all Minecraft Services. The sole exception is the Minecraft Shop, which is managed by our friends at Snow Commerce, who are not part of us or Microsoft.
-    quote f_796e7220c1a87086 risk news: Microsoft will pay a fine of $20 million to settle Federal Trade Commission charges that it illegally collected and retained the data of children who signed up
-    quote f_c5ec48a6801685f6 risk rating: Microsoft, which owns Minecraft, has started asking some account holders to verify their age. Its age assurance FAQ says users in the United Kingdom, Australia, Brazil and Singapore can verify now, with a selfie-based age estimate, an ID document or a government login.
+    quote F6 (missing)
+  developer_record  risks 12 mitigations 0 other 4
+    judge flag setting "" cited 7 [F30 F34 F51 F104 F111 F112 F133]
+    citation no citation: F30 is not a verified finding
+    card unknown setting ""
+    check entail: flag_not_earned
+    entail meets_definition=false reason_supported=false
+    reason We don’t have enough evidence to assess this area. Don’t assume it is safe.
+    quote F30 (missing)
+    quote F34 (missing)
+    quote F51 (missing)
+    quote F104 (missing)
+    quote F111 (missing)
+    quote F112 (missing)
+    quote F133 (missing)
+2026/10/16 18:10:58 INFO sqlite: applied migration namespace=cost_model filename=0001_cost.sql
+2026/10/16 18:10:58 INFO sqlite: applied migration namespace=cost_model filename=0002_cost_owner.sql
+2026/10/16 18:10:58 INFO sqlite: applied migration namespace=cost_model filename=0003_cost_settle.sql
+2026/10/16 18:10:58 INFO sqlite: applied migration namespace=cost_model filename=0004_cost_denomination.sql
+2026/10/16 18:10:58 INFO sqlite: applied migration namespace=cost_model filename=0005_cost_quote.sql
+2026/10/16 18:10:58 INFO sqlite: applied migration namespace=cost_model filename=0006_cost_settle_once.sql
+2026/10/16 18:10:58 INFO sqlitestore: opened namespace=cost_model limit=1000000000000 denomination="" expired_reservations=0 expired_quotes=0
+2026/10/16 18:10:58 INFO sqlite: applied migration namespace=cost_tavily filename=0001_cost.sql
+2026/10/16 18:10:58 INFO sqlite: applied migration namespace=cost_tavily filename=0002_cost_owner.sql
+2026/10/16 18:10:58 INFO sqlite: applied migration namespace=cost_tavily filename=0003_cost_settle.sql
+2026/10/16 18:10:58 INFO sqlite: applied migration namespace=cost_tavily filename=0004_cost_denomination.sql
+2026/10/16 18:10:58 INFO sqlite: applied migration namespace=cost_tavily filename=0005_cost_quote.sql
+2026/10/16 18:10:58 INFO sqlite: applied migration namespace=cost_tavily filename=0006_cost_settle_once.sql
+2026/10/16 18:10:58 INFO sqlitestore: opened namespace=cost_tavily limit=1000000 denomination=tavily.credit expired_reservations=0 expired_quotes=0

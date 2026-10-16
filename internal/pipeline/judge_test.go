@@ -603,33 +603,32 @@ func TestRecordedRepliesGradesRestOnVerifiedQuotes(t *testing.T) {
 		levels  []checklist.Level // in card order, after every demotion
 		thin    []checklist.Area
 	}{
-		// Roblox (re-recorded with the data-flag definition, the App Store
-		// fact findings and the first-pass fallback): money, age_gating,
-		// content and developer_record stand. money's flag rests in part on
-		// the listing's "Loot Boxes" advisory (a store fact). contact and
-		// data are flag_not_earned and land thin. Verdict no.
-		// (Before: content was thin too, so content unknown.)
-		{demos[0], 9, checklist.No, L(unk, flag, unk, flag, flag, flag), []checklist.Area{"contact", "data"}},
-		// Minecraft (re-recorded): contact stands as ok_with_setting
-		// (multiplayer off by default on child accounts) and money stands as
-		// a flag. data and age_gating are flag_not_earned and land thin;
-		// content and developer_record are the judge's own unknowns. Money
-		// flagged makes the verdict no. (Before: contact, money, age_gating
-		// and content were all thin, and the verdict was unclear.)
-		{demos[1], 9, checklist.No, L(set, flag, unk, unk, unk, unk), []checklist.Area{"data", "age_gating"}},
-		// Khan (re-recorded): money is ok on the listing's price line and the
-		// developer's own words; contact, age_gating and content are thin or
-		// unknown. The rule gate raises data to ok: the listing's privacy
-		// label says "Data Not Linked to You" and no quote reports selling,
-		// ad tracking or a breach (data.label_not_linked), and contact to ok
-		// on the listing's Kids category line with no contact report
-		// (contact.kids_category_no_contact_report). Content unknown keeps
-		// the verdict unclear. (Before the gate: data and contact were thin,
-		// so four areas were unknown.)
-		{demos[2], 5, checklist.Unclear, L(ok, ok, ok, unk, unk, unk), []checklist.Area{"age_gating", "content"}},
+		// Current Ultra replay: contact and data are flag_not_earned and land
+		// thin; developer_record is the judge's own unknown. The remaining
+		// flags stand. Verdict no.
+		{demos[0], 9, checklist.No, L(unk, flag, unk, flag, flag, unk), []checklist.Area{"contact", "data", "developer_record"}},
+		// Current Ultra replay: the App Store tracking label raises data to
+		// Ask App Not to Track. Contact, money, age_gating and
+		// developer_record are thin; content is ok. Verdict unclear.
+		{demos[1], 9, checklist.Unclear, L(unk, unk, set, unk, ok, unk), []checklist.Area{"contact", "money", "age_gating", "developer_record"}},
+		// Current Ultra replay: the listing's Kids category and privacy label
+		// raise contact and data to ok. The judge grades age_gating and content
+		// ok; developer_record remains unknown. Verdict yes.
+		{demos[2], 5, checklist.Yes, L(ok, ok, ok, ok, ok, unk), []checklist.Area{"developer_record"}},
 	}
 	tokenFactory := func(on bool) map[string]any {
-		return map[string]any{"chat_template_kwargs": map[string]any{"enable_thinking": on}}
+		if on {
+			return map[string]any{
+				"chat_template_kwargs": map[string]any{"enable_thinking": true},
+				"temperature":          0.6,
+				"top_p":                0.95,
+				"repetition_penalty":   1.05,
+			}
+		}
+		return map[string]any{
+			"chat_template_kwargs": map[string]any{"enable_thinking": false},
+			"repetition_penalty":   1.1,
+		}
 	}
 	for _, c := range cases {
 		t.Run(c.d.slug, func(t *testing.T) {
@@ -684,7 +683,10 @@ func TestRecordedRepliesGradesRestOnVerifiedQuotes(t *testing.T) {
 					}
 					settingBacked = settingBacked || (f.Stance == finding.Mitigation && settingIn(normWords(f.Quote), normWords(g.Setting)))
 				}
-				if g.Level == checklist.OKWithSetting && !settingBacked {
+				trackingSetting := g.Area == checklist.Data && g.Setting == "Ask App Not to Track" && len(g.Findings) > 0 && slices.ContainsFunc(card.Gate, func(a GateAction) bool {
+					return a.Rule == "data.tracking_setting" && slices.Contains(a.Findings, g.Findings[0])
+				})
+				if g.Level == checklist.OKWithSetting && !settingBacked && !trackingSetting {
 					t.Errorf("%s: setting %q is in no cited mitigation quote", g.Area, g.Setting)
 				}
 			}
@@ -1042,8 +1044,16 @@ func replayDemo(t *testing.T, d demo, age int) Card {
 		Reader:   &Reader{Model: reader, Meter: m},
 		Judge: &Judge{
 			Model: judge, Meter: m,
-			Fast:   map[string]any{"chat_template_kwargs": map[string]any{"enable_thinking": false}},
-			Think:  map[string]any{"chat_template_kwargs": map[string]any{"enable_thinking": true}},
+			Fast: map[string]any{
+				"chat_template_kwargs": map[string]any{"enable_thinking": false},
+				"repetition_penalty":   1.1,
+			},
+			Think: map[string]any{
+				"chat_template_kwargs": map[string]any{"enable_thinking": true},
+				"temperature":          0.6,
+				"top_p":                0.95,
+				"repetition_penalty":   1.05,
+			},
 			Entail: judge,
 		},
 		Now: now,

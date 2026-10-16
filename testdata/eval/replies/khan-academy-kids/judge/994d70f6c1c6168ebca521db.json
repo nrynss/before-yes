@@ -1,0 +1,9 @@
+{
+  "text": "{\"reason_supported\": true, \"explanation\": \"The provided quote describes the background of Manisha Snoyer and the founding of Modulo but contains no information about any enforcement action, lawsuit, data breach, or other developer-related event for Khan Academy Kids. Because the source offers zero evidence of such events, the explanation's statement that no cited source reports them is fully supported.\"}",
+  "input_tokens": 1072,
+  "output_tokens": 79,
+  "price_nano": 1309000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

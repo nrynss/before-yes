@@ -1,0 +1,9 @@
+{
+  "text": "{\"reason_supported\":true,\"explanation\":\"The explanation directly attributes the three functions—assigning age/content ratings, enforcing marketing guidelines, and operating the FTC‑sanctioned COPPA Safe Harbor privacy certification—to the ESRB description of Patricia E. Vance’s role. Each claim matches the quoted text exactly, with no added interpretation or unsupported detail.\"}",
+  "input_tokens": 1113,
+  "output_tokens": 77,
+  "price_nano": 1344000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

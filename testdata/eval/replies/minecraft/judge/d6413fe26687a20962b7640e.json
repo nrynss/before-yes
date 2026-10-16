@@ -1,0 +1,9 @@
+{
+  "text": "{\n  \"grades\": [\n    {\n      \"area\": \"contact\",\n      \"level\": \"ok_with_setting\",\n      \"reason\": \"Strangers can message if multiplayer is enabled, but parents can restrict communication using the \\\"Restrict Communication\\\" setting.\",\n      \"setting\": \"Restrict Communication\",\n      \"findings\": [\"F175\", \"F183\"]\n    },\n    {\n      \"area\": \"money\",\n      \"level\": \"ok_with_setting\",\n      \"reason\": \"Minecraft pushes in-app purchases via Minecoins and Realms, but parents can control spending with the \\\"Control Spending\\\" setting.\",\n      \"setting\": \"Control Spending\",\n      \"findings\": [\"F174\", \"F184\"]\n    },\n    {\n      \"area\": \"age_gating\",\n      \"level\": \"ok_with_setting\",\n      \"reason\": \"A review of the Chinese version reports age gating ineffective, but the global version uses child accounts with multiplayer off by default and communication choices, which lock the account to the right age band.\",\n      \"setting\": \"multiplayer starts off\",\n      \"findings\": [\"F126\", \"F177\"]\n    },\n    {\n      \"area\": \"content\",\n      \"level\": \"ok\",\n      \"reason\": \"Single-player Minecraft has no blood, gore, or swearing, and parents can keep children off public servers to avoid unsuitable material.\",\n      \"setting\": \"\",\n      \"findings\": [\"F82\", \"F86\", \"F178\"]\n    }\n  ]\n}",
+  "input_tokens": 16513,
+  "output_tokens": 9594,
+  "price_nano": 45295000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

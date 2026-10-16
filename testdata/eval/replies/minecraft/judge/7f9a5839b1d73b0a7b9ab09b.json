@@ -1,0 +1,9 @@
+{
+  "text": "{\n  \"reasons\": [\n    {\n      \"area\": \"content\",\n      \"reason\": \"A Reddit reviewer reports single-player Minecraft has no blood, gore, swearing, or weapons beyond basic tools, and another calls it very safe aside from scary monsters.\"\n    },\n    {\n      \"area\": \"developer_record\",\n      \"reason\": \"An ESRB description states Patricia E. Vance leads teams that assign age and content ratings, enforce marketing guidelines, and operate an FTC-sanctioned COPPA Safe Harbor privacy certification program.\"\n    }\n  ]\n}",
+  "input_tokens": 1257,
+  "output_tokens": 119,
+  "price_nano": 1614000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

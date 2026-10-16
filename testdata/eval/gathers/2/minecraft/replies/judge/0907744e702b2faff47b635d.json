@@ -1,0 +1,9 @@
+{
+  "text": "{\"reason_supported\":true,\"explanation\":\"The explanation attributes the claims to reviewers who say they are children, matching the source type 'review'. Each concrete claim is directly supported by a cited quote: a reviewer stating they are 10 years old reports spending all their birthday money on 10,000 Minecoins and feeling scammed; a reviewer reports being charged $40 after repeated 'successful' purchase messages for a villager add-on yet still not receiving it; other reviewers report spending money on avatars, add-ons, or Minecoins and not getting the items. The explanation preserves the qualifications present in the quotes (e.g., 'successful' purchase messages, not receiving items) and does not infer parental permission, pressure, or any implemented controls.\"}",
+  "input_tokens": 1697,
+  "output_tokens": 164,
+  "price_nano": 2189000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

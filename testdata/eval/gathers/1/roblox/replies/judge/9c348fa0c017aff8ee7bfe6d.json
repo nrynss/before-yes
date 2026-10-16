@@ -1,0 +1,9 @@
+{
+  "text": "{\"reason_supported\":true,\"explanation\":\"Each concrete claim in the Reason is directly supported by a cited quote. The forum quote explicitly states: \\\"Within seconds, this \\\\\\\"Street Code\\\\\\\" game showed an intense, fiery car accident and prompted the player to decide whether to shoot or save an officer,\\\" confirming a witnessed encounter with extreme violence. The rating quotes state: \\\"avatars were seen simulating sex acts, using the power of suggestion and in‑game chat functions\\\" and describe a specific game, ‘Boys and Girls Club Roleplay,’ that \\\"had a Content Maturity Level of ‘Mild’ despite the ‘strong sexual undertones’ and accessibility for children. Users received no warning about the material before entering the game.\\\" These are reported observations of unsuitable material actually encountered, not generic possibilities.\"}",
+  "input_tokens": 1334,
+  "output_tokens": 168,
+  "price_nano": 1838000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

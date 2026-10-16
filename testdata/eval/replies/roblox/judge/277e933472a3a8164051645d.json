@@ -1,0 +1,9 @@
+{
+  "text": "{\"reason_supported\":false,\"explanation\":\"The explanation mixes several distinct claims, and multiple items lack direct support from the provided quotes:\\n- \\\"Reviewers report seeing avatars showing a lot of skin\\\" – supported by the third review quote.\\n- \\\"experiencing kidnapping scenarios\\\" – the first review quote says \\\"people have been kidnapped by adults ever since 20 years\\\"; this is presented as a general assertion, not the reviewer’s own witnessed encounter, so the explanation overstates it as a personal reported encounter.\\n- \\\"encountering predators\\\" – the second review quote mentions \\\"preds\\\" and the fourth mentions \\\"child predators\\\", but neither quote describes a concrete encounter the reporter personally saw or experienced; they are allegations, not reported encounters.\\n- \\\"receiving bans while predatory behavior persists\\\" – the fourth review quote describes the reporter’s own voice‑chat suspension, which is supported, but the linked claim that predators remain active is not a reported encounter from that quote.\\n- \\\"A Reddit post cites a class‑action suit from parents about sexual content and grooming\\\" – the Reddit quote is only a headline; it does not report a concrete encounter with unsuitable material.\\n- \\\"A forum post says kids may still run into inappropriate content such as condo games…\\\" – the forum quote uses \\\"may still run into\\\", which is a generic possibility, not a concrete reported encounter.\\nBecause the explanation presents several claims as concrete reported encounters when the sources provide only allegations, headlines, or generic possibilities, the reason is not fully supported.\"}",
+  "input_tokens": 1424,
+  "output_tokens": 328,
+  "price_nano": 2408000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

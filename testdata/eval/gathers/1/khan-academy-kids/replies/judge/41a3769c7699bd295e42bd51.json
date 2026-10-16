@@ -1,0 +1,9 @@
+{
+  "text": "{\"reason_supported\":true,\"explanation\":\"All three reviews are user testimonials praising the app as a free educational tool for young children. None of the quoted reviews mentions any enforcement action, lawsuit, data breach, or other developer-level incident. The Reason accurately reflects that the provided sources contain no such reported events.\"}",
+  "input_tokens": 1152,
+  "output_tokens": 67,
+  "price_nano": 1353000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}
