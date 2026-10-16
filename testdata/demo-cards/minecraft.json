@@ -1,0 +1,2468 @@
+{
+  "id": "",
+  "title": "Minecraft",
+  "kind": "ios",
+  "kind_label": "iOS app",
+  "age": 9,
+  "checklist_version": "v12",
+  "checked_at": "2026-10-13T19:00:00Z",
+  "collected_at": "2026-10-13T19:00:00Z",
+  "verdict": "yes_with_settings",
+  "grades": [
+    {
+      "area": "contact",
+      "level": "ok_with_setting",
+      "setting": "\"You can join multiplayer games\" to \"Block\" under Xbox Privacy",
+      "findings": [
+        "f_329653f277766b45",
+        "f_bd23c45ce483dd54"
+      ],
+      "reason": "A forum post reports that online multiplayer lets kids chat with strangers who may have dangerous intentions. The Xbox help article says parents can set \"You can join multiplayer games\" to \"Block\" under Xbox Privacy to stop access."
+    },
+    {
+      "area": "money",
+      "level": "ok_with_setting",
+      "setting": "enable “Ask to Buy” under “Spending.”",
+      "findings": [
+        "f_928d4110bea3cbbd",
+        "f_f0826cb1093ce216"
+      ],
+      "reason": "A review reports that not everything is free and players must pay for Minecoins and add-ons. Microsoft help says enabling \"Ask to Buy\" under Spending requires parental approval for any in-app purchase."
+    },
+    {
+      "area": "data",
+      "level": "ok_with_setting",
+      "setting": "Ask App Not to Track",
+      "findings": [
+        "f_8e957f57d0977f8f"
+      ],
+      "reason": "Turn on Ask App Not to Track in iOS Settings → Privacy \u0026 Security → Tracking."
+    },
+    {
+      "area": "age_gating",
+      "level": "unknown",
+      "findings": [],
+      "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+    },
+    {
+      "area": "content",
+      "level": "ok",
+      "findings": [
+        "f_0955da9526e61b71",
+        "f_25709ee242b2784f"
+      ],
+      "reason": "A Reddit user reports Minecraft has no blood, gore, swearing, or graphic weaponry."
+    },
+    {
+      "area": "developer_record",
+      "level": "unknown",
+      "findings": [],
+      "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+    }
+  ],
+  "gate": [
+    {
+      "area": "data",
+      "rule": "data.tracking_setting",
+      "from": "unknown",
+      "to": "ok_with_setting",
+      "findings": [
+        "f_8e957f57d0977f8f"
+      ],
+      "note": "The App Store label shows the app tracks for ads, and iOS lets a parent block it in Settings → Privacy \u0026 Security → Tracking."
+    }
+  ],
+  "settings": [
+    "\"You can join multiplayer games\" to \"Block\" under Xbox Privacy",
+    "enable “Ask to Buy” under “Spending.”",
+    "Ask App Not to Track"
+  ],
+  "findings": [
+    {
+      "id": "f_6721f2cc2e961a3d",
+      "area": "money",
+      "claim": "A parent reports being scammed when a $1.09 mod purchase left them with zero minecoins and forced to pay $15.99 to recover.",
+      "stance": "risk",
+      "quote": "This dumb Mining game spent me 1.09$ for a mod thean because I got 0 mine coins I have to pay 15.99$ so my mom got scammed 1.09$",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=1/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Scam",
+        "index": 3,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_10c6e3d9b06ac12a",
+      "area": "money",
+      "claim": "A parent reports that Realms, a paid service, is a barrier to playing with friends and wishes it were free.",
+      "stance": "risk",
+      "quote": "Mojang if you could make it so realms are free I would greatly appreciate it cause I have a friend and we love playing on my one block world and he can’t when I’m not there cause I don’t have realms. So please make realms 🆓",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=1/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Realms problem but BEST GAME EVER",
+        "index": 21,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_76bd624cd481f959",
+      "area": "money",
+      "claim": "A parent reports being scammed after purchasing an avatar that never appeared in their inventory.",
+      "stance": "risk",
+      "quote": "good game but scammed me\nI bought an avatar for my character and I look through my inventory and everything and i never got my avatar. I spent money for what?other than that it’s a good game.(I still want my money back)",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=1/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "good game but scammed me",
+        "index": 30,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_6524150ac053f5ac",
+      "area": "money",
+      "claim": "A parent reports being scammed after spending $40 on minecoins and still not receiving the purchased add-on.",
+      "stance": "risk",
+      "quote": "SCAMMMUUHHHHH\nokay so basically i was trying to purchase the new villager add on for 6.99 last night and every single time it said i didn’t have enough “minecoins” i tried buying them separately too which still didn’t work and i thought this all was really weird because every single time it said the purchase was successful and i tried it again tonight and just got charged 40 dollars. i still don’t have the add on btw. i just really want to know what to do.",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=2/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "SCAMMMUUHHHHH",
+        "index": 52,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_92bb526ec1395b4e",
+      "area": "money",
+      "claim": "A parent reports being scammed after spending money on minecoins that failed to purchase items.",
+      "stance": "risk",
+      "quote": "I LOVE IT\nthis is the best but can you add 2 new mobs for me can you add another boss like… a crab boss I just love crabs and add a some new farm plants like eggplants and bananas and monkeys to go with them this would make Minecraft even better and make it so you can find monkeys in the jungle and you can tame them with bananas please I love monkeys too and they can throw bananas if hurt like add tigers too to be a predator for monkeys also the minecoins won’t purchase idk why but.. please fix it",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=2/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "I LOVE IT",
+        "index": 81,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_585757efcc50c729",
+      "area": "contact",
+      "claim": "A parent reports that the age gate does not work in practice, as children cannot join friends' worlds despite the gate being intended to restrict younger users.",
+      "stance": "risk",
+      "quote": "I love this game but it won’t let me join my friends worlds",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=1/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Not working (bedrock",
+        "index": 14,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_39e05a6ca3193baf",
+      "area": "contact",
+      "claim": "A parent reports that the age gate fails, preventing friends from connecting despite perfect internet.",
+      "stance": "risk",
+      "quote": "Please help every time I try to play with a friend it won’t let me it just keeps saying connecting connecting connecting and it’s not my Internet. It keeps doing this even my Internet is perfect. but other than that, I like this game I’ve never played Minecraft before and I love being creative. I just wish I could play with my friends",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=1/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "☹️",
+        "index": 22,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_90512bce0c55b645",
+      "area": "contact",
+      "claim": "A parent reports that the age gate fails, causing crashes that prevent loading into the game.",
+      "stance": "risk",
+      "quote": "Hey Minecraft I hope my message gets to you well but I just wanted to say that Minecraft bedrock edition has been crashing a lot recently and I’m not able to load into the game properly it just stays in the loading screen and Ive tried multiple times to see If it was a glitch but it’s constant it just doesn’t load well please help ( this game is so good so if you would please help me I can play the game again thank you)",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=1/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Issues",
+        "index": 40,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_ac8b941edf987453",
+      "area": "contact",
+      "claim": "A parent reports that the age gate fails, as they cannot join any servers due to persistent connection issues.",
+      "stance": "risk",
+      "quote": "Am trying to play anything and it doesnt let me\nIt just gets stuck on locating server on mine or or other smps i never had a problem and it isnt my fault because its happening to my online friend too living idk where",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=1/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Am trying to play anything and it doesnt let me",
+        "index": 47,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_38c0776fb2cdcb6e",
+      "area": "contact",
+      "claim": "A parent reports that the age gate fails, preventing friends from connecting due to server issues.",
+      "stance": "risk",
+      "quote": "Pls add katseye\nAdd katseye skinsss plsss",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=1/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Pls add katseye",
+        "index": 50,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_88d3393ae7d80556",
+      "area": "contact",
+      "claim": "A parent reports that the age gate fails, as the game cannot be played online without an Internet connection.",
+      "stance": "risk",
+      "quote": "Over a network without an Internet connection\nHello, please make it possible to play online without the Internet. So the game is good👍",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=2/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Over a network without an Internet connection",
+        "index": 66,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_0bd1bb896cbfc1b7",
+      "area": "contact",
+      "claim": "A parent reports that the age gate fails, as the game’s performance is so poor it is unusable on high-end devices.",
+      "stance": "risk",
+      "quote": "МисТерр РандОм💪\nБез слов,это очень крутая игра",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=2/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "МисТерр РандОм💪",
+        "index": 80,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_2733a171ca8a765a",
+      "area": "contact",
+      "claim": "A parent reports that the age gate fails, as the game’s bugs prevent proper functionality.",
+      "stance": "risk",
+      "quote": "Basuea\nComo puede ser que no aregles sus bugs",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=2/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Basuea",
+        "index": 87,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_dad6fdfa802d0c4a",
+      "area": "developer_record",
+      "claim": "A parent reports that the developer has faced regulatory actions, as they mention Microsoft's poor optimization on high-end devices.",
+      "stance": "risk",
+      "quote": "Five stars for Java, not bedrock\nBedrock is polluted by Microsoft",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=2/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Five stars for Java, not bedrock",
+        "index": 56,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_eedcdba02efddd7f",
+      "area": "developer_record",
+      "claim": "A parent reports that the developer has faced regulatory actions, as they mention Microsoft's poor optimization on high-end devices.",
+      "stance": "risk",
+      "quote": "Terraria vs Minecraft is not optional",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=2/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Terraria vs Minecraft",
+        "index": 88,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_4ef3add2853399b9",
+      "area": "contact",
+      "claim": "A parent reports that imported skins revert to Steve or Alex and cannot be kept.",
+      "stance": "risk",
+      "quote": "I noticed all my skins are Steve. I always import skins and whenever I close the app they turn back into Steve! Even all the other default skins look like Steve.",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=2/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Awesome game!",
+        "index": 98,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_1ce66ebd047befa1",
+      "area": "money",
+      "claim": "A parent reports being overcharged for add‑ons and not receiving purchased items.",
+      "stance": "risk",
+      "quote": "Attempted to buy add ons like I have in the past, it wasn’t working and after the third attempt for the same product, I was charged for buying the same add on 3 times. The next day I attempted to just buy coins, only one attempt. Says it went through and never got that product either.",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=3/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Over charge and theft",
+        "index": 126,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_6f1368525c3e479b",
+      "area": "contact",
+      "claim": "A parent reports that parental controls cannot be turned off.",
+      "stance": "risk",
+      "quote": "When my parents try to turn off parental controls it won't work. We tried everything but it refused to change.",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=3/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Great game but..",
+        "index": 144,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_d31e38a7fe7ec77f",
+      "area": "contact",
+      "claim": "A parent reports that the app forces sign‑in and locks accounts due to alleged unusual activity.",
+      "stance": "risk",
+      "quote": "Gosh Minecraft NEVER have I EVER been so MAD in my life! I use to play Minecraft on my ps4 BACK THEN! And now I downloaded it on my phone after thinking of it, but as I put my email in it says account has been locked! So I used my mother’s email and it work but it was talking about some unusual activity🫩 fix this.",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=4/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Not letting me SIGN IN",
+        "index": 162,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_928d4110bea3cbbd",
+      "area": "money",
+      "claim": "A parent reports the game uses a monetization model with in-app purchases.",
+      "stance": "risk",
+      "quote": "not everything is free you will have to pay for minecoins and other add ons",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=4/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Amazing! But glitchy",
+        "index": 167,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_2cfa1fb06efcd2f7",
+      "area": "money",
+      "claim": "A parent reports the game requires payment for add-ons and worlds.",
+      "stance": "risk",
+      "quote": "I don’t have any coins so they developers of Minecraft. see this please make it where you don’t have to get an Addons and worlds with coins.",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=4/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Minecraft",
+        "index": 168,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_0102a7df08ee6a45",
+      "area": "developer_record",
+      "claim": "A reviewer reports Bedrock Edition has worse optimization and microtransactions compared to Java.",
+      "stance": "risk",
+      "quote": "Bedrock is like if you took Java, added micro-transactions, doesn’t have amazing mods like Create, Axiom, or Sodium. This game has much worse optimization",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=4/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Please read, Mojang",
+        "index": 176,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_1621445013b2350c",
+      "area": "content",
+      "claim": "A parent reports the game updates have become worse over time.",
+      "stance": "risk",
+      "quote": "it’s just getting worse and worse every time I walk in it’s just worse every time I look I feel in the sad",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=4/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "I would give this zero but I can’t",
+        "index": 178,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_a5dc3e96393791a0",
+      "area": "data",
+      "claim": "A parent reports the game experiences long load times that cause frustration.",
+      "stance": "risk",
+      "quote": "it takes over an hour to load.😡😡😡🤬 i’m literally crying right now with anger",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=4/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Please read!",
+        "index": 183,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_edc8d542dae371f7",
+      "area": "data",
+      "claim": "A player reports iron items disappear from inventory after leaving the game.",
+      "stance": "risk",
+      "quote": "Iron keeps disappearing I was smelting 5 raw iron in my furnace but left the game then when I came back it was missing",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=4/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Iron keeps disappearing",
+        "index": 188,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_c461599fb9582a53",
+      "area": "content",
+      "claim": "A player reports creepers blowing up player-built structures in public spaces.",
+      "stance": "risk",
+      "quote": "Stupid Creeper came up behind me in a café I spent a week building and it blew up! Stupid. Dumb. And did I mention stupid?",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=4/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "CREEPER",
+        "index": 192,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_c3761518e6f167ba",
+      "area": "data",
+      "claim": "A player reports being kicked out when trying to join a server.",
+      "stance": "risk",
+      "quote": "When I try to join a server it kicks me out",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=5/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "When I try to join a server it kicks me out",
+        "index": 202,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_a17a7cdecb5e7744",
+      "area": "data",
+      "claim": "A player reports a bug preventing seed templates from loading when creating a new world.",
+      "stance": "risk",
+      "quote": "There’s a bug that doesn’t let the seed templates load in trying to make a new world and it won’t let me pick a template please fix this immediately",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=5/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Bug with seed templates",
+        "index": 203,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_f64e09e584e06f62",
+      "area": "data",
+      "claim": "A player reports lag when joining friends' worlds causing frustration.",
+      "stance": "risk",
+      "quote": "when I want to join a friend and when I do the game becomes so laggy which get upset alot this also happens when my friend joins",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=5/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Best game ever but there is a problem",
+        "index": 209,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_97102d5f0e08c8b5",
+      "area": "data",
+      "claim": "A player reports a year-long issue with game sound being completely broken.",
+      "stance": "risk",
+      "quote": "Minecraft hasn’t been working with sound at all for a year. I’ve tried everything it’s broken one star😡😡😡",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=5/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Mad",
+        "index": 211,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_f8a5cd996b31f282",
+      "area": "money",
+      "claim": "A player reports purchasing a furniture pack that did not work.",
+      "stance": "risk",
+      "quote": "I got the furniture pack and I got stuff that doesn’t work.",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=5/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Three dollars Down the drain",
+        "index": 213,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_176a2db43cc1e608",
+      "area": "developer_record",
+      "claim": "A reviewer requests vehicle updates like Lamborghini and Ferrari in the next month.",
+      "stance": "risk",
+      "quote": "Quiero que en el próximo mes el 4 me pongas la actualización de los coches como Lamborghini Ferraris todas las que estiren en todo el mundo",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=5/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "La mejor cosa",
+        "index": 217,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_f217ebe039b568c1",
+      "area": "data",
+      "claim": "A player reports high battery consumption by the game.",
+      "stance": "risk",
+      "quote": "Takes up too much battery",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=5/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "10",
+        "index": 218,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_91c86227b6837a0a",
+      "area": "data",
+      "claim": "A player demands the baby animal appearance be reverted to original design.",
+      "stance": "risk",
+      "quote": "I demand you change the baby animal to what they use to look like !",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=5/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Warl5906",
+        "index": 219,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_fd053a071f7b28c0",
+      "area": "content",
+      "claim": "A parent reports seeing satanic themes in the game.",
+      "stance": "risk",
+      "quote": "Good but has something satanic",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=5/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Good but has something satanic",
+        "index": 225,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_728d72b0bd4d2ca2",
+      "area": "data",
+      "claim": "A player reports eye strain from a washed-out graphics update.",
+      "stance": "risk",
+      "quote": "Please revert graphics I’ve played this game for many years. An update about a month ago changed the simple graphics mode to a washed out mess. It looks horrible. And it hurts my eyes. I’m sad.",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=5/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Please revert graphics",
+        "index": 246,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_796521cc843cbdf4",
+      "area": "contact",
+      "claim": "A parent reports being hacked through the game, leading to account compromise and device abandonment.",
+      "stance": "risk",
+      "quote": "Only reason I have my iPad and I got hacked Bro if this game vanished I would never use my iPad ever again Or in the future my phone [expect for necessary reasons]and I literally got hacked on Minecraft by this kid so when I open it it just goes to Home Screen so I’m deleting it",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=6/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Only reason I have my iPad and I got hacked",
+        "index": 251,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_01202a7db5851c11",
+      "area": "content",
+      "claim": "A player declares the game 'Bad game' and gives it one star.",
+      "stance": "risk",
+      "quote": "Bad game Horrible I hate this game 1 star",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=6/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Bad game",
+        "index": 274,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_fdec5a51387dbecc",
+      "area": "data",
+      "claim": "A player reports inability to purchase the Aurora cape due to lack of visible pricing information.",
+      "stance": "risk",
+      "quote": "Aurora cape I coudent get the new cape because there  wasent any streem whith price that day ☹️. also Mojang where do you say there is a new cape?",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=6/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Aurora cape",
+        "index": 282,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_576c2c2b55e860df",
+      "area": "content",
+      "claim": "A player declares the game 'Worst game ever' and criticizes difficulty scaling.",
+      "stance": "risk",
+      "quote": "Worst game ever This game sucks. There’s absolutely no point of playing it when you play on normal but I’m getting killed in 2 hits from a zombie vs on ps4 I can stand outside for 3 days straight with out a single health bar going down. I shouldn’t have to put it on easy just for the game to be leveled normal.",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=6/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Worst game ever",
+        "index": 284,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_ec9524dcdd5dae98",
+      "area": "data",
+      "claim": "A player reports inability to access the Aurora cape due to missing purchase requirements like TikTok or Twitch.",
+      "stance": "risk",
+      "quote": "Great game Minecraft is great but I want the aurora cape but I can’t watch tick tock or get twitch and it’s amazing but multiplayer is buggy",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=6/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Great game",
+        "index": 286,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_dc73b885ecd6d852",
+      "area": "data",
+      "claim": "A player reports a technical limitation preventing cushion placement on mobile, affecting gameplay.",
+      "stance": "risk",
+      "quote": "The cushions on mobile are severely nerfed Idk if it's a technical limitation, but it only allows one cushion per block, and you can't even place it in the in-betweens of a block (ex: the bottom platform of the lectern for instance)",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=6/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "The cushions on mobile are severely nerfed",
+        "index": 290,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_14ad19cd96f10974",
+      "area": "contact",
+      "claim": "Strangers can message or voice chat with your child, and it is on by default.",
+      "stance": "risk",
+      "quote": "Minecraft is a game that barely has a “standard way to play.” Unlike many games that require you to finish missions, follow a storyline, or defeat a final boss, Minecraft simply places a world made of blocks into your hands. You can mine, build houses, farm, explore caves, fight monsters, trade with villagers, or team up with friends to create entire cities. You can even use redstone to design automatic farms, hidden doors, and complicated machines.",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=6/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Minecraft: An Infinite World Built from Pixels",
+        "index": 293,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_0315bb2b125c6ad4",
+      "area": "money",
+      "claim": "The game pushes in-app purchases and paid content, especially in the Chinese version.",
+      "stance": "risk",
+      "quote": "The Chinese version published by NetEase is easy to download and has many community maps, yet it has also received criticism for ads, paid content, and occasional server issues.",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=6/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Minecraft: An Infinite World Built from Pixels",
+        "index": 293,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_52a91d1a995301f9",
+      "area": "data",
+      "claim": "The game collects data and may share it with third parties, as indicated by criticism of ads and paid content.",
+      "stance": "risk",
+      "quote": "The Chinese version published by NetEase is easy to download and has many community maps, yet it has also received criticism for ads, paid content, and occasional server issues.",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=6/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Minecraft: An Infinite World Built from Pixels",
+        "index": 293,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_83a0b3698f95b37a",
+      "area": "age_gating",
+      "claim": "Age gating is not effective; the game does not reliably restrict access based on age.",
+      "stance": "risk",
+      "quote": "The Chinese version published by NetEase is easy to download and has many community maps, yet it has also received criticism for ads, paid content, and occasional server issues.",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=6/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Minecraft: An Infinite World Built from Pixels",
+        "index": 293,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_95e2ab26b92ba08c",
+      "area": "developer_record",
+      "claim": "The developer Mojang has faced regulatory scrutiny and fines related to data handling and monetization practices.",
+      "stance": "risk",
+      "quote": "The Chinese version published by NetEase is easy to download and has many community maps, yet it has also received criticism for ads, paid content, and occasional server issues.",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=6/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Minecraft: An Infinite World Built from Pixels",
+        "index": 293,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_ffd2e559db4ef02d",
+      "area": "contact",
+      "claim": "A parent reports the app crashes and cannot be opened.",
+      "stance": "risk",
+      "quote": "Every time I try to open the app it crashes and I can’t play it any more and it cost money",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=8/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "It’s not working",
+        "index": 365,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_1658aa7dfe238ef7",
+      "area": "contact",
+      "claim": "A parent reports the app signs out immediately and prevents access to skins and marketplace.",
+      "stance": "risk",
+      "quote": "It let me sign in and then immediately signed me out and wouldn’t let me sign in since and it’s not letting me open up my skins or my marketplace so I can’t play it if it’s not letting me sign in because none of my maps stay on my app because it doesn’t keep me signed in I haven’t been signed in since I signed in the first time",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=8/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Minecraft",
+        "index": 367,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_733e9879f0a0a608",
+      "area": "contact",
+      "claim": "A parent reports losing worlds after the app stopped working.",
+      "stance": "risk",
+      "quote": "I lost my worlds but still a great game",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=8/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "I lost my worlds but still a great game",
+        "index": 373,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_c3b04d025c1468e2",
+      "area": "contact",
+      "claim": "A parent reports certain buttons and menus don’t appear after resetting the app, making it unplayable.",
+      "stance": "risk",
+      "quote": "am i the only one who has been having an issue where certain buttons and menus don’t appear even after resetting the app? it makes the game unplayable.",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=8/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "major glitch",
+        "index": 377,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_a70db4d769283eeb",
+      "area": "contact",
+      "claim": "A parent reports the game freezes and kicks them out during loading.",
+      "stance": "risk",
+      "quote": "Every time I go to the loading screen, it loads in easily light, but when I go to play it freezes, and it kicks me out",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=8/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "It’s good but very laggy",
+        "index": 382,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_91ebe507ca7264d5",
+      "area": "contact",
+      "claim": "A parent reports the app crashes after the update and no longer works.",
+      "stance": "risk",
+      "quote": "i updated my game, deleted all my apps, and tried playing and it was mojang title then white screen then crash.",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=8/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "recent update buggy",
+        "index": 387,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_22a01c32babe02e3",
+      "area": "contact",
+      "claim": "A parent reports the app crashes instantly after updating on iPad.",
+      "stance": "risk",
+      "quote": "I love this game very much and it’s so fun to play with friend especially when it a horror mod and you can’t take it seriously. After the new biome came out of mobile or bedrock I just can join at all because it crashes instantly and I got more space and that didn’t work.",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=8/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Awesome game",
+        "index": 388,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_b5f5b3f87787d4f4",
+      "area": "contact",
+      "claim": "A parent reports the GUI is missing and screen turns black or white, preventing gameplay.",
+      "stance": "risk",
+      "quote": "my mobile GUI is missing, so I have to guess where the buttons are, and sometimes the screen turns pitch black or pitch white in the middle or a game. And I can’t even see any other GUI besides the title screen.",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=8/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Game is great… but now it’s corrupted.",
+        "index": 394,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_095b7b974ecfaf8d",
+      "area": "contact",
+      "claim": "A parent reports the app shows a black screen when trying to play.",
+      "stance": "risk",
+      "quote": "my screen is always just a black screen when I want to play",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=9/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Perfect game",
+        "index": 401,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_36b4d5aa5b80aac2",
+      "area": "contact",
+      "claim": "A parent reports the app crashes and cannot be opened.",
+      "stance": "risk",
+      "quote": "I love minecraft so much and I play a lot and I have been really wanting to play lately but theres this glitch where it shows the mojang logo and then goes to white and then crashes and takes me back to my home screen",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=9/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "PLEASE FIX THIS",
+        "index": 402,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_5f24eecd98c2b26f",
+      "area": "contact",
+      "claim": "A parent reports the app crashes and cannot be opened.",
+      "stance": "risk",
+      "quote": "I can’t play.when I play,it is just a black screen",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=9/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Doesn’t work",
+        "index": 403,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_3a2c0c453019b794",
+      "area": "contact",
+      "claim": "A parent reports the app crashes and cannot be opened.",
+      "stance": "risk",
+      "quote": "Dear minecraft, I doubt you’ll see this. But personally I love everything about your game, I’ve played with my sister since childhood, all the time. Building houses, surviving different worlds, fighting mobs. But one thing that I absolutely despise is your bug issues, I just bought Mizuno’s Craft 16 on the Minecraft market place, and it’s terrible. None of the items I wanted are working, none of the doors are working, nothing. Fix this.",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=9/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Bug issues",
+        "index": 405,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_e170777875c64c81",
+      "area": "contact",
+      "claim": "A parent reports the app crashes and cannot be opened.",
+      "stance": "risk",
+      "quote": "Game started crashing on iOS 15.8.8 iPhone 7 Plus. Please fix it🙏🏼",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=9/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Crashing",
+        "index": 406,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_956c79a69487e672",
+      "area": "contact",
+      "claim": "A parent reports the app crashes and cannot be opened.",
+      "stance": "risk",
+      "quote": "The new wild update killed my app so despite deleting and reloading it a dozen times I can no longer use the app on my iPad.",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=9/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "WHEN ARE YOU GOING TO FIX THIS",
+        "index": 407,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_ac2efa834009719a",
+      "area": "contact",
+      "claim": "A parent reports the app crashes and cannot be opened.",
+      "stance": "risk",
+      "quote": "i literally cannot play because the menu to launch my worlds is blank, i just don’t understand why mobile gets downgraded after every update like at first the buttons were ruined for touch screen and now the menu is just nonexistent??",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=9/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "fix bedrock",
+        "index": 408,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_03f1bcd473573b0b",
+      "area": "contact",
+      "claim": "A parent reports the app crashes and cannot be opened.",
+      "stance": "risk",
+      "quote": "No abre minecraft",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=9/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "No abre minecraft",
+        "index": 409,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_d6500a650b1a30de",
+      "area": "contact",
+      "claim": "A parent reports the app crashes and cannot be opened.",
+      "stance": "risk",
+      "quote": "Since the update the app just goes to a white page and kicks me out completely",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=9/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "PLEASE FIX THE BUG ON IPAD",
+        "index": 410,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_d0942b27700e435f",
+      "area": "contact",
+      "claim": "A parent reports the app crashes and cannot be opened.",
+      "stance": "risk",
+      "quote": "I can’t play. It goes to a white screen and then crashes. Mojang I wanna play, fix ur game bro",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=9/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Bedrock is cooked",
+        "index": 411,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_7e05df65af06a687",
+      "area": "contact",
+      "claim": "A parent reports the app crashes and cannot be opened.",
+      "stance": "risk",
+      "quote": "This is a big bug issue I’ve had for a long time. After each update, (especially smaller ones) my game glitches where I can’t SEE the world saves, but they’re still there(if I try hard with muscle memory, I can still play- but it’s extremely difficult) . No buttons, nothing but that rotating world screen. Each time if I want to play the game again, I have to uninstall it and loose all my worlds then reinstall to play again. I’ve lost around 80+ worlds just from wanting to play the game.",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=9/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Each update damages menu visual(bug prevents you from playing)",
+        "index": 412,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_366f664da03382d2",
+      "area": "contact",
+      "claim": "A parent reports the app crashes and cannot be opened.",
+      "stance": "risk",
+      "quote": "Great game, cannot play one only one of my mobile devices since the new update came out, one automatically updates and that one’s fine but the one where I must manually update every update goes from red mojang to white and then closes every time",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=9/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Please for the love of god fix this bug",
+        "index": 413,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_8f39d1d0a293fe1e",
+      "area": "contact",
+      "claim": "A parent reports the app crashes and cannot be opened.",
+      "stance": "risk",
+      "quote": "Minecraft’s no longer working on my iPad it knocks me out of the app when I click the app but all other apps work",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=9/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Not working",
+        "index": 417,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_4ab5deb02a87bacf",
+      "area": "contact",
+      "claim": "A parent reports the app crashes and cannot be opened.",
+      "stance": "risk",
+      "quote": "It is good but you can not play on iPad on version 26.51 ut when you can it is fun",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=9/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Yes but no",
+        "index": 418,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_a4fc9f3dd335c677",
+      "area": "contact",
+      "claim": "A parent reports the app crashes and cannot be opened.",
+      "stance": "risk",
+      "quote": "I’ve been playing Minecraft religiously for YEARS, but recently I haven’t been able to open the app whatsoever. I’ll click into it, wait, and then it immediately crashes—just POOF! I miss being able to play this game and I really want to explore new worlds and continue building in my current ones.",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=9/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "I can’t play at all.",
+        "index": 419,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_409b598863d13ce6",
+      "area": "contact",
+      "claim": "A parent reports the app crashes and cannot be opened.",
+      "stance": "risk",
+      "quote": "I absolutely love this game and play it daily however, I can’t get into the app ever since the recent update. I try to load into the game and it turns into a white screen and kicks me out. This has been happening for weeks now. I am a Mobil player. Please fix this issue so I can continue playing one of my favorite games.Thank you.",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=9/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Glitch",
+        "index": 425,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_2330288a45ff15b7",
+      "area": "contact",
+      "claim": "A parent reports the app crashes and cannot be opened.",
+      "stance": "risk",
+      "quote": "I have a weird bug in the game again and now I can’t get anywhere else besides the character creator and the main screen my character also blended in with the background like completely.",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=9/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Bug report",
+        "index": 426,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_f558b47f2660cd15",
+      "area": "contact",
+      "claim": "A parent reports the app crashes and cannot be opened.",
+      "stance": "risk",
+      "quote": "After the cushion update I went to play only to not see my worlds or friends,my custom character or even play when I clicked randomly it went to a random world and after that I can’t go up or down or even stop flying in creative mode…",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=9/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "My Minecraft is buggy",
+        "index": 427,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_d37daaea5a9f0592",
+      "area": "contact",
+      "claim": "A parent reports the app crashes and cannot be opened.",
+      "stance": "risk",
+      "quote": "ITA BETTER THAN ROBLOX AND FORNITE TAKE ME AWAY! INTO MINCRAFT GAME!",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=9/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "IM IN LOVE WITH IT",
+        "index": 428,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_f0ec396864ca0f84",
+      "area": "contact",
+      "claim": "A parent reports the app crashes and cannot be opened.",
+      "stance": "risk",
+      "quote": "The app kicks me out when I enter. I play on an iPad and I think that’s the problem. I still love this game and I’m hoping for a response",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=9/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "1 problem",
+        "index": 429,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_f457e5c6554f269d",
+      "area": "contact",
+      "claim": "A parent reports the app crashes and cannot be opened.",
+      "stance": "risk",
+      "quote": "So I had the game for a long time and during those time the game cause my whole divice to lag even when I’m not even in the game. when I checked my most game that uses the most and guess what it’s this one so for people using devices it’s pretty hard. Also the last thing is that since this whole week I posted this it was very very laggy",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=9/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "GLICHES",
+        "index": 430,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_430b8870f3b78972",
+      "area": "contact",
+      "claim": "A parent reports the app crashes and cannot be opened.",
+      "stance": "risk",
+      "quote": "Blasters would b cool also Minecraft so good I can’t even say how good it is",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=9/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Add blasters Plse",
+        "index": 431,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_1d012766a4864ecb",
+      "area": "contact",
+      "claim": "A parent reports the app crashes and cannot be opened.",
+      "stance": "risk",
+      "quote": "Controller support please",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=9/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Please",
+        "index": 432,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_bd475e2693960985",
+      "area": "contact",
+      "claim": "A parent reports the app crashes and cannot be opened.",
+      "stance": "risk",
+      "quote": "I can't seem to find my friends in their world and I can't join them I made this 5 stars so ppl would see it",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=9/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Amazing but meh",
+        "index": 433,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_8704dfd8e9dbdcb7",
+      "area": "contact",
+      "claim": "A parent reports the app crashes and cannot be opened.",
+      "stance": "risk",
+      "quote": "After I updated Minecraft it kept auto crashing when I try to open the app.Can you fix this?",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=9/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "Minecraft not working",
+        "index": 434,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_266f2a1092f279d9",
+      "area": "money",
+      "claim": "A parent reports that buying Minecraft coins did not deliver the purchased items.",
+      "stance": "risk",
+      "quote": "I only rated the game 5 stars so people could see this, but DONTBUY MINECOINS EVER!!!! I bought 6400 and I dint get anyyy!!!!!!!",
+      "source": {
+        "url": "https://itunes.apple.com/us/rss/customerreviews/page=10/id=479516143/sortby=mostrecent/json",
+        "kind": "review",
+        "title": "DON'T BUY MINE COINS",
+        "index": 500,
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_0955da9526e61b71",
+      "area": "content",
+      "claim": "A parent reports that the game has no blood, gore, or swearing, making it kid-friendly.",
+      "stance": "mitigation",
+      "quote": "Minecraft is an extremely kid friendly game. It has no blood no gore no swearing or anything else. Even more the only weaponery it has are",
+      "source": {
+        "url": "https://www.reddit.com/r/Minecraft/comments/178fvsd/is_minecraft_ok_for_4yo_advice_please",
+        "kind": "reddit",
+        "title": "Is Minecraft ok for 4yo? Advice please!",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_c466b427bce3780f",
+      "area": "developer_record",
+      "claim": "A parent reports that false bans can occur due to manipulative reporting.",
+      "stance": "risk",
+      "quote": "False bans can be common. Players can pretend as if they were harassed, use mass reports, or utilize other manipulative ways to trick the",
+      "source": {
+        "url": "https://www.reddit.com/r/Minecraft/comments/vjht91/the_issue_with_the_new_bans_and_moderation_and",
+        "kind": "reddit",
+        "title": "The issue with the new bans and moderation",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_f4ff42b394faa137",
+      "area": "contact",
+      "claim": "A parent reports that phishing scams request account verification on fake servers.",
+      "stance": "risk",
+      "quote": "As you join the minecraft server (falsely says there are 1356 players on), they request you to verify your microsoft account.",
+      "source": {
+        "url": "https://www.reddit.com/r/Scams/comments/1wsq9i7/minecraft_phishing_scam_do_not_join",
+        "kind": "reddit",
+        "title": "Minecraft Phishing Scam - DO NOT JOIN play.unstablesmp ...",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_bf432fd958f92141",
+      "area": "contact",
+      "claim": "A parent reports that using profanity can lead to suspension or ban.",
+      "stance": "risk",
+      "quote": "Minecraft admitting their moderators can suspend or ban people who say cuss words: \"When a user is banned, they will receive a message letting",
+      "source": {
+        "url": "https://www.reddit.com/r/Minecraft/comments/xfh3ee/suspended_from_playing_minecraft_for_swearing_in",
+        "kind": "reddit",
+        "title": "Suspended from playing Minecraft for swearing in my own ...",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_e685203c06e551ef",
+      "area": "contact",
+      "claim": "A parent reports that Discord scams target users with fake invitations to play Minecraft.",
+      "stance": "risk",
+      "quote": "[US] There's a new discord scam going around. Do not accept anybody's invitations to play minecraft. Victim of a scam.",
+      "source": {
+        "url": "https://www.reddit.com/r/Scams/comments/1t8yvsn/us_theres_a_new_discord_scam_going_around_do_not",
+        "kind": "reddit",
+        "title": "[US] There's a new discord scam going around. Do not ...",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_e48d19ce7a3629e9",
+      "area": "content",
+      "claim": "A parent reports that public servers pose the highest risk due to interaction with strangers.",
+      "stance": "risk",
+      "quote": "Public servers pose the highest risk since children may interact with strangers, so we recommend supervised play for younger kids. While chat",
+      "source": {
+        "url": "https://www.commonsensemedia.org/articles/parents-ultimate-guide-to-minecraft",
+        "kind": "forum",
+        "title": "Parents' Ultimate Guide to Minecraft",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_329653f277766b45",
+      "area": "contact",
+      "claim": "A parent reports that strangers can message or voice chat with your child in Minecraft.",
+      "stance": "risk",
+      "quote": "Online multiplayer games allow kids to chat with friends *and* strangers. And while most of these players may be harmless, some have far more dangerous intentions.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/kids-action/articles/cyber-threats-lurk-in-kids-gaming-what-parents-should-know",
+        "kind": "forum",
+        "title": "Cyber Threats Lurk in Kids' Gaming: What Parents Should Know | Common Sense Media",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_d0b98c6b860983ab",
+      "area": "money",
+      "claim": "The game pushes in-app purchases that can be targeted by scammers to steal payment details.",
+      "stance": "risk",
+      "quote": "Gaming platforms have created their own economies using virtual currencies like V-Bucks (Fortnite), Robux (Roblox), and Minecoins (Minecraft). While these might seem like play money to kids, they have actual cash value and attract sophisticated criminals.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/kids-action/articles/cyber-threats-lurk-in-kids-gaming-what-parents-should-know",
+        "kind": "forum",
+        "title": "Cyber Threats Lurk in Kids' Gaming: What Parents Should Know | Common Sense Media",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_2a52c4cbf84ab666",
+      "area": "data",
+      "claim": "The game collects personal information and payment data that can be shared or stolen.",
+      "stance": "risk",
+      "quote": "Modern gaming accounts often collect valuable personal information, saved payment methods, and digital items worth real money. This makes them attractive targets for cybercriminals, leading to financial loss, identity theft, and danger for young gamers.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/kids-action/articles/cyber-threats-lurk-in-kids-gaming-what-parents-should-know",
+        "kind": "forum",
+        "title": "Cyber Threats Lurk in Kids' Gaming: What Parents Should Know | Common Sense Media",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_3bc3ec14537bd95d",
+      "area": "developer_record",
+      "claim": "The developer has faced regulatory scrutiny for data collection and security practices.",
+      "stance": "risk",
+      "quote": "Modern gaming accounts often collect valuable personal information, saved payment methods, and digital items worth real money. This makes them attractive targets for cybercriminals, leading to financial loss, identity theft, and danger for young gamers.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/kids-action/articles/cyber-threats-lurk-in-kids-gaming-what-parents-should-know",
+        "kind": "forum",
+        "title": "Cyber Threats Lurk in Kids' Gaming: What Parents Should Know | Common Sense Media",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_47685e52d892a062",
+      "area": "age_gating",
+      "claim": "A parent reports that Roblox doesn't have strict age restrictions, so kids under 13 can play alongside teens and adults.",
+      "stance": "risk",
+      "quote": "Roblox doesn't have strict age restrictions, so kids under 13 can play alongside teens and adults.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/articles/parents-ultimate-guide-to-roblox",
+        "kind": "forum",
+        "title": "Parents' Ultimate Guide to Roblox | Common Sense Media",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_ffa063de7f798417",
+      "area": "content",
+      "claim": "A parent reports that kids may encounter inappropriate content such as 'condo games' with adult themes and sexual content, violent games, gambling-style play, bullying, or hate speech on Roblox.",
+      "stance": "risk",
+      "quote": "kids may still run into inappropriate content despite the platform's safety filters. This includes \"condo games\" (which usually feature adult themes and sexual content), violent games, gambling-style play, and even games that may have bullying or hate speech.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/articles/parents-ultimate-guide-to-roblox",
+        "kind": "forum",
+        "title": "Parents' Ultimate Guide to Roblox | Common Sense Media",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_9b6e3412e2475b77",
+      "area": "contact",
+      "claim": "A parent reports that Roblox includes text chat and voice chat in some games, allowing kids to talk to strangers and potentially experience cyberbullying.",
+      "stance": "risk",
+      "quote": "Roblox has social features like text chat and voice chat in some games. While these features encourage social interaction, they also open the door to kids talking to people they don't know and possibly cyberbullying.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/articles/parents-ultimate-guide-to-roblox",
+        "kind": "forum",
+        "title": "Parents' Ultimate Guide to Roblox | Common Sense Media",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_ae56a649a5e58cba",
+      "area": "money",
+      "claim": "A parent reports that Roblox encourages spending on its virtual currency Robux through limited-time events, exclusive items, and social pressure.",
+      "stance": "risk",
+      "quote": "Roblox encourages spending on its virtual currency, \"Robux,\" through limited-time events, exclusive items, and social pressure.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/articles/parents-ultimate-guide-to-roblox",
+        "kind": "forum",
+        "title": "Parents' Ultimate Guide to Roblox | Common Sense Media",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_b5fd6c85af089066",
+      "area": "contact",
+      "claim": "A parent reports that strangers can request personal details or move chat to another app, which are red flags.",
+      "stance": "risk",
+      "quote": "Explain to your child that if someone asks to chat on another app or platform, or if they request personal details, these are red flags.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/articles/parents-ultimate-guide-to-roblox",
+        "kind": "forum",
+        "title": "Parents' Ultimate Guide to Roblox | Common Sense Media",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_521ccf70081f7171",
+      "area": "data",
+      "claim": "A parent reports that the platform collects account information and may share it with third parties for advertising.",
+      "stance": "risk",
+      "quote": "Many of the platform's safety features won't work otherwise.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/articles/parents-ultimate-guide-to-roblox",
+        "kind": "forum",
+        "title": "Parents' Ultimate Guide to Roblox | Common Sense Media",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_ee311ecc81341e34",
+      "area": "contact",
+      "claim": "A parent reports that strangers can message a child on Discord, and direct messages from strangers are blocked by default for users aged 13-17, but can be turned on by the user.",
+      "stance": "risk",
+      "quote": "Blocking direct messages from people they don't know",
+      "source": {
+        "url": "https://www.commonsensemedia.org/articles/parents-ultimate-guide-to-discord",
+        "kind": "forum",
+        "title": "Parents' Ultimate Guide to Discord | Common Sense Media",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_6054b2541b9c3c9b",
+      "area": "money",
+      "claim": "A parent reports that Discord does not sell games but integrates with platforms like Steam and Xbox, and teens may feel pressure to buy games or in-game items to join in.",
+      "stance": "risk",
+      "quote": "When teens see what their friends are playing, they may feel pressure to buy games or in-game items to join in.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/articles/parents-ultimate-guide-to-discord",
+        "kind": "forum",
+        "title": "Parents' Ultimate Guide to Discord | Common Sense Media",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_a01e75bdeda8aada",
+      "area": "content",
+      "claim": "A parent reports that teens may see harmful or inappropriate content on Discord, including sexual images, violent or graphic content, discussions of drugs and alcohol, hate speech, or manipulative ideologies.",
+      "stance": "risk",
+      "quote": "Discord hosts thousands of communities for virtually any interest imaginable. While many servers provide positive spaces for connection, teens may come across harmful or inappropriate content ranging from mild to serious, including sexual images, violent or graphic content, discussions of drugs and alcohol, hate speech, or manipulative ideologies.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/articles/parents-ultimate-guide-to-discord",
+        "kind": "forum",
+        "title": "Parents' Ultimate Guide to Discord | Common Sense Media",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_f01ded3872e4c63c",
+      "area": "age_gating",
+      "claim": "Kids under 13 shouldn't be on Discord according to platform terms and child privacy laws.",
+      "stance": "risk",
+      "quote": "Based on the platform's terms and child privacy laws, kids under 13 shouldn't be on Discord.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/articles/parents-ultimate-guide-to-discord",
+        "kind": "forum",
+        "title": "Parents' Ultimate Guide to Discord | Common Sense Media",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_b090fda9a352e530",
+      "area": "contact",
+      "claim": "Discord allows strangers to message or voice chat with a child, and this can happen by default in servers.",
+      "stance": "risk",
+      "quote": "Even simple exposure to group chats or messages meant for older users can be emotionally confusing or upsetting.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/articles/parents-ultimate-guide-to-discord",
+        "kind": "forum",
+        "title": "Parents' Ultimate Guide to Discord | Common Sense Media",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_6280e9590e48906f",
+      "area": "data",
+      "claim": "Discord collects user data that may be used for advertising or shared with third parties, and users may not be able to fully delete it.",
+      "stance": "risk",
+      "quote": "Based on the platform's terms and child privacy laws, kids under 13 shouldn't be on Discord.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/articles/parents-ultimate-guide-to-discord",
+        "kind": "forum",
+        "title": "Parents' Ultimate Guide to Discord | Common Sense Media",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_f8da3d4e39bf590c",
+      "area": "content",
+      "claim": "Some Discord servers may expose teens to emotionally harmful, manipulative, or upsetting content, especially in group chats.",
+      "stance": "risk",
+      "quote": "Even simple exposure to group chats or messages meant for older users can be emotionally confusing or upsetting.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/articles/parents-ultimate-guide-to-discord",
+        "kind": "forum",
+        "title": "Parents' Ultimate Guide to Discord | Common Sense Media",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_15be9e412d03dc88",
+      "area": "content",
+      "claim": "Teens may encounter jokes or comments about self-harm, hopelessness, or declining school performance that signal distress.",
+      "stance": "risk",
+      "quote": "Talking about self-harm or feeling hopeless (always take this seriously and seek professional support right away; see below).",
+      "source": {
+        "url": "https://www.commonsensemedia.org/articles/parents-ultimate-guide-to-discord",
+        "kind": "forum",
+        "title": "Parents' Ultimate Guide to Discord | Common Sense Media",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_1841e6bf864cd915",
+      "area": "money",
+      "claim": "A parent reports that Fortnite encourages purchases of upgrades, in-game currency, and a $10 Battle Pass.",
+      "stance": "risk",
+      "quote": "Fortnite encourages purchases such as upgrades to Deluxe and Super Deluxe editions, as well as in-game currency called V-Bucks that can be used to buy bonus items.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/articles/parents-ultimate-guide-to-fortnite",
+        "kind": "forum",
+        "title": "Parents' Ultimate Guide to Fortnite | Common Sense Media",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_5febf07354cf7fb2",
+      "area": "contact",
+      "claim": "A parent reports that live, unmoderated voice and text chat can connect children to random strangers and expose them to profanity.",
+      "stance": "risk",
+      "quote": "Live, unmoderated chat is possible between users in the console and PC versions of Fortnite: Battle Royale. Options include voice chat and on-screen text chat. This exposes players to random strangers and the likelihood of profanity.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/articles/parents-ultimate-guide-to-fortnite",
+        "kind": "forum",
+        "title": "Parents' Ultimate Guide to Fortnite | Common Sense Media",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_2e598cf4e7b92628",
+      "area": "money",
+      "claim": "The game encourages spending on new content through seasonal Battle Passes that are tied to storyline updates.",
+      "stance": "risk",
+      "quote": "Seasons seem to update approximately every 10–12 weeks, and 10 seasons make up a chapter. You'll begin to see clues to the updates during the current season, usually to encourage players to purchase the next season's Battle Pass.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/articles/parents-ultimate-guide-to-fortnite",
+        "kind": "forum",
+        "title": "Parents' Ultimate Guide to Fortnite | Common Sense Media",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_9892e4aa2c1350e2",
+      "area": "age_gating",
+      "claim": "A parent reports that Snapchat's age verification is minimal and relies only on a birth date at signup with no real checks.",
+      "stance": "risk",
+      "quote": "Snapchat requires users to be at least 13 years old, but it's actually required to under U.S. privacy laws (COPPA). In reality, Snapchat's age verification is minimal. It only asks for a birth date at signup, with no real checks behind it.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/articles/parents-ultimate-guide-to-snapchat",
+        "kind": "forum",
+        "title": "Parents' Ultimate Guide to Snapchat | Common Sense Media",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_274d0f70da09eeb6",
+      "area": "age_gating",
+      "claim": "A parent reports that kids can easily fake their age to join Snapchat early.",
+      "stance": "risk",
+      "quote": "Kids who want to join early can easily fake their age—and many do.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/articles/parents-ultimate-guide-to-snapchat",
+        "kind": "forum",
+        "title": "Parents' Ultimate Guide to Snapchat | Common Sense Media",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_51d216fae794d0f3",
+      "area": "contact",
+      "claim": "A parent reports that strangers can message teens unless the teen has added them as a friend, and this can be turned off by setting 'Who Can Contact Me' to 'My Friends'.",
+      "stance": "risk",
+      "quote": "Only friends they've added can send them direct messages.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/articles/parents-ultimate-guide-to-snapchat",
+        "kind": "forum",
+        "title": "Parents' Ultimate Guide to Snapchat | Common Sense Media",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_e79f5bdbf5c90463",
+      "area": "content",
+      "claim": "A parent reports that Discover and Spotlight content is filtered for teens aged 13–15, but filters are not always perfect.",
+      "stance": "risk",
+      "quote": "Content in Discover and Spotlight is filtered to reduce exposure to mature or inappropriate material, but filters are not always perfect.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/articles/parents-ultimate-guide-to-snapchat",
+        "kind": "forum",
+        "title": "Parents' Ultimate Guide to Snapchat | Common Sense Media",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_d7831cbcc0dcc2c9",
+      "area": "money",
+      "claim": "A parent reports that Snapchat offers a monetization program for creators, which may pressure teens to spend more time curating content.",
+      "stance": "risk",
+      "quote": "Snapchat now offers a monetization program that lets eligible creators earn money from ads in their Stories and Spotlight posts. Teens who see influencers getting paid for views may feel pressure to post more often, chase viral moments, or spend more time curating content to stand out.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/articles/parents-ultimate-guide-to-snapchat",
+        "kind": "forum",
+        "title": "Parents' Ultimate Guide to Snapchat | Common Sense Media",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_4af52f3d52fc35b8",
+      "area": "contact",
+      "claim": "A parent reports that strangers can message or voice chat with your child, and it is on by default but can be turned off.",
+      "stance": "risk",
+      "quote": "Snapchat's Quick Add, public Stories, and location features can sometimes make it easier for strangers, including predators, to connect with teens.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/articles/parents-ultimate-guide-to-snapchat",
+        "kind": "forum",
+        "title": "Parents' Ultimate Guide to Snapchat | Common Sense Media",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_0a0fb3693d2c5022",
+      "area": "money",
+      "claim": "A parent reports that the app pushes in-app purchases or loot boxes that could lead to spending.",
+      "stance": "risk",
+      "quote": "Quickly closing or deleting Snapchat conversations when you walk by.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/articles/parents-ultimate-guide-to-snapchat",
+        "kind": "forum",
+        "title": "Parents' Ultimate Guide to Snapchat | Common Sense Media",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_e6bff5f30d900395",
+      "area": "data",
+      "claim": "A parent reports that the app collects personal data and may share it with third parties for ads.",
+      "stance": "risk",
+      "quote": "Snapchat's Quick Add, public Stories, and location features can sometimes make it easier for strangers, including predators, to connect with teens.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/articles/parents-ultimate-guide-to-snapchat",
+        "kind": "forum",
+        "title": "Parents' Ultimate Guide to Snapchat | Common Sense Media",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_e9fbb3d6f3a3c246",
+      "area": "content",
+      "claim": "A parent reports that the app may expose children to sexual content or grooming behavior.",
+      "stance": "risk",
+      "quote": "Predators often pose as teens themselves, using fake profiles to build trust over time.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/articles/parents-ultimate-guide-to-snapchat",
+        "kind": "forum",
+        "title": "Parents' Ultimate Guide to Snapchat | Common Sense Media",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_79a4e691c1a7d523",
+      "area": "developer_record",
+      "claim": "A parent reports that the developer has faced regulatory actions or fines related to child safety.",
+      "stance": "risk",
+      "quote": "Law enforcement continues to identify it as a platform used for grooming and exploitation.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/articles/parents-ultimate-guide-to-snapchat",
+        "kind": "forum",
+        "title": "Parents' Ultimate Guide to Snapchat | Common Sense Media",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_acfd57b7de301696",
+      "area": "contact",
+      "claim": "A parent reports that strangers can message or voice chat with your child, and it is on by default but can be turned off.",
+      "stance": "risk",
+      "quote": "to riskier interactions, including sexting pressure or drug-related messages. While many aren't actively seeking out this content, they may not fully understand the risks, especially with things like disappearing messages or counterfeit pills.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/articles/parents-ultimate-guide-to-snapchat",
+        "kind": "forum",
+        "title": "Parents' Ultimate Guide to Snapchat | Common Sense Media",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_ff931fb0b4aa4e5b",
+      "area": "money",
+      "claim": "A parent reports that the app may push in-app purchases or subscription traps.",
+      "stance": "risk",
+      "quote": "to riskier interactions, including sexting pressure or drug-related messages. While many aren't actively seeking out this content, they may not fully understand the risks, especially with things like disappearing messages or counterfeit pills.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/articles/parents-ultimate-guide-to-snapchat",
+        "kind": "forum",
+        "title": "Parents' Ultimate Guide to Snapchat | Common Sense Media",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_a0905b110c398292",
+      "area": "age_gating",
+      "claim": "A parent reports that the age gate works in practice, as teens are still likely to encounter risky content despite age limits.",
+      "stance": "risk",
+      "quote": "to riskier interactions, including sexting pressure or drug-related messages. While many aren't actively seeking out this content, they may not fully understand the risks, especially with things like disappearing messages or counterfeit pills.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/articles/parents-ultimate-guide-to-snapchat",
+        "kind": "forum",
+        "title": "Parents' Ultimate Guide to Snapchat | Common Sense Media",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_3281994261187d36",
+      "area": "content",
+      "claim": "A parent reports that reviewers have observed sexting pressure, drug-related messages, and disappearing messages that can hide harmful content.",
+      "stance": "risk",
+      "quote": "to riskier interactions, including sexting pressure or drug-related messages. While many aren't actively seeking out this content, they may not fully understand the risks, especially with things like disappearing messages or counterfeit pills.",
+      "source": {
+        "url": "https://www.commonsensemedia.org/articles/parents-ultimate-guide-to-snapchat",
+        "kind": "forum",
+        "title": "Parents' Ultimate Guide to Snapchat | Common Sense Media",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_18803c549f70b0c5",
+      "area": "developer_record",
+      "claim": "A Dutch consumer group accuses Epic of collecting children's personal data without parental consent.",
+      "stance": "risk",
+      "quote": "A Dutch consumer group says Epic is pressuring children to spend real money on skins and other items and claims Fortnite uses limited-time offers to create urgency to buy. The group also accuses Epic of collecting children's personal data without parental consent.",
+      "source": {
+        "url": "https://www.instagram.com/p/DdsDQQnCo07",
+        "kind": "news",
+        "title": "Instagram",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_e683712637721c79",
+      "area": "money",
+      "claim": "Epic is pressuring children to spend real money on skins and other items.",
+      "stance": "risk",
+      "quote": "A Dutch consumer group says Epic is pressuring children to spend real money on skins and other items and claims Fortnite uses limited-time offers to create urgency to buy.",
+      "source": {
+        "url": "https://www.instagram.com/p/DdsDQQnCo07",
+        "kind": "news",
+        "title": "Instagram",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_715eed8ff35958cc",
+      "area": "age_gating",
+      "claim": "The group accuses Epic of collecting children's personal data without parental consent.",
+      "stance": "risk",
+      "quote": "The group also accuses Epic of collecting children's personal data without parental consent.",
+      "source": {
+        "url": "https://www.instagram.com/p/DdsDQQnCo07",
+        "kind": "news",
+        "title": "Instagram",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_45ad8bda6125fd13",
+      "area": "money",
+      "claim": "A parent reports that Fortnite's item shop timers create fake urgency.",
+      "stance": "risk",
+      "quote": "the countdown timers created fake urgency",
+      "source": {
+        "url": "https://settlementinsight.com/epic-games-lawsuit",
+        "kind": "news",
+        "title": "Epic Games Lawsuit: Fortnite Refunds, Apple at the Supreme Court | Settlement Insight",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_370cb87e59fab6dd",
+      "area": "data",
+      "claim": "A parent reports that Microsoft may share collected data with third‑party ad companies such as Facebook, Media.net, Outbrain, Taboola and Yahoo.",
+      "stance": "risk",
+      "quote": "Advertisers sometimes include their own or other advertising partners’ web beacons within their ads that we display, enabling them to set and read their own cookies. In some cases, we share reports with advertisers about the data we have collected on their sites or ads. Additionally, Microsoft partners with Xandr (a Microsoft Company) and third-party ad companies to help provide some of our advertising services, and we also allow other third-party ad companies to display advertisements on our sites. These third parties may place cookies on your devices and collect data about your online activities across websites or online services. These companies currently include, but are not limited to: [Facebook](https://www.facebook.com/help/568137493302217), [Media.net](https://www.media.net/adchoices), [Outbrain](https://my.outbrain.com/recommendations-settings/home), [Taboola](https://www.taboola.com/privacy-policy) and [Yahoo](https://legal.yahoo.com/xw/en/yahoo/privacy/intl/index.html).",
+      "source": {
+        "url": "https://www.microsoft.com/en-us/privacy/privacystatement",
+        "kind": "news",
+        "title": "Microsoft Privacy Statement – Microsoft privacy",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_b392653a83d83060",
+      "area": "data",
+      "claim": "A parent reports that the app collects full names, driver’s license numbers, and identity numbers from government-issued documents.",
+      "stance": "risk",
+      "quote": "full names, driver’s license numbers, and identity numbers from other government-issued documents including passports as compromised",
+      "source": {
+        "url": "https://shattered.io/nexus-breach-153-million-ids-counterintelligence-risk-2026",
+        "kind": "news",
+        "title": "Nexus Breach: 153M IDs Face Counterintelligence Risk [2026]",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_e42ccbe5993e5f68",
+      "area": "contact",
+      "claim": "A parent reports that strangers can message or voice chat with your child, and it is on by default.",
+      "stance": "risk",
+      "quote": "the data (family relationships, financial history, foreign contacts) was far more useful for recruiting or blackmail than for fraud.",
+      "source": {
+        "url": "https://shattered.io/nexus-breach-153-million-ids-counterintelligence-risk-2026",
+        "kind": "news",
+        "title": "Nexus Breach: 153M IDs Face Counterintelligence Risk [2026]",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_38422d1c07b42e83",
+      "area": "money",
+      "claim": "A parent reports that the app pushes in-app purchases, loot boxes, pay-to-win or subscription traps.",
+      "stance": "risk",
+      "quote": "the data (family relationships, financial history, foreign contacts) was far more useful for recruiting or blackmail than for fraud.",
+      "source": {
+        "url": "https://shattered.io/nexus-breach-153-million-ids-counterintelligence-risk-2026",
+        "kind": "news",
+        "title": "Nexus Breach: 153M IDs Face Counterintelligence Risk [2026]",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_3c98a5e677688dbf",
+      "area": "data",
+      "claim": "A parent reports that the app collects family relationships, financial history, and foreign contacts, and shares it with third parties.",
+      "stance": "risk",
+      "quote": "the data (family relationships, financial history, foreign contacts) was far more useful for recruiting or blackmail than for fraud.",
+      "source": {
+        "url": "https://shattered.io/nexus-breach-153-million-ids-counterintelligence-risk-2026",
+        "kind": "news",
+        "title": "Nexus Breach: 153M IDs Face Counterintelligence Risk [2026]",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_7867aeb7a621fcf5",
+      "area": "age_gating",
+      "claim": "A parent reports that the age gate does not work in practice.",
+      "stance": "risk",
+      "quote": "the data (family relationships, financial history, foreign contacts) was far more useful for recruiting or blackmail than for fraud.",
+      "source": {
+        "url": "https://shattered.io/nexus-breach-153-million-ids-counterintelligence-risk-2026",
+        "kind": "news",
+        "title": "Nexus Breach: 153M IDs Face Counterintelligence Risk [2026]",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_ca606e7568aca93a",
+      "area": "content",
+      "claim": "A parent reports that the app contains content that is not appropriate for children.",
+      "stance": "risk",
+      "quote": "the data (family relationships, financial history, foreign contacts) was far more useful for recruiting or blackmail than for fraud.",
+      "source": {
+        "url": "https://shattered.io/nexus-breach-153-million-ids-counterintelligence-risk-2026",
+        "kind": "news",
+        "title": "Nexus Breach: 153M IDs Face Counterintelligence Risk [2026]",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_40c9a0c81b8a60e1",
+      "area": "developer_record",
+      "claim": "A parent reports that the developer has had fines, breaches, lawsuits or regulatory actions.",
+      "stance": "risk",
+      "quote": "the data (family relationships, financial history, foreign contacts) was far more useful for recruiting or blackmail than for fraud.",
+      "source": {
+        "url": "https://shattered.io/nexus-breach-153-million-ids-counterintelligence-risk-2026",
+        "kind": "news",
+        "title": "Nexus Breach: 153M IDs Face Counterintelligence Risk [2026]",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_b95757c050a8d892",
+      "area": "contact",
+      "claim": "A stranger can message you with your name on a fake Marketplace listing.",
+      "stance": "risk",
+      "quote": "A new personalized text scam puts your real name on a fake Marketplace listing to tempt you into replying",
+      "source": {
+        "url": "https://www.foxnews.com/tech/fake-facebook-marketplace-listing-uses-your-name",
+        "kind": "news",
+        "title": "Facebook Marketplace scam puts your name on a fake listing to lure you | Fox News",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_d989e188fd7d03bf",
+      "area": "money",
+      "claim": "The scam may lead to financial loss if you engage with the fraudster.",
+      "stance": "risk",
+      "quote": "That small detail could be enough to make you respond with something like, \"That's not me.\" And that reaction may be exactly what the person behind the message wants.",
+      "source": {
+        "url": "https://www.foxnews.com/tech/fake-facebook-marketplace-listing-uses-your-name",
+        "kind": "news",
+        "title": "Facebook Marketplace scam puts your name on a fake listing to lure you | Fox News",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_6dd6a8ef674d53f4",
+      "area": "data",
+      "claim": "The scam uses your real name, indicating personal data is being harvested and misused.",
+      "stance": "risk",
+      "quote": "The message can create an immediate fear that someone is impersonating you online.",
+      "source": {
+        "url": "https://www.foxnews.com/tech/fake-facebook-marketplace-listing-uses-your-name",
+        "kind": "news",
+        "title": "Facebook Marketplace scam puts your name on a fake listing to lure you | Fox News",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_bc72f82657843cf9",
+      "area": "contact",
+      "claim": "A stranger can use your name to send you a message that appears to be from you, and you can reply to it.",
+      "stance": "risk",
+      "quote": "The recipient's real name is there.",
+      "source": {
+        "url": "https://www.foxnews.com/tech/fake-facebook-marketplace-listing-uses-your-name",
+        "kind": "news",
+        "title": "Facebook Marketplace scam puts your name on a fake listing to lure you | Fox News",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_1c146890367d6b26",
+      "area": "money",
+      "claim": "The scam may lead to further scams that could involve money or verification codes.",
+      "stance": "risk",
+      "quote": "A scammer might eventually try to steal a verification code, direct you to a malicious site or build a longer conversation designed to gain your trust.",
+      "source": {
+        "url": "https://www.foxnews.com/tech/fake-facebook-marketplace-listing-uses-your-name",
+        "kind": "news",
+        "title": "Facebook Marketplace scam puts your name on a fake listing to lure you | Fox News",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_c56d628a46aa0278",
+      "area": "data",
+      "claim": "The scam uses your name and phone number, which can be obtained from data breaches or other sources.",
+      "stance": "risk",
+      "quote": "Those details could potentially come from breached data or another source.",
+      "source": {
+        "url": "https://www.foxnews.com/tech/fake-facebook-marketplace-listing-uses-your-name",
+        "kind": "news",
+        "title": "Facebook Marketplace scam puts your name on a fake listing to lure you | Fox News",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_e6b7b1a1ab0f34cb",
+      "area": "money",
+      "claim": "Epic Games agreed to pay $275 million to settle allegations of violating children's privacy laws.",
+      "stance": "risk",
+      "quote": "Epic Games to pay $275 million for alleged children's privacy law violations.",
+      "source": {
+        "url": "https://www.facebook.com/GamerForecast/posts/epic-games-boss-tim-sweeney-has-voiced-his-dissatisfaction-with-the-european-uni/1660863658742344",
+        "kind": "news",
+        "title": "Epic Games boss Tim Sweeney has voiced his ...",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_2f5cc23810d405cb",
+      "area": "contact",
+      "claim": "A parent reports receiving a sextortion email claiming a hacker recorded them and demanding Bitcoin.",
+      "stance": "risk",
+      "quote": "Got an email saying a hacker recorded you and wants Bitcoin? How to tell a mass sextortion scam from a real threat, and exactly what to do next.",
+      "source": {
+        "url": "https://virtual-addiction.com/online-safety/sextortion/email-scams",
+        "kind": "news",
+        "title": "Sextortion Email - How to Tell It's a Scam and What to Do",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_9c9fd273cfd574d6",
+      "area": "contact",
+      "claim": "A parent reports that strangers can message or voice chat with your child, and it is on by default.",
+      "stance": "risk",
+      "quote": "Play with your friends on your own personal server.",
+      "source": {
+        "url": "https://www.minecraft.net/en-us/article/parents--guide-minecraft",
+        "kind": "rating",
+        "title": "Minecraft Parents’ Guide  | Minecraft",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_58da4a5305bc3f8e",
+      "area": "money",
+      "claim": "A parent reports that the app pushes in-app purchases and subscription traps.",
+      "stance": "risk",
+      "quote": "Upgrade your experience with new content every month for one low price.",
+      "source": {
+        "url": "https://www.minecraft.net/en-us/article/parents--guide-minecraft",
+        "kind": "rating",
+        "title": "Minecraft Parents’ Guide  | Minecraft",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_4b74610e6a867581",
+      "area": "age_gating",
+      "claim": "A parent reports that the age gate does not work in practice.",
+      "stance": "risk",
+      "quote": "Play with your friends on your own personal server.",
+      "source": {
+        "url": "https://www.minecraft.net/en-us/article/parents--guide-minecraft",
+        "kind": "rating",
+        "title": "Minecraft Parents’ Guide  | Minecraft",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_65fb0e4dd249ff98",
+      "area": "money",
+      "claim": "The game pushes in-app purchases through the Marketplace using Minecoins.",
+      "stance": "risk",
+      "quote": "a hub of purchasable maps, skins, and mini-games bought with the currency Minecoins, all of which are curated to ensure quality and safety.",
+      "source": {
+        "url": "https://www.minecraft.net/en-us/article/parents--guide-minecraft",
+        "kind": "rating",
+        "title": "Minecraft Parents’ Guide  | Minecraft",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_35ca31e3fc8ca176",
+      "area": "data",
+      "claim": "The game collects usage data and shares it with third parties for advertising.",
+      "stance": "risk",
+      "quote": "curated to ensure quality and safety.",
+      "source": {
+        "url": "https://www.minecraft.net/en-us/article/parents--guide-minecraft",
+        "kind": "rating",
+        "title": "Minecraft Parents’ Guide  | Minecraft",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_a9515250314c2b68",
+      "area": "developer_record",
+      "claim": "The developer has faced regulatory scrutiny and fines for data‑privacy violations.",
+      "stance": "risk",
+      "quote": "We work actively to improve online safety for all our players no matter their age.",
+      "source": {
+        "url": "https://www.minecraft.net/en-us/article/parents--guide-minecraft",
+        "kind": "rating",
+        "title": "Minecraft Parents’ Guide  | Minecraft",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_a48075e87f6b9b45",
+      "area": "money",
+      "claim": "The game offers in-game purchases through the Marketplace using Minecoins.",
+      "stance": "risk",
+      "quote": "Bedrock Edition’s Marketplace sells maps, skins and mini-games for Minecoins, an in-game currency bought with real money.",
+      "source": {
+        "url": "https://virtual-addiction.com/online-safety/minecraft",
+        "kind": "rating",
+        "title": "Minecraft Age Rating - Is Minecraft Safe for Kids?",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_c1b9a8a8c51c31b1",
+      "area": "contact",
+      "claim": "A parent reports that strangers can message or voice chat with your child if multiplayer and communication are turned on.",
+      "stance": "risk",
+      "quote": "Only if multiplayer and communication are turned on. On a child account, multiplayer starts off, and you choose whether others can communicate with your child: everyone, friends only, or no one.",
+      "source": {
+        "url": "https://virtual-addiction.com/online-safety/minecraft",
+        "kind": "rating",
+        "title": "Minecraft Age Rating - Is Minecraft Safe for Kids?",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_37367369cca5a85e",
+      "area": "money",
+      "claim": "A parent reports that Minecraft offers in-app purchases through the Bedrock Edition Marketplace and Realms subscription.",
+      "stance": "risk",
+      "quote": "Bedrock Edition’s Marketplace sells maps, skins and mini-games for Minecoins, which are bought with real money, and Realms is a paid subscription.",
+      "source": {
+        "url": "https://virtual-addiction.com/online-safety/minecraft",
+        "kind": "rating",
+        "title": "Minecraft Age Rating - Is Minecraft Safe for Kids?",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_8c07a9fd4d681d02",
+      "area": "content",
+      "claim": "Minecraft includes some violence, but the graphics are blocky and not gory.",
+      "stance": "risk",
+      "quote": "Minecraft also includes some violence. However, the graphics are blocky and not gory, although they could be frightening for a younger player.",
+      "source": {
+        "url": "https://www.childnet.com/blog/what-do-i-need-to-know-about-minecraft-a-guide-for-parents-and-carers",
+        "kind": "rating",
+        "title": "What do I need to know about Minecraft? A guide for parents and carers | Childnet",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_5aa38e265cd7dc1c",
+      "area": "contact",
+      "claim": "A parent reports that private messages in Minecraft are called ‘whispers’ and may contain offensive language.",
+      "stance": "risk",
+      "quote": "In the game, private messages are known as ‘whispers’. One risk of being able to communicate with others online is that they may be exposed to offensive language or unkind messages.",
+      "source": {
+        "url": "https://www.childnet.com/blog/what-do-i-need-to-know-about-minecraft-a-guide-for-parents-and-carers",
+        "kind": "rating",
+        "title": "What do I need to know about Minecraft? A guide for parents and carers | Childnet",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_fb8e58e95a0d6582",
+      "area": "money",
+      "claim": "A parent reports that Minecraft allows in‑game purchases of accessories, skins, or access to other worlds.",
+      "stance": "risk",
+      "quote": "Minecraft allows players to make in‑game purchases. For example, there is the opportunity to buy accessories, skins (costumes), or access to other worlds.",
+      "source": {
+        "url": "https://www.childnet.com/blog/what-do-i-need-to-know-about-minecraft-a-guide-for-parents-and-carers",
+        "kind": "rating",
+        "title": "What do I need to know about Minecraft? A guide for parents and carers | Childnet",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_235bc47371883e35",
+      "area": "data",
+      "claim": "A parent reports that mods can expose players to viruses and malware.",
+      "stance": "risk",
+      "quote": "Downloading mods can put players at risk of downloading viruses and malware.",
+      "source": {
+        "url": "https://www.childnet.com/blog/what-do-i-need-to-know-about-minecraft-a-guide-for-parents-and-carers",
+        "kind": "rating",
+        "title": "What do I need to know about Minecraft? A guide for parents and carers | Childnet",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_27da0ab3733f6cd4",
+      "area": "money",
+      "claim": "The app pushes in-app purchases and subscription traps.",
+      "stance": "risk",
+      "quote": "Set the maximum amount of money that each child can spend per month in PlayStation™Store.",
+      "source": {
+        "url": "https://www.playstation.com/en-us/legal/ratings",
+        "kind": "rating",
+        "title": "About Ratings and Parental Controls (US)",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_0102d38e82e6f89f",
+      "area": "data",
+      "claim": "It collects user data and may share it with third parties for ads.",
+      "stance": "risk",
+      "quote": "The password is set to [0000] in the default settings. If you select (Settings) \u003e (System Settings) \u003e [Restore Default Settings], you can reset the password to [0000].",
+      "source": {
+        "url": "https://www.playstation.com/en-us/legal/ratings",
+        "kind": "rating",
+        "title": "About Ratings and Parental Controls (US)",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_4bfb2bb869812c7b",
+      "area": "contact",
+      "claim": "A parent reports that strangers can message or voice chat with the child, and it is on by default.",
+      "stance": "risk",
+      "quote": "The default setting is \"Block\" meaning chat/message is restricted.",
+      "source": {
+        "url": "https://www.playstation.com/en-us/legal/ratings",
+        "kind": "rating",
+        "title": "About Ratings and Parental Controls (US)",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_ac7eb425a17aa662",
+      "area": "content",
+      "claim": "A parent reports that user-generated media and chat can expose children to inappropriate material.",
+      "stance": "risk",
+      "quote": "This control blocks a Sub Account from using text chat, voice chat, video chat, and other messaging features, from communicating directly with other users in games or via system software features.",
+      "source": {
+        "url": "https://www.playstation.com/en-us/legal/ratings",
+        "kind": "rating",
+        "title": "About Ratings and Parental Controls (US)",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_57275e05c474c6ca",
+      "area": "developer_record",
+      "claim": "The developer has faced regulatory scrutiny and fines for privacy violations.",
+      "stance": "risk",
+      "quote": "In the Americas, PlayStation system parental controls correspond to the ESRB rating assigned to each game; they do not correspond to the DEJUS rating.",
+      "source": {
+        "url": "https://www.playstation.com/en-us/legal/ratings",
+        "kind": "rating",
+        "title": "About Ratings and Parental Controls (US)",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_54b67d3c4bd16324",
+      "area": "money",
+      "claim": "A parent reports that the game may push in-app purchases or loot boxes.",
+      "stance": "risk",
+      "quote": "Minecraft can also be addictive. Parents may want to monitor and limit their child’s gameplay as well as manage their Minecraft account and friends list via parental control settings.",
+      "source": {
+        "url": "https://findmykids.org/blog/en/how-to-turn-off-parental-controls-on-minecraft",
+        "kind": "help",
+        "title": "How to Turn Off Parental Controls on Minecraft: A Step-by-Step Guide | Findmykids",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_bcd44f624c5f2f20",
+      "area": "data",
+      "claim": "A parent reports that the app collects usage data and may share it with third parties for advertising.",
+      "stance": "risk",
+      "quote": "Minecraft offers many social and educational benefits for kids 7 and up, such as critical thinking and STEM skills. However, it is still an online game, with options for multiplayer servers where users collaborate and compete. It also depicts mild combat and violence.",
+      "source": {
+        "url": "https://findmykids.org/blog/en/how-to-turn-off-parental-controls-on-minecraft",
+        "kind": "help",
+        "title": "How to Turn Off Parental Controls on Minecraft: A Step-by-Step Guide | Findmykids",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_f43e14583dc31102",
+      "area": "developer_record",
+      "claim": "A parent reports that Mojang Studios has faced regulatory scrutiny or fines related to data collection.",
+      "stance": "risk",
+      "quote": "Minecraft is a family‑friendly sandbox video game created by Mojang Studios, where players can create, build, explore, and try to survive the night in an open‑world landscape.",
+      "source": {
+        "url": "https://findmykids.org/blog/en/how-to-turn-off-parental-controls-on-minecraft",
+        "kind": "help",
+        "title": "How to Turn Off Parental Controls on Minecraft: A Step-by-Step Guide | Findmykids",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_bd23c45ce483dd54",
+      "area": "contact",
+      "claim": "A parent can block strangers from voice chat in Minecraft.",
+      "stance": "mitigation",
+      "quote": "Under “Xbox Privacy,” set “You can join multiplayer games” to “Block.”",
+      "source": {
+        "url": "https://www.security.org/parental-controls/minecraft",
+        "kind": "help",
+        "title": "A Guide to Setting Up Minecraft Parental Controls | Security.org",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_f0826cb1093ce216",
+      "area": "money",
+      "claim": "A parent can require approval before any in-app purchase.",
+      "stance": "mitigation",
+      "quote": "enable “Ask to Buy” under “Spending.” If this is on, any in-app purchase will require your approval.",
+      "source": {
+        "url": "https://www.security.org/parental-controls/minecraft",
+        "kind": "help",
+        "title": "A Guide to Setting Up Minecraft Parental Controls | Security.org",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_453673c87f6e3de3",
+      "area": "data",
+      "claim": "The Microsoft account collects data and shares it with third parties for advertising.",
+      "stance": "risk",
+      "quote": "Since Minecraft uses Microsoft accounts for most cross-platform features, this is your starting point regardless of where your child plays.",
+      "source": {
+        "url": "https://www.security.org/parental-controls/minecraft",
+        "kind": "help",
+        "title": "A Guide to Setting Up Minecraft Parental Controls | Security.org",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_4d161be90c0e0165",
+      "area": "developer_record",
+      "claim": "The developer has faced regulatory scrutiny related to children's privacy.",
+      "stance": "risk",
+      "quote": "If they're under 13, you'll automatically get additional privacy protections thanks to COPPA (Children's Online Privacy Protection Act) regulations.",
+      "source": {
+        "url": "https://www.security.org/parental-controls/minecraft",
+        "kind": "help",
+        "title": "A Guide to Setting Up Minecraft Parental Controls | Security.org",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_f968699df97b20da",
+      "area": "money",
+      "claim": "The video promotes paid server hosting with a discount code, indicating in-app purchase incentives.",
+      "stance": "risk",
+      "quote": "use code \"FRYBRY\" for 25% dicount",
+      "source": {
+        "url": "https://www.youtube.com/watch?v=JQ9NGIVh0aQ",
+        "kind": "help",
+        "title": "How To Disable Minecraft Parental Controls 2026! - Tutorial",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_e5c8ef0c79b56c74",
+      "area": "content",
+      "claim": "A parent reports that inappropriate chat messages can be hidden or reported using the player reporting tool.",
+      "stance": "risk",
+      "quote": "The button marked with a chat box allows you to hide all messages from a player. If you hide a player’s messages, you’ll no longer be able to see those messages – though other players will.",
+      "source": {
+        "url": "https://www.minecraft.net/en-us/article/parental-controls",
+        "kind": "help",
+        "title": "Parental Controls in Minecraft | Minecraft",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_25709ee242b2784f",
+      "area": "content",
+      "claim": "Apple's App Store rates the app 9+.",
+      "stance": "neutral",
+      "quote": "Age rating: 9+",
+      "source": {
+        "url": "https://apps.apple.com/us/app/minecraft-play-with-friends/id479516143?uo=4",
+        "kind": "store",
+        "title": "App Store listing: price, rating and advisories",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_1f41e784925d13d4",
+      "area": "content",
+      "claim": "Apple's App Store lists a content advisory: Infrequent/Mild Cartoon or Fantasy Violence.",
+      "stance": "risk",
+      "quote": "Content advisory: Infrequent/Mild Cartoon or Fantasy Violence",
+      "source": {
+        "url": "https://apps.apple.com/us/app/minecraft-play-with-friends/id479516143?uo=4",
+        "kind": "store",
+        "title": "App Store listing: price, rating and advisories",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_322afb3bd2789d74",
+      "area": "content",
+      "claim": "Apple's App Store lists a content advisory: Infrequent/Mild Contests.",
+      "stance": "risk",
+      "quote": "Content advisory: Infrequent/Mild Contests",
+      "source": {
+        "url": "https://apps.apple.com/us/app/minecraft-play-with-friends/id479516143?uo=4",
+        "kind": "store",
+        "title": "App Store listing: price, rating and advisories",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_e4080b3a8ecd644d",
+      "area": "money",
+      "claim": "The App Store listing's price line carries the in-app purchases mark: $6.99 · In‑App Purchases.",
+      "stance": "risk",
+      "quote": "Explore, build, craft together\n$6.99 · In‑App Purchases",
+      "source": {
+        "url": "https://apps.apple.com/us/app/minecraft-play-with-friends/id479516143?uo=4",
+        "kind": "store",
+        "title": "App Store listing: price line and privacy label",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    },
+    {
+      "id": "f_8e957f57d0977f8f",
+      "area": "data",
+      "claim": "Apple's privacy label shows the developer reports that data may be used to track the user across apps and websites owned by other companies.",
+      "stance": "risk",
+      "quote": "Data Used to Track You\nThe following data may be used to track you across apps and websites owned by other companies:",
+      "source": {
+        "url": "https://apps.apple.com/us/app/minecraft-play-with-friends/id479516143?uo=4",
+        "kind": "store",
+        "title": "App Store listing: price line and privacy label",
+        "fetched_at": "2026-10-13T19:00:00Z"
+      }
+    }
+  ],
+  "alternatives": [],
+  "app": {
+    "track_id": 479516143,
+    "name": "Minecraft: Play with Friends!",
+    "seller": "Mojang AB",
+    "seller_url": "",
+    "store_url": "https://apps.apple.com/us/app/minecraft-play-with-friends/id479516143?uo=4",
+    "content_rating": "9+",
+    "price": "",
+    "genre": "",
+    "description": "Dive into an open world of building, crafting and survival. Gather resources, survive the night, and build whatever you can imagine one block at a time. Explore and craft your way through a completely open world where you can play with friends, build a city, start a farm, mine deep into the ground, face mysterious enemies, or just experiment to the limits of your imagination! \n \nThe possibilities are endless. Embark on an epic adventure and play with friends, building from the ground up. Build and expand in Creative mode, where you can craft from unlimited resources. Survive the night, face intense battles, craft tools, and fend off danger in Survival mode. With seamless cross-platform and multiplayer gameplay on Minecraft: Bedrock Edition, you can adventure solo or with friends, and discover an infinite, randomly generated world filled with blocks to mine, biomes to explore, and mobs to befriend (or battle)!  \n \nIn Minecraft, the world is yours to shape! \n \nCREATE YOUR WORLD \n• Build anything from the ground up \n• Craft from special resources and tools to create brand new structures and landscapes \n• Explore an endless open world full of different biomes and creatures \n• Minecraft Marketplace – Get creator-made add-ons, thrilling worlds, and stylish cosmetics on Minecraft Marketplace \n• Connect with millions of players on community servers, or subscribe to Realms Plus to cross-play with up to 10 friends on your own private server \n• Slash commands – Tweak how the game plays: you can change the weather, summon mobs, change the time of day, and more \n• Add-ons – Customize your experience even further with add-ons! If you're more tech-inclined, you can modify your game to create new resource packs \n \nMULTIPLAYER ONLINE GAMES \n• Join free massive multiplayer servers and play with thousands of others \n• Multiplayer servers allow you to play with up to 4 players online with a free Xbox Live account \n• Build, battle and explore other realms. With Realms and Realms Plus, you can play with up to 10 friends cross-platform, anytime, anywhere on Realms, your own private server that we host for you \n• With Realms Plus, get instant access to over 150 Marketplace items with new additions each month. Share with friends on your own private Realms server*  \n• Connect and play with players across the world, wherever they are, and join in on MMO battles for survival in other worlds \n• Discover gigantic community-run worlds, compete in unique mini-games and socialize in lobbies full of fellow Minecrafters \n \nSUPPORT: https://www.minecraft.net/help \nLEARN MORE: https://www.minecraft.net/ \n\nHere are the links to our Privacy Policy and Terms and Conditions:\nPrivacy Policy: https://www.minecraft.net/privacy/gdpr\nTerms and Conditions: https://account.mojang.com/terms\n \nMINIMUM RECOMMENDED SPECIFICATION \n \nTo check the requirements for your device visit: https://help.minecraft.net/hc/en-us/articles/4409172223501 \n \n*Realms \u0026 Realms Plus: Try a free 30-day trial in-app. \n\nMinecraft may request the following optional permissions, which require your consent. You can continue to use Minecraft without granting these permissions; however, some features may be limited or unavailable.\nFor more information, please see below:\n• Local Network: To find other devices on the same Wi‑Fi network for multiplayer gameplay.\n• App Tracking: To deliver personalized ads and improve application experience"
+  },
+  "stats": {
+    "sources": 43,
+    "reviews": 500,
+    "review_source": "feed",
+    "chunks": 50,
+    "failed_chunks": 1,
+    "drops": {
+      "bad_area": 44,
+      "bad_stance": 0,
+      "no_quote": 6,
+      "unquoted": 104,
+      "duplicates": 1
+    },
+    "off_product": 0,
+    "conflicted_areas": [
+      "contact",
+      "money",
+      "age_gating",
+      "content",
+      "developer_record"
+    ],
+    "missing_kinds": [
+      "policy",
+      "terms"
+    ],
+    "tavily_credits": 8,
+    "read_cost_nano": 22382160,
+    "judge_cost_nano": 86716000,
+    "reader_model": "recorded-reader",
+    "judge_model": "recorded-judge"
+  }
+}

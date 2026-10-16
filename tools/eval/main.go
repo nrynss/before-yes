@@ -107,6 +107,11 @@ type Result struct {
 	ReadNano     int64                 `json:"read_cost_nano"`
 	JudgeNano    int64                 `json:"judge_cost_nano"`
 	Err          string                `json:"error,omitempty"`
+
+	// slug and card are the title's slug and the card Decide built. The demo
+	// cards test reads them; they are not part of the report.
+	slug string
+	card pipeline.Card
 }
 
 func main() {
@@ -187,7 +192,7 @@ func runOne(root, models string, e Expectation) (res Result) {
 	// live refusals) change what the caller receives. With an unnamed result
 	// the deferred assignment was lost and a replay with unrecorded calls
 	// reported none.
-	res = Result{Title: e.Title, Age: e.Age, WantVerdict: e.Verdict}
+	res = Result{Title: e.Title, Age: e.Age, WantVerdict: e.Verdict, slug: e.Slug}
 	ctx := context.Background()
 	var f *fixture
 	var rec *gatherRecorder
@@ -384,6 +389,7 @@ const quoteCover = 2.0 / 3
 // not cite still counts as found by the reader.
 func compare(res *Result, e Expectation, card pipeline.Card, ev pipeline.Evidence) {
 	res.GotVerdict = card.Verdict
+	res.card = card
 	res.Grades = card.Grades
 	res.Gate = card.Gate
 	evidenceJSON, _ := json.Marshal(ev.Findings)
