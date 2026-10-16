@@ -15,6 +15,7 @@ import (
 	"time"
 
 	cachesqlitestore "github.com/nrynss/keel/cache/sqlitestore"
+	"github.com/nrynss/keel/id"
 	jobsqlitestore "github.com/nrynss/keel/job/sqlitestore"
 	"github.com/nrynss/keel/sqlite"
 
@@ -35,6 +36,49 @@ func openDB(t *testing.T) *sqlite.DB {
 	}
 	t.Cleanup(func() { _ = db.Close() })
 	return db
+}
+
+// Seed stores a card once: a second seed of the same card returns the same
+// id and inserts nothing, and a card that differs in its body is a new row.
+func TestSeedIsIdempotent(t *testing.T) {
+	ctx := context.Background()
+	s := openStore(t)
+	card := mk("Roblox", 9, checklist.No, t0)
+	first, inserted, err := s.Seed(ctx, card)
+	if err != nil || !inserted {
+		t.Fatalf("first seed: id %q inserted %v err %v", first, inserted, err)
+	}
+	if !id.Valid(strings.TrimPrefix(first, "c_")) {
+		t.Fatalf("seed id %q is not a public card id", first)
+	}
+	again, inserted, err := s.Seed(ctx, card)
+	if err != nil || inserted || again != first {
+		t.Fatalf("second seed: id %q inserted %v err %v; want %q, not inserted", again, inserted, err, first)
+	}
+	count := func() int {
+		var n int
+		if err := s.r.QueryRowContext(ctx, `SELECT COUNT(*) FROM cards`).Scan(&n); err != nil {
+			t.Fatal(err)
+		}
+		return n
+	}
+	if n := count(); n != 1 {
+		t.Fatalf("%d rows after two seeds of one card, want 1", n)
+	}
+	got, err := s.Get(ctx, first)
+	if err != nil || got.ID != first || got.Verdict != checklist.No {
+		t.Fatalf("Get(%s) = id %q verdict %q err %v", first, got.ID, got.Verdict, err)
+	}
+	other := mk("Roblox", 9, checklist.Yes, t0.Add(time.Hour))
+	if _, inserted, err := s.Seed(ctx, other); err != nil || !inserted {
+		t.Fatalf("a different card: inserted %v err %v", inserted, err)
+	}
+	if n := count(); n != 2 {
+		t.Fatalf("%d rows, want 2", n)
+	}
+	if _, _, err := s.Seed(ctx, pipeline.Card{Title: "x"}); !errors.Is(err, ErrInvalid) {
+		t.Fatalf("a card with no CheckedAt: err %v, want ErrInvalid", err)
+	}
 }
 
 func openStore(t *testing.T) *Store {

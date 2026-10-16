@@ -4,6 +4,7 @@
 //	before-yes serve  [-config before-yes.toml]
 //	before-yes check  [-config before-yes.toml] [-age 9] Roblox
 //	before-yes config [-config before-yes.toml]
+//	before-yes seed-cards [-config before-yes.toml] [-dir testdata/demo-cards]
 package main
 
 import (
@@ -52,6 +53,12 @@ func run(ctx context.Context, args []string, stdout, stderr io.Writer) int {
 		err = check(ctx, log, s, o.title, *age, stdout, stderr)
 	case "config":
 		_, err = fmt.Fprint(stdout, plan.String())
+	case "seed-cards":
+		if o.title != "" {
+			usage(stderr)
+			return 2
+		}
+		err = seedCards(ctx, s, o.dir, stdout)
 	default:
 		usage(stderr)
 		return 2
@@ -64,7 +71,7 @@ func run(ctx context.Context, args []string, stdout, stderr io.Writer) int {
 }
 
 func usage(w io.Writer) {
-	fmt.Fprintln(w, "usage: before-yes serve|check|config [-config file] [-age N] [title]")
+	fmt.Fprintln(w, "usage: before-yes serve|check|config|seed-cards [-config file] [-age N] [-dir demo-cards] [title]")
 }
 
 // serve listens until ctx ends.
@@ -92,6 +99,7 @@ func serve(ctx context.Context, log *slog.Logger, s Settings) error {
 type options struct {
 	config string
 	age    int
+	dir    string
 	title  string
 }
 
@@ -104,6 +112,7 @@ func parseArgs(cmd string, rest []string, stderr io.Writer) (options, bool) {
 	fl.SetOutput(stderr)
 	fl.StringVar(&o.config, "config", "", "settings file (default: $BEFORE_YES_CONFIG, then ./before-yes.toml)")
 	fl.IntVar(&o.age, "age", 9, "the child's age (check)")
+	fl.StringVar(&o.dir, "dir", "testdata/demo-cards", "the card files to store (seed-cards)")
 	var words []string
 	for {
 		if err := fl.Parse(rest); err != nil {

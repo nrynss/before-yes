@@ -15,6 +15,7 @@
 package cards
 
 import (
+	"bytes"
 	"context"
 	"database/sql"
 	"embed"
@@ -128,6 +129,80 @@ func (s *Store) Put(ctx context.Context, card pipeline.Card) (string, error) {
 		return "", err
 	}
 	return pub, nil
+}
+
+// Seed stores card under a fresh Keel id unless the store already holds the
+// same card, and returns its public id and whether it inserted a row. The
+// same card is one with the same title, age, checklist version and checked
+// time whose body is equal once both ids are cleared, so running Seed twice
+// with one card stores it once and returns the same id both times. A card
+// that differs only in its id is the same card. A card with a zero CheckedAt,
+// or with no title, is refused with ErrInvalid.
+func (s *Store) Seed(ctx context.Context, card pipeline.Card) (pubID string, inserted bool, err error) {
+	if err := check(card); err != nil {
+		return "", false, err
+	}
+	want, err := sameBody(card)
+	if err != nil {
+		return "", false, fmt.Errorf("cards: seed: %w", err)
+	}
+	tx, err := s.w.BeginTx(ctx, nil)
+	if err != nil {
+		return "", false, fmt.Errorf("cards: seed: %w", err)
+	}
+	defer func() { _ = tx.Rollback() }() // a no-op once committed
+	rows, err := tx.QueryContext(ctx,
+		`SELECT id, body FROM cards WHERE title_key = ? AND age = ? AND checklist = ? AND created_at = ? ORDER BY seq`,
+		TitleKey(card.Title), card.Age, card.ChecklistVersion, card.CheckedAt.UnixMilli())
+	if err != nil {
+		return "", false, fmt.Errorf("cards: seed: %w", err)
+	}
+	for rows.Next() {
+		var raw string
+		var body []byte
+		if err := rows.Scan(&raw, &body); err != nil {
+			_ = rows.Close()
+			return "", false, fmt.Errorf("cards: seed: %w", err)
+		}
+		var stored pipeline.Card
+		if err := json.Unmarshal(body, &stored); err != nil {
+			_ = rows.Close()
+			return "", false, fmt.Errorf("cards: seed: the stored body does not decode: %w", err)
+		}
+		got, err := sameBody(stored)
+		if err != nil {
+			_ = rows.Close()
+			return "", false, fmt.Errorf("cards: seed: %w", err)
+		}
+		if bytes.Equal(got, want) {
+			_ = rows.Close()
+			return "c_" + raw, false, nil
+		}
+	}
+	if err := rows.Err(); err != nil {
+		_ = rows.Close()
+		return "", false, fmt.Errorf("cards: seed: %w", err)
+	}
+	_ = rows.Close()
+	raw, err := id.New()
+	if err != nil {
+		return "", false, fmt.Errorf("cards: seed: %w", err)
+	}
+	pub := "c_" + raw
+	if err := insert(ctx, tx, raw, pub, card); err != nil {
+		return "", false, err
+	}
+	if err := tx.Commit(); err != nil {
+		return "", false, fmt.Errorf("cards: seed: %w", err)
+	}
+	return pub, true, nil
+}
+
+// sameBody is the card's stored encoding with its id cleared, so two cards
+// that differ only in id compare equal.
+func sameBody(card pipeline.Card) ([]byte, error) {
+	card.ID = ""
+	return json.Marshal(card)
 }
 
 // PutWithAlternatives stores a card and the cards of its checked
