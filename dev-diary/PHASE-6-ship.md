@@ -56,7 +56,7 @@ requires:   T6.1 (to load them on the host)
 fixture-ok: yes (recorded gather and judge replies; no live call)
 size:       S · mid
 owns:       testdata/demo-cards/, the seed-cards command in cmd/before-yes, internal/cards (seeding only)
-status:     claimed:demo-cards
+status:     blocked (cards built and pinned; loading them on the host needs T6.1)
 ```
 Rewritten by user decision. Visitors and judges browse cards from the home page's "Previous checks" list without spending. Those cards are the three the current pipeline computes on the eval's recordings set (gather 0): Roblox **no**, Minecraft **yes with settings**, Khan Academy Kids **yes**. They come from the recorded evidence and judge replies, through the rule gate and `checklist.Decide`, never hand-written; a test recomputes them and fails if a stored file differs. A `seed-cards` command loads them into the host's card store, once, at unguessable ids. Nothing is re-run live: the user stopped further runs, and a live judge samples, so a re-run could disagree with the recordings. Alternatives and extra common titles are dropped, since they would need live runs. Old stored cards are not deleted; any replacement backs the store file up first.
 
