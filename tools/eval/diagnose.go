@@ -138,9 +138,22 @@ func parseReplyGrades(reply string) ([]rawGrade, error) {
 	return nil, fmt.Errorf("no grades")
 }
 
+// mapRawCitations maps a reply's short citation ids to the real finding ids,
+// as the judge does before its checks, with pipeline.MapShortCitation.
+func mapRawCitations(grades []rawGrade, shortToReal map[string]string) []rawGrade {
+	for i := range grades {
+		for n, id := range grades[i].Findings {
+			grades[i].Findings[n] = pipeline.MapShortCitation(shortToReal, id)
+		}
+	}
+	return grades
+}
+
 // judgeGrades is the grade list the checks saw: the first pass, with the
-// conflict pass swapped in for the areas it answered.
-func judgeGrades(tr *callTrace, conflicted []checklist.Area) (map[checklist.Area]rawGrade, map[checklist.Area]rawGrade, string) {
+// conflict pass swapped in for the areas it answered. fs are the findings the
+// judge was given; each pass's short ids map through the same map its prompt
+// was built from.
+func judgeGrades(tr *callTrace, conflicted []checklist.Area, fs []finding.Finding) (map[checklist.Area]rawGrade, map[checklist.Area]rawGrade, string) {
 	if tr == nil {
 		return nil, nil, "no judge reply captured"
 	}
@@ -154,6 +167,11 @@ func judgeGrades(tr *callTrace, conflicted []checklist.Area) (map[checklist.Area
 	if err != nil {
 		return nil, nil, "first pass: " + err.Error()
 	}
+	all := make([]checklist.Area, 0, len(checklist.Areas()))
+	for _, a := range checklist.Areas() {
+		all = append(all, a.ID)
+	}
+	first = mapRawCitations(first, pipeline.ShortCitationIDs(all, fs))
 	use := map[checklist.Area]rawGrade{}
 	firsts := map[checklist.Area]rawGrade{}
 	for _, g := range first {
@@ -173,6 +191,7 @@ func judgeGrades(tr *callTrace, conflicted []checklist.Area) (map[checklist.Area
 		}
 		return use, firsts, "conflict pass unusable (" + err.Error() + "); first pass kept"
 	}
+	second = mapRawCitations(second, pipeline.ShortCitationIDs(conflicted, fs))
 	answered := false
 	for _, g := range second {
 		a := checklist.Area(strings.ToLower(strings.TrimSpace(g.Area)))
@@ -314,7 +333,7 @@ func diagnose(w io.Writer, card pipeline.Card, ev pipeline.Evidence, tr *callTra
 		}
 		counts[f.Area] = c
 	}
-	given, firsts, pass := judgeGrades(tr, card.Stats.ConflictedAreas)
+	given, firsts, pass := judgeGrades(tr, card.Stats.ConflictedAreas, ev.Findings)
 	fmt.Fprintf(w, "diagnose %s age %d verdict %s findings %d (%s)\n", card.Title, card.Age, card.Verdict, len(ev.Findings), pass)
 	got := map[checklist.Area]checklist.Grade{}
 	for _, g := range card.Grades {
