@@ -210,12 +210,21 @@ func TestStoreFactsFromAnotherStorefrontCopy(t *testing.T) {
 	}
 	a := &appstore.App{ID: 1378467217, Name: "Khan Academy Kids", StoreURL: "https://apps.apple.com/us/app/khan-academy-kids/id1378467217?uo=4"}
 	facts := storeFacts(a, docs, "", fixedNow)
-	if len(facts) != 1 || facts[0].Doc.Source.URL != "https://apps.apple.com/mx/app/khan-academy-kids/id1378467217?l=en-GB" {
+	if len(facts) != 2 || facts[0].Doc.Source.URL != "https://apps.apple.com/mx/app/khan-academy-kids/id1378467217?l=en-GB" {
 		t.Fatalf("facts = %+v", facts)
 	}
 	wantFacts(t, verifiedFacts(t, facts), []factWant{
 		{checklist.Data, finding.Mitigation, "Data Not Linked to You\nThe following data may be collected but it is not linked to your identity:"},
+		// The listing's Kids category line, for the rule gate
+		// (contact.kids_category_no_contact_report); the judge is not shown it.
+		{checklist.Contact, finding.Neutral, "Made For Ages 0–5"},
 	})
+	fs, _ := storeFactFindings(facts)
+	for _, f := range fs {
+		if gateOnly(f) != (f.Area == checklist.Contact) {
+			t.Errorf("gateOnly(%q) = %v", f.Quote, gateOnly(f))
+		}
+	}
 }
 
 // A listing page that cannot be read costs the facts, not the gather: the
@@ -285,6 +294,7 @@ func TestCollectAddsStoreFacts(t *testing.T) {
 		{checklist.Content, finding.Neutral, "Age rating: 4+"},
 		{checklist.Money, finding.Mitigation, "Reading & Math Learning Games\nFree"},
 		{checklist.Data, finding.Mitigation, "Data Not Linked to You\nThe following data, which may be collected but is not linked to your identity, may be used for the following purposes:"},
+		{checklist.Contact, finding.Neutral, "Made For Ages 0–5"},
 	})
 	user := judgeUser("Khan Academy Kids", 5, []checklist.Area{checklist.Data}, ev.Findings, nil)
 	if !strings.Contains(user, "Data Not Linked to You") || !strings.Contains(user, "stance=mitigation source=store") {

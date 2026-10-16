@@ -68,6 +68,8 @@ const (
 	RuleContactCapped       = "contact.flag_capped_by_control"
 	RuleContactConfirmed    = "contact.flag_confirmed"
 	RuleContactNoChat       = "contact.no_chat_stated"
+	RuleContactKids         = "contact.kids_category_no_contact_report"
+	RuleContentSingleMild   = "content.single_mild_report"
 	RuleAgeGateNoBypass     = "age_gating.flag_without_bypass"
 	RuleAgeGateCapped       = "age_gating.flag_capped_by_control"
 	RuleAgeGateConfirmed    = "age_gating.flag_confirmed"
@@ -380,6 +382,11 @@ func (g *gate) area(in checklist.Grade, acts []GateAction) (checklist.Grade, []G
 				support = append(support, f)
 			}
 		}
+		if len(support) > 0 && in.Area == checklist.Content {
+			if g2, act, done := g.singleMild(in, support); done {
+				return g2, append(acts, act)
+			}
+		}
 		if len(support) > 0 {
 			if c, label, ctl := g.cap(in, spec, support); ctl != nil {
 				note := fmt.Sprintf("A source names a control that answers this concern (%s), and no cited quote says the control fails.", label)
@@ -447,9 +454,10 @@ func unknownGrade(in checklist.Grade) checklist.Grade {
 // cap lowers a flag to ok_with_setting when a quote in the area names a
 // control that answers it. A flag cites risk quotes only (checkCitations), so
 // the control is looked for in the whole area, not in the grade's citations.
-// The control quote must be a mitigation or neutral finding (a risk-stance
-// quote that mentions a control may be describing its absence), must be about
-// the title, must not itself report a failure, and no risk quote may report
+// A control is read from the quote's text, whatever stance the reader gave it:
+// the quote must describe the control (a pattern in the area's control list),
+// must be about the title, must not itself report a failure or say the control
+// is missing (controlAbsent), and no risk quote may report
 // the control failing: not a cited one, and not an uncited one that speaks of
 // the area's harm. A cap relaxes a flag, so every test errs toward leaving
 // the flag. The returned grade cites the supporting risks and the control
@@ -467,16 +475,22 @@ func (g *gate) cap(in checklist.Grade, spec areaSpec, support []finding.Finding)
 	// it, if it is a risk quote about the title that speaks of this area's
 	// harm: the judge cites few quotes, and a flag that leaves out the failing
 	// control must not be lowered on that account.
-	if len(g.riskIn(in.Area, func(f finding.Finding) bool { return spec.risk(g, f) && hitsAny(g.w(f), controlFailure, false) })) > 0 {
+	if len(g.riskIn(in.Area, func(f finding.Finding) bool {
+		return spec.risk(g, f) && hitsAny(g.w(f), controlFailure, false) && g.speaksOfAControl(spec, f)
+	})) > 0 {
 		return in, "", nil
 	}
 	for _, c := range spec.controls {
 		var ctl []finding.Finding
 		for _, f := range g.fs {
-			if f.Area == in.Area && f.Stance != finding.Risk && g.onSubject(f) && c.pat.matches(g.w(f), true) && !hitsAny(g.w(f), controlFailure, false) {
+			if f.Area == in.Area && g.onSubject(f) && c.pat.matches(g.w(f), true) && !hitsAny(g.w(f), controlFailure, false) && !hitsAny(g.w(f), controlAbsent, false) {
 				ctl = append(ctl, f)
 			}
 		}
+		// A quote the reader labelled mitigation or neutral is named first.
+		slices.SortStableFunc(ctl, func(a, b finding.Finding) int {
+			return btoi(a.Stance == finding.Risk) - btoi(b.Stance == finding.Risk)
+		})
 		if len(ctl) == 0 {
 			continue
 		}
@@ -485,7 +499,8 @@ func (g *gate) cap(in checklist.Grade, spec areaSpec, support []finding.Finding)
 		}
 		out := in
 		out.Level, out.Setting = checklist.OKWithSetting, c.label
-		out.Findings = ids(append(slices.Clone(support), ctl...))
+		all := append(slices.Clone(support), ctl...)
+		out.Findings = orderLike(ids(all), all)
 		return out, c.label, ctl
 	}
 	return in, "", nil
@@ -540,19 +555,7 @@ var storeRating = regexp.MustCompile(`(?i)age rating:\s*(\d+)\+`)
 // when no quote about the title reports unsuitable material and a source other
 // than the store listing says the content suits children.
 func settleContent(g *gate, _ checklist.Grade) *settlement {
-	var rating *finding.Finding
-	var n int
-	for i, f := range g.fs {
-		if f.Area != checklist.Content || f.Source.Kind != KindStore {
-			continue
-		}
-		if m := storeRating.FindStringSubmatch(f.Quote); m != nil {
-			if v, err := strconv.Atoi(m[1]); err == nil {
-				rating, n = &g.fs[i], v
-				break
-			}
-		}
-	}
+	rating, n := g.rating()
 	if rating == nil || n > g.age || !g.noRisk(checklist.Content) {
 		return nil
 	}
@@ -572,7 +575,26 @@ func settleContent(g *gate, _ checklist.Grade) *settlement {
 		fmt.Sprintf("The App Store rates this app %d+, at or below the child's age, a source says the content suits children, and no checked quote reports unsuitable material.", n)}
 }
 
-func settleContact(g *gate, _ checklist.Grade) *settlement {
+func settleContact(g *gate, cur checklist.Grade) *settlement {
+	if st := settleContactStated(g, cur); st != nil {
+		return st
+	}
+	// Apple's Kids category: the listing's "Made For Ages X-Y" line.
+	for _, f := range g.fs {
+		if gateOnly(f) && f.Stance == finding.Neutral {
+			m := ageSpan.FindStringSubmatch(f.Quote)
+			if m == nil || !g.noRisk(checklist.Contact) {
+				return nil
+			}
+			return &settlement{RuleContactKids, []finding.Finding{f}, "Listed in the App Store's Kids category, for ages " + m[1] + "–" + m[2] + "; no source reports contact with strangers."}
+		}
+	}
+	return nil
+}
+
+var ageSpan = regexp.MustCompile(`(\d+)\s*[–-]\s*(\d+)`)
+
+func settleContactStated(g *gate, _ checklist.Grade) *settlement {
 	for _, f := range g.fs {
 		if f.Area == checklist.Contact && f.Stance != finding.Risk && g.firstParty(f) && hitsVocab(g.w(f), contactNoChat, false) {
 			if g.noRisk(checklist.Contact) {
@@ -724,4 +746,111 @@ func (p pattern) matches(w words, neg bool) bool {
 		}
 	}
 	return true
+}
+
+// speaksOfAControl reports whether a quote talks about a control of the area
+// (one of its control patterns, or a control word), so that a failure word in
+// an unrelated complaint ("the add-on still didn't work") is not read as the
+// control failing.
+func (g *gate) speaksOfAControl(spec areaSpec, f finding.Finding) bool {
+	w := g.w(f)
+	for _, c := range spec.controls {
+		if c.pat.matches(w, false) {
+			return true
+		}
+	}
+	return hitsAny(w, controlTopic, false)
+}
+
+func btoi(b bool) int {
+	if b {
+		return 1
+	}
+	return 0
+}
+
+// orderLike returns the ids of ids in the order of fs, each once.
+func orderLike(ids []string, fs []finding.Finding) []string {
+	out := make([]string, 0, len(ids))
+	for _, f := range fs {
+		if slices.Contains(ids, f.ID) && !slices.Contains(out, f.ID) {
+			out = append(out, f.ID)
+		}
+	}
+	return out
+}
+
+// rating returns the store's age rating finding and its number, or nil.
+func (g *gate) rating() (*finding.Finding, int) {
+	for i, f := range g.fs {
+		if f.Area != checklist.Content || f.Source.Kind != KindStore {
+			continue
+		}
+		if m := storeRating.FindStringSubmatch(f.Quote); m != nil {
+			if v, err := strconv.Atoi(m[1]); err == nil {
+				return &g.fs[i], v
+			}
+		}
+	}
+	return nil, 0
+}
+
+// severity reads how serious a content quote is. Words of the mild phrases
+// ("cartoon violence") are set aside before the serious vocabulary is read.
+func (g *gate) severity(f finding.Finding) (serious, mild bool) {
+	w := g.w(f)
+	masked := slices.Clone(w)
+	for _, t := range contentMildPhrases {
+		pt := parseTerm(t)
+		for i := range w {
+			if matchAt(w, i, pt) {
+				for k := range pt {
+					masked[i+k] = ""
+				}
+			}
+		}
+	}
+	return hitsVocab(masked, contentSerious, true), hitsVocab(w, contentMild, true)
+}
+
+// singleMild is content.single_mild_report. A content flag that rests only on
+// mild harm (frightening imagery, mild peril, crude humour), from one distinct
+// source among all the title's mild reports, in a title whose store age rating
+// is at or below the child's age, does not stand. One serious quote among the
+// flag's qualifying citations, two independent mild sources, or no rating at
+// or below the age, and the flag is left to the other rules. With a non-risk
+// content finding to cite besides the rating, the area becomes ok on the
+// rating and that finding; without one it becomes unknown. An ok is never
+// made without a citation.
+func (g *gate) singleMild(in checklist.Grade, support []finding.Finding) (checklist.Grade, GateAction, bool) {
+	for _, f := range support {
+		if s, _ := g.severity(f); s {
+			return in, GateAction{}, false
+		}
+	}
+	sources := map[string]bool{}
+	for _, f := range g.riskIn(checklist.Content, func(f finding.Finding) bool { _, m := g.severity(f); return m }) {
+		sources[f.Source.URL+"#"+strconv.Itoa(f.Source.Index)] = true
+	}
+	rating, n := g.rating()
+	if len(sources) >= 2 || rating == nil || n > g.age {
+		return in, GateAction{}, false
+	}
+	var witness *finding.Finding
+	for i, f := range g.fs {
+		if f.Area == checklist.Content && f.Stance != finding.Risk && f.ID != rating.ID && g.onSubject(f) {
+			if witness == nil || (hitsVocab(g.w(f), contentBenign, true) && !hitsVocab(g.w(*witness), contentBenign, true)) {
+				witness = &g.fs[i]
+			}
+		}
+	}
+	if witness == nil {
+		return unknownGrade(in), GateAction{Area: in.Area, Rule: RuleContentSingleMild, From: checklist.Flag, To: checklist.Unknown, Findings: []string{},
+			Note: fmt.Sprintf("Only one source reports mild frightening or crude material, and the App Store rates this app %d+, at or below the child's age. Nothing else was found to show the content is fine, so the area is left open.", n)}, true
+	}
+	note := fmt.Sprintf("Only one source reports mild frightening or crude material, and the App Store rates this app %d+, at or below the child's age.", n)
+	out := in
+	out.Level, out.Setting, out.Reason = checklist.OK, "", note
+	out.Findings = []string{rating.ID, witness.ID}
+	return out, GateAction{Area: in.Area, Rule: RuleContentSingleMild, From: checklist.Flag, To: checklist.OK, Findings: []string{rating.ID, witness.ID}, Note: note}, true
 }

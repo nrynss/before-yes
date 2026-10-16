@@ -1,4 +1,4 @@
-diagnose Minecraft age 9 verdict no findings 227 (conflict pass replaced the conflicted areas (an area the checks then made unknown may fall back to its first-pass grade))
+diagnose Minecraft age 9 verdict unclear findings 227 (conflict pass replaced the conflicted areas (an area the checks then made unknown may fall back to its first-pass grade))
   contact  risks 27 mitigations 11 other 2
     judge ok_with_setting setting "child accounts disable chat by default until a parent enables them through account settings" cited 2 [f_0c5317397f85dce9 f_c064483b3c617727]
     card unknown setting ""
@@ -8,17 +8,16 @@ diagnose Minecraft age 9 verdict no findings 227 (conflict pass replaced the con
     quote f_0c5317397f85dce9 risk terms: Please watch out if you are talking to people in our games. It is hard for either you or us to know for sure that what people say is true, or even if people are really who they say they are. You should think twice about giving out information about yourself.
     quote f_c064483b3c617727 risk forum: With child accounts (for players under 16), chat features and multiplayer options are disabled by default until a parent enables them through account settings.
   money  risks 61 mitigations 4 other 6
-    conflict pass ok_with_setting setting "Control Spending" cited 2 [f_d34b991c87235fe5 f_6b222f7ec75ab54a]
-    first-pass fallback: the conflict pass's grade was made unknown by the checks, so the first pass's grade stands
-    judge (first pass) flag setting "" cited 4 [f_4f0d24b3b6bb0948 f_fe600dad41e0a6a9 f_a24eb25dc2e2b26a f_f9d8e252eb8283e0]
-    card flag setting ""
-    gate money.flag_confirmed flag -> flag findings [f_4f0d24b3b6bb0948 f_fe600dad41e0a6a9 f_a24eb25dc2e2b26a]
+    judge ok_with_setting setting "Control Spending" cited 2 [f_d34b991c87235fe5 f_6b222f7ec75ab54a]
+    card ok_with_setting setting "Require approval for purchases"
+    gate money.flag_capped_by_control flag -> ok_with_setting findings [f_4f0d24b3b6bb0948 f_fe600dad41e0a6a9 f_a24eb25dc2e2b26a f_e65861da00e0e77e]
     check stood
     entail meets_definition=false reason_supported=false; entail meets_definition=true reason_supported=true
-    reason A reviewer who says they are 10 years old reports buying 10,000 Minecoins using birthday money and feeling scammed.
+    reason A source names a control that answers this concern (Require approval for purchases), and no cited quote says the control fails.
     quote f_4f0d24b3b6bb0948 risk review: i bought 10,000 minecoins and im litterly a kid im only 10 and i got scammed i litterly used all my birthday money! FRICK YOU MINECRAFT
     quote f_fe600dad41e0a6a9 risk review: I bought an avatar for my character and I look through my inventory and everything and i never got my avatar. I spent money for what?other than that it’s a good game.(I still want my money back)
     quote f_a24eb25dc2e2b26a risk review: I love this game, but I just spent money on the game TWICE and I still didn’t get the stuff I wanted
+    quote f_e65861da00e0e77e risk rating: every Marketplace purchase (paid for with Minecoins) or Realms subscription needs your approval
   data  risks 22 mitigations 2 other 11
     judge ok_with_setting setting "data can be deleted" cited 2 [f_6b7cc1eed85a38ff f_588749e106d02d39]
     card unknown setting ""

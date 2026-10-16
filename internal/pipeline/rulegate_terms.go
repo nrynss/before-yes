@@ -51,6 +51,22 @@ var controlFailure = []string{
 	"cant stop", "cannot stop", "couldnt stop", "unable to stop", "cant prevent", "cannot prevent", "doesnt prevent", // moderation that does not stop it
 }
 
+// controlAbsent: a quote that names a control to say it is missing ("there is
+// no way to require approval for purchases"). Controls are read from a quote's
+// text whatever stance the reader gave it, so these keep an absence from being
+// read as a control.
+var controlAbsent = []string{
+	"no way to", "no option", "no ability", "unable to", "lack*", "doesnt have", "does not have", "dont have",
+	"doesnt offer", "does not offer", "not possible", "theres no", "there is no", "no setting", "no control*", "no parental",
+}
+
+// controlTopic: words that mark a quote as speaking of a parental control, for
+// the area-wide check that a control is reported failing.
+var controlTopic = []string{
+	"parental control*", "setting", "settings", "limit", "limits", "approv*", "restrict*", "filter*", "password", "passcode",
+	"ask to buy", "block*", "turned off", "turn off", "disabled", "family sharing", "family link", "moderat*",
+}
+
 // ---------------------------------------------------------------- money
 
 // moneyRisk: a quote names a purchase, in-app purchase, subscription, ad,
@@ -79,7 +95,7 @@ var moneyControls = []control{
 	{"Require approval for purchases", pattern{all: [][]string{ // approval, passcode or password to buy
 		{"approv*", "permission", "passcode", "password", "pin"},
 		{"purchas*", "buy", "buying", "spend*", "payment*"},
-		{"parent*", "guardian*", "your", "adult*", "family", "child*", "kid*"}, // approval by a parent, not by the platform
+		{"parent*", "guardian*", "you", "your", "adult*", "family", "child*", "kid*"}, // approval by a parent, not by the platform
 	}}},
 	{"Set a spending limit", pattern{any: []string{ // a cap on spending
 		"spending limit*", "spend limit*", "purchase limit*", "monthly limit*", "spending cap*", "spending control*",
@@ -148,16 +164,32 @@ var dataLabelNotLinked = []string{"data not linked to you"}
 // to a belief, value or theme (religion, yoga, gender roles, politics) names
 // none of these and so never matches; there is deliberately no list of such
 // topics, because a topic is not a harm.
-var contentHarm = []pattern{
-	{any: []string{"violen*", "gore", "gory", "blood", "bloody", "bloodshed", "kill*", "murder*", "shoot*", "gun", "guns", "weapon*"}},                                                // violence
+var contentHarm = append(append([]pattern{}, contentSerious...), contentMild...)
+
+// contentSerious: harm that flags a title on one first-hand report.
+var contentSerious = []pattern{
+	{any: []string{"violen*", "gore", "gory", "gruesome", "blood", "bloody", "bloodshed", "kill*", "murder*", "shoot*", "gun", "guns", "weapon*"}},                                    // violence and gore
 	{any: []string{"sexual*", "sex", "sexy", "nude", "nudity", "naked", "porn*", "erotic*", "explicit", "condo", "adult content", "adult themes", "mature content", "mature themes"}}, // sexual content
 	{any: []string{"self harm", "selfharm", "suicid*", "eating disorder*"}},                                                                                                           // self-harm
 	{any: []string{"predator*", "preds", "groom*", "pedophil*", "paedophil*", "child abuse", "sextortion", "exploitation"}},                                                           // predators and grooming
 	{any: []string{"gambl*", "casino*", "slot machine*", "betting", "wager*"}},                                                                                                        // gambling
 	{any: []string{"drug*", "alcohol*", "cannabis", "marijuana", "vaping"}},                                                                                                           // drugs
-	{any: []string{"scary", "frighten*", "terrif*", "horror", "creepy", "disturbing", "nightmare*", "jump scare*", "gruesome", "traumat*", "devil", "demon*"}},                        // frightening material
 	{any: []string{"harass*", "bully*", "bullies", "bullying", "hate speech", "racist", "racism"}},                                                                                    // harassment
 }
+
+// contentMild: brief frightening or scary imagery, mild cartoon peril, crude
+// humour. One such report, from one source, does not flag a title whose store
+// rating already suits the child (content.single_mild_report); two do.
+var contentMild = []pattern{
+	{any: []string{"scary", "frighten*", "terrif*", "horror", "creepy", "disturbing", "nightmare*", "jump scare*", "traumat*", "devil", "demon*"}}, // frightening imagery
+	{any: contentMildPhrases}, // mild peril
+	{any: []string{"crude", "crude humor", "crude humour", "potty humor", "potty humour", "toilet humor", "toilet humour"}}, // crude humour
+}
+
+// contentMildPhrases name violence in the mild register ("cartoon violence").
+// They count as mild harm, and their words are set aside before the serious
+// vocabulary is read, so "mild cartoon violence" is not serious violence.
+var contentMildPhrases = []string{"mild violence", "cartoon violence", "fantasy violence", "cartoon peril", "mild peril", "mild cartoon*", "infrequent mild"}
 
 // contentBenign: a non-store quote saying the material suits children. Used
 // only with a store rating at or below the child's age, as the second witness
@@ -200,10 +232,10 @@ var developerClean = []pattern{
 // friend requests).
 var contactChannel = []string{
 	"messag*", "chat", "chats", "chatting", "chatted", "dm", "dms", "voice chat", "talk", "talks", "talking", // messaging and chat
-	"contact", "contacted", "contacts", "communicat*", "friend request*", "text", "texted", "texting", // other ways in
-	"speak*", "whisper*", "interact*",
+	"contact", "contacted", "contacts", "communicat*", "friend request*", "text message*", "texted", "texting", // other ways in
+	"speak*", "whisper*", "interact with",
 	"ask", "asks", "asked", "asking", "request*", "approach*", "reach", "reached", "reaches", "reaching", // a stranger approaching a child
-	"invite*", "added", "follow*", "phone number", "number",
+	"invite*", "phone number",
 }
 
 // contactStranger: a reference to people the child does not know.

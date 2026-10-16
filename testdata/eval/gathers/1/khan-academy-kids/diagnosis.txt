@@ -1,4 +1,4 @@
-diagnose Khan Academy Kids age 5 verdict no findings 146 (conflict pass replaced the conflicted areas (an area the checks then made unknown may fall back to its first-pass grade))
+diagnose Khan Academy Kids age 5 verdict unclear findings 146 (conflict pass replaced the conflicted areas (an area the checks then made unknown may fall back to its first-pass grade))
   contact  risks 7 mitigations 1 other 5
     judge flag setting "" cited 2 [f_e54d9aeff8acb9f4 f_60d4826ad9d69d44]
     card unknown setting ""
@@ -33,12 +33,13 @@ diagnose Khan Academy Kids age 5 verdict no findings 146 (conflict pass replaced
     quote f_44b2975820f1807f neutral store: Packed with fun, standards-aligned reading games, math games, phonics lessons, and interactive storybooks, the app has helped over 21 million preschool and elementary students learn at home, at school, and on the go. Join Kodi the Bear and friends on exciting educational adventures that spark curiosity, build confidence, and inspire a lifelong love of learning.
   content  risks 19 mitigations 3 other 38
     judge flag setting "" cited 1 [f_0fcffd8da2e19a5b]
-    card flag setting ""
-    gate content.flag_confirmed flag -> flag findings [f_0fcffd8da2e19a5b]
+    card ok setting ""
+    gate content.single_mild_report flag -> ok findings [f_e2528faff963297a f_94dbe3a0b9b9ea4d]
     check stood
     entail meets_definition=true reason_supported=true
-    reason A review reports a grid of scary devil faces and men tied up with mouths taped shut appeared for about 15 seconds while a child worked on math.
-    quote f_0fcffd8da2e19a5b risk review: A grid of scary devil faces and men tied up with their mouth taped shut popped up for about 15 seconds while my kid was working on math. Very disturbing and disappointing since this is such a widely advertised app for homeschooling
+    reason Only one source reports mild frightening or crude material, and the App Store rates this app 4+, at or below the child's age.
+    quote f_e2528faff963297a neutral store: Age rating: 4+
+    quote f_94dbe3a0b9b9ea4d neutral review: I am currently in 5th grade, and my 2 year old sister does love to play it almost all the time! Though I am 11 years old, I still wanted to try it to see how fun it could get for my sister. It was pretty fun, but I know it ment for kids. I recommend nothing to change because the content is appropriate, and fun for a learning environment. Me and my sister really enjoyed playing, thank you Khan Academy Kids
   developer_record  risks 0 mitigations 1 other 10
     judge ok setting "" cited 0 []
     card unknown setting ""

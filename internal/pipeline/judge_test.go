@@ -556,10 +556,12 @@ func TestRecordedRepliesGradesRestOnVerifiedQuotes(t *testing.T) {
 		// developer's own words; contact, age_gating and content are thin or
 		// unknown. The rule gate raises data to ok: the listing's privacy
 		// label says "Data Not Linked to You" and no quote reports selling,
-		// ad tracking or a breach (data.label_not_linked). Contact unknown
-		// keeps the verdict unclear. (Before the gate: data was thin, so
-		// four areas were unknown.)
-		{demos[2], 5, checklist.Unclear, L(unk, ok, ok, unk, unk, unk), []checklist.Area{"contact", "age_gating", "content"}},
+		// ad tracking or a breach (data.label_not_linked), and contact to ok
+		// on the listing's Kids category line with no contact report
+		// (contact.kids_category_no_contact_report). Content unknown keeps
+		// the verdict unclear. (Before the gate: data and contact were thin,
+		// so four areas were unknown.)
+		{demos[2], 5, checklist.Unclear, L(ok, ok, ok, unk, unk, unk), []checklist.Area{"age_gating", "content"}},
 	}
 	tokenFactory := func(on bool) map[string]any {
 		return map[string]any{"chat_template_kwargs": map[string]any{"enable_thinking": on}}

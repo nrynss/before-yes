@@ -184,7 +184,7 @@ func TestStandinBaselinePinned(t *testing.T) {
 	want := map[string][4]int{ // agreed/6, decisive found/total, chunks
 		"Roblox":            {3, 3, 6, 36},
 		"Minecraft":         {1, 2, 5, 45},
-		"Khan Academy Kids": {4, 1, 5, 13},
+		"Khan Academy Kids": {4, 2, 5, 13},
 	}
 	agreed, found, total := 0, 0, 0
 	for _, r := range rs {
@@ -198,8 +198,8 @@ func TestStandinBaselinePinned(t *testing.T) {
 		}
 		agreed, found, total = agreed+r.Agreed, found+r.DecisiveHit, total+r.DecisiveAll
 	}
-	if agreed != 8 || found != 6 || total != 16 {
-		t.Errorf("total grades %d/18, quotes %d/%d; pinned 8/18, 6/16", agreed, found, total)
+	if agreed != 8 || found != 7 || total != 16 {
+		t.Errorf("total grades %d/18, quotes %d/%d; pinned 8/18, 7/16", agreed, found, total)
 	}
 }
 
@@ -315,8 +315,12 @@ func TestGatherFlagsRequireTheirOwnDefinition(t *testing.T) {
 		verdict checklist.Verdict
 	}{
 		// Re-recorded: the verdict was unclear (content unknown); now money
-		// is an earned flag in gather 1, so the verdict is no.
-		{1, "minecraft", checklist.Data, checklist.Unknown, checklist.No},
+		// is an earned flag in gather 1, so the verdict is no. The rule gate
+		// then caps that money flag at a setting, because a guide that names
+		// Minecraft says every Marketplace purchase needs the parent's
+		// approval (money.flag_capped_by_control), so contact unknown makes
+		// the verdict unclear again.
+		{1, "minecraft", checklist.Data, checklist.Unknown, checklist.Unclear},
 		{2, "khan-academy-kids", checklist.AgeGating, checklist.Unknown, checklist.Unclear},
 		{1, "roblox", checklist.AgeGating, checklist.Flag, checklist.No},
 		{2, "roblox", checklist.AgeGating, checklist.Flag, checklist.No},
