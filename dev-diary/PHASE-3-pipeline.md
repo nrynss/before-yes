@@ -962,8 +962,10 @@ requires:   T3.12
 fixture-ok: no (captures and recorded replies, then one live run)
 size:       M · frontier
 owns:       internal/pipeline/alternatives.go, internal/pipeline/alternatives_test.go, internal/pipeline/pipeline.go (alternatives wiring and genre propagation only), internal/appstore/ (genre only), testdata/alternatives/
-status:     claimed:gpt-6.1-sol
+status:     superseded
 ```
+**Superseded.** The user closed the task list before this landed. The rescoped implementation (Nano names products from the list pages, the App Store confirms them) is in draft PR #36, unmerged; its live clause was never met. `main` keeps T3.12's rule-based alternatives. The genre fix and App Store facts reached `main` by other work.
+
 T3.12's live run: Roblox (9) read **no**, and its three candidates were Roblox experiences, so none beat the "no". Tavily finds the right pages (Common Sense Media's "Games Like Minecraft", with its whole text), but the rule-based name parser (T3.12) finds few names and needed three review rounds to keep junk out. The user decided: a "no" on a platform suggests other products, not experiences on the same platform; Tavily keeps finding the pages, Nemotron reads them, and the App Store confirms each name is a real product before any paid check.
 
 This task was first scoped as "alternatives outside the platform" with a rule-based fix; the user stood that version down and rescoped it to this one. Its branch `task-t3.13-outside-platform` holds the genre work, which can be reused.

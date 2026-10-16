@@ -12,7 +12,7 @@ Where a phase document and the brief conflict, the brief wins. Record the discre
 
 Each phase document gives an engineer starting cold the complete context for its tasks.
 
-**Current status:** P0, P1, P2, P4 and P5 are done. P3 has 15 of 17 tasks done: T3.11 calibrated the judge against two live gathers per demo title and closed after round 5 APPROVE with zero residue. Roblox reads **no** on both gathers; Minecraft and Khan Academy Kids differ between gathers for documented evidence reasons. T3.13 (alternatives outside the platform) and T3.14 (reasons a parent can read) are ready. An earlier backend draft sits in `scratch/` at the repository root, uncommitted and unreviewed. Tasks marked `drafted` have code to start from, not completed work. See [Starting from the scratch draft](#starting-from-the-scratch-draft).
+**Current status:** P0 to P5 are done; P6 (ship) waits for the user. The task list is closed: the user stopped filing tasks and running review loops after P5, and judge work since then has landed as direct fixes (handoff log). The pipeline now has a deterministic rule gate over the judge's grades, App Store facts as evidence, and the judge is moving to Nemotron-3-Ultra. Roblox reads **no** on every set; Minecraft and Khan Academy Kids do not yet reach their expected verdicts (yes with settings, yes), and the user is tuning toward them. An earlier backend draft sits in `scratch/` at the repository root, uncommitted and unreviewed.
 
 ---
 
@@ -122,7 +122,7 @@ status:     not-started
 - **fixture-ok:** Whether the task can be built and tested against `testdata/` alone.
 - **size:** Scope from XS to XL, then the class to send.
 - **owns:** The paths this task alone edits.
-- **status:** `not-started`, `drafted`, `claimed:<id>`, `in-review`, `done`, or `blocked`.
+- **status:** `not-started`, `drafted`, `claimed:<id>`, `in-review`, `done`, `blocked`, or `superseded` (the user replaced the task's plan; the task says by what).
 
 | Class | Send it for |
 |---|---|
@@ -180,8 +180,8 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 |---|---|---|
 | P0 | 9 / 9 | Done. All exit criteria met: the Token Factory balance ($29.00) is recorded, Nano completions and `config` resolving every secret are proven. CI is green. |
 | P1 | 4 / 4 | Done. All exit criteria met; the `job.Failure` criterion was proven by T4.1. |
-| P2 | 12 / 12 | Done. All six exit criteria are met. T3.11 remeasured fixture model cost at $0.042598 per check; six live gathers used 7–8 Tavily credits each. |
-| P3 | 16 / 17 | T3.11 and T3.14 are done. T3.13 is rescoped: Tavily finds list pages, Nano names the products with verbatim lines, the App Store confirms them before any check, and the genre is filled in. All exit criteria are ticked. |
+| P2 | 12 / 12 | Done. All six exit criteria are met. Per-check cost is re-measured in `docs/budget.md` after each judge change; six live gathers used 7–8 Tavily credits each, plus 1 for the App Store listing extract. |
+| P3 | 16 / 17 | Done apart from T3.13, superseded (its Nano-read alternatives sit unmerged in draft PR #36). All exit criteria are ticked. Later judge work landed as direct fixes: the citation and fallback fixes, App Store facts, the rule gate and its policy rules, and the switch to Ultra (handoff log). |
 | P4 | 7 / 7 | Done. `serve` runs the whole server, run end to end live. Progress now shows during a check, and a page opened late catches up from `GET /api/checks/{id}` (T4.7). |
 | P5 | 9 / 9 | Done. Every page is built and wired, and its text was rewritten with the user (T5.9); the rules are in `docs/voice.md`. |
 | P6 | 0 / 6 | Not started. |
@@ -192,6 +192,13 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 
 Newest first. One entry per closed task, finding, or split.
 
+- **Process change, by the user:** no more tasks and no more review loops. Work goes to a single agent; the orchestrator validates it (the diff, the gate on main, offline replays, live pins where they matter) and lands it, or sends the same agent back. `AGENTS.md` and `ORCHESTRATOR.md` now say so; the review files under `adversarial-review/` are the record of the earlier phases.
+- **Judge model trials, then Ultra.** Judge-only trials on live gather 1, with the reader replayed so every judge saw the same evidence:
+  - Nemotron-3.5-Lightning: 9 of 18 area grades as expected; its conflict pass failed on all three titles; about $0.026 for three titles.
+  - Nemotron-3.5-Super-VL: 11 of 18; softer Roblox grades (data and money ok with a setting against a policy that resells data); two conflict passes hit the token cap empty.
+  - Nemotron-3-Ultra (Khan and Minecraft only, under the cap): Khan Academy Kids reads **yes** with all six areas as expected, the first judge to get there without a rule override; Minecraft unclear (its conflict pass hit the 16,000-token cap). About $0.098 judge cost per check, about $0.114 with the reader, at an assumed $1 / $3 per million tokens.
+  - The user chose Ultra as the judge: about 175 checks under the $20 ceiling is enough. The conflict pass is fixed through its prompt (end with the JSON, nothing after it), not by restricting tokens; Ultra has a 1M-token context.
+- **Rule gate and its policy rules landed.** A deterministic gate runs after every model step and before `checklist.Decide`, with no model call: it vetoes, caps, confirms or raises a grade from verified evidence (App Store facts, source kind, word lists over verified quotes), and every action is on the card under "Rule checks". The user then added three policy rules: a Kids-category listing with no contact report settles contact ok; a single mild content report in an age-rated title does not flag (one serious report still does); a control quote counts by its text whatever the reader's stance label, unless a failure is reported. Checklist version v7 → v8. Effects on the recordings: Khan gather 1 no → unclear, Minecraft gather 1 no → unclear (money capped by "require approval for purchases"), Roblox unchanged. Known soft spots, from the agent: rule B's supporting quote can be weak; rule C could misread a negation its lists miss.
 - **Judge and evidence fixes landed, outside the task list.** The user stopped filing tasks and running review loops: single agents fix, the orchestrator validates and lands.
   - **Why:** a production Roblox check came back with all six areas unknown and no citations. A Haiku diagnosis found no wiring gap (server and eval send identical requests) but two flaws in `judge.go`: `checkCitations` voided a whole grade at the first bad id while the judge cites 17 to 30 ids per area live, and a conflict-pass grade voided by the checks replaced a valid first-pass grade.
   - **What landed:** bad citations are removed one by one and a grade stands while one verified, in-area, fitting citation remains; a voided conflict-pass grade falls back to the first-pass grade after the same checks (Haiku). App Store facts become verified findings (age rating, advisories, the price line, the privacy label), from one metered extract of the listing per gather; pages naming only a shorter same-seller sibling ("Khan Academy" for "Khan Academy Kids") are dropped as off-product; the data definition says sharing with service providers is not a flag (Sonnet). The eval's replay-miss counter never reported misses (an unnamed result swallowed the deferred error); fixed and pinned. All nine eval sets were re-recorded live and replay with 0 misses; no entailment call failed.

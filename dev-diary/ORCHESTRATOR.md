@@ -2,6 +2,8 @@
 
 How the orchestrator runs the agentic loop in this repository. Workers read [`../AGENTS.md`](../AGENTS.md). The task rules are in [`README.md`](README.md). This file covers what only the orchestrator does.
 
+**Current process (user decision, after P5):** no new tasks and no review loops. The orchestrator gives each piece of work to a single agent, validates it itself (diff, the gate on `main`, offline replays, live pins where they matter), and lands it or sends the same agent back. The four-role loop below is how P0 to P5 were run; it is kept as the record, not the current rule.
+
 The orchestrator is the one session the user talks to. It picks tasks, dispatches agents, lands their work, and keeps the board true. It does not write product code and it does not judge its own dispatches.
 
 ---

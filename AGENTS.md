@@ -61,19 +61,16 @@ Read these in the dev-diary README. Do not copy them.
 
 - No dates or timelines anywhere in it.
 - Work is ordered by task dependencies only.
-- An implementer sets its task to `in-review`, never `done`. The orchestrator sets `done` after an APPROVE.
+- The orchestrator decides when work is done and lands it.
 - Only the orchestrator edits `dev-diary/README.md`, which holds the status board and the handoff log. Put your handoff text in your report.
 - Anything a service or library does that surprises you goes in [`dev-diary/feedback.md`](dev-diary/feedback.md), when you hit it.
 
 ## Review
 
-Four roles are kept separate: orchestrator, implementation, review, remediation. There is a fresh agent per role per round, and a reviewer never implemented or remediated the task. See [ORCHESTRATOR.md](dev-diary/ORCHESTRATOR.md#four-roles-kept-separate).
+The four-role review loop (implementation, fresh reviewer, remediation, fresh reviewer again) ran through P5; its records are in `dev-diary/adversarial-review/`. The user has since retired it. Now:
 
-A reviewer:
+- One agent does a piece of work on its own branch in its own worktree, and reports.
+- The orchestrator validates it before landing: reads the diff, runs `./tools/check.sh` on `main` after the merge (where gitignored `scratch/` and `.env` exist), replays the eval offline, and runs live pins when they matter.
+- If something is wrong, the orchestrator sends the same agent back.
 
-1. Reads the diff against the task and the brief.
-2. Runs every pin itself, in a checkout of the branch **and** against the main checkout's tree, where gitignored `scratch/` and `.env` exist.
-3. Records findings in `dev-diary/adversarial-review/<task-id>-round<N>.md`: the verdict `APPROVE` or `REMEDIATE`, the counts per severity, and one row per finding with its pin.
-4. Fixes nothing.
-
-A pin is a measurement taken outside the code under review: query the file, send the request, grep the output. Program output reporting its own success is not a pin. Remediation rounds repeat until a fresh reviewer returns `APPROVE` with zero residue against every earlier round.
+A pin is still a measurement taken outside the code under review: query the file, send the request, grep the output. Program output reporting its own success is not a pin.
