@@ -182,8 +182,8 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 | P1 | 4 / 4 | Done. All exit criteria met; the `job.Failure` criterion was proven by T4.1. |
 | P2 | 12 / 12 | Done. All six exit criteria are met. Per-check cost is re-measured in `docs/budget.md` after each judge change; six live gathers used 7–8 Tavily credits each, plus 1 for the App Store listing extract. |
 | P3 | 16 / 17 | Closed. T3.13 superseded (draft PR #36 closed unmerged). All exit criteria are ticked. The work after the task list (the Ultra judge, the rule gate, App Store facts, the controls search) is summarised under "Closed" in the phase file. |
-| P4 | 7 / 7 | Done. `serve` runs the whole server, run end to end live. Progress now shows during a check, and a page opened late catches up from `GET /api/checks/{id}` (T4.7). |
-| P5 | 9 / 9 | Done. Every page is built and wired, and its text was rewritten with the user (T5.9); the rules are in `docs/voice.md`. |
+| P4 | 7 / 7 | Closed. `serve` runs the whole server, run end to end live; progress shows during a check and a late page catches up (T4.7). The live visitor-key check moves to P6. |
+| P5 | 9 / 9 | Closed. Every page is built and wired, and its text was rewritten with the user (T5.9); the rules are in `docs/voice.md`. |
 | P6 | 0 / 6 | Not started. |
 
 ---
@@ -192,6 +192,8 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 
 Newest first. One entry per closed task, finding, or split.
 
+- **P4 and P5 closed.** Both phase files end with a "Closed" section. P4's live visitor-key check and the replacement of the server's stored cards move to P6. P5 notes the two card details added after its task list: the "Help page" source label and information-only rule checks.
+- **Diagnose short-id mapping, landed.** The eval's diagnose output now maps the judge's short ids back to finding ids the way the pipeline does (`pipeline.ShortCitationIDs`, `MapShortCitation`), so the false "not a verified finding" lines are gone; one real out-of-area citation they had hidden now shows. Offline only. The tracked diagnosis files under `testdata/` were written by earlier live runs and do not match a replay, so they were left as they are.
 - **P3 closed.** 16 of 17 tasks done, T3.13 superseded, every exit criterion ticked; the phase file ends with a "Closed" section describing the pipeline as it now stands. Its T3.13 note was corrected: draft PR #36 was closed unmerged and the old T3.13 branch is gone.
 - **One-setting judge prompt, tried and dropped.** The first and conflict passes were told to name one control from one quote as the setting, to stop bundled settings failing grounding. Re-recorded on all nine sets ($0.88): Khan reached **yes** on gather 1, but Minecraft read unclear on all three gathers, losing the recordings set, each gather failing contact at a different check (entailment, the rule gate, grounding). Same 6 of 9 as `main`, and worse on the demo set, so the branch was deleted. The user stopped further live runs. Kept from it: the eval's diagnose output checks the reply's short ids without mapping them back, so it prints false "not a verified finding" lines; that fix is offline.
 - **Parental-controls search, landed.** Contact and content stayed unknown for Minecraft because no gathered page said how to limit chat or content. The plan (plan-6) adds one search, "<title> parental controls turn off chat multiplayer content settings how to", with no domain restriction, as a new source kind `help` (card label "Help page"); about 9 Tavily credits per check. It found the Roblox and Minecraft help pages (Xbox privacy "Block" and "Friends only", "Ask to Buy", Roblox chat consent and "No one") and Khan Kids' Zendesk page; the sibling-app filter dropped the Khan Academy pages.

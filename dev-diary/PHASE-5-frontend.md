@@ -188,3 +188,7 @@ The interface text reads as machine-written: taglines and paired slogans ("A lit
 - [x] The side-by-side renders on desktop and phone. (`compare.spec.ts`: 360, 899, 900 and 1440 px)
 - [x] Both themes pass Chaaya's contrast and accessibility gates. (every page's spec runs the gate in light and dark)
 - [x] No third-party logo or artwork anywhere in the UI. (no image, SVG or logo in `web/src`, and no `static/` folder)
+
+## Closed
+
+P5 is closed: 9 of 9 tasks done, every exit criterion ticked. Every page is built and wired, and its text was rewritten with the user (T5.9; the rules are in `docs/voice.md`). After the task list the card gained two source and gate details from pipeline work: the "Help page" source label and information-only rule checks (`gate[].kind` "info"), both covered by `card.spec.ts` and the accessibility gates.

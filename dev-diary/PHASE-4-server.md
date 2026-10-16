@@ -277,3 +277,7 @@ Two existing progress specs ("exact fixture…" and "reconnect rereads…") now 
 - [x] The paid route is gated, passcode-capable, and can be switched off without a redeploy. (T4.3, a Keel flag; wired into `serve` by T4.4)
 - [x] Visitor keys work and leave no trace on disk or in logs. (T4.5, with fake keys; a live visitor-key check waits for the P6 end-to-end run)
 - [x] Every Keel gap found is written up as issue text in the handoff log. (Three, in the T4.4/T4.6 entry; `cost/sqlitestore` is filed as nrynss/keel#100)
+
+## Closed
+
+P4 is closed: 7 of 7 tasks done, every exit criterion ticked. `serve` runs the whole server and was run end to end live. Two clauses are carried into P6, where they belong: the live visitor-key check waits for the P6 end-to-end run, and the server's stored cards are replaced with the current pipeline's cards before the demo (handoff log).
