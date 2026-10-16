@@ -88,14 +88,28 @@ var moneyRisk = []pattern{
 	{any: []string{"premium", "paywall*", "dollars"}},    // premium tiers and prices
 }
 
-// moneyControls: a cited mitigation names a working way to stop a child
-// completing a purchase. Label is the setting the card shows.
+// moneyControls: a quote that names a working way to stop a child completing
+// a purchase — rule D's purchase controls, read from the text like rule C's.
+// Label is the setting the card shows. The list order matters: the first
+// entry whose pattern matches names the control and its quotes.
 var moneyControls = []control{
 	{"Ask to Buy (purchase approval)", pattern{any: []string{"ask to buy"}}}, // Apple's purchase approval
+	{"Ask a parent to approve purchases", pattern{all: [][]string{ // "ask a parent to buy things", Microsoft Family Safety's purchase switch
+		{"ask*", "need*"},
+		{"parent*", "guardian*", "adult*", "family*"},
+		{"buy", "buys", "buying", "bought", "purchas*", "spend*", "payment*", "money"},
+	}}},
 	{"Require approval for purchases", pattern{all: [][]string{ // approval, passcode or password to buy
 		{"approv*", "permission", "passcode", "password", "pin"},
 		{"purchas*", "buy", "buying", "spend*", "payment*"},
 		{"parent*", "guardian*", "you", "your", "adult*", "family", "child*", "kid*"}, // approval by a parent, not by the platform
+	}}},
+	{"Microsoft Family Safety purchase controls", pattern{all: [][]string{ // Microsoft's family settings over a child's buying
+		{"family safety"},
+		{"purchas*", "spend*", "buy", "buying", "payment*"},
+	}}},
+	{"Purchase approval", pattern{any: []string{ // the control named outright
+		"purchase approval*", "purchase control*", "approv* purchas*",
 	}}},
 	{"Set a spending limit", pattern{any: []string{ // a cap on spending
 		"spending limit*", "spend limit*", "purchase limit*", "monthly limit*", "spending cap*", "spending control*",
@@ -224,6 +238,29 @@ var developerClean = []pattern{
 		"has not been fined", "hasnt been fined", "never been fined", "no fines", "no known fines",
 		"no lawsuits", "no regulatory action*", "no enforcement action*", "clean record",
 	}},
+}
+
+// platformSellers: the companies whose stores and platforms carry thousands
+// of titles. A fine, settlement, lawsuit or regulator action that names one
+// of them, and not the title, is about their platform or another product —
+// Microsoft's Xbox fine on a Minecraft check — so it is information, not
+// evidence (rule E). The store's own seller field names the developer's
+// trading company; these are the sellers a store listing does not give.
+var platformSellers = []struct{ display, term string }{
+	{"Microsoft", "microsoft"},
+	{"Xbox", "xbox"},
+	{"Google", "google"},
+	{"Google Play", "google play"},
+	{"Play Store", "play store"},
+	{"Apple", "apple"},
+	{"App Store", "app store"},
+	{"Sony", "sony"},
+	{"PlayStation", "playstation"},
+	{"Nintendo", "nintendo"},
+	{"Amazon", "amazon"},
+	{"Meta", "meta"},
+	{"Epic Games", "epic games"},
+	{"TikTok", "tiktok"},
 }
 
 // ---------------------------------------------------------------- contact

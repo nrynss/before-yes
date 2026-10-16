@@ -47,7 +47,11 @@ for (const { name, card } of fixtures) for (const mode of ['light', 'dark']) for
   }
   if (card.gate?.length) {
    const items = value('Rule checks').locator('li'); await expect(items).toHaveCount(card.gate.length);
-   for (const [i, action] of card.gate.entries()) { await expect(items.nth(i)).toContainText('Checked by rule:'); await expect(items.nth(i)).toContainText(areas.find(a => a[0] === action.area)![1]); await expect(items.nth(i)).toContainText(action.note.charAt(0).toLowerCase() + action.note.slice(1)); }
+   for (const [i, action] of card.gate.entries()) {
+    await expect(items.nth(i)).toContainText(areas.find(a => a[0] === action.area)![1]);
+    if (action.kind === 'info') { await expect(items.nth(i)).toContainText(action.note); await expect(items.nth(i)).not.toContainText('Checked by rule:'); }
+    else { await expect(items.nth(i)).toContainText('Checked by rule:'); await expect(items.nth(i)).toContainText(action.note.charAt(0).toLowerCase() + action.note.slice(1)); }
+   }
   } else await expect(page.locator('dl dt', { hasText: /^Rule checks$/ })).toHaveCount(0);
   const h1size = await page.locator('h1').evaluate(el => parseFloat(getComputedStyle(el).fontSize)); expect(h1size).toBeGreaterThanOrEqual(44); expect(h1size).toBeLessThanOrEqual(64);
   await fit(page); await accessibility(page); expect(errors).toEqual([]); await page.screenshot({path:`/tmp/card-${name}-${mode}-${width}.png`,fullPage:true});
@@ -75,6 +79,18 @@ test('rule checks say what the code changed, in plain words', async ({page}) => 
  await expect(items.nth(2)).toContainText('Changed from Concern to Needs a setting change. Checked by rule: a source names a control');
  await expect(page.locator('[data-area="data"] .grade')).toHaveText(levels[data.level]);
 });
+test('an information rule check shows the fact as plain information, with no change wording', async ({page}) => {
+ const card = structuredClone(no); const news = card.findings.find(f => ['news', 'article'].includes(f.source.kind))!;
+ card.gate = [{ area: news.area, rule: 'information.regulator_action_other_product', kind: 'info', from: 'flag', to: 'flag', findings: [news.id], note: 'Microsoft will pay a fine of $20 million to settle Federal Trade Commission charges — a different product, so this is shown as information and is not evidence about Minecraft.' }];
+ await open(page, card);
+ const item = page.locator('dl > div').filter({has: page.locator('dt', {hasText: /^Rule checks$/})}).locator('li');
+ await expect(item).toHaveCount(1);
+ await expect(item).toContainText(areas.find(([id]) => id === news.area)![1]);
+ await expect(item).toContainText('a different product, so this is shown as information');
+ await expect(item).not.toContainText('Checked by rule:');
+ await expect(item).not.toContainText('Stays');
+ await expect(item).not.toContainText('Changed from');
+});
 test('a card without rule checks, or with a null list, still opens; a rule check citing a missing finding fails closed', async ({page}) => {
  const old = structuredClone(yes); delete old.gate; await open(page, old); await expect(page.locator('dl dt', { hasText: /^Rule checks$/ })).toHaveCount(0);
  const nul = structuredClone(yes) as unknown as Record<string, unknown>; nul.gate = null; await page.route(`**/api/cards/${yes.id}`, route => route.fulfill({json: nul})); await page.goto(`/card/${yes.id}`); await expect(page.locator('h1')).toHaveText(verdicts[yes.verdict]);
@@ -89,8 +105,8 @@ for (const failure of ['404', 'network', 'malformed']) test(`${failure} loads sa
  let first = true; await page.route(`**/api/cards/${no.id}`, async route => { if (!first) return route.fulfill({json:no}); first = false; if (failure === 'network') return route.abort(); if (failure === '404') return route.fulfill({status:404,json:{error:{code:'not_found',message:'PRIVATE SERVER MESSAGE'}}}); return route.fulfill({json:{id:no.id}}); });
  await page.goto(`/card/${no.id}`); await expect(page.locator('h1')).toHaveText(failure === '404' ? 'Sorry, we couldn’t find this check.' : 'The card couldn’t be opened.'); if (failure === '404') await expect(page.getByRole('alert')).toHaveText('Check the link or return home to start again.'); await expect(page.locator('body')).not.toContainText('PRIVATE SERVER MESSAGE'); await page.getByRole('button', {name:'Try again'}).click(); await expect(page.locator('h1')).toHaveText('No');
 });
-for (const mutation of ['unsafe source', 'missing finding', 'wrong area', 'bad id', 'route mismatch']) test(`fails closed on ${mutation}`, async ({page}) => {
- const card = structuredClone(no); if (mutation === 'unsafe source') card.findings[0].source.url = 'javascript:alert(1)'; if (mutation === 'missing finding') card.findings.shift(); if (mutation === 'wrong area') card.findings[0].area = 'money'; if (mutation === 'bad id') card.id = 'abcdef1234'; if (mutation === 'route mismatch') card.id = yes.id;
+for (const mutation of ['unsafe source', 'missing finding', 'wrong area', 'bad id', 'route mismatch', 'bad rule kind']) test(`fails closed on ${mutation}`, async ({page}) => {
+ const card = structuredClone(no); if (mutation === 'unsafe source') card.findings[0].source.url = 'javascript:alert(1)'; if (mutation === 'missing finding') card.findings.shift(); if (mutation === 'wrong area') card.findings[0].area = 'money'; if (mutation === 'bad id') card.id = 'abcdef1234'; if (mutation === 'route mismatch') card.id = yes.id; if (mutation === 'bad rule kind') (card.gate![0] as unknown as Record<string, unknown>).kind = 'changes';
  await page.route(`**/api/cards/${no.id}`, route => route.fulfill({json:card})); await page.goto(`/card/${no.id}`); await expect(page.locator('h1')).toHaveText('The card couldn’t be opened.'); await expect(page.locator('figure')).toHaveCount(0);
 });
 test('unsafe route id requests nothing and XSS quote is plain exact text', async ({page}) => {

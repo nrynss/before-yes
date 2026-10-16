@@ -17,8 +17,11 @@ import (
 // an area's wording or a rule in Decide or Enforce changes, because cached
 // cards record the version they were judged under. v8: the pipeline's rule
 // gate (internal/pipeline/rulegate.go) now settles the grades before Decide,
-// so a card judged under v7 can differ from one judged now.
-const Version = "v8"
+// so a card judged under v7 can differ from one judged now. v9: the gate caps
+// a money flag on a named purchase control even when other quotes complain
+// about spending, scams or billing (rule D), and treats a regulator action
+// about another product as information, not evidence (rule E).
+const Version = "v9"
 
 // Area is one checklist area id. The ids are stable wire values.
 type Area string

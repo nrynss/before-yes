@@ -307,6 +307,25 @@ func build(t *testing.T, cs cardSpec) (Card, Evidence) {
 	if !reflect.DeepEqual(gated, grades) {
 		t.Fatalf("%s: the rule gate changes the example grades: %+v", cs.file, acts)
 	}
+	if cs.file == "card-settings.json" {
+		// The uncited news finding above is rule E's story: the gate reads a
+		// regulator action about Apple or Google as information. Build the
+		// action the way the gate writes it, so the card shows the kind.
+		gate := newGate(cs.age, cs.title, names, fs)
+		level := checklist.Unknown
+		for _, gr := range grades {
+			if gr.Area == checklist.DeveloperRecord {
+				level = gr.Level
+			}
+		}
+		for _, f := range fs {
+			if f.Area == checklist.DeveloperRecord && f.Source.Kind == KindNews {
+				if name, other := gate.otherProduct(f); other {
+					acts = append(acts, gate.infoAction(f, level, name))
+				}
+			}
+		}
+	}
 	verdict, err := checklist.Decide(grades)
 	if err != nil {
 		t.Fatal(err)
@@ -450,6 +469,12 @@ func cardSpecs() []cardSpec {
 				{ref: "tavily-search-rating.json|https://virtual-addiction.com/online-safety/minecraft", kind: "article", area: checklist.AgeGating, stance: finding.Mitigation,
 					claim: "On a child account, multiplayer starts off",
 					quote: "On a child account, multiplayer starts off"},
+				// Rule E's card line, for an example that shows its kind: the
+				// FTC's refunds and the Apple and Google cases are about other
+				// products, so the gate reads this quote as information.
+				{ref: "tavily-search-news.json|https://settlementinsight.com/epic-games-lawsuit", kind: "news", area: checklist.DeveloperRecord, stance: finding.Risk,
+					claim: "The FTC refunds and the Apple and Google cases are about other products",
+					quote: "FTC refunds are paid in real money, not V-Bucks. The Apple and Google cases pay no consumer anything, so a message offering you a share of an Apple or Google ruling is invented."},
 			},
 			grades: []checklist.Grade{
 				g(checklist.Contact, checklist.OKWithSetting, "Child account: multiplayer friends-only, chat hidden", "Multiplayer chat exists; family settings limit it.", "0"),
