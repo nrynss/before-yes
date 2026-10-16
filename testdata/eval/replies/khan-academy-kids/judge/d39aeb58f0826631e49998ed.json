@@ -1,0 +1,9 @@
+{
+  "text": "{\"reason_supported\":false,\"explanation\":\"The explanation contains no quoted stranger message, chat, or voice channel, and no quoted control or bypass related to contact features. The store quote describes pricing ('100% free—no ads, no subscriptions') and the help quote mentions parental controls for focusing learning, but neither addresses any communication functionality, stranger messaging, or contact-related safeguards.\"}",
+  "input_tokens": 1086,
+  "output_tokens": 82,
+  "price_nano": 1332000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

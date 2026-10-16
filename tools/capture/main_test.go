@@ -191,12 +191,13 @@ func TestRequestBodiesMatchPlan(t *testing.T) {
 		`{"query":"Roblox parents experience kids chat strangers purchases","max_results":8,"include_domains":["commonsensemedia.org","mumsnet.com","netmums.com"],"include_raw_content":true,"include_usage":true}`,
 		`{"query":"Roblox children safety fine lawsuit FTC regulator data breach","topic":"news","max_results":8,"include_raw_content":true,"include_usage":true}`,
 		`{"query":"Roblox age rating ESRB PEGI parental controls","max_results":6,"include_raw_content":true,"include_usage":true}`,
+		`{"query":"Roblox parental controls turn off chat multiplayer content settings how to","max_results":6,"include_raw_content":true,"include_usage":true}`,
 		`{"urls":["https://www.roblox.com/privacy","https://www.roblox.com/terms"],"extract_depth":"basic","format":"text","include_usage":true}`,
 	}
 	if len(f.calls) != len(want) {
 		t.Fatalf("got %d Tavily calls, want %d", len(f.calls), len(want))
 	}
-	paths := []string{"/search", "/search", "/search", "/search", "/search", "/search", "/search", "/extract"}
+	paths := []string{"/search", "/search", "/search", "/search", "/search", "/search", "/search", "/search", "/extract"}
 	for i, call := range f.calls {
 		var wantBody map[string]any
 		if err := json.Unmarshal([]byte(want[i]), &wantBody); err != nil {
@@ -230,7 +231,7 @@ func TestRequestBodiesMatchPlan(t *testing.T) {
 	for _, line := range []string{
 		"Official host used for policy and terms: roblox.com",
 		"Reviews captured: 1",
-		"Tavily credits for this title: 8",
+		"Tavily credits for this title: 9",
 		"reviews stopped at page 2: no feed.entry",
 	} {
 		if !strings.Contains(string(manifest), line) {

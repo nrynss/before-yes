@@ -1,0 +1,9 @@
+{
+  "text": "{\"reason_supported\": true, \"explanation\": \"The explanation attributes the claim to a Reddit user and summarizes their report that Minecraft contains no blood, gore, swearing, or graphic weaponry. This directly reflects the quoted Reddit statement describing the game's content as lacking those specific elements.\"}",
+  "input_tokens": 1069,
+  "output_tokens": 65,
+  "price_nano": 1264000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

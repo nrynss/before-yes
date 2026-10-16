@@ -1,8 +1,0 @@
-{
-  "text": "{\"reasons\": [{\"area\": \"money\", \"reason\": \"A review reports 'ACTUALLY FREE YOU DONT NEED TO PAY' and describes using the app for school work without payment.\"}, {\"area\": \"data\", \"reason\": \"The store listing states the app is 'COPPA-compliant' and created with education experts, though this quote does not verify actual practices.\"}, {\"area\": \"content\", \"reason\": \"A review reports that 'a grid of scary devil faces and men tied up with their mouth taped shut popped up for about 15 seconds while my kid was working on math.'\"}]}",
-  "input_tokens": 1425,
-  "output_tokens": 136,
-  "price_nano": 549900,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

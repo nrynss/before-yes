@@ -1,8 +1,0 @@
-{
-  "text": "{\"reason_supported\": true, \"explanation\": \"The news quote directly attributes a parent stating their 10-year-old daughter spent over $7,000 in two months despite purchase limits, supporting the claim that a child completed purchases without effective parental controls.\"}",
-  "input_tokens": 1224,
-  "output_tokens": 57,
-  "price_nano": 418500,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

@@ -1,8 +1,0 @@
-{
-  "text": "{\"reason_supported\": false, \"explanation\": \"The reason states 'Multiple reviews and the store listing confirm the app is completely free with no ads, subscriptions, or in-app purchases.' This includes the claim 'no in-app purchases,' which is not directly supported by any provided quote. While several sources state the app is 'free' or '100% free—no ads, no subscriptions,' none explicitly mention or confirm the absence of in-app purchases. The absence of in-app purchases is a specific claim that requires direct evidence, and no quote provides that detail. Therefore, the reason overreaches beyond what the cited sources support.\"}",
-  "input_tokens": 1283,
-  "output_tokens": 133,
-  "price_nano": 504600,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

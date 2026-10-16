@@ -1,8 +1,0 @@
-{
-  "text": "{\"reasons\": [{\"area\": \"age_gating\", \"reason\": \"Roblox allows users to enter any birthdate before September 2007 to bypass age-based restrictions.\"}]}",
-  "input_tokens": 422,
-  "output_tokens": 42,
-  "price_nano": 164400,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

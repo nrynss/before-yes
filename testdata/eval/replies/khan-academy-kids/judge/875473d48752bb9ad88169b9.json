@@ -1,9 +1,0 @@
-{
-  "text": "{\"reason_supported\":false,\"explanation\":\"The explanation cites a rating source describing the co‑founder’s background, but the Area requires a specific reported enforcement action, lawsuit, breach or other developer event. No such event is mentioned in the quote.\"}",
-  "input_tokens": 1087,
-  "output_tokens": 54,
-  "price_nano": 1249000,
-  "measured": true,
-  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
-  "finish_reason": "stop"
-}

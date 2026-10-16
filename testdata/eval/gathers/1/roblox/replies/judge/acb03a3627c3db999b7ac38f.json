@@ -1,8 +1,0 @@
-{
-  "text": "{\"reason_supported\": true, \"explanation\": \"A forum post reports that chats built into specific mini-games cannot be disabled even when chat is set to 'no one,' and users can write text on signs visible to all players regardless of age.\"}",
-  "input_tokens": 1237,
-  "output_tokens": 54,
-  "price_nano": 419700,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

@@ -1,8 +1,0 @@
-{
-  "text": "{\"reason_supported\": true, \"explanation\": \"A review states 'ACTUALLY FREE YOU DONT NEED TO PAY' and confirms personal use for school work without payment.\"}",
-  "input_tokens": 1243,
-  "output_tokens": 42,
-  "price_nano": 410700,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

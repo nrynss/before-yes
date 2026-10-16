@@ -1,8 +1,0 @@
-{
-  "text": "{\"reason_supported\": true, \"explanation\": \"Review states they opened the game, were prompted to upgrade, entered card details in the App Store, and received a $46 charge.\"}",
-  "input_tokens": 1280,
-  "output_tokens": 42,
-  "price_nano": 421800,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

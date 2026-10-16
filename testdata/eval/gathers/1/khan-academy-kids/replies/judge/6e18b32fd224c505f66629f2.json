@@ -1,0 +1,9 @@
+{
+  "text": "{\n  \"reasons\": [\n    {\n      \"area\": \"money\",\n      \"reason\": \"Reviewers report the app is completely free with no payment required, and the store listing confirms it is free.\"\n    },\n    {\n      \"area\": \"data\",\n      \"reason\": \"The store listing states that certain data may be collected but is not linked to the user's identity.\"\n    },\n    {\n      \"area\": \"age_gating\",\n      \"reason\": \"A reviewer reports that multiple child profiles can be created within the app.\"\n    },\n    {\n      \"area\": \"content\",\n      \"reason\": \"A reviewer reports that a grid of scary devil faces and men tied up with mouths taped shut appeared for about 15 seconds while their child was doing math.\"\n    },\n    {\n      \"area\": \"developer_record\",\n      \"reason\": \"A rating source reports the app holds a 5-star Common Sense Media rating, an Editor's Choice from Children's Technology Review, a Parents' Choice Gold Award, and an Apple App Store Editors' Choice pick.\"\n    }\n  ]\n}",
+  "input_tokens": 1672,
+  "output_tokens": 227,
+  "price_nano": 2353000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

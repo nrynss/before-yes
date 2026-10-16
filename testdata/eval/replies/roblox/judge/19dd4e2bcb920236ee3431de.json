@@ -1,8 +1,0 @@
-{
-  "text": "{\"reason_supported\": false, \"explanation\": \"The explanation states 'A reviewer reports their money taken and account hacked' but provides no supporting quote containing those specific phrases. While the review quote mentions financial loss ('my money taken...over 2,000 dollars'), it does not state that the money was taken due to account hacking—this causal link is introduced in the explanation without basis in any cited source.\"}",
-  "input_tokens": 1175,
-  "output_tokens": 90,
-  "price_nano": 433500,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

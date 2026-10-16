@@ -1,0 +1,9 @@
+{
+  "text": "{\"reason_supported\":false,\"explanation\":\"The explanation cites ratings and general descriptions but does not provide a concrete reported encounter with unsuitable material. The store quote 'Age rating: 9+' and the forum quote describing the ESRB E10+ rating and cartoonish violence are classification labels, not a user-reported encounter. The help quote 'It also depicts mild combat and violence' is a generic content descriptor. The review quote 'I get to destroy things and build and kill i likely' is a brief player comment about gameplay actions, not a report of encountering unsuitable material such as graphic violence, sexual content, hate speech, or other harmful content beyond the rated fantasy violence. No quote shows a specific instance where a child saw or reached unsuitable material.\"}",
+  "input_tokens": 1156,
+  "output_tokens": 155,
+  "price_nano": 1621000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

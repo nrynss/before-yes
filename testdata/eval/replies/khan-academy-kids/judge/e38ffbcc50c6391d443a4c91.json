@@ -1,0 +1,9 @@
+{
+  "text": "{\"reason_supported\":false,\"explanation\":\"The explanation cites no enforcement action, lawsuit, breach, or other developer event. The rating quote only describes a co‑founder’s background, and the help quote only states that parental controls exist. Neither source mentions any regulatory finding, legal proceeding, security incident, or similar developer record.\"}",
+  "input_tokens": 1115,
+  "output_tokens": 70,
+  "price_nano": 1325000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

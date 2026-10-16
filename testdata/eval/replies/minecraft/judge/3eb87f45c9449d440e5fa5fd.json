@@ -1,0 +1,9 @@
+{
+  "text": "{\"reason_supported\":true,\"explanation\":\"The explanation attributes the first sentence to a review quoting 'not everything is free you will have to pay for minecoins and other add ons,' which directly supports the claim that a review reports paid Minecoins and add‑ons. The second sentence attributes the requirement for parental approval to Microsoft help quoting 'enable \\u201cAsk to Buy\\u201d under \\u201cSpending.\\u201d If this is on, any in-app purchase will require your approval,' preserving the conditional nature of the control without asserting it is active or effective.\"}",
+  "input_tokens": 1156,
+  "output_tokens": 132,
+  "price_nano": 1552000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

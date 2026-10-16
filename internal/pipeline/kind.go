@@ -140,7 +140,7 @@ var ratingBoards = []string{"esrb.org", "pegi.info"}
 
 // generalKinds are the source kinds the general plan, for a title of
 // unknown kind, keeps from Plan.
-var generalKinds = []string{KindNews, KindForum, KindReddit, KindRating}
+var generalKinds = []string{KindNews, KindForum, KindReddit, KindRating, KindHelp}
 
 // noPlayStore keeps Google Play out of every search: the brief rules out
 // Play Store scraping, so an Android-only title is read through Tavily
@@ -160,10 +160,10 @@ var noPlayStore = []string{"play.google.com"}
 //     A channel has no privacy policy or terms of its own (they are
 //     YouTube's), so those are not planned, and are not missing. The rating
 //     search stays because it ran to detect the kind.
-//   - KindUnknown: the general plan, news, forums (Reddit and others) and
-//     the general rating search, with no ESRB/PEGI search and no policy or
-//     terms search (no store or official site placed it). Those kinds are
-//     not planned, so they are not missing.
+//   - KindUnknown: the general plan, news, forums (Reddit and others), the
+//     general rating search and the controls search, with no ESRB/PEGI
+//     search and no policy or terms search (no store or official site
+//     placed it). Those kinds are not planned, so they are not missing.
 func PlanFor(kind Kind, title, officialHost string) []Query {
 	base := Plan(title, officialHost)
 	switch kind {

@@ -1,9 +1,0 @@
-{
-  "text": "{\"reason_supported\":false,\"explanation\":\"The explanation contains no concrete reported encounter with unsuitable material. All provided quotes describe positive experiences — children enjoying age‑appropriate activities, songs, and stories — and a forum post listing curriculum topics. None of the sources report a child seeing or reaching inappropriate content, so the required evidence for this content‑focused assessment is absent.\"}",
-  "input_tokens": 1296,
-  "output_tokens": 77,
-  "price_nano": 1527000,
-  "measured": true,
-  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
-  "finish_reason": "stop"
-}

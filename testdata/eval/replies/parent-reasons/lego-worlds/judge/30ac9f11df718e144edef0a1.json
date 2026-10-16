@@ -1,0 +1,9 @@
+{
+  "text": "{\n  \"grades\": [\n    {\n      \"area\": \"contact\",\n      \"level\": \"ok\",\n      \"reason\": \"The comparison guide states there is no open chat with strangers.\",\n      \"setting\": \"\",\n      \"findings\": [\"F1\"]\n    },\n    {\n      \"area\": \"money\",\n      \"level\": \"unknown\",\n      \"reason\": \"No findings provided about in-app purchases or monetization practices.\",\n      \"setting\": \"\",\n      \"findings\": []\n    },\n    {\n      \"area\": \"data\",\n      \"level\": \"unknown\",\n      \"reason\": \"No findings provided about data collection, tracking, or deletion options.\",\n      \"setting\": \"\",\n      \"findings\": []\n    },\n    {\n      \"area\": \"age_gating\",\n      \"level\": \"unknown\",\n      \"reason\": \"No findings provided about whether the age gate works in practice for a 9-year-old.\",\n      \"setting\": \"\",\n      \"findings\": []\n    },\n    {\n      \"area\": \"content\",\n      \"level\": \"unknown\",\n      \"reason\": \"No findings provided about what reviewers or parents report children encountering.\",\n      \"setting\": \"\",\n      \"findings\": []\n    },\n    {\n      \"area\": \"developer_record\",\n      \"level\": \"unknown\",\n      \"reason\": \"No findings provided about enforcement actions, fines, or breaches involving the developer.\",\n      \"setting\": \"\",\n      \"findings\": []\n    }\n  ]\n}",
+  "input_tokens": 1612,
+  "output_tokens": 304,
+  "price_nano": 2524000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

@@ -1,8 +1,0 @@
-{
-  "text": "{\"reasons\": [{\"area\": \"age_gating\", \"reason\": \"A review reports the birthday field accepted Oct 7,1985, making the system calculate the user as 41 years old while the child is younger than 13.\"}]}",
-  "input_tokens": 1505,
-  "output_tokens": 58,
-  "price_nano": 503700,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

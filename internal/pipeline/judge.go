@@ -86,7 +86,8 @@ How to cite. Every verdict a parent sees rests on the quotes of the findings you
 
 Reply with one JSON object:
 {"grades": [{"area": "...", "level": "...", "reason": "one plain sentence for a parent", "setting": "...", "findings": ["id", ...]}, ...]}
-with exactly one grade per area. Leave "setting" empty unless the level is "ok_with_setting".`)
+with exactly one grade per area. Leave "setting" empty unless the level is "ok_with_setting".
+Answer with the grades object alone: do not list findings, copy quotes or write per-area analyses, and write nothing after the JSON. Name each cited id once, at most four in one grade.`)
 	return b.String()
 }
 

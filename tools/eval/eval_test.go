@@ -182,9 +182,9 @@ func TestStandinBaselinePinned(t *testing.T) {
 		t.Fatal(err)
 	}
 	want := map[string][4]int{ // agreed/6, decisive found/total, chunks
-		"Roblox":            {3, 3, 6, 36},
-		"Minecraft":         {1, 2, 5, 45},
-		"Khan Academy Kids": {4, 2, 5, 13},
+		"Roblox":            {3, 3, 6, 45},
+		"Minecraft":         {2, 2, 5, 50},
+		"Khan Academy Kids": {4, 2, 5, 14},
 	}
 	agreed, found, total := 0, 0, 0
 	for _, r := range rs {
@@ -198,8 +198,8 @@ func TestStandinBaselinePinned(t *testing.T) {
 		}
 		agreed, found, total = agreed+r.Agreed, found+r.DecisiveHit, total+r.DecisiveAll
 	}
-	if agreed != 8 || found != 7 || total != 16 {
-		t.Errorf("total grades %d/18, quotes %d/%d; pinned 8/18, 7/16", agreed, found, total)
+	if agreed != 9 || found != 7 || total != 16 {
+		t.Errorf("total grades %d/18, quotes %d/%d; pinned 9/18, 7/16", agreed, found, total)
 	}
 }
 
@@ -225,13 +225,13 @@ func mustEval(t *testing.T, models string) []Result {
 	return rs
 }
 
-// Gather 2 must not keep an unearned setting, and a standing reason must
-// not be an ads sentence. Minecraft age gating, where a child account does
-// not stop a child who gets past the age check, does not stand. Roblox
-// data stands on the image-retention quote; its reason is the area
-// definition and does not say ads. Content stays a flag. The judge's
-// purchase-control citations let the gate cap money to a setting on both
-// titles.
+// The plan-6 replay of gather 2: the settings that stand name a control a
+// cited quote carries, and the areas the judge could not answer stay
+// unknown. Minecraft's money and age gating are capped settings, contact
+// and content are unknown, and the verdict is unclear. Roblox data stands
+// on the image-retention quote and its reason does not say ads; content
+// stays a flag; the judge's purchase-control citation lets the gate cap
+// money to a setting.
 func TestGather2DoesNotKeepUnearnedSettings(t *testing.T) {
 	prevG, prevOnly := *gatherN, *liveOnly
 	t.Cleanup(func() {
@@ -246,10 +246,17 @@ func TestGather2DoesNotKeepUnearnedSettings(t *testing.T) {
 		t.Fatalf("minecraft replay: %+v", mc)
 	}
 	if g := areaGot(t, mc[0], checklist.AgeGating); g.Got != checklist.OKWithSetting {
-		t.Errorf("age gating = %s, want the recorded setting", g.Got)
+		t.Errorf("age gating = %s, want the capped setting", g.Got)
 	}
 	if g := areaGot(t, mc[0], checklist.Money); g.Got != checklist.OKWithSetting {
 		t.Errorf("money = %s, want the capped setting", g.Got)
+	}
+	// Contact is the area that keeps this gather unclear: the judge's
+	// setting is one its own cited quotes do not carry, and the conflict
+	// pass's flag cited a mitigation finding, so both passes fell to
+	// unknown.
+	if g := areaGot(t, mc[0], checklist.Contact); g.Got != checklist.Unknown {
+		t.Errorf("contact = %s, want unknown", g.Got)
 	}
 	if mc[0].GotVerdict != checklist.Unclear {
 		t.Errorf("minecraft verdict %s, want unclear", mc[0].GotVerdict)
@@ -318,8 +325,12 @@ func TestGatherFlagsRequireTheirOwnDefinition(t *testing.T) {
 		{1, "minecraft", checklist.Data, checklist.OKWithSetting, checklist.Unclear},
 		// The new Khan recording grades the curriculum age range ok.
 		{2, "khan-academy-kids", checklist.AgeGating, checklist.OK, checklist.Yes},
-		{1, "roblox", checklist.AgeGating, checklist.Flag, checklist.No},
-		{2, "roblox", checklist.AgeGating, checklist.Flag, checklist.No},
+		// Roblox's age flag stands on gather 2, where the conflict pass cited
+		// the birthdate bypass, and the gate caps it on the quoted lock.
+		{2, "roblox", checklist.AgeGating, checklist.OKWithSetting, checklist.No},
+		// Gather 1's age flag does not stand: the conflict pass cited age
+		// reports the entailment check could not tie to a bypass.
+		{1, "roblox", checklist.AgeGating, checklist.Unknown, checklist.No},
 	} {
 		*gatherN = tc.gather
 		*liveOnly = tc.slug
@@ -350,10 +361,13 @@ func TestConditionalCorrectionAloneDoesNotEarnAgeFlag(t *testing.T) {
 			t.Fatal(err)
 		}
 	}
-	// Both judge passes cite the independent bypass report: the first pass
-	// (16ab60ec...) among six short ids, the conflict pass (52a9418e...) alone.
-	// Each is rewritten to cite only the conditional correction.
-	for _, name := range []string{"16ab60ec021004aca3ec494c", "52a9418ed87e1272a8736c4a"} {
+	// Both judge passes cite reports of a failed age check (the conflict
+	// pass 524cc9ec... cites the conditional correction and three age
+	// reports; the first pass 50caa0a1... answers age_gating
+	// ok_with_setting). Each is rewritten to cite only the conditional
+	// correction, whose own classification is the none-event recording in
+	// this directory.
+	for _, name := range []string{"50caa0a1ef0edc42945ff440", "524cc9ecf8a81fae4811e4f2"} {
 		path := filepath.Join(ablation, "testdata/eval/replies/roblox/judge", name+".json")
 		b, err := os.ReadFile(path)
 		if err != nil {

@@ -1,8 +1,0 @@
-{
-  "text": "{\"reasons\": [{\"area\": \"data\", \"reason\": \"The forum post indicates images used for age verification may be processed by third-party providers, but Roblox does not publicly guarantee a fixed retention period for the images of children.\"}]}",
-  "input_tokens": 1211,
-  "output_tokens": 52,
-  "price_nano": 410100,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

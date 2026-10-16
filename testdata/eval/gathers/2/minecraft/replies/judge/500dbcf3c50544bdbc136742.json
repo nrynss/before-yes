@@ -1,0 +1,9 @@
+{
+  "text": "{\"grades\": [{\"area\": \"contact\", \"level\": \"ok_with_setting\", \"reason\": \"Strangers can message or voice chat by default, but child accounts have multiplayer off by default and communication settings to restrict chat to friends only or no one.\", \"setting\": \"Multiplayer off by default on child accounts; communication settings: everyone, friends only, or no one\", \"findings\": [\"F30\", \"F116\", \"F119\"]}, {\"area\": \"money\", \"level\": \"ok_with_setting\", \"reason\": \"The game pushes Minecoins, Marketplace purchases, and a Realms Plus subscription, but parents can enable \\\"Ask to Buy\\\" to require approval for any in-app purchase.\", \"setting\": \"Ask to Buy\", \"findings\": [\"F7\", \"F27\", \"F133\"]}, {\"area\": \"data\", \"level\": \"flag\", \"reason\": \"The app collects data for personalized ads, tracks users across other companies' apps and websites, and may share data with third parties for advertising, with no cited setting that stops this collection or sharing.\", \"setting\": \"\", \"findings\": [\"F28\", \"F142\", \"F128\", \"F121\"]}, {\"area\": \"age_gating\", \"level\": \"flag\", \"reason\": \"The age gate can be bypassed by a child entering a fake birth year, and no cited setting locks the account to the correct age band.\", \"setting\": \"\", \"findings\": [\"F111\", \"F105\"]}, {\"area\": \"content\", \"level\": \"flag\", \"reason\": \"A reviewer reports a child encountering racist language in the game, and no content-area setting is cited that keeps such harassment away.\", \"setting\": \"\", \"findings\": [\"F6\"]}]}",
+  "input_tokens": 12884,
+  "output_tokens": 8315,
+  "price_nano": 37829000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

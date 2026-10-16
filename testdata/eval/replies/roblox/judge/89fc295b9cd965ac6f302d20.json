@@ -1,8 +1,0 @@
-{
-  "text": "{\"reason_supported\": true, \"explanation\": \"A news article reports that a kid who wants to dodge the age check can simply enter any birthdate before September 2007.\"}",
-  "input_tokens": 1199,
-  "output_tokens": 43,
-  "price_nano": 398400,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

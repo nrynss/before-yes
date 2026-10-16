@@ -1,9 +1,0 @@
-{
-  "text": "{\"reason_supported\":false,\"explanation\":\"The explanation claims the source 'does not mention any loot boxes, pay-to-win mechanics, subscriptions, or child purchases.' Absence of mention in a single short quote is not evidence those mechanisms do not exist; silence does not establish safety or absence. To support an OK grade for money, the explanation would need a concrete statement from the source confirming no such mechanisms are present, or a cited report showing none were encountered. The provided quote only describes Scratch as free, block‑based, browser‑run, and moderated, which does not substantiate the claimed absence.\"}",
-  "input_tokens": 1172,
-  "output_tokens": 129,
-  "price_nano": 1559000,
-  "measured": true,
-  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
-  "finish_reason": "stop"
-}

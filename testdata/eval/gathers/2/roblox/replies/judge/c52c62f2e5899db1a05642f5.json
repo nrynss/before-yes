@@ -1,8 +1,0 @@
-{
-  "text": "{\"reason_supported\": false, \"explanation\": \"The Reason states 'tried to meet up' but the Quote says 'tried to meet up with her'. Adding 'her' changes the specificity of the victim beyond what the source explicitly states.\"}",
-  "input_tokens": 1136,
-  "output_tokens": 54,
-  "price_nano": 389400,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

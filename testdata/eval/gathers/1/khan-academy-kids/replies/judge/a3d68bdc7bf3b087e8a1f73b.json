@@ -1,8 +1,0 @@
-{
-  "text": "{\"reasons\": [{\"area\": \"data\", \"reason\": \"The store listing says the app is COPPA-compliant.\"}]}",
-  "input_tokens": 628,
-  "output_tokens": 32,
-  "price_nano": 217200,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

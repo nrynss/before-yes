@@ -1,8 +1,0 @@
-{
-  "text": "{\"criterion\": \"wrong_age_assignment\", \"quote\": \"if a four year old does it and it says that they are twenty five then what do they do\", \"actual_age\": \"four year old\", \"assigned_age\": \"twenty five\"}",
-  "input_tokens": 575,
-  "output_tokens": 54,
-  "price_nano": 221100,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

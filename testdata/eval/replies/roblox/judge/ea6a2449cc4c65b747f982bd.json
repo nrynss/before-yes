@@ -1,0 +1,9 @@
+{
+  "text": "{\"reason_supported\":false,\"explanation\":\"The explanation presents the forum comment as a concrete reported encounter ('children may still run into'), but the quoted text is a generic forward-looking warning ('kids may still run into') describing categories of content that could exist, not a specific past-tense report of something a child actually saw, was shown, or accessed. No other source supplies a witnessed event.\"}",
+  "input_tokens": 1202,
+  "output_tokens": 84,
+  "price_nano": 1454000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

@@ -1,0 +1,9 @@
+{
+  "text": "{\"reason_supported\":true,\"explanation\":\"The forum quote directly states that online multiplayer allows kids to chat with strangers who may have dangerous intentions, providing the quoted stranger-message risk. The help quote provides the matching control by instructing parents to set \\\"You can join multiplayer games\\\" to \\\"Block\\\" under Xbox Privacy. Both the risk and the specific setting are explicitly supported by the cited sources.\"}",
+  "input_tokens": 1132,
+  "output_tokens": 84,
+  "price_nano": 1384000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

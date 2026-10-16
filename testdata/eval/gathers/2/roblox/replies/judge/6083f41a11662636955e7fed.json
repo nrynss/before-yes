@@ -1,8 +1,0 @@
-{
-  "text": "{\"reason_supported\": true, \"explanation\": \"A forum post states that 'Images used for age verification may be processed by third-party providers, but Roblox does not publicly guarantee a fixed retention period for the images of children.' This directly supports the claim that children's data (specifically age-verification images) is shared with third parties and retained without a guaranteed deletion timeline, meeting the area definition of uncontrolled data collection involving third-party sharing and no way to delete collected data.\"}",
-  "input_tokens": 1097,
-  "output_tokens": 100,
-  "price_nano": 419100,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

@@ -4,81 +4,69 @@
     "grades": [
       {
         "area": "contact",
-        "level": "unknown",
+        "level": "ok",
         "findings": [
-          "f_e5ac958064adaf6b"
+          "f_14a67dda51af2929",
+          "f_6b41194bb2873fe3"
         ],
-        "reason": "Listed in the App Store's Kids category, for ages 0–5; no source reports contact with strangers."
+        "reason": "No cited source reports a stranger message, chat, or voice channel in this title, nor a control or bypass for such a feature."
       },
       {
         "area": "money",
         "level": "ok",
         "findings": [
-          "f_098724068cfee8e6",
           "f_dac832e9624239d3",
-          "f_b42defec3738fd8b"
+          "f_b42defec3738fd8b",
+          "f_bf9f90f44491980e",
+          "f_4fb72b7144e01679"
         ],
-        "reason": "The store listing says the app is 100% free with no ads and no subscriptions. A reviewer says they were glad the app was absolutely free."
+        "reason": "Reviewers say the app is completely free, and the store listing confirms \"100% free—no ads, no subscriptions.\""
       },
       {
         "area": "data",
-        "level": "unknown",
+        "level": "ok",
         "findings": [
+          "f_f17a01d32bb4914a",
           "f_95d0754500916e2d"
         ],
-        "reason": "The App Store privacy label says the developer reports no data linked to the user and none used to track them, and no checked quote reports data being sold, tracked for ads or shared for marketing."
+        "reason": "The store listing claims the app is COPPA-compliant and notes that some data may be collected but is not linked to the user's identity."
       },
       {
         "area": "age_gating",
         "level": "ok",
         "findings": [
-          "f_f5a3edbc4d0bc7c7",
-          "f_e4839a80e2937762",
-          "f_633b51fb48e9cd33"
+          "f_633b51fb48e9cd33",
+          "f_29286da0dac295cf",
+          "f_e4839a80e2937762"
         ],
-        "reason": "A parent reports their five-year-old autistic son uses the app all day long. Another reviewer says they played it when they were about 2 or 3 years old. The rating source says Khan Academy Kids is designed for children aged 2 to 7."
+        "reason": "A reviewer who played at age 2 or 3 reports using the app, and the rating source says Khan Academy Kids is designed for children aged 2 to 7; the help article adds that parents can configure section access in the Parent Section."
       },
       {
         "area": "content",
         "level": "ok",
         "findings": [
-          "f_568ee39c74c72c38",
-          "f_9ab8a8eb85d4e05f",
-          "f_66a85e9ebb0fb4c9",
-          "f_f233eee42b8423d9",
-          "f_9c1db8ed4c61fa75",
-          "f_acc10bbfa79f96ae",
-          "f_1cd45cbd64b52cb3",
-          "f_faf8dd029085c9cb",
-          "f_c434efa856095564",
-          "f_68ea62df820d75cf",
+          "f_a73ed227d99d770f",
+          "f_e2528faff963297a",
           "f_33112d23fb978a73",
-          "f_e2528faff963297a"
+          "f_faf8dd029085c9cb"
         ],
-        "reason": "Read the cited source quotes before deciding; we couldn’t verify a plain-language explanation for this area."
+        "reason": "No cited source reports a concrete encounter with unsuitable material; the review describes a positive experience, the help article notes a seasonal-theme toggle, and the store lists a 4+ age rating."
       },
       {
         "area": "developer_record",
         "level": "ok",
-        "findings": [],
-        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+        "findings": [
+          "f_c2dc0bdf53155f5a",
+          "f_fb55474326cd916e"
+        ],
+        "reason": "No cited source reports an enforcement action, lawsuit, breach, or other developer event for this title."
       }
     ],
     "gate": [
       {
-        "area": "contact",
-        "rule": "contact.kids_category_no_contact_report",
-        "from": "unknown",
-        "to": "ok",
-        "findings": [
-          "f_e5ac958064adaf6b"
-        ],
-        "note": "Listed in the App Store's Kids category, for ages 0–5; no source reports contact with strangers."
-      },
-      {
         "area": "data",
         "rule": "data.label_not_linked",
-        "from": "unknown",
+        "from": "ok",
         "to": "ok",
         "findings": [
           "f_95d0754500916e2d"
@@ -94,7 +82,7 @@
         "note": "No source states that the developer has no fines, lawsuits or breaches. Having no news is not evidence."
       }
     ],
-    "evidence_sha256": "5e7bf62836a14c80afc88b60366cb825bed996fdde361b56fce66e9b0cd7af17",
+    "evidence_sha256": "e9d9244de8b6b5f8d8cafa037e81e96b2c10d9e68a04557528d1b4ea20949938",
     "age": 5,
     "models": "recorded-reader + recorded-judge",
     "want_verdict": "yes",
@@ -112,7 +100,7 @@
           }
         ],
         "missed": [],
-        "got_reason": "Listed in the App Store's Kids category, for ages 0–5; no source reports contact with strangers."
+        "got_reason": "No cited source reports a stranger message, chat, or voice channel in this title, nor a control or bypass for such a feature."
       },
       {
         "area": "money",
@@ -126,7 +114,7 @@
             "quote": "Always 100% free, no ads, no subscriptions—just safe, joyful learning kids and parents love."
           }
         ],
-        "got_reason": "The store listing says the app is 100% free with no ads and no subscriptions. A reviewer says they were glad the app was absolutely free."
+        "got_reason": "Reviewers say the app is completely free, and the store listing confirms \"100% free—no ads, no subscriptions.\""
       },
       {
         "area": "data",
@@ -140,7 +128,7 @@
             "quote": "We don't show ads in the app, and we don't let third parties track your child across other apps or websites."
           }
         ],
-        "got_reason": "The App Store privacy label says the developer reports no data linked to the user and none used to track them, and no checked quote reports data being sold, tracked for ads or shared for marketing."
+        "got_reason": "The store listing claims the app is COPPA-compliant and notes that some data may be collected but is not linked to the user's identity."
       },
       {
         "area": "age_gating",
@@ -154,7 +142,7 @@
             "quote": "A free educational app for children ages 2–8, with games, books, and lessons"
           }
         ],
-        "got_reason": "A parent reports their five-year-old autistic son uses the app all day long. Another reviewer says they played it when they were about 2 or 3 years old. The rating source says Khan Academy Kids is designed for children aged 2 to 7."
+        "got_reason": "A reviewer who played at age 2 or 3 reports using the app, and the rating source says Khan Academy Kids is designed for children aged 2 to 7; the help article adds that parents can configure section access in the Parent Section."
       },
       {
         "area": "content",
@@ -168,22 +156,22 @@
             "quote": "My 4 year old loves this. It has everything and isn’t overstimulating AND it has no ads."
           }
         ],
-        "got_reason": "Read the cited source quotes before deciding; we couldn’t verify a plain-language explanation for this area."
+        "got_reason": "No cited source reports a concrete encounter with unsuitable material; the review describes a positive experience, the help article notes a seasonal-theme toggle, and the store lists a 4+ age rating."
       },
       {
         "area": "developer_record",
         "want": "unknown",
-        "got": "unknown",
-        "agree": true,
+        "got": "ok",
+        "agree": false,
         "found": [],
         "missed": [],
-        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+        "got_reason": "No cited source reports an enforcement action, lawsuit, breach, or other developer event for this title."
       }
     ],
-    "agreed": 6,
+    "agreed": 5,
     "decisive_found": 1,
     "decisive_total": 5,
-    "findings": 156,
+    "findings": 162,
     "drops": {
       "bad_area": 22,
       "bad_stance": 0,
@@ -191,40 +179,47 @@
       "unquoted": 38,
       "duplicates": 0
     },
-    "drop_rate": 0.28440366972477066,
-    "chunks": 13,
+    "drop_rate": 0.2767857142857143,
+    "chunks": 14,
     "failed_chunks": 0,
     "missing_kinds": [
       "policy",
       "terms"
     ],
-    "tavily_credits": 8,
-    "read_cost_nano": 8494560,
-    "judge_cost_nano": 76702000
+    "tavily_credits": 9,
+    "read_cost_nano": 8659560,
+    "judge_cost_nano": 87703000
   },
   {
     "title": "Minecraft",
     "grades": [
       {
         "area": "contact",
-        "level": "unknown",
-        "findings": [],
-        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+        "level": "ok_with_setting",
+        "setting": "\"You can join multiplayer games\" to \"Block\" under Xbox Privacy",
+        "findings": [
+          "f_329653f277766b45",
+          "f_bd23c45ce483dd54"
+        ],
+        "reason": "A forum post reports that online multiplayer lets kids chat with strangers who may have dangerous intentions. The Xbox help article says parents can set \"You can join multiplayer games\" to \"Block\" under Xbox Privacy to stop access."
       },
       {
         "area": "money",
-        "level": "unknown",
-        "findings": [],
-        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+        "level": "ok_with_setting",
+        "setting": "enable “Ask to Buy” under “Spending.”",
+        "findings": [
+          "f_928d4110bea3cbbd",
+          "f_f0826cb1093ce216"
+        ],
+        "reason": "A review reports that not everything is free and players must pay for Minecoins and add-ons. Microsoft help says enabling \"Ask to Buy\" under Spending requires parental approval for any in-app purchase."
       },
       {
         "area": "data",
         "level": "unknown",
-        "setting": "Ask App Not to Track",
         "findings": [
-          "f_8e957f57d0977f8f"
+          "f_453673c87f6e3de3"
         ],
-        "reason": "Turn on Ask App Not to Track in iOS Settings → Privacy & Security → Tracking."
+        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       },
       {
         "area": "age_gating",
@@ -236,15 +231,14 @@
         "area": "content",
         "level": "ok",
         "findings": [
-          "f_86e904e5a2ca5a88",
           "f_0955da9526e61b71",
-          "f_5b9c16924e7934a7"
+          "f_25709ee242b2784f"
         ],
-        "reason": "A rating source reports single-player Minecraft has no blood and features blocky combat."
+        "reason": "A Reddit user reports Minecraft has no blood, gore, swearing, or graphic weaponry."
       },
       {
         "area": "developer_record",
-        "level": "ok",
+        "level": "unknown",
         "findings": [],
         "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       }
@@ -258,28 +252,20 @@
         "findings": [
           "f_8e957f57d0977f8f"
         ],
-        "note": "The App Store label shows the app tracks for ads, and iOS lets a parent block it in Settings → Privacy & Security → Tracking."
-      },
-      {
-        "area": "developer_record",
-        "rule": "developer_record.ok_without_statement",
-        "from": "ok",
-        "to": "unknown",
-        "findings": [],
-        "note": "No source states that the developer has no fines, lawsuits or breaches. Having no news is not evidence."
+        "note": "The App Store label shows the app tracks for ads, and iOS lets a parent block it in Settings → Privacy \u0026 Security → Tracking."
       }
     ],
-    "evidence_sha256": "8747fff9edd55f51eba952719bcc55f31ea6497f556fd1d2654f29e3d9b76c06",
+    "evidence_sha256": "e7534e9c710777963e807e79ede7f3f7c0ad5c2188f53d84941474f4134d5678",
     "age": 9,
     "models": "recorded-reader + recorded-judge",
     "want_verdict": "yes_with_settings",
-    "got_verdict": "unclear",
+    "got_verdict": "yes_with_settings",
     "areas": [
       {
         "area": "contact",
         "want": "ok_with_setting",
-        "got": "unknown",
-        "agree": false,
+        "got": "ok_with_setting",
+        "agree": true,
         "found": [
           {
             "source": "https://virtual-addiction.com/online-safety/minecraft",
@@ -292,12 +278,12 @@
             "quote": "offer child accounts that empower parents to manage and monitor gameplay, multiplayer access, chat settings, and friend requests"
           }
         ],
-        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+        "got_reason": "A forum post reports that online multiplayer lets kids chat with strangers who may have dangerous intentions. The Xbox help article says parents can set \"You can join multiplayer games\" to \"Block\" under Xbox Privacy to stop access."
       },
       {
         "area": "money",
         "want": "ok",
-        "got": "unknown",
+        "got": "ok_with_setting",
         "agree": false,
         "found": [],
         "missed": [
@@ -306,16 +292,16 @@
             "quote": "there is no ads to interrupt me and I can get friends"
           }
         ],
-        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
+        "got_reason": "A review reports that not everything is free and players must pay for Minecoins and add-ons. Microsoft help says enabling \"Ask to Buy\" under Spending requires parental approval for any in-app purchase."
       },
       {
         "area": "data",
         "want": "unknown",
-        "got": "ok_with_setting",
-        "agree": false,
+        "got": "unknown",
+        "agree": true,
         "found": [],
         "missed": [],
-        "got_reason": "Turn on Ask App Not to Track in iOS Settings → Privacy & Security → Tracking."
+        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       },
       {
         "area": "age_gating",
@@ -343,7 +329,7 @@
             "quote": "Because combat is part of the game, there are some elements of mild violence."
           }
         ],
-        "got_reason": "A rating source reports single-player Minecraft has no blood and features blocky combat."
+        "got_reason": "A Reddit user reports Minecraft has no blood, gore, swearing, or graphic weaponry."
       },
       {
         "area": "developer_record",
@@ -355,27 +341,27 @@
         "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       }
     ],
-    "agreed": 2,
+    "agreed": 4,
     "decisive_found": 2,
     "decisive_total": 5,
-    "findings": 265,
+    "findings": 279,
     "drops": {
       "bad_area": 44,
       "bad_stance": 0,
-      "no_quote": 5,
-      "unquoted": 95,
+      "no_quote": 6,
+      "unquoted": 104,
       "duplicates": 1
     },
-    "drop_rate": 0.35365853658536583,
-    "chunks": 45,
+    "drop_rate": 0.35714285714285715,
+    "chunks": 50,
     "failed_chunks": 1,
     "missing_kinds": [
       "policy",
       "terms"
     ],
-    "tavily_credits": 7,
-    "read_cost_nano": 20989800,
-    "judge_cost_nano": 88904000
+    "tavily_credits": 8,
+    "read_cost_nano": 22382160,
+    "judge_cost_nano": 86716000
   },
   {
     "title": "Roblox",
@@ -391,12 +377,9 @@
         "level": "flag",
         "findings": [
           "f_1f8ad057919885d2",
-          "f_8b22a69254003500",
-          "f_b6787e32cc060591",
-          "f_617ef30b88662b85",
-          "f_c7d2a54c3f825858"
+          "f_808546d23f4b250a"
         ],
-        "reason": "The store listing says games may contain optional in‑game purchases, including loot boxes, and notes a content advisory for loot boxes. The terms say Roblox may offer paid subscriptions for additional benefits. A forum post reports that Roblox encourages spending on Robux through limited‑time events, exclusive items, and social pressure."
+        "reason": "The store listing says games may contain optional in‑game purchases, including loot boxes and other items. The help article says parents can no longer set or use a parent PIN on the account and suggests two‑factor authentication instead."
       },
       {
         "area": "data",
@@ -406,15 +389,9 @@
       },
       {
         "area": "age_gating",
-        "level": "flag",
-        "findings": [
-          "f_3832ce49d8ba54a2",
-          "f_6f0ac2bd50ee61a3",
-          "f_dc321bc7129480ab",
-          "f_14c1c754192531b7",
-          "f_c79becd0e883c53d"
-        ],
-        "reason": "A reviewer reports that their friend is 9 and she is placed in the 21+ age group."
+        "level": "unknown",
+        "findings": [],
+        "reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       },
       {
         "area": "content",
@@ -422,12 +399,10 @@
         "findings": [
           "f_dc4c7bb15ce19df9",
           "f_8f1be93b269b5300",
-          "f_3dc06be183d151be",
-          "f_27cffc324c551e87",
-          "f_4650d2d7e7a3f4dd",
-          "f_1387b7bb96b88323"
+          "f_7a1503aab19286fb",
+          "f_005c39c6079744c7"
         ],
-        "reason": "Reviewers report encounters with avatars showing excessive skin, predatory behavior toward children, and a class‑action suit filed by parents alleging sexual content and grooming. A forum post describes user‑generated \"condo games\" featuring adult themes and sexual content that kids may still reach despite safety filters."
+        "reason": "The cited sources raise a concern here. Read the source quotes before deciding."
       },
       {
         "area": "developer_record",
@@ -443,23 +418,9 @@
         "from": "flag",
         "to": "flag",
         "findings": [
-          "f_1f8ad057919885d2",
-          "f_8b22a69254003500",
-          "f_b6787e32cc060591",
-          "f_617ef30b88662b85",
-          "f_c7d2a54c3f825858"
+          "f_1f8ad057919885d2"
         ],
         "note": "A quote behind this grade describes a purchase, a subscription or an ad."
-      },
-      {
-        "area": "age_gating",
-        "rule": "age_gating.flag_confirmed",
-        "from": "flag",
-        "to": "flag",
-        "findings": [
-          "f_14c1c754192531b7"
-        ],
-        "note": "A quote behind this grade describes the age check being bypassed or a child being placed in the wrong age group."
       },
       {
         "area": "content",
@@ -469,13 +430,13 @@
         "findings": [
           "f_dc4c7bb15ce19df9",
           "f_8f1be93b269b5300",
-          "f_27cffc324c551e87",
-          "f_1387b7bb96b88323"
+          "f_7a1503aab19286fb",
+          "f_005c39c6079744c7"
         ],
         "note": "A quote behind this grade describes violence, sexual content, self-harm, predators, gambling, drugs or frightening material."
       }
     ],
-    "evidence_sha256": "fc6d7fe9bbd5ac0ac3e353ff00ce2af290de707b5aa2b14a070647a417218806",
+    "evidence_sha256": "eb410cc4b980246e9f6b5b822924b35ead6c9c60c543dfdf307674333263116e",
     "age": 9,
     "models": "recorded-reader + recorded-judge",
     "want_verdict": "no",
@@ -511,7 +472,7 @@
             "quote": "I got Robux and I got only 246 Robux instead of 1800"
           }
         ],
-        "got_reason": "The store listing says games may contain optional in‑game purchases, including loot boxes, and notes a content advisory for loot boxes. The terms say Roblox may offer paid subscriptions for additional benefits. A forum post reports that Roblox encourages spending on Robux through limited‑time events, exclusive items, and social pressure."
+        "got_reason": "The store listing says games may contain optional in‑game purchases, including loot boxes and other items. The help article says parents can no longer set or use a parent PIN on the account and suggests two‑factor authentication instead."
       },
       {
         "area": "data",
@@ -525,8 +486,8 @@
       {
         "area": "age_gating",
         "want": "flag",
-        "got": "flag",
-        "agree": true,
+        "got": "unknown",
+        "agree": false,
         "found": [],
         "missed": [
           {
@@ -534,7 +495,7 @@
             "quote": "Im 14 but it said 9-12 on the age check"
           }
         ],
-        "got_reason": "A reviewer reports that their friend is 9 and she is placed in the 21+ age group."
+        "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       },
       {
         "area": "content",
@@ -548,7 +509,7 @@
             "quote": "It’s also a very inappropriate game with all the horror games"
           }
         ],
-        "got_reason": "Reviewers report encounters with avatars showing excessive skin, predatory behavior toward children, and a class‑action suit filed by parents alleging sexual content and grooming. A forum post describes user‑generated \"condo games\" featuring adult themes and sexual content that kids may still reach despite safety filters."
+        "got_reason": "The cited sources raise a concern here. Read the source quotes before deciding."
       },
       {
         "area": "developer_record",
@@ -565,25 +526,25 @@
         "got_reason": "We don’t have enough evidence to assess this area. Don’t assume it is safe."
       }
     ],
-    "agreed": 4,
+    "agreed": 3,
     "decisive_found": 0,
     "decisive_total": 6,
-    "findings": 172,
+    "findings": 202,
     "drops": {
       "bad_area": 2,
       "bad_stance": 0,
       "no_quote": 1,
-      "unquoted": 75,
+      "unquoted": 110,
       "duplicates": 4
     },
-    "drop_rate": 0.3228346456692913,
-    "chunks": 36,
+    "drop_rate": 0.3667711598746082,
+    "chunks": 45,
     "failed_chunks": 1,
     "missing_kinds": [
       "policy"
     ],
-    "tavily_credits": 8,
-    "read_cost_nano": 15718860,
-    "judge_cost_nano": 122729000
+    "tavily_credits": 9,
+    "read_cost_nano": 19121820,
+    "judge_cost_nano": 103335000
   }
 ]

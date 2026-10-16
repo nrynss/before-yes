@@ -1,9 +1,0 @@
-{
-  "text": "{\"reason_supported\":true,\"explanation\":\"Both sentences in the Reason are directly supported by the two provided quotes. The first sentence — 'A rating source states that if a child originally signed up with a fake adult birthdate, default protections do not apply' — matches the first quote verbatim: 'If your child originally signed up with a fake adult birthdate, none of those defaults apply'. The second sentence — 'another notes it is very easy for a child to enter a birth year that grants full feature access including purchases' — closely paraphrases the second quote: 'However, it is very easy for a child to be aware of these restrictions and choose to enter a birth year that allows them full access to all the features.' Both sources are correctly identified as rating sources, and no additional claims beyond the quoted material are introduced.\"}",
-  "input_tokens": 1137,
-  "output_tokens": 172,
-  "price_nano": 1653000,
-  "measured": true,
-  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
-  "finish_reason": "stop"
-}

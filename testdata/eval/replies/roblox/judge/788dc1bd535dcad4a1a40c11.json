@@ -1,0 +1,9 @@
+{
+  "text": "{\"reason_supported\":true,\"explanation\":\"Both sentences are directly supported by the provided quotes. The first sentence restates the store listing verbatim: 'Games may contain optional in-game purchases, including lootboxes and other items.' The second sentence restates the help article: parents can no longer set or use a parent PIN, and the article points to two-factor authentication as an alternative. No additional claims about purchase limits working, being bypassed, or any pressure or permission are introduced.\"}",
+  "input_tokens": 1217,
+  "output_tokens": 102,
+  "price_nano": 1523000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

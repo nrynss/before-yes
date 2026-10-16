@@ -1,8 +1,0 @@
-{
-  "text": "{\"reasons\": [{\"area\": \"money\", \"reason\": \"A review reports a 10-year-old spent birthday money on Minecoins after being scammed, indicating children can make unintended purchases; a rating advises turning on 'Ask a parent to buy things' in spending settings to require parental approval for Marketplace purchases.\"}]}",
-  "input_tokens": 605,
-  "output_tokens": 73,
-  "price_nano": 247200,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

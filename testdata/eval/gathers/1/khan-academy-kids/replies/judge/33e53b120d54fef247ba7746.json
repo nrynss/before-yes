@@ -1,9 +1,0 @@
-{
-  "text": "{\"reason_supported\":true,\"explanation\":\"The explanation directly attributes the claim to the reviewer ('A reviewer reports...') and describes a concrete, past-tense encounter — a grid of scary devil faces and men tied up with mouths taped shut appearing for about 15 seconds while the child worked on math — exactly matching the quoted report.\"}",
-  "input_tokens": 1123,
-  "output_tokens": 72,
-  "price_nano": 1339000,
-  "measured": true,
-  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
-  "finish_reason": "stop"
-}

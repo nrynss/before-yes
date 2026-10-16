@@ -1,8 +1,0 @@
-{
-  "text": "{\"reasons\": [{\"area\": \"contact\", \"reason\": \"A review reports that chats built into the coding of specific mini-games cannot be disabled, and kids can type text on signs regardless of communication preferences.\"}, {\"area\": \"money\", \"reason\": \"A review reports that when trying to upgrade the game in the App Store, it required adding a payment option, resulting in a $46 charge despite advertising the game as free.\"}, {\"area\": \"data\", \"reason\": \"The terms state that Roblox may access and review Content, including Content shared via Communication Features and other non-public Content.\"}, {\"area\": \"age_gating\", \"reason\": \"A review reports contacting Roblox support and being told to wait until age 13, while the birthday field showed Oct 7, 1985, making the assigned age 41 despite the user being younger than 13.\"}, {\"area\": \"content\", \"reason\": \"A forum post reports that within seconds, the 'Street Code' game showed an intense, fiery car accident and prompted the player to decide whether to shoot or save an officer.\"}, {\"area\": \"developer_record\", \"reason\": \"A news report states that the Texas Attorney General has sued Roblox over flagrantly ignoring safety laws and deceiving parents about dangers to young people.\"}]}",
-  "input_tokens": 3111,
-  "output_tokens": 282,
-  "price_nano": 1187100,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

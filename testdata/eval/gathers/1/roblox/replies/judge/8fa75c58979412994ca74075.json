@@ -1,8 +1,0 @@
-{
-  "text": "{\"reasons\": [{\"area\": \"contact\", \"reason\": \"A forum post reports that chats built into specific mini-games cannot be disabled even when chat is set to 'no one,' and users can write text on signs visible to all players regardless of age.\"}, {\"area\": \"data\", \"reason\": \"A forum post states that images used for age verification may be processed by third-party providers without a publicly guaranteed retention period for children's images.\"}, {\"area\": \"age_gating\", \"reason\": \"A news quote states that a kid who wants to dodge age verification can simply enter any birthdate before September 2007.\"}, {\"area\": \"content\", \"reason\": \"A forum post describes that within seconds, the 'Street Code' game showed an intense, fiery car accident and prompted the player to decide whether to shoot or save an officer.\"}, {\"area\": \"developer_record\", \"reason\": \"A news quote reports that Los Angeles County filed a civil lawsuit against Roblox Corporation alleging the company falsely marketed its platform as safe for children while knowingly allowing it to become a hunting ground for predators.\"}]}",
-  "input_tokens": 5111,
-  "output_tokens": 238,
-  "price_nano": 1747500,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

@@ -1,0 +1,9 @@
+{
+  "text": "{\"reason_supported\":true,\"explanation\":\"A reviewer states the app is \\\"ACTUALLY FREE YOU DONT NEED TO PAY\\\" and confirms no payment is required. The store listing also describes the app as \\\"Free.\\\" Both sources directly support the claim that there is no loot box, pay-to-win, subscription mechanism, or completed child spending event.\"}",
+  "input_tokens": 1157,
+  "output_tokens": 80,
+  "price_nano": 1397000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

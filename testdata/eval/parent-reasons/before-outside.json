@@ -120,7 +120,7 @@
     "missing_kinds": null,
     "tavily_credits": 0,
     "read_cost_nano": 0,
-    "judge_cost_nano": 4944000
+    "judge_cost_nano": 5041000
   },
   {
     "title": "Scratch",
@@ -243,6 +243,6 @@
     "missing_kinds": null,
     "tavily_credits": 0,
     "read_cost_nano": 0,
-    "judge_cost_nano": 8572000
+    "judge_cost_nano": 8379000
   }
 ]

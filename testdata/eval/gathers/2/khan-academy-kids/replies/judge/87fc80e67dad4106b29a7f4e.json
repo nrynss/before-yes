@@ -1,0 +1,9 @@
+{
+  "text": "{\"reason_supported\":true,\"explanation\":\"All three provided reviews discuss technical issues with account registration, email verification, and general app enjoyment. None of the quotes mention strangers sending messages, any chat functionality, voice channels, or controls/bypasses related to communication features. Since the explanation correctly states that no quoted review describes these specific contact-risk elements, the reason is fully supported by the absence of such content in the sources.\"}",
+  "input_tokens": 1145,
+  "output_tokens": 88,
+  "price_nano": 1409000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

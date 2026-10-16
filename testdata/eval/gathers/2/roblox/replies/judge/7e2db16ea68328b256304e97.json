@@ -1,0 +1,9 @@
+{
+  "text": "{\"grades\": [{\"area\": \"contact\", \"level\": \"flag\", \"reason\": \"Multiple parents and a Reddit reporter say strangers can message or voice-chat a 9-year-old on Roblox and the parental controls meant to block them do not work in practice.\", \"setting\": \"\", \"findings\": [\"F1\", \"F16\", \"F30\", \"F105\"]}, {\"area\": \"money\", \"level\": \"ok_with_setting\", \"reason\": \"Roblox pushes loot boxes and in-app purchases at children, but parents can set monthly spending limits or block spending entirely through parental controls.\", \"setting\": \"monthly spending restrictions and parental controls to block spending entirely\", \"findings\": [\"F179\", \"F146\", \"F171\", \"F154\"]}, {\"area\": \"data\", \"level\": \"flag\", \"reason\": \"Roblox's own terms say it may sell children's data and does not allow full deletion, and the Texas Attorney General has sued the company over its data and safety practices.\", \"setting\": \"\", \"findings\": [\"F42\", \"F53\", \"F143\", \"F176\"]}, {\"area\": \"age_gating\", \"level\": \"flag\", \"reason\": \"Parents report that the age gate misidentifies young children as adults, leaves them in inappropriate age groups, and does not remove scary or adult content from their view.\", \"setting\": \"\", \"findings\": [\"F6\", \"F32\", \"F83\", \"F172\"]}, {\"area\": \"developer_record\", \"level\": \"flag\", \"reason\": \"The Texas Attorney General has sued Roblox for allegedly ignoring child-safety laws and deceiving parents, and other sources report regulatory scrutiny over data and age-gating practices.\", \"setting\": \"\", \"findings\": [\"F43\", \"F176\", \"F72\"]}]}",
+  "input_tokens": 16525,
+  "output_tokens": 5815,
+  "price_nano": 33970000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

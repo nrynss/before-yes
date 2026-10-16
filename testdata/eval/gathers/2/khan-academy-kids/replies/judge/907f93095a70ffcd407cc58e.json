@@ -1,0 +1,9 @@
+{
+  "text": "{\"reason_supported\":true,\"explanation\":\"A reviewer states that 'the ability to watch progress through a teacher account has helped me feel confident in the continued use of the app.' This is directly supported by the first review quote.\"}",
+  "input_tokens": 1231,
+  "output_tokens": 49,
+  "price_nano": 1378000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

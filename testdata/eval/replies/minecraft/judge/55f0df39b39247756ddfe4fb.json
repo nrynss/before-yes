@@ -1,0 +1,9 @@
+{
+  "text": "{\"reason_supported\":false,\"explanation\":\"The explanation cites a Reddit user's general opinion that Minecraft 'has no blood, gore, swearing, or graphic weaponry,' but this is a blanket description of the game's overall design, not a concrete reported encounter with unsuitable material. The prompt requires evidence of a specific encounter (what was seen or reached), not a generic possibility or summary of available content. The store quote provides only an age rating label, which does not describe any encounter.\"}",
+  "input_tokens": 1080,
+  "output_tokens": 105,
+  "price_nano": 1395000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

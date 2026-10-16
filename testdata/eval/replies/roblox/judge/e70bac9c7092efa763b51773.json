@@ -1,8 +1,0 @@
-{
-  "text": "{\"reason_supported\": true, \"explanation\": \"A news article explicitly states that 'Los Angeles County filed a civil lawsuit against Roblox Corporation alleging the company falsely marketed its online gaming platform as safe for children while knowingly allowing it to become a “hunting ground for predators.”' This directly supports the Reason's claim about a reported civil lawsuit involving allegations of false safety marketing and predatory activity.\"}",
-  "input_tokens": 1210,
-  "output_tokens": 86,
-  "price_nano": 440400,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

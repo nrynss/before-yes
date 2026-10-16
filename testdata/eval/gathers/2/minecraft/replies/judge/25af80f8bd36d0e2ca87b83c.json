@@ -1,0 +1,9 @@
+{
+  "text": "{\"reason_supported\":true,\"explanation\":\"A reviewer reports spending $1.09 for a mod and then being asked to pay $15.99 more for Minecoins, describing it as a scam.\"}",
+  "input_tokens": 1220,
+  "output_tokens": 49,
+  "price_nano": 1367000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

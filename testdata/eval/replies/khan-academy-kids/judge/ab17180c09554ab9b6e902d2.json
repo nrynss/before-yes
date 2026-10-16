@@ -1,0 +1,9 @@
+{
+  "text": "{\"reason_supported\":true,\"explanation\":\"The explanation attributes the reviewer's self‑report of playing the app at age 2 or 3, cites the rating source stating the app is designed for children aged 2–7, and notes the help article's information that parents can configure section access in the Parent Section. All three claims are directly supported by the corresponding quoted sources.\"}",
+  "input_tokens": 1263,
+  "output_tokens": 80,
+  "price_nano": 1503000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

@@ -1,8 +1,0 @@
-{
-  "text": "{\"reasons\": [{\"area\": \"age_gating\", \"reason\": \"A news article states a kid who wants to dodge all of the above can simply enter any birthdate before September 2007.\"}]}",
-  "input_tokens": 751,
-  "output_tokens": 49,
-  "price_nano": 269400,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

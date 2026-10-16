@@ -1,0 +1,9 @@
+{
+  "text": "{\"reason_supported\":true,\"explanation\":\"The first review directly reports a concrete incident: the writer's child was threatened by another player inside the 'Adopt Me' game, prompting police action. This supplies a quoted stranger interaction and resulting harm within a Roblox communication channel. The second review adds a direct warning about 'bad people' on the platform and explicitly criticizes the AI age-guessing as 'not good', providing a quoted assessment of a control meant to limit contact. The forum post corroborates that Roblox provides text and voice chat filters but acknowledges users circumvent them and may shift conversations to external, less-monitored platforms, supplying a quoted bypass of the built-in controls.\"}",
+  "input_tokens": 1274,
+  "output_tokens": 142,
+  "price_nano": 1700000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

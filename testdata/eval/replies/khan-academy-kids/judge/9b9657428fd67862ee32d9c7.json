@@ -1,0 +1,9 @@
+{
+  "text": "{\n  \"reasons\": [\n    {\n      \"area\": \"contact\",\n      \"reason\": \"The store listing says the app is \\\"100% free—no ads, no subscriptions,\\\" and the help article says it provides parental controls to focus a child's learning experience.\"\n    },\n    {\n      \"area\": \"money\",\n      \"reason\": \"Reviewers say the app is completely free, and the store listing confirms \\\"100% free—no ads, no subscriptions.\\\"\"\n    },\n    {\n      \"area\": \"data\",\n      \"reason\": \"The store listing claims the app is COPPA-compliant and notes that some data may be collected but is not linked to the user's identity.\"\n    },\n    {\n      \"area\": \"age_gating\",\n      \"reason\": \"A reviewer who played at age 2 or 3 reports using the app, and the rating source says Khan Academy Kids is designed for children aged 2 to 7; the help article adds that parents can configure section access in the Parent Section.\"\n    },\n    {\n      \"area\": \"content\",\n      \"reason\": \"A parent reports their daughter loves the free app and it keeps her on track for kindergarten; the help article notes an option to show or hide seasonal themes such as Halloween, and the store lists an age rating of 4+.\"\n    },\n    {\n      \"area\": \"developer_record\",\n      \"reason\": \"The rating source describes the co-founder as an experienced educator with over 20 years of teaching experience, and the help article says the app provides parental controls to focus a child's learning experience.\"\n    }\n  ]\n}",
+  "input_tokens": 1969,
+  "output_tokens": 344,
+  "price_nano": 3001000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

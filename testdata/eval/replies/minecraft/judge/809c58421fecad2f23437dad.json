@@ -1,8 +1,0 @@
-{
-  "text": "{\"reason_supported\": true, \"explanation\": \"Both quoted sources directly state that multiplayer is disabled by default on child accounts—one confirming this applies to both Java and Bedrock Editions, the other clarifying that parents then decide who can communicate with their child.\"}",
-  "input_tokens": 1103,
-  "output_tokens": 57,
-  "price_nano": 382200,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

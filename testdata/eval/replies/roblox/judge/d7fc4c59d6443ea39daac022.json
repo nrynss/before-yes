@@ -1,8 +1,0 @@
-{
-  "text": "{\"reasons\": [{\"area\": \"money\", \"reason\": \"The store page notes that games may contain optional in-game purchases, including lootboxes.\"}, {\"area\": \"age_gating\", \"reason\": \"A news article reports that a child wanting to avoid age checks can simply enter any birthdate before September 2007.\"}, {\"area\": \"developer_record\", \"reason\": \"A news article reports Los Angeles County filed a civil lawsuit alleging Roblox falsely marketed its platform as safe for children while knowingly allowing it to become a hunting ground for predators.\"}]}",
-  "input_tokens": 1596,
-  "output_tokens": 124,
-  "price_nano": 590400,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

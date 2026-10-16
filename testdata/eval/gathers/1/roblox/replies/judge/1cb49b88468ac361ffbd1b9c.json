@@ -1,9 +1,0 @@
-{
-  "text": "{\"reason_supported\":false,\"explanation\":\"The explanation claims 'News reports allege Roblox tracks user data without consent and monetizes collected information for targeted content or third-party advertisers.' The cited news quotes do say 'tracking data without consent' and 'monetizes the collected information to display targeted content ... or providing the information to third-party advertisers,' so those allegations are supported. However, the explanation also includes 'The terms state creating an account enables access to user-generated content, messages, and AI-generated content.' That part is a correct summary of the terms quote but is adjacent evidence about access to user content, not evidence of a third party handling children's information, ad tracking, or a stated retention/deletion gap. The rating quote about 'ID document check and selfie match' describes an age-verification method, not a data-handling, ad-tracking, or retention/deletion practice. Because the explanation mixes a supported allegation with irrelevant citations that do not address the required data concern, the overall reason is not fully supported by the supplied quotes for the specified focus.\"}",
-  "input_tokens": 1318,
-  "output_tokens": 223,
-  "price_nano": 1987000,
-  "measured": true,
-  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
-  "finish_reason": "stop"
-}

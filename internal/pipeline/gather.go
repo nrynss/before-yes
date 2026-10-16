@@ -54,7 +54,9 @@ type Doc struct {
 // plan-3: round-2 error-page, host and link rules.
 // plan-4: the App Store page stands in for an empty review feed (T3.8).
 // plan-5: the plan depends on the kind of title (T3.7).
-const PlanVersion = "plan-5"
+// plan-6: a search for the title's own parental and safety controls, read
+// as help pages.
+const PlanVersion = "plan-6"
 
 // Source kinds a plan query or the store step fills. A kind with no usable
 // document is reported in Gathered.Missing, for the card's small print.
@@ -67,6 +69,9 @@ const (
 	KindForum  = "forum"
 	KindNews   = "news"
 	KindRating = "rating"
+	// KindHelp is a help or support page: the title's, its platform's or
+	// the store's own instructions for its parental and safety controls.
+	KindHelp = "help"
 )
 
 // Query is one planned search. Kind is the finding source kind its documents
@@ -79,9 +84,12 @@ type Query struct {
 	Extract bool
 }
 
-// Plan is the fixed source list for one title: seven basic searches and one
-// extract call, about eight Tavily credits. officialHost narrows the policy
-// and terms searches; empty leaves them open.
+// Plan is the fixed source list for one title: eight basic searches and one
+// extract call, about nine Tavily credits. officialHost narrows the policy
+// and terms searches; empty leaves them open. The controls search is the one
+// that reads the title's own parental and safety settings pages; it is not
+// narrowed to a host, because those pages often sit on a platform's support
+// site (support.xbox.com, help.minecraft.net, en.help.roblox.com).
 //
 // The names match the fixture files under testdata/titles, which
 // tools/capture recorded with the same request shapes.
@@ -111,6 +119,12 @@ func Plan(title, officialHost string) []Query {
 		}},
 		{Name: "rating", Kind: KindRating, Search: tavily.Search{
 			Query: title + " age rating ESRB PEGI parental controls", MaxResults: 6, IncludeRaw: true,
+		}},
+		// The title's own settings and safety pages. Open, so it can reach a
+		// platform's support site as well as the title's own help centre.
+		{Name: "controls", Kind: KindHelp, Search: tavily.Search{
+			Query:      title + " parental controls turn off chat multiplayer content settings how to",
+			MaxResults: 6, IncludeRaw: true,
 		}},
 	}
 }
@@ -1226,6 +1240,8 @@ func searchLabel(name string) string {
 		return "the terms of service"
 	case "rating":
 		return "age ratings"
+	case "controls":
+		return "parental controls"
 	case "news":
 		return "news about the developer"
 	case "reddit-parents":

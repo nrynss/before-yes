@@ -1,8 +1,0 @@
-{
-  "text": "{\"reasons\": [{\"area\": \"money\", \"reason\": \"A reviewer reports losing over $2,000 due to unauthorized transactions and account compromise.\"}, {\"area\": \"content\", \"reason\": \"A news report states that Los Angeles County alleges Roblox hosted sexually explicit content and enabled sharing of child sexual abuse material.\"}, {\"area\": \"developer_record\", \"reason\": \"A news article reports Los Angeles County filed a civil lawsuit alleging Roblox falsely marketed its platform as safe while knowingly allowing predatory activity.\"}]}",
-  "input_tokens": 1441,
-  "output_tokens": 115,
-  "price_nano": 535800,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

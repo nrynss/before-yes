@@ -1,8 +1,0 @@
-{
-  "text": "{\"reason_supported\": false, \"explanation\": \"The reason states 'A review reports a child being placed in the 28th age group' but no review contains that exact phrasing. The first review says 'my child got put in the 28th group', which attributes the placement to 'my child'—not clearly identifying the reporter's child as the subject in a way that confirms the reporter is stating their own child's experience as a first-hand report of misplacement. However, the deeper issue is that the reason interprets '28th group' as an age-based failure, but no source defines what the '28th group' corresponds to in terms of age. The area definition requires evidence that a child ended up on the wrong side of the age gate, a child far under the stated age getting in, etc. Without knowing what age the '28th group' represents or how it relates to the child's actual age (9), we cannot determine if this constitutes a failed age gate. The quote does not state the child's actual age, nor does it clarify that group 28 is inappropriate for a 9-year-old. Therefore, the reason incorrectly assumes the '28th group' indicates an age-gating failure without evidence linking group number to age appropriateness.\"}",
-  "input_tokens": 1149,
-  "output_tokens": 271,
-  "price_nano": 588600,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

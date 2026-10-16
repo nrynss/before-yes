@@ -1,0 +1,9 @@
+{
+  "text": "{\"reason_supported\":true,\"explanation\":\"Each concrete claim in the Reason is directly supported by a cited quote. The first sentence — reviewers reporting encounters with 'online dating,' 'harassment,' and 'very disturbing and inappropriate stuff' in role-play games like Brookhaven — comes verbatim from the first two review quotes ('So much hackers and online dating... harassment in games such as Brookhaven' and 'role play games such as Brookhaven are a huge problem because half the people in the game are doing very disturbing and innaproprite stuff'). The second sentence — warnings of 'preds' and 'child predators,' and a statement that the game 'supports child predators' — is drawn from the fifth and sixth review quotes ('This game supports child predators' and 'so many preds... do NOT recommend this game for children/teens'). The third sentence — references to 'condo games' featuring adult themes and sexual content — is taken from the Reddit quote ('condo games... that feature adult content') and the forum quote ('condo games (which usually feature adult themes and sexual content)'). All claims are attributed to the supplied sources and describe reported encounters, not generic possibilities.\"}",
+  "input_tokens": 1441,
+  "output_tokens": 248,
+  "price_nano": 2185000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

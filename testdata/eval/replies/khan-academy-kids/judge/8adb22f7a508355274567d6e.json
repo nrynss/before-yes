@@ -1,8 +1,0 @@
-{
-  "text": "\n\n{\n  \"grades\": [\n    {\n      \"area\": \"contact\",\n      \"level\": \"ok\",\n      \"reason\": \"No findings show that strangers can message or voice chat with a 5‑year‑old child, and there is no evidence of a missing parental control to block such contact.\",\n      \"setting\": \"\",\n      \"findings\": [\n        \"f_882345ab1c9fcc1c\"\n      ]\n    },\n    {\n      \"area\": \"money\",\n      \"level\": \"ok\",\n      \"reason\": \"The app is described as free with no ads or payment traps, and no findings show it pushes purchases that a child can complete without a parent.\",\n      \"setting\": \"\",\n      \"findings\": [\n        \"f_4ac857304b6a4b3e\"\n      ]\n    },\n    {\n      \"area\": \"data\",\n      \"level\": \"ok\",\n      \"reason\": \"No findings indicate that the app collects children",
-  "input_tokens": 20736,
-  "output_tokens": 16000,
-  "price_nano": 20620800,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

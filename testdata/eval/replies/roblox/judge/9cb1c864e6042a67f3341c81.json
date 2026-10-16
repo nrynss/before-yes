@@ -1,8 +1,0 @@
-{
-  "text": "{\"reason_supported\": false, \"explanation\": \"The explanation claims 'A news report states that Los Angeles County alleges Roblox hosted sexually explicit content.' This is accurate per the quote, but the Explanation focus requires a concrete reported encounter—something someone actually saw, was shown, or accessed—not a general hosting allegation. The quote describes allegations of hosting and sharing CSAM, but provides no specific instance where a user encountered or viewed such material. Without a report of an actual encounter (e.g., 'a user saw X' or 'someone accessed Y'), the explanation remains at the level of generic possibility or platform capability, violating the requirement for concreteness.\"}",
-  "input_tokens": 1084,
-  "output_tokens": 139,
-  "price_nano": 450300,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

@@ -1,0 +1,9 @@
+{
+  "text": "{\n  \"reasons\": [\n    {\n      \"area\": \"money\",\n      \"reason\": \"Reviewers report children spent birthday money on Minecoins that did not arrive, were charged repeatedly for add-ons they never received, and found subscriptions presented as one-time payments. The help article notes enabling \\\"Ask to Buy\\\" in Xbox Family Settings sends an approval request each time a child tries to buy skins, texture packs, or Minecoins.\"\n    },\n    {\n      \"area\": \"data\",\n      \"reason\": \"The App Store listing states the app uses tracking to deliver personalized ads and may use data to track users across other companies' apps and websites. A forum post adds that the developers share information with advertisers and directs readers to the privacy policy for details.\"\n    },\n    {\n      \"area\": \"age_gating\",\n      \"reason\": \"A rating description reports that if the game registers a player as under 13, purchases are locked, but it is very easy for a child to be aware of these restrictions and choose to enter a birth year that allows full access to all features.\"\n    },\n    {\n      \"area\": \"content\",\n      \"reason\": \"The store lists an age rating of 9+, the ESRB rates it E10+ for fantasy violence that is cartoonish with creatures disappearing without blood or gore, and a help article describes mild combat and violence. A reviewer mentions destroying, building, and killing.\"\n    }\n  ]\n}",
+  "input_tokens": 2002,
+  "output_tokens": 302,
+  "price_nano": 2908000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

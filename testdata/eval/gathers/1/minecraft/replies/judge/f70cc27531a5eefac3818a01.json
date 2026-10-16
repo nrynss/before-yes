@@ -1,8 +1,0 @@
-{
-  "text": "{\"reasons\": [{\"area\": \"money\", \"reason\": \"A reviewer who says they are 10 years old reports buying 10,000 Minecoins using birthday money and feeling scammed.\"}, {\"area\": \"content\", \"reason\": \"A rating notes there is no drinking, drugs, or sexual content, and fighting is bloodless.\"}]}",
-  "input_tokens": 1273,
-  "output_tokens": 80,
-  "price_nano": 453900,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

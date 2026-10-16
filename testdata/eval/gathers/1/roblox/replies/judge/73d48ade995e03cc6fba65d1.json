@@ -1,0 +1,9 @@
+{
+  "text": "{\"reason_supported\":true,\"explanation\":\"Each claim in the Reason is directly supported by a corresponding cited quote. The first sentence attributes the statement about outfits and games being inappropriate for a 4‑year‑old to the review quote. The second sentence attributes the description of user‑generated 'condo games' featuring adult content to the Reddit quote. The third sentence attributes the concrete encounter — seeing an intense fiery car accident and a shoot‑or‑save prompt within seconds in the game 'Street Code' — to the first forum quote. The fourth sentence attributes the observation that extreme violence, inappropriate language, and sexually explicit content are possible and quite likely in user‑created games, and that content labeled 5+ may still contain inappropriate material despite maturity controls, to the second forum quote. All claims are presented as reported encounters or observations from the cited sources, with no added unsupported details.\"}",
+  "input_tokens": 1317,
+  "output_tokens": 185,
+  "price_nano": 1872000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

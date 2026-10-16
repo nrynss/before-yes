@@ -1,0 +1,9 @@
+{
+  "text": "{\"reason_supported\":true,\"explanation\":\"Both sentences in the Reason are directly supported by the two provided rating-source quotes. The first sentence — \\\"if a child signs up with a fake adult birthdate, default protections do not apply\\\" — matches the first quote verbatim. The second sentence — \\\"it is very easy for a child to be aware of restrictions and choose to enter a birth year allowing full access to all features\\\" — matches the second quote verbatim. Each claim is explicitly attributed to the rating source, no extra causal mechanism is invented, and no unsupported detail is added.\"}",
+  "input_tokens": 1152,
+  "output_tokens": 123,
+  "price_nano": 1521000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

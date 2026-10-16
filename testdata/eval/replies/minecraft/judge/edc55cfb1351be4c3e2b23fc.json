@@ -1,8 +1,0 @@
-{
-  "text": "\n\n{\n  \"grades\": [\n    {\n      \"area\": \"contact\",\n      \"level\": \"ok_with_setting\",\n      \"reason\": \"A parent reports that strangers can message or voice chat in the game, but the chat can be set to friends only or turned off to block unknown contacts.\",\n      \"setting\": \"friends only\",\n      \"findings\": [\n        \"f_329653f277766b45\",\n        \"f_d3937e99a98f8280\"\n      ]\n    },\n    {\n      \"area\": \"money\",\n      \"level\": \"ok_with_setting\",\n      \"reason\": \"A parent reports being scammed after buying in‑game items that never arrived, yet spending can be limited with a parental control that gates purchases.\",\n      \"setting\": \"Control Spending\",\n      \"findings\": [\n        \"f_6721f2cc2e961a3d\",\n        \"f_6b222f7ec75ab54a\"\n      ]\n    },\n    {\n      \"area\": \"age_gating\",\n      \"level\": \"ok_with_setting\",\n      \"reason\": \"A parent reports that the age gate lets young children join friends’ worlds, but the game can be set to require an adult Microsoft account (or keep multiplayer off by default) to lock the account to the right age.\",\n      \"setting\": \"multiplayer off by default on child accounts\",\n      \"findings\": [\n        \"f_585757efcc50c729\",\n        \"f_ce2d5a847567a4cc\"\n      ]\n    },\n    {\n      \"area\": \"content\",\n      \"level\": \"flag\",\n      \"reason\": \"A parent reports seeing satanic themes in the game, which is unsuitable horror content for a 9‑year‑old.\",\n      \"setting\": \"\",\n      \"findings\": [\n        \"f_fd053a071f7b28c0\"\n      ]\n    }\n  ]\n}",
-  "input_tokens": 18624,
-  "output_tokens": 6801,
-  "price_nano": 11708100,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

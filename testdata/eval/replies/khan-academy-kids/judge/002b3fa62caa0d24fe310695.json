@@ -1,0 +1,9 @@
+{
+  "text": "{\"reason_supported\":true,\"explanation\":\"The explanation states that no cited source reports any enforcement action, lawsuit, breach, or other developer event for this title. Both provided sources — a biographical note about Manisha Snoyer and a help-center line describing parental controls — contain no mention of regulatory actions, litigation, security breaches, or similar developer events. Because the explanation simply notes the absence of such reports in the cited material, and the quotes confirm that absence, the claim is fully supported.\"}",
+  "input_tokens": 1096,
+  "output_tokens": 104,
+  "price_nano": 1408000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

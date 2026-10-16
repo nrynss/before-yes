@@ -1,8 +1,0 @@
-{
-  "text": "{\"reasons\": [{\"area\": \"contact\", \"reason\": \"A review reports that a child has been threatened by a stranger in Adopt Me, causing fear to play, and notes that chats in specific mini-games cannot be disabled while kids can type text on signs regardless of communication preferences.\"}, {\"area\": \"money\", \"reason\": \"A review reports being forced to add payment information to play, resulting in a $46 charge despite adding a card with no money, and a news article states a parent reported their 10-year-old daughter spent over $7,000 in two months despite purchase limits.\"}, {\"area\": \"data\", \"reason\": \"The terms state Roblox may access and review Content, including Content shared via Communication Features and other non-public Content, and a forum post indicates images used for age verification may be processed by third-party providers without a guaranteed retention period for children's images.\"}, {\"area\": \"age_gating\", \"reason\": \"A review reports contacting Roblox support and being told to wait until age 13, while the system displayed an assigned age of 41 despite the user stating they are younger than 13.\"}, {\"area\": \"content\", \"reason\": \"A forum post describes that within seconds, the 'Street Code' game showed an intense, fiery car accident and prompted the player to decide whether to shoot or save an officer.\"}, {\"area\": \"developer_record\", \"reason\": \"A news article states the Texas Attorney General has sued Roblox over 'flagrantly ignoring' safety laws and 'deceiving parents' about the dangers the platform poses to young people.\"}]}",
-  "input_tokens": 3203,
-  "output_tokens": 343,
-  "price_nano": 1269600,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

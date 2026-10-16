@@ -1,0 +1,9 @@
+{
+  "text": "{\"reason_supported\":false,\"explanation\":\"The explanation cites three sources but none provides a concrete reported encounter with unsuitable material. The Reddit quote mentions a class‑action lawsuit allegation, which is a legal claim, not a firsthand report of a child seeing or accessing specific unsuitable content. The forum quote uses speculative language ('kids may still run into') describing categories of possible content rather than recounting an actual event someone experienced. The store quotes are content advisory labels, not reports of encounters. Because no cited source describes a specific past incident where a child was shown, saw, or accessed unsuitable material, the required concrete encounter is unsupported.\"}",
+  "input_tokens": 1248,
+  "output_tokens": 134,
+  "price_nano": 1650000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

@@ -1,0 +1,9 @@
+{
+  "text": "{\"reason_supported\":true,\"explanation\":\"Both sources are correctly cited and directly support the negative claim. The store quote states the app is '100% free—no ads, no subscriptions,' which implies no monetized social features. The help quote describes parental controls limited to focusing 'a child's learning experience in the app.' Neither source mentions any messaging, chat, or voice channel functionality, nor any controls or bypasses related to stranger communication. Because the explanation asserts only that no cited source reports such features, and the provided quotes contain no evidence of them, the reason is fully supported.\"}",
+  "input_tokens": 1076,
+  "output_tokens": 124,
+  "price_nano": 1448000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

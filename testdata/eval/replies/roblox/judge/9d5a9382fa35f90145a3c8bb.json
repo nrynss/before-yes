@@ -1,8 +1,0 @@
-{
-  "text": "{\"reasons\": [{\"area\": \"money\", \"reason\": \"The store states games may contain optional in-game purchases, including lootboxes.\"}]}",
-  "input_tokens": 791,
-  "output_tokens": 34,
-  "price_nano": 267900,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

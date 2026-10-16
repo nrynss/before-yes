@@ -1,0 +1,9 @@
+{
+  "text": "{\n  \"grades\": [\n    {\n      \"area\": \"contact\",\n      \"level\": \"flag\",\n      \"reason\": \"Strangers can message or voice-chat with a 9-year-old by default and parents report the parental controls do not reliably block them.\",\n      \"setting\": \"\",\n      \"findings\": [\"F74\", \"F83\", \"F170\", \"F92\"]\n    },\n    {\n      \"area\": \"money\",\n      \"level\": \"flag\",\n      \"reason\": \"The platform pushes loot boxes and in-app purchases, lets children spend without a purchase gate, and has removed the parent PIN that limited spending.\",\n      \"setting\": \"\",\n      \"findings\": [\"F66\", \"F99\", \"F100\", \"F177\"]\n    },\n    {\n      \"area\": \"data\",\n      \"level\": \"flag\",\n      \"reason\": \"Roblox collects children's data and shares it with third parties for advertising, and no parental setting stops that sharing.\",\n      \"setting\": \"\",\n      \"findings\": [\"F67\", \"F73\", \"F183\", \"F81\"]\n    },\n    {\n      \"area\": \"age_gating\",\n      \"level\": \"flag\",\n      \"reason\": \"Parents report the age-verification system mislabels children's ages, requires face scans or ID, and still lets inappropriate content reach young users.\",\n      \"setting\": \"\",\n      \"findings\": [\"F19\", \"F20\", \"F26\", \"F89\"]\n    },\n    {\n      \"area\": \"content\",\n      \"level\": \"flag\",\n      \"reason\": \"Children encounter sexual content, realistic violence, horror, and predatory behavior in games despite safety filters, and a class-action lawsuit alleges grooming.\",\n      \"setting\": \"\",\n      \"findings\": [\"F84\", \"F90\", \"F186\", \"F187\"]\n    }\n  ]\n}",
+  "input_tokens": 15880,
+  "output_tokens": 15695,
+  "price_nano": 62965000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

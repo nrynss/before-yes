@@ -1,0 +1,9 @@
+{
+  "text": "{\n  \"reasons\": [\n    {\n      \"area\": \"money\",\n      \"reason\": \"The store listing says games may contain optional in‑game purchases, including loot boxes and other items. The help article says parents can no longer set or use a parent PIN on the account and suggests two‑factor authentication instead.\"\n    },\n    {\n      \"area\": \"content\",\n      \"reason\": \"A Reddit post reports a class‑action lawsuit filed by parents alleging sexual content and grooming on the platform. A forum comment says children may still run into inappropriate content such as \\\"condo games\\\" featuring adult themes and sexual content, violent games, gambling‑style play, and games with bullying or hate speech despite safety filters. The store listing notes frequent/intense cartoon or fantasy violence and infrequent/mild realistic violence advisories.\"\n    }\n  ]\n}",
+  "input_tokens": 1323,
+  "output_tokens": 178,
+  "price_nano": 1857000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

@@ -1,0 +1,9 @@
+{
+  "text": "{\"reason_supported\": false, \"explanation\": \"The explanation claims a 'concrete reported encounter with unsuitable material' but the reviewer quote only describes general gameplay actions ('destroy things and build and kill') within the game's fantasy violence framework. It does not report an actual encounter with specific unsuitable content (e.g., graphic violence, sexual content, hate speech) experienced by the reviewer or another player. The other sources (forum, help, store) provide ratings and general descriptors ('fantasy violence', 'cartoonish', 'mild combat'), not a reported encounter with unsuitable material.\"}",
+  "input_tokens": 1127,
+  "output_tokens": 122,
+  "price_nano": 1493000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

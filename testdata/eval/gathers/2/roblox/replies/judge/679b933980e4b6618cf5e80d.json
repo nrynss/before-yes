@@ -1,9 +1,0 @@
-{
-  "text": "{\"reason_supported\": false, \"explanation\": \"The explanation states only that the terms allow collection of email, phone, or government ID. This describes data collection, not a quoted third‑party handling of children’s information, ad tracking, or a stated retention/deletion gap. None of the provided quotes mention sharing children’s data with third parties, using it for advertising, or specifying how long such data is kept or deleted. Therefore the explanation does not address the required concern focus.\"}",
-  "input_tokens": 1264,
-  "output_tokens": 101,
-  "price_nano": 1567000,
-  "measured": true,
-  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
-  "finish_reason": "stop"
-}

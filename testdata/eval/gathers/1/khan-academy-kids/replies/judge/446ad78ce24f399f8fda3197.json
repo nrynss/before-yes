@@ -1,8 +1,0 @@
-{
-  "text": "{\"reason_supported\": false, \"explanation\": \"The reason states 'Parents must provide and confirm an email address to begin using the app.' This describes a sign-up requirement but provides no information about age gating, a reported bypass, or an explicit actual/assigned-age mismatch. The area focus requires evidence related to age verification failures or workarounds, yet the cited forum quote only confirms an email confirmation step, which does not constitute age gating or reveal any age-related bypass. No quote indicates how age is collected, verified, or circumvented.\"}",
-  "input_tokens": 1126,
-  "output_tokens": 116,
-  "price_nano": 442200,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

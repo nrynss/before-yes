@@ -125,8 +125,9 @@ func assertReasonOnlyResults(t *testing.T, before, after []Result) {
 // these must still be fallbacks, so a change in either direction is seen.
 // (Before the re-record no standing grade fell back.)
 var reasonFallbacks = map[string]bool{
-	"0 Khan Academy Kids content": true,
-	"2 Roblox data":               true,
+	"0 Roblox content":    true,
+	"1 Minecraft content": true,
+	"2 Roblox data":       true,
 }
 
 // Final examples must explain their source evidence, not merely preserve a
@@ -160,18 +161,21 @@ func TestPublishedParentReasonsRegression(t *testing.T) {
 				if fell {
 					continue
 				}
-				// Khan gather 1 data: the judge flagged on a news hit about
-				// another app (the FTC and Weight Watchers' Kurbo). The rule
-				// gate vetoed that flag (the quote does not name the title)
-				// and raised data to ok on the listing's privacy label; the
-				// card says so in the gate's own words.
+				// Khan gather 1 data: the writer explains the store
+				// listing's privacy label, and the gate confirms the grade
+				// on that label (data.label_not_linked).
 				if n == 1 && r.Title == "Khan Academy Kids" && g.Area == "data" {
-					if !strings.HasPrefix(g.Reason, "The App Store privacy label says") {
+					if !strings.Contains(g.Reason, "listing") || !strings.Contains(g.Reason, "not linked") {
 						t.Fatal(g.Reason)
 					}
 				}
-				if n == 2 && r.Title == "Minecraft" && g.Area == "money" && !strings.Contains(g.Reason, "Ask a parent to approve purchases") {
-					t.Fatal(g.Reason)
+				// Minecraft gather 2 money: the judge's own setting, named by
+				// a cited help quote, with a written reason about the quoted
+				// purchase.
+				if n == 2 && r.Title == "Minecraft" && g.Area == "money" {
+					if g.Setting != "Ask to Buy" || !strings.Contains(g.Reason, "Minecoins") {
+						t.Fatalf("setting %q reason %q", g.Setting, g.Reason)
+					}
 				}
 				if n == 2 && r.Title == "Roblox" {
 					switch g.Area {
@@ -180,17 +184,22 @@ func TestPublishedParentReasonsRegression(t *testing.T) {
 							t.Fatal(g.Reason)
 						}
 					case "data":
-						if !strings.Contains(strings.ToLower(g.Reason), "third-party") || !strings.Contains(g.Reason, "retention") {
+						// The writer's explanation was rejected by its own
+						// support check, so the card carries the fallback and
+						// the flag rests on its cited quotes.
+						if g.Reason != "The cited sources raise a concern here. Read the source quotes before deciding." {
 							t.Fatal(g.Reason)
 						}
 					case "age_gating":
-						// Before: a 41-year-old and "younger than 13". Now the
-						// four-year-old who was assigned twenty five.
-						if !strings.Contains(g.Reason, "four year old") || !strings.Contains(g.Reason, "twenty five") || strings.Contains(g.Reason, "due to") {
-							t.Fatal(g.Reason)
+						// The age flag survived the entailment check on a
+						// bypass quote, and the gate then capped it on the
+						// quoted lock of the account's birth date.
+						if g.Setting != "Lock the account's birth date" || !strings.Contains(g.Reason, "Lock the account's birth date") {
+							t.Fatalf("setting %q reason %q", g.Setting, g.Reason)
 						}
 					case "content":
-						if !strings.Contains(g.Reason, "Street Code") || strings.Contains(g.Reason, "possible") || strings.Contains(g.Reason, "likely") {
+						// A concrete reported encounter, never a possibility.
+						if !strings.Contains(g.Reason, "condo") || strings.Contains(g.Reason, "possible") || strings.Contains(g.Reason, "likely") {
 							t.Fatal(g.Reason)
 						}
 					}

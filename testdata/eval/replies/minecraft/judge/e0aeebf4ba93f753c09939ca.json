@@ -1,9 +1,0 @@
-{
-  "text": "{\"reason_supported\": false, \"explanation\": \"The explanation states 'A Reddit reviewer reports single-player Minecraft has no blood, gore, swearing, or weapons beyond basic tools,' but the first Reddit quote says only 'Other than the scary monsters, you don't even have to play with other people on public servers!' — it does not mention blood, gore, swearing, or weapons. The second Reddit quote mentions 'no blood no gore no swearing' and 'the only weaponery it has are' (cut off), but it does not specify single-player. The rating quote describes single-player as having 'no blood, blocky combat,' yet the explanation attributes the full list of absent content to a Reddit reviewer, misattributing the source and overstating what the Reddit quotes say.\"}",
-  "input_tokens": 1142,
-  "output_tokens": 175,
-  "price_nano": 1667000,
-  "measured": true,
-  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
-  "finish_reason": "stop"
-}

@@ -1,8 +1,0 @@
-{
-  "text": "{\"reasons\": [{\"area\": \"contact\", \"reason\": \"A review reports child predators interacting with children through threats in Adopt Me, requiring police intervention.\"}, {\"area\": \"money\", \"reason\": \"A news report states a parent's 10-year-old daughter spent over $7,000 in two months despite purchase limits.\"}, {\"area\": \"data\", \"reason\": \"Terms state Roblox may access and review content shared via communication features and other non-public content.\"}, {\"area\": \"age_gating\", \"reason\": \"A review reports the child was placed in the wrong age group (28th group) due to broken age group updates.\"}, {\"area\": \"content\", \"reason\": \"A forum post states extreme violence, inappropriate language, and sexually explicit content is possible and likely within user-created games.\"}, {\"area\": \"developer_record\", \"reason\": \"A news report states the Texas Attorney General sued Roblox for flagrantly ignoring safety laws and deceiving parents about dangers to young people.\"}]}",
-  "input_tokens": 2920,
-  "output_tokens": 220,
-  "price_nano": 1074000,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

@@ -1,8 +1,0 @@
-{
-  "text": "{\"reason_supported\": true, \"explanation\": \"The rating explicitly states 'the mobile app is 100% free, with no ads or subscriptions,' directly supporting the claim that there are no paid mechanisms like loot boxes, pay-to-win features, or subscription charges.\"}",
-  "input_tokens": 1115,
-  "output_tokens": 61,
-  "price_nano": 389400,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

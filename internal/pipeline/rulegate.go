@@ -21,12 +21,13 @@ import (
 //
 //   - A flag stands only if a cited risk quote says what that area's flag
 //     needs. If none does, the flag is vetoed to unknown (the area is thin).
-//   - A flag in money, contact or age gating is capped at ok_with_setting when
-//     a quote in the area names a working control for it and no cited risk
-//     quote reports that control failing. In money the control is a purchase
-//     control and the failure test is narrower: a complaint about spending,
-//     scams or billing is not the control failing, so only a quote that says
-//     the control itself failed or was bypassed keeps the flag (rule D).
+//   - A flag in money, contact, content or age gating is capped at
+//     ok_with_setting when a quote in the area names a working control for it
+//     and no cited risk quote reports that control failing. In money the
+//     control is a purchase control and the failure test is narrower: a
+//     complaint about spending, scams or billing is not the control failing,
+//     so only a quote that says the control itself failed or was bypassed
+//     keeps the flag (rule D).
 //   - A cited quote that reports a fine, settlement, lawsuit or regulator
 //     action, names the developer or seller and does not name the title is
 //     about another product: it supports no grade, is removed from the
@@ -79,6 +80,7 @@ const (
 	RuleContentNoHarm       = "content.flag_without_harm"
 	RuleContentConfirmed    = "content.flag_confirmed"
 	RuleContentRated        = "content.rated_for_age"
+	RuleContentCapped       = "content.flag_capped_by_control"
 	RuleDeveloperNoAction   = "developer_record.flag_without_action"
 	RuleDeveloperConfirmed  = "developer_record.flag_confirmed"
 	RuleDeveloperNoStmt     = "developer_record.ok_without_statement"
@@ -528,6 +530,7 @@ func init() {
 			risk:     func(g *gate, f finding.Finding) bool { return hitsVocab(g.w(f), contentHarm, true) },
 			vetoRule: RuleContentNoHarm, vetoNote: "None of the quotes behind this concern describes violence, sexual content, self-harm, predators, gambling, drugs or frightening material. A parent's objection to a belief or a value is not counted.",
 			confirmRule: RuleContentConfirmed, confirmWhat: "violence, sexual content, self-harm, predators, gambling, drugs or frightening material.",
+			controls: contentControls, capRule: RuleContentCapped,
 			settle: settleContent,
 		},
 		checklist.DeveloperRecord: {

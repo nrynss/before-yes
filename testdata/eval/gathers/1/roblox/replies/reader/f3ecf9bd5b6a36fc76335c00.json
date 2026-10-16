@@ -1,0 +1,9 @@
+{
+  "text": "{\n  \"findings\": [\n    {\n      \"ref\": \"[D543]\",\n      \"area\": \"contact\",\n      \"claim\": \"A parent reports that strangers can message or voice chat with your child, and it is on by default, but can be turned off.\",\n      \"stance\": \"risk\",\n      \"quote\": \"Customise communication settings so that only your child’s friends can contact them. You can also set quick language filters.\"\n    }\n  ]\n}",
+  "input_tokens": 4472,
+  "output_tokens": 100,
+  "price_nano": 292320,
+  "measured": true,
+  "model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+  "finish_reason": "stop"
+}

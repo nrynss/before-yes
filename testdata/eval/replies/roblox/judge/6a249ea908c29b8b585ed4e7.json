@@ -1,8 +1,0 @@
-{
-  "text": "{\"criterion\": \"wrong_age_assignment\", \"quote\": \"if the estimation isn't not you're age you need to PUT AN ID TO COMFRIM YOUR CORRECT AGE\"}",
-  "input_tokens": 371,
-  "output_tokens": 41,
-  "price_nano": 148200,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

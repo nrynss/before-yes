@@ -1,9 +1,0 @@
-{
-  "text": "{\"reason_supported\":false,\"explanation\":\"The explanation claims a concrete reported encounter with unsuitable material, but none of the provided quotes describe any exposure to inappropriate content. All review quotes praise the app's educational value, structure, and cost-free nature for young children. The forum quote suggests offline learning activities, and the store quote only states an age rating of 4+. No source reports a child seeing or reaching unsuitable material.\"}",
-  "input_tokens": 1495,
-  "output_tokens": 88,
-  "price_nano": 1759000,
-  "measured": true,
-  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
-  "finish_reason": "stop"
-}

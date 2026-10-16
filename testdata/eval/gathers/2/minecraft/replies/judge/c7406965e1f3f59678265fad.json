@@ -1,8 +1,0 @@
-{
-  "text": "{\"reasons\": [{\"area\": \"money\", \"reason\": \"Multiple reviewers report being scammed while attempting purchases: one paid $1.09 for a mod but received nothing and had to pay $15.99 more, another aged 10 spent all birthday money on 10,000 Minecoins feeling scammed, a third was repeatedly charged $40 total for a failed $6.99 villager add-on purchase, and a fourth states 'I Bought Minecoins it scam me'.\"}, {\"area\": \"content\", \"reason\": \"A reviewer reports the game called them the n word, which is a racist slur.\"}]}",
-  "input_tokens": 1382,
-  "output_tokens": 146,
-  "price_nano": 546000,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

@@ -1,0 +1,9 @@
+{
+  "text": "{\"reason_supported\": false, \"explanation\": \"The explanation cites the Terms quote about being asked for personal identifiers, but the Area requires a concern about third‑party handling of children’s information, ad tracking, or a stated retention/deletion gap. The provided quote describes a first‑party collection request, not third‑party sharing, ad tracking, or any retention/deletion policy. Therefore the cited evidence does not support the required concern.\"}",
+  "input_tokens": 1109,
+  "output_tokens": 92,
+  "price_nano": 1385000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

@@ -1,8 +1,0 @@
-{
-  "text": "{\"reasons\": [{\"area\": \"money\", \"reason\": \"Reviewers confirm the app requires no payment, with one stating 'ACTUALLY FREE YOU DONT NEED TO PAY' and noting gratitude for its cost-free access.\"}, {\"area\": \"data\", \"reason\": \"The store listing states the app is COPPA-compliant and explicitly notes 'no ads, no subscriptions,' indicating no data collection for advertising or third-party sharing.\"}, {\"area\": \"content\", \"reason\": \"A review reports a grid of scary devil faces and men tied up with mouths taped shut appeared during math activities, which the reviewer described as very disturbing and unsuitable for a child.\"}]}",
-  "input_tokens": 1122,
-  "output_tokens": 146,
-  "price_nano": 468000,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

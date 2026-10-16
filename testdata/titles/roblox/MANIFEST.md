@@ -36,27 +36,6 @@ Written by `tools/capture`. The Tavily key is read from `TAVILY_KEY` and is neve
 
 - reviews stopped at the feed's page limit of 10
 
-## T0.4a
-
-Written by `tools/capture -only`. A run rewrites the files of the kinds it ran and keeps the other rows. The credits of replaced calls stay in the total. The Tavily key is never recorded here.
-
-- Common Sense review page: none found
-- Credits on calls replaced by later runs: 1
-- T0.4a Tavily credits for this title: 4
-
-### Files
-
-| File | Source | HTTP status | Fetched (UTC) | Tavily credits | Note |
-|---|---|---|---|---|---|
-| tavily-search-csm.json | https://api.tavily.com/search | 200 | 2026-10-13T19:08:42Z | 1 |  |
-| tavily-search-reddit-community.json | https://api.tavily.com/search | 200 | 2026-10-13T19:06:15Z | 1 | 8 results, 0 with raw_content |
-| tavily-search-reddit-parents.json | https://api.tavily.com/search | 200 | 2026-10-13T19:06:08Z | 1 | 8 results, 0 with raw_content |
-
-### Notes
-
-- review pages for other titles, not used: https://www.commonsensemedia.org/website-reviews/brookhaven-rp, https://www.commonsensemedia.org/website-reviews/adopt-me
-- no Common Sense Media review page for slug "roblox" among 5 search hits; csm extract skipped
-
 ## T0.4b
 
 Written by `tools/capture -only advanced`. A run rewrites this section. The Tavily key is never recorded here.
@@ -85,6 +64,27 @@ Written by `tools/capture -only storepage`. A run rewrites this section. The Tav
 | File | Source | HTTP status | Fetched (UTC) | Tavily credits | Note |
 |---|---|---|---|---|---|
 | tavily-extract-storepage.json | https://apps.apple.com/us/app/roblox/id431946152?uo=4 | 200 | 2026-10-14T08:44:02Z | 0 | basic; 1 results with text; review text: yes; failed_results: none |
+
+### Notes
+
+- none
+
+## T0.4a
+
+Written by `tools/capture -only`. A run rewrites the files of the kinds it ran and keeps the other rows. The credits of replaced calls stay in the total. The Tavily key is never recorded here.
+
+- Common Sense review page: none found
+- Credits on calls replaced by later runs: 1
+- T0.4a Tavily credits for this title: 5
+
+### Files
+
+| File | Source | HTTP status | Fetched (UTC) | Tavily credits | Note |
+|---|---|---|---|---|---|
+| tavily-search-controls.json | https://api.tavily.com/search | 200 | 2026-10-16T14:08:31Z | 1 | 6 results, 6 with raw_content |
+| tavily-search-csm.json | https://api.tavily.com/search | 200 | 2026-10-13T19:08:42Z | 1 |  |
+| tavily-search-reddit-community.json | https://api.tavily.com/search | 200 | 2026-10-13T19:06:15Z | 1 | 8 results, 0 with raw_content |
+| tavily-search-reddit-parents.json | https://api.tavily.com/search | 200 | 2026-10-13T19:06:08Z | 1 | 8 results, 0 with raw_content |
 
 ### Notes
 

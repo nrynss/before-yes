@@ -1,9 +1,0 @@
-{
-  "text": "{\n  \"reasons\": [\n    {\n      \"area\": \"money\",\n      \"reason\": \"The store listing says games may contain optional in‑app purchases, including loot boxes, and notes a content advisory for loot boxes. The terms state Roblox may offer paid subscriptions called Roblox Subscription. A forum post reports Roblox encourages spending on its virtual currency Robux through limited‑time events, exclusive items, and social pressure.\"\n    },\n    {\n      \"area\": \"content\",\n      \"reason\": \"Reviewers report seeing avatars showing a lot of skin, experiencing kidnapping scenarios, encountering predators, and receiving bans while predatory behavior persists. One reviewer describes a voice‑chat suspension after reporting a crying child while child predators remain active. A Reddit post cites a class‑action suit from parents about sexual content and grooming. A forum post says kids may still run into inappropriate content such as condo games featuring adult themes and sexual content, violent games, gambling‑style play, and bullying or hate speech.\"\n    }\n  ]\n}",
-  "input_tokens": 1512,
-  "output_tokens": 219,
-  "price_nano": 2169000,
-  "measured": true,
-  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
-  "finish_reason": "stop"
-}

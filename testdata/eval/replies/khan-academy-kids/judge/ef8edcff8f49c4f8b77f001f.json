@@ -1,9 +1,0 @@
-{
-  "text": "{\"reason_supported\":true,\"explanation\":\"The store listing states the app is \\\"100% free\\u2014no ads, no subscriptions\\\" and labels it \\\"Free.\\\" A reviewer writes they were \\\"glad to know\\\" the app \\\"absolutely was free.\\\" Both sources are attributed directly; no purchase mechanism, loot box, pay-to-win element, or completed child spending event is claimed.\"}",
-  "input_tokens": 1173,
-  "output_tokens": 91,
-  "price_nano": 1446000,
-  "measured": true,
-  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
-  "finish_reason": "stop"
-}

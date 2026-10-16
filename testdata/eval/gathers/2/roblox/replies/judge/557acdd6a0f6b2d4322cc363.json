@@ -1,8 +1,0 @@
-{
-  "text": "{\"reasons\": [{\"area\": \"contact\", \"reason\": \"A review reports a 40-50 year old man tried to meet up with a child using the app and do incredibly disgusting things.\"}, {\"area\": \"money\", \"reason\": \"A news report states a parent said their 10-year-old daughter spent more than $7,000 in two months despite attempts to limit purchases.\"}, {\"area\": \"data\", \"reason\": \"A forum post states images used for age verification may be processed by third-party providers, but Roblox does not publicly guarantee a fixed retention period for the images of children.\"}, {\"area\": \"age_gating\", \"reason\": \"A review reports a four year old attempted face verification and the system assigned them an age of twenty five.\"}, {\"area\": \"content\", \"reason\": \"A forum post states within seconds, the 'Street Code' game showed an intense, fiery car accident and prompted the player to decide whether to shoot or save an officer.\"}, {\"area\": \"developer_record\", \"reason\": \"A news report states Texas Attorney General Ken Paxton says he has sued Roblox over 'flagrantly ignoring' safety laws and 'deceiving parents' about the dangers the online video gaming platform poses to young people.\"}]}",
-  "input_tokens": 3658,
-  "output_tokens": 271,
-  "price_nano": 1341300,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

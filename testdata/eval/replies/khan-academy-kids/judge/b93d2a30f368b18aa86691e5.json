@@ -1,0 +1,9 @@
+{
+  "text": "{\"reason_supported\":false,\"explanation\":\"The explanation contains no concrete reported encounter with unsuitable material. The review quote describes a positive experience with the app but mentions nothing inappropriate. The help quote only notes an option to show or hide a seasonal theme such as Halloween, without any report of a child actually seeing unsuitable content. The store quote provides an age rating, which is not evidence of an encounter. Since the Area requires a concrete reported encounter with unsuitable material and none appears in the cited quotes, the reason is unsupported.\"}",
+  "input_tokens": 1205,
+  "output_tokens": 108,
+  "price_nano": 1529000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

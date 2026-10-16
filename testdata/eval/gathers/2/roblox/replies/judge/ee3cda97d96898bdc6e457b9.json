@@ -1,8 +1,0 @@
-{
-  "text": "{\"reason_supported\": false, \"explanation\": \"The reason states 'The terms state Roblox may access and review content shared via communication features and other non-public content.' This describes a capability under the Terms of Service, but the area definition requires evidence of children's data being collected and used in ways a parent cannot control—specifically ad tracking aimed at children, third-party sharing or selling, or no way to delete collected data. Accessing and reviewing user content, while potentially concerning for privacy, does not by itself constitute uncontrolled data collection, ad targeting, third-party sharing/selling, or inability to delete data as defined. No cited quote confirms any of those specific harms.\"}",
-  "input_tokens": 984,
-  "output_tokens": 142,
-  "price_nano": 423000,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}

@@ -603,15 +603,16 @@ func TestRecordedRepliesGradesRestOnVerifiedQuotes(t *testing.T) {
 		levels  []checklist.Level // in card order, after every demotion
 		thin    []checklist.Area
 	}{
-		// Current Ultra replay: contact and data are flag_not_earned and land
-		// thin; developer_record is the judge's own unknown. The remaining
-		// flags stand. Verdict no.
-		{demos[0], 9, checklist.No, L(unk, flag, unk, flag, flag, unk), []checklist.Area{"contact", "data", "developer_record"}},
-		// Current Ultra replay: the App Store tracking label raises data to
-		// Ask App Not to Track. Contact, money, age_gating and
-		// developer_record are thin; content is ok. Verdict unclear.
-		{demos[1], 9, checklist.Unclear, L(unk, unk, set, unk, ok, unk), []checklist.Area{"contact", "money", "age_gating", "developer_record"}},
-		// Current Ultra replay: the listing's Kids category and privacy label
+		// plan-6 replay: the gate confirms money and content on their cited
+		// quotes; contact, data, age gating and developer_record are thin.
+		// Verdict no.
+		{demos[0], 9, checklist.No, L(unk, flag, unk, unk, flag, unk), []checklist.Area{"contact", "data", "age_gating", "developer_record"}},
+		// plan-6 replay: contact and money stand on the pages' own controls
+		// (the Xbox privacy setting, Ask to Buy) and data on the App Store
+		// tracking label with the iOS setting. Age gating and
+		// developer_record are unknown. Verdict yes with settings.
+		{demos[1], 9, checklist.YesWithSettings, L(set, set, set, unk, ok, unk), nil},
+		// Khan is unchanged: the listing's Kids category and privacy label
 		// raise contact and data to ok. The judge grades age_gating and content
 		// ok; developer_record remains unknown. Verdict yes.
 		{demos[2], 5, checklist.Yes, L(ok, ok, ok, ok, ok, unk), []checklist.Area{"developer_record"}},
@@ -1000,15 +1001,13 @@ func TestEntailSystemHoldsAFittingQuote(t *testing.T) {
 	for _, g := range card.Grades {
 		by[g.Area] = g
 	}
-	// Re-recorded: the first recording kept no Minecraft contact setting
-	// (its risk quote was a gameplay paragraph). The re-recorded judge cites
-	// the Common Sense passage that says contact is possible only when
-	// multiplayer and communication are on, and the control that starts
-	// them off, and the entailment check accepts that pair. The pin is
-	// that a standing setting rests on that pair, not on a gameplay list.
+	// Re-recorded for plan-6: the contact setting stands on the fallback to
+	// the first pass, which pairs a first-hand stranger report with the Xbox
+	// privacy control that blocks multiplayer. The pin is that a standing
+	// setting rests on that pair, not on a gameplay list.
 	if c := by[checklist.Contact]; c.Level == checklist.OKWithSetting {
-		if c.Setting != "multiplayer off by default on child accounts" {
-			t.Errorf("contact setting = %q, want the quoted control", c.Setting)
+		if !strings.Contains(c.Setting, "You can join multiplayer games") || !strings.Contains(c.Setting, "Block") {
+			t.Errorf("contact setting = %q, want the quoted multiplayer control", c.Setting)
 		}
 		var risk string
 		for _, f := range card.Findings {
@@ -1018,12 +1017,23 @@ func TestEntailSystemHoldsAFittingQuote(t *testing.T) {
 				}
 			}
 		}
-		if !strings.Contains(risk, "Only if multiplayer and communication are turned on") {
-			t.Errorf("contact ok_with_setting cites the risk quote %q, want the multiplayer-and-communication passage", risk)
+		if !strings.Contains(risk, "chat with friends") || !strings.Contains(risk, "strangers") {
+			t.Errorf("contact ok_with_setting cites the risk quote %q, want the stranger-chat passage", risk)
 		}
 	}
-	if by[checklist.Money].Level == checklist.OKWithSetting {
-		t.Errorf("label-only money setting stood: %q", by[checklist.Money].Setting)
+	// Money stands on the help article's own sentence, which says what the
+	// control does. A setting whose cited mitigation is only a label (a
+	// button name) must not stand.
+	if m := by[checklist.Money]; m.Level == checklist.OKWithSetting {
+		explained := false
+		for _, f := range card.Findings {
+			if slices.Contains(m.Findings, f.ID) && f.Stance == finding.Mitigation && strings.Contains(f.Quote, "require your approval") {
+				explained = true
+			}
+		}
+		if !explained {
+			t.Errorf("label-only money setting stood: %q", m.Setting)
+		}
 	}
 }
 

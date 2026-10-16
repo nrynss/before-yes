@@ -1,0 +1,9 @@
+{
+  "text": "{\n  \"reasons\": [\n    {\n      \"area\": \"contact\",\n      \"reason\": \"A forum post reports that online multiplayer lets kids chat with strangers who may have dangerous intentions. The Xbox help article says parents can set \\\"You can join multiplayer games\\\" to \\\"Block\\\" under Xbox Privacy to stop access.\"\n    },\n    {\n      \"area\": \"money\",\n      \"reason\": \"A review reports that not everything is free and players must pay for Minecoins and add-ons. Microsoft help says enabling \\\"Ask to Buy\\\" under Spending requires parental approval for any in-app purchase.\"\n    },\n    {\n      \"area\": \"content\",\n      \"reason\": \"A Reddit user reports Minecraft has no blood, gore, swearing, or graphic weaponry. The store listing gives an age rating of 9+.\"\n    }\n  ]\n}",
+  "input_tokens": 1333,
+  "output_tokens": 180,
+  "price_nano": 1873000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

@@ -1,0 +1,9 @@
+{
+  "text": "{\n  \"grades\": [\n    {\n      \"area\": \"contact\",\n      \"level\": \"flag\",\n      \"reason\": \"A parent reports strangers can message or voice chat with children by default, and no parental control shuts that door.\",\n      \"setting\": \"\",\n      \"findings\": [\"F77\"]\n    },\n    {\n      \"area\": \"money\",\n      \"level\": \"ok\",\n      \"reason\": \"Reviews and the App Store listing say the app is completely free with no in-app purchases.\",\n      \"setting\": \"\",\n      \"findings\": [\"F9\", \"F42\", \"F143\"]\n    },\n    {\n      \"area\": \"data\",\n      \"level\": \"ok\",\n      \"reason\": \"Parent reviews and Apple's privacy label indicate the app is free, ad-free, and does not link data to the child's identity or track them.\",\n      \"setting\": \"\",\n      \"findings\": [\"F10\", \"F11\", \"F144\"]\n    },\n    {\n      \"area\": \"age_gating\",\n      \"level\": \"ok\",\n      \"reason\": \"The app allows multiple child profiles and is rated 4+; first-hand reports of older children finding it too easy do not show the age gate failing for a 5-year-old.\",\n      \"setting\": \"\",\n      \"findings\": [\"F1\"]\n    },\n    {\n      \"area\": \"content\",\n      \"level\": \"flag\",\n      \"reason\": \"A parent reports their child encountered scary Halloween images of devil faces and bound men, which is horror content unsuitable for a 5-year-old.\",\n      \"setting\": \"\",\n      \"findings\": [\"F8\"]\n    }\n  ]\n}",
+  "input_tokens": 14105,
+  "output_tokens": 9870,
+  "price_nano": 43715000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

@@ -1,0 +1,9 @@
+{
+  "text": "{\n  \"grades\": [\n    {\n      \"area\": \"contact\",\n      \"level\": \"flag\",\n      \"reason\": \"Parents report strangers can message and voice chat with children, and parental controls do not fully block mini-game chat or sign-based communication.\",\n      \"setting\": \"\",\n      \"findings\": [\"F16\", \"F70\", \"F85\", \"F86\"]\n    },\n    {\n      \"area\": \"money\",\n      \"level\": \"flag\",\n      \"reason\": \"The store listing confirms loot boxes, and parents report aggressive promotion of Robux through limited-time events and social pressure with no setting to remove the pressure.\",\n      \"setting\": \"\",\n      \"findings\": [\"F48\", \"F124\", \"F131\", \"F19\"]\n    },\n    {\n      \"area\": \"data\",\n      \"level\": \"flag\",\n      \"reason\": \"The privacy policy reserves the right to sell children's data and share it for advertising, and parents report biometric data is sent to third parties with no fixed retention period.\",\n      \"setting\": \"\",\n      \"findings\": [\"F51\", \"F52\", \"F53\", \"F83\"]\n    },\n    {\n      \"area\": \"age_gating\",\n      \"level\": \"flag\",\n      \"reason\": \"Parents and reviewers report the age gate misidentifies children's ages, cannot be corrected, and fails to prevent young children from mixing with teens and adults.\",\n      \"setting\": \"\",\n      \"findings\": [\"F116\", \"F134\", \"F18\", \"F33\"]\n    },\n    {\n      \"area\": \"content\",\n      \"level\": \"flag\",\n      \"reason\": \"Parents and reviewers report young children encounter sexual content, extreme violence, and horror in games rated for young ages, and predators operate on the platform.\",\n      \"setting\": \"\",\n      \"findings\": [\"F14\", \"F74\", \"F90\", \"F96\"]\n    }\n  ]\n}",
+  "input_tokens": 19534,
+  "output_tokens": 9915,
+  "price_nano": 49279000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

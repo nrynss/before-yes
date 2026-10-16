@@ -1,0 +1,9 @@
+{
+  "text": "{\n  \"reasons\": [\n    {\n      \"area\": \"content\",\n      \"reason\": \"No cited source reports a concrete encounter with unsuitable material; the review describes a positive experience, the help article notes a seasonal-theme toggle, and the store lists a 4+ age rating.\"\n    }\n  ]\n}",
+  "input_tokens": 1391,
+  "output_tokens": 65,
+  "price_nano": 1586000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

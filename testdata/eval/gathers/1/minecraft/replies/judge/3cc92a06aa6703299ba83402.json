@@ -1,0 +1,9 @@
+{
+  "text": "{\n  \"reasons\": [\n    {\n      \"area\": \"content\",\n      \"reason\": \"A reviewer says \\\"I get to destroy things and build and kill i likely\\\" describing core gameplay actions within the rated fantasy violence.\"\n    }\n  ]\n}",
+  "input_tokens": 1388,
+  "output_tokens": 53,
+  "price_nano": 1547000,
+  "measured": true,
+  "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+  "finish_reason": "stop"
+}

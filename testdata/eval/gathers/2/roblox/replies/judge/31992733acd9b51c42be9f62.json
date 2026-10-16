@@ -1,8 +1,0 @@
-{
-  "text": "{\"reason_supported\": false, \"explanation\": \"The phrase 'chats in specific mini-games cannot be disabled' is presented as a general capability, but the forum quote states only that these chats 'cannot be disabled'—it does not confirm they remain active despite user settings or constitute a functional bypass. Without evidence that the restriction exists and is overridden, the claim of a working bypass lacks direct support.\"}",
-  "input_tokens": 1211,
-  "output_tokens": 86,
-  "price_nano": 440700,
-  "measured": true,
-  "model": "nvidia/nemotron-3-super-120b-a12b"
-}
