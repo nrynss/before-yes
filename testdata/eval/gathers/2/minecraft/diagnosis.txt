@@ -10,6 +10,7 @@ diagnose Minecraft age 9 verdict no findings 148 (conflict pass replaced the con
   money  risks 31 mitigations 0 other 7
     judge flag setting "" cited 5 [f_bbdd451071f6eabc f_4f0d24b3b6bb0948 f_5adae5391d64ec0f f_197d5537975444c2 f_52134516877ae723]
     card flag setting ""
+    gate money.flag_confirmed flag -> flag findings [f_bbdd451071f6eabc f_4f0d24b3b6bb0948 f_5adae5391d64ec0f f_197d5537975444c2 f_52134516877ae723]
     check stood
     entail meets_definition=true reason_supported=true
     reason Multiple reviewers report being scammed while attempting purchases: one paid $1.09 for a mod but received nothing and had to pay $15.99 more, another aged 10 spent all birthday money on 10,000 Minecoins feeling scammed, a third was repeatedly charged $40 total for a failed $6.99 villager add-on purchase, and a fourth states 'I Bought Minecoins it scam me'.
@@ -39,6 +40,7 @@ diagnose Minecraft age 9 verdict no findings 148 (conflict pass replaced the con
     first-pass fallback: the conflict pass's grade was made unknown by the checks, so the first pass's grade stands
     judge (first pass) flag setting "" cited 1 [f_c9072b9921500c3f]
     card flag setting ""
+    gate content.flag_confirmed flag -> flag findings [f_c9072b9921500c3f]
     check stood
     entail meets_definition=true reason_supported=true
     reason A reviewer reports the game called them the n word, which is a racist slur.

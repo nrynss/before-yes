@@ -1540,14 +1540,15 @@ func waitCheckDone(t *testing.T, env *testServerEnv, cid string) map[string]any 
 var segRefLine = regexp.MustCompile(`(?m)^\[([RD]\d+)\] \(`)
 var findingID = regexp.MustCompile(`id=(\S+) area=contact`)
 
-// flagReader reports one contact risk per segment, quoting the policy.
+// flagReader reports one contact risk per segment, quoting the policy text
+// the test sets (the rule gate needs a quote about strangers reaching a child).
 type flagReader struct{ fakeChatter }
 
 func (c *flagReader) Chat(ctx context.Context, msgs []model.Message, opts model.Options) (model.Reply, error) {
 	user := msgs[len(msgs)-1].Content
 	var out []finding.Raw
 	for _, m := range segRefLine.FindAllStringSubmatch(user, -1) {
-		out = append(out, finding.Raw{Ref: m[1], Area: "contact", Stance: "risk", Claim: "Chat is open", Quote: "chat is moderated and data is retained"})
+		out = append(out, finding.Raw{Ref: m[1], Area: "contact", Stance: "risk", Claim: "Chat is open", Quote: "strangers can chat with children"})
 	}
 	if out == nil {
 		out = []finding.Raw{}
@@ -1599,6 +1600,7 @@ func TestAlternativesFailureLoggedCardStored(t *testing.T) {
 	var logs lockedBuf
 	env.server.Log = slog.New(slog.NewTextHandler(&logs, nil))
 	env.searcher.failQuery = "safer "
+	env.searcher.pageText = "Full policy document: strangers can chat with children and data is retained."
 	p := env.server.Pipeline
 	p.Reader.Model = &flagReader{}
 	p.Judge.Model = &flagJudge{}

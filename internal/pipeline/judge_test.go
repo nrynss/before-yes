@@ -553,10 +553,13 @@ func TestRecordedRepliesGradesRestOnVerifiedQuotes(t *testing.T) {
 		// and content were all thin, and the verdict was unclear.)
 		{demos[1], 9, checklist.No, L(set, flag, unk, unk, unk, unk), []checklist.Area{"data", "age_gating"}},
 		// Khan (re-recorded): money is ok on the listing's price line and the
-		// developer's own words; contact, data, age_gating and content are
-		// thin or unknown. Four unknown areas make the verdict unclear.
-		// (Before: money unknown and thin areas were age_gating and content.)
-		{demos[2], 5, checklist.Unclear, L(unk, ok, unk, unk, unk, unk), []checklist.Area{"contact", "data", "age_gating", "content"}},
+		// developer's own words; contact, age_gating and content are thin or
+		// unknown. The rule gate raises data to ok: the listing's privacy
+		// label says "Data Not Linked to You" and no quote reports selling,
+		// ad tracking or a breach (data.label_not_linked). Contact unknown
+		// keeps the verdict unclear. (Before the gate: data was thin, so
+		// four areas were unknown.)
+		{demos[2], 5, checklist.Unclear, L(unk, ok, ok, unk, unk, unk), []checklist.Area{"contact", "age_gating", "content"}},
 	}
 	tokenFactory := func(on bool) map[string]any {
 		return map[string]any{"chat_template_kwargs": map[string]any{"enable_thinking": on}}
@@ -1114,7 +1117,7 @@ func TestFlagStandsWhenTheReasonRunsPastTheQuotes(t *testing.T) {
 			Quote:  "Parents can turn on Ask to Buy so every purchase needs approval",
 			Source: finding.Source{Kind: KindStore}},
 		{ID: "f_data", Area: checklist.Data, Stance: finding.Risk,
-			Quote:  "A partner stores the child's photos and does not say for how long.",
+			Quote:  "A partner stores the child's photos and a data breach exposed them.",
 			Source: finding.Source{Kind: KindPolicy}},
 	}
 	reply := gradesJSON(t,

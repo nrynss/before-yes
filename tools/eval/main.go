@@ -85,27 +85,28 @@ type AreaResult struct {
 
 // Result compares one title and age.
 type Result struct {
-	Title        string            `json:"title"`
-	Grades       []checklist.Grade `json:"grades"`
-	EvidenceHash string            `json:"evidence_sha256"`
-	Age          int               `json:"age"`
-	Models       string            `json:"models"`
-	WantVerdict  checklist.Verdict `json:"want_verdict"`
-	GotVerdict   checklist.Verdict `json:"got_verdict"`
-	Areas        []AreaResult      `json:"areas"`
-	Agreed       int               `json:"agreed"`
-	DecisiveHit  int               `json:"decisive_found"`
-	DecisiveAll  int               `json:"decisive_total"`
-	Findings     int               `json:"findings"`
-	Drops        finding.Drops     `json:"drops"`
-	DropRate     float64           `json:"drop_rate"`
-	Chunks       int               `json:"chunks"`
-	FailedChunks int               `json:"failed_chunks"`
-	Missing      []string          `json:"missing_kinds"`
-	Credits      int               `json:"tavily_credits"`
-	ReadNano     int64             `json:"read_cost_nano"`
-	JudgeNano    int64             `json:"judge_cost_nano"`
-	Err          string            `json:"error,omitempty"`
+	Title        string                `json:"title"`
+	Grades       []checklist.Grade     `json:"grades"`
+	Gate         []pipeline.GateAction `json:"gate"`
+	EvidenceHash string                `json:"evidence_sha256"`
+	Age          int                   `json:"age"`
+	Models       string                `json:"models"`
+	WantVerdict  checklist.Verdict     `json:"want_verdict"`
+	GotVerdict   checklist.Verdict     `json:"got_verdict"`
+	Areas        []AreaResult          `json:"areas"`
+	Agreed       int                   `json:"agreed"`
+	DecisiveHit  int                   `json:"decisive_found"`
+	DecisiveAll  int                   `json:"decisive_total"`
+	Findings     int                   `json:"findings"`
+	Drops        finding.Drops         `json:"drops"`
+	DropRate     float64               `json:"drop_rate"`
+	Chunks       int                   `json:"chunks"`
+	FailedChunks int                   `json:"failed_chunks"`
+	Missing      []string              `json:"missing_kinds"`
+	Credits      int                   `json:"tavily_credits"`
+	ReadNano     int64                 `json:"read_cost_nano"`
+	JudgeNano    int64                 `json:"judge_cost_nano"`
+	Err          string                `json:"error,omitempty"`
 }
 
 func main() {
@@ -382,6 +383,7 @@ const quoteCover = 2.0 / 3
 func compare(res *Result, e Expectation, card pipeline.Card, ev pipeline.Evidence) {
 	res.GotVerdict = card.Verdict
 	res.Grades = card.Grades
+	res.Gate = card.Gate
 	evidenceJSON, _ := json.Marshal(ev.Findings)
 	res.EvidenceHash = fmt.Sprintf("%x", sha256.Sum256(evidenceJSON))
 	got := map[checklist.Area]checklist.Grade{}

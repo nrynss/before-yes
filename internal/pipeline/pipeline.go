@@ -341,7 +341,11 @@ func (p *Pipeline) Decide(ctx context.Context, ev Evidence, age int, ref string)
 	if p.Judge == nil || p.Judge.Model == nil {
 		return Card{}, errors.New("pipeline: a judge is required")
 	}
-	j, err := p.Judge.Judge(ctx, ev.Title, age, ref, ev.Findings, ev.Stats.MissingKinds)
+	var names []string
+	if ev.App != nil {
+		names = append(names, ev.App.Name, ev.App.Seller)
+	}
+	j, err := p.Judge.Judge(ctx, ev.Title, age, ref, ev.Findings, ev.Stats.MissingKinds, WithDeveloper(names...))
 	if err != nil {
 		return Card{}, err
 	}
@@ -361,6 +365,7 @@ func (p *Pipeline) Decide(ctx context.Context, ev Evidence, age int, ref string)
 		Verdict:          j.Verdict,
 		Grades:           j.Grades,
 		ThinAreas:        j.Thin,
+		Gate:             j.Gate,
 		Settings:         checklist.Settings(j.Grades),
 		Findings:         cited(ev.Findings, j.Grades),
 		Alternatives:     []Alternative{},

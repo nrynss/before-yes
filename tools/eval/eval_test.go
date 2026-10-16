@@ -168,15 +168,23 @@ func TestReplayMissesReported(t *testing.T) {
 // (an unparseable entailment reply never demotes). The shorter-sibling
 // rule (a page naming "Khan Academy" and never "Khan Academy Kids") moved
 // only Khan's chunks again (19 to 13): five more pages leave the reading.
+// The rule gate (internal/pipeline/rulegate.go) moved three grade counts, on
+// the stand-in's keyword findings: Khan 3 to 4 (data raised to ok on the
+// listing's "Data Not Linked to You", which the hand-written expectation
+// wants; content flag vetoed to unknown, which it does not); Minecraft 0 to 1
+// (the developer-record flag has no enforcement quote, so unknown, as
+// expected); Roblox 4 to 3 (data flag vetoed to unknown, as expected; the
+// developer-record flag vetoed and contact capped to a setting, neither as
+// expected). Total 7 to 8.
 func TestStandinBaselinePinned(t *testing.T) {
 	rs, err := evaluate(root, "standin")
 	if err != nil {
 		t.Fatal(err)
 	}
 	want := map[string][4]int{ // agreed/6, decisive found/total, chunks
-		"Roblox":            {4, 3, 6, 36},
-		"Minecraft":         {0, 2, 5, 45},
-		"Khan Academy Kids": {3, 1, 5, 13},
+		"Roblox":            {3, 3, 6, 36},
+		"Minecraft":         {1, 2, 5, 45},
+		"Khan Academy Kids": {4, 1, 5, 13},
 	}
 	agreed, found, total := 0, 0, 0
 	for _, r := range rs {
@@ -190,8 +198,8 @@ func TestStandinBaselinePinned(t *testing.T) {
 		}
 		agreed, found, total = agreed+r.Agreed, found+r.DecisiveHit, total+r.DecisiveAll
 	}
-	if agreed != 7 || found != 6 || total != 16 {
-		t.Errorf("total grades %d/18, quotes %d/%d; pinned 7/18, 6/16", agreed, found, total)
+	if agreed != 8 || found != 6 || total != 16 {
+		t.Errorf("total grades %d/18, quotes %d/%d; pinned 8/18, 6/16", agreed, found, total)
 	}
 }
 

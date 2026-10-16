@@ -8,23 +8,22 @@ diagnose Khan Academy Kids age 5 verdict no findings 146 (conflict pass replaced
     quote f_e54d9aeff8acb9f4 risk forum: Parents must allow access to their device's microphone for some activities to work fully.
     quote f_60d4826ad9d69d44 risk rating: My 4-year old is working on Khan Academy Kids app this morning and loving it. The combo of school facts along with social/emotional content is outstanding.
   money  risks 3 mitigations 4 other 10
-    conflict pass ok setting "" cited 2 [f_1743367afa774fb8 f_b42defec3738fd8b]
-    first-pass fallback: the conflict pass's grade was made unknown by the checks, so the first pass's grade stands
-    judge (first pass) ok setting "" cited 0 []
+    judge ok setting "" cited 2 [f_1743367afa774fb8 f_b42defec3738fd8b]
     card ok setting ""
+    gate money.free_no_in_app_purchases ok -> ok findings [f_b42defec3738fd8b]
     check stood
     reason The rating states the mobile app is 100% free with no ads or subscriptions.
     quote f_1743367afa774fb8 mitigation rating: Is Khan Academy Kids really free? Yes — the mobile app is 100% free, with no ads or subscriptions.
     quote f_b42defec3738fd8b mitigation store: Reading & Math Learning Games Free
   data  risks 10 mitigations 8 other 7
     judge flag setting "" cited 3 [f_b677ef9f38aa3b5b f_cf3c5c65071d1c6e f_73d64adad97808eb]
-    card flag setting ""
+    card ok setting ""
+    gate data.flag_without_basis flag -> unknown findings []
+    gate data.label_not_linked unknown -> ok findings [f_95d0754500916e2d]
     check stood
     entail meets_definition=true reason_supported=true
-    reason Regulators allege the app collected children's names, email addresses, and birth dates without parental consent.
-    quote f_b677ef9f38aa3b5b risk forum: Read the developer's [privacy policy](https://www.khanacademy.org/about/privacy-policy) for details on how your (or your kids') information is collected, used, and shared and any choices you may have in the matter, and note that privacy policies and terms of service frequently change.
-    quote f_cf3c5c65071d1c6e risk news: regulators allege that the app collected children's names, email addresses and birth dates without their parents' consent.
-    quote f_73d64adad97808eb risk rating: Parents must provide an email address and confirm the address through their email account to begin using the app. Once in, parents can create multiple user accounts with name, avatar, and age. Kids can follow a learning path, which automatically presents varied activities based on age and past performance, or browse the database for videos, games, books, songs, and more. Parents must allow access to their device's microphone for some activities to work fully. Read the developer's [privacy policy…
+    reason The App Store privacy label says the developer reports no data linked to the user and none used to track them, and no checked quote reports data being sold, tracked for ads or shared for marketing.
+    quote f_95d0754500916e2d mitigation store: Data Not Linked to You The following data, which may be collected but is not linked to your identity, may be used for the following purposes:
   age_gating  risks 14 mitigations 1 other 5
     judge ok setting "" cited 2 [f_41c741e625336937 f_44b2975820f1807f]
     card ok setting ""
@@ -35,6 +34,7 @@ diagnose Khan Academy Kids age 5 verdict no findings 146 (conflict pass replaced
   content  risks 19 mitigations 3 other 38
     judge flag setting "" cited 1 [f_0fcffd8da2e19a5b]
     card flag setting ""
+    gate content.flag_confirmed flag -> flag findings [f_0fcffd8da2e19a5b]
     check stood
     entail meets_definition=true reason_supported=true
     reason A review reports a grid of scary devil faces and men tied up with mouths taped shut appeared for about 15 seconds while a child worked on math.

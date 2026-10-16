@@ -129,6 +129,10 @@ type Card struct {
 	// verified quote backed the judge's reason or setting (T3.9). Omitted
 	// when empty.
 	ThinAreas []checklist.Area `json:"thin_areas,omitempty"`
+	// Gate lists what the rule gate did to the grades: each veto, cap, raise
+	// and confirmation, with the rule, the levels and the findings it rests
+	// on (rulegate.go). Omitted when the gate did nothing.
+	Gate []GateAction `json:"gate,omitempty"`
 	// Settings are the settings to turn on, from ok_with_setting grades.
 	Settings []string `json:"settings"`
 	// Findings holds the findings the grades cite plus every risk finding.

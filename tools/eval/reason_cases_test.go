@@ -9,6 +9,8 @@ import (
 	"slices"
 	"strings"
 	"testing"
+
+	"github.com/nrynss/before-yes/internal/checklist"
 )
 
 func TestReasonCasesRejectUnverifiedSource(t *testing.T) {
@@ -83,6 +85,27 @@ func assertReasonOnlyResults(t *testing.T, before, after []Result) {
 		for j := range ag {
 			ag[j].Reason = ""
 		}
+		// The rule gate runs after the writer and may move a grade (a veto,
+		// a cap or a raise, and a raise can follow a veto). The recordings
+		// predate it, so an area the gate changed is checked against its
+		// actions (first from, last to) and not against the old grade.
+		first, last := map[checklist.Area]checklist.Level{}, map[checklist.Area]checklist.Level{}
+		for _, act := range a.Gate {
+			if _, ok := first[act.Area]; !ok {
+				first[act.Area] = act.From
+			}
+			last[act.Area] = act.To
+		}
+		for j := range ag {
+			area := ag[j].Area
+			if first[area] == "" || first[area] == last[area] {
+				continue
+			}
+			if bg[j].Level != first[area] || ag[j].Level != last[area] {
+				t.Fatalf("%s %s: gate actions %s -> %s, grades %s -> %s", b.Title, area, first[area], last[area], bg[j].Level, ag[j].Level)
+			}
+			bg[j] = ag[j]
+		}
 		if !reflect.DeepEqual(bg, ag) {
 			t.Fatalf("non-prose grade drift %s: %+v %+v", b.Title, bg, ag)
 		}
@@ -135,11 +158,13 @@ func TestPublishedParentReasonsRegression(t *testing.T) {
 				if fell {
 					continue
 				}
-				// Khan gather 1 data: the judge cites a news hit about another
-				// app (the FTC and Weight Watchers' Kurbo); the reason says
-				// what that quote says. Before: it named COPPA and verification.
+				// Khan gather 1 data: the judge flagged on a news hit about
+				// another app (the FTC and Weight Watchers' Kurbo). The rule
+				// gate vetoed that flag (the quote does not name the title)
+				// and raised data to ok on the listing's privacy label; the
+				// card says so in the gate's own words.
 				if n == 1 && r.Title == "Khan Academy Kids" && g.Area == "data" {
-					if !strings.Contains(strings.ToLower(g.Reason), "regulators") || !strings.Contains(strings.ToLower(g.Reason), "consent") {
+					if !strings.HasPrefix(g.Reason, "The App Store privacy label says") {
 						t.Fatal(g.Reason)
 					}
 				}

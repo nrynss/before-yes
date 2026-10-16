@@ -75,6 +75,7 @@ func evaluateReasonCases(root, models string) ([]Result, error) {
 		got, err := (&pipeline.Judge{Model: judge, Meter: m, Entail: entailChatter(judge), Fast: fast, Think: think, ThinkMaxTokens: conflictMaxTokens}).Judge(context.Background(), c.Title, c.Age, "reason-case", c.Findings, nil)
 		r := Result{Title: c.Title, Age: c.Age, GotVerdict: got.Verdict, Findings: len(c.Findings), JudgeNano: int64(got.Cost)}
 		r.Grades = got.Grades
+		r.Gate = got.Gate
 		evidenceJSON, _ := json.Marshal(c.Findings)
 		r.EvidenceHash = fmt.Sprintf("%x", sha256.Sum256(evidenceJSON))
 		if err != nil {

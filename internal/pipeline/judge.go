@@ -217,6 +217,8 @@ type Judgement struct {
 	// area's flag definition or the reason goes beyond the quotes (T3.10).
 	// The card carries it as ThinAreas.
 	Thin []checklist.Area
+	// Gate lists what the rule gate did to the grades, in order (rulegate.go).
+	Gate []GateAction
 	Cost cost.Price
 }
 
@@ -224,8 +226,9 @@ type Judgement struct {
 // findings pull both ways with thinking on, holds every grade to the
 // verified findings with checklist.Enforce, and computes the verdict with
 // checklist.Decide. missing names the source kinds that could not be read.
-// A failed conflict pass keeps the first grades.
-func (j *Judge) Judge(ctx context.Context, title string, age int, ref string, fs []finding.Finding, missing []string) (Judgement, error) {
+// A failed conflict pass keeps the first grades. The rule gate (ApplyRules)
+// runs last, after the parent-reason writer and before Decide; opts reach it.
+func (j *Judge) Judge(ctx context.Context, title string, age int, ref string, fs []finding.Finding, missing []string, opts ...Option) (Judgement, error) {
 	var out Judgement
 	if j.Model == nil || j.Meter == nil {
 		return out, errors.New("judge: a model and a meter are required")
@@ -319,11 +322,38 @@ func (j *Judge) Judge(ctx context.Context, title string, age int, ref string, fs
 			return out, err
 		}
 	}
+	// The rule gate decides last. It reads only the verified findings, so it
+	// can move a grade either way on what the quotes show, and every move is
+	// recorded.
+	if w, ok := ageWitnesses[checklist.AgeGating]; ok {
+		opts = append(slices.Clone(opts), withAgeWitness(w.Quote))
+	}
+	out.Grades, out.Gate = ApplyRules(title, age, out.Grades, fs, opts...)
+	out.Thin = gateThin(out.Thin, out.Grades, out.Gate)
 	out.Verdict, err = checklist.Decide(out.Grades)
 	if err != nil {
 		return out, fmt.Errorf("judge: %w", err)
 	}
 	return out, nil
+}
+
+// gateThin updates the thin areas after the rule gate: an area it vetoed to
+// unknown is thin (no verified quote backs a concern), and an area it raised
+// is no longer. Card order, each once.
+func gateThin(thin []checklist.Area, final []checklist.Grade, acts []GateAction) []checklist.Area {
+	vetoed := map[checklist.Area]bool{}
+	for _, a := range acts {
+		if a.To == checklist.Unknown && a.From != checklist.Unknown {
+			vetoed[a.Area] = true
+		}
+	}
+	var out []checklist.Area
+	for _, g := range final {
+		if g.Level == checklist.Unknown && (slices.Contains(thin, g.Area) || vetoed[g.Area]) {
+			out = append(out, g.Area)
+		}
+	}
+	return out
 }
 
 // answers reports whether grades holds at least one of areas.

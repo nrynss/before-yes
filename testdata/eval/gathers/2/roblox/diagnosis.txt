@@ -1,9 +1,8 @@
 diagnose Roblox age 9 verdict no findings 194 (conflict pass replaced the conflicted areas (an area the checks then made unknown may fall back to its first-pass grade))
   contact  risks 40 mitigations 13 other 1
-    conflict pass flag setting "" cited 3 [f_ac2eb7da6a842d59 f_371023fe16f1d604 f_ddb3aed4c8616169]
-    first-pass fallback: the conflict pass's grade was made unknown by the checks, so the first pass's grade stands
-    judge (first pass) flag setting "" cited 10 [f_3ef5c9130122d49b f_a8ef6e887203f7cd f_f96b271e3765562b f_371023fe16f1d604 f_ddb3aed4c8616169 f_4de2b30b34a4f3d2 f_106c6d12b6f2b8a2 f_0ccddeb5171ebfbc f_37c0009bbb68c5a0 f_a4c0bb9992fcd8cb]
+    judge flag setting "" cited 3 [f_ac2eb7da6a842d59 f_371023fe16f1d604 f_ddb3aed4c8616169]
     card flag setting ""
+    gate contact.flag_confirmed flag -> flag findings [f_371023fe16f1d604 f_ddb3aed4c8616169]
     check stood
     entail meets_definition=true reason_supported=true
     reason The cited sources raise a concern here. Read the source quotes before deciding.
@@ -11,10 +10,9 @@ diagnose Roblox age 9 verdict no findings 194 (conflict pass replaced the confli
     quote f_371023fe16f1d604 risk forum: even when chat is set to "no one," if a mini-game has chat built into the game itself, it can't be disabled.
     quote f_ddb3aed4c8616169 risk forum: Chatting on "signs" is another way that kids can get around parental controls that disable chats.
   money  risks 31 mitigations 2 other 4
-    conflict pass flag setting "" cited 4 [f_1368a2c5a6fe539a f_783661ae59b066c7 f_ef55d9331aff6121 f_838b9aee48cfadd9]
-    first-pass fallback: the conflict pass's grade was made unknown by the checks, so the first pass's grade stands
-    judge (first pass) flag setting "" cited 22 [f_1368a2c5a6fe539a f_ef55d9331aff6121 f_1f8ad057919885d2 f_617ef30b88662b85 f_9a1a43d74bbe0c48 f_64d1eb3d4486039b f_791797bbc36b740c f_547b1391cf50b698 f_200d681481990e7d f_3cff7153bdce5c84 f_833aceab249a7079 f_f43b16be6bef1237 f_90efd6ca24a551ae f_42b67fc5dd04653d f_8e4a6930c3fb0815 f_0eb92273a26218fe f_c835879aeeb9d335 f_838b9aee48cfadd9 f_9e293112f24a5877 f_f60e105b168af8bd f_783661ae59b066c7 f_b6787e32cc060591]
+    judge flag setting "" cited 4 [f_1368a2c5a6fe539a f_783661ae59b066c7 f_ef55d9331aff6121 f_838b9aee48cfadd9]
     card flag setting ""
+    gate money.flag_confirmed flag -> flag findings [f_1368a2c5a6fe539a]
     check stood
     entail meets_definition=true reason_supported=true
     reason A news report states a parent said their 10-year-old daughter spent more than $7,000 in two months despite attempts to limit purchases.
@@ -27,6 +25,7 @@ diagnose Roblox age 9 verdict no findings 194 (conflict pass replaced the confli
     first-pass fallback: the conflict pass's grade was made unknown by the checks, so the first pass's grade stands
     judge (first pass) flag setting "" cited 17 [f_642612c1692ab232 f_81873d6371e5c237 f_b4d5eaf5ea37a5fb f_3863f822c43eb156 f_37a8bd5d8f222dac f_47cc8d9af40dc95f f_93f7a30cf16fff06 f_e3ccb57519991f5a f_72df7212dd205b98 f_c6830954e456b0a2 f_bfd8eeb81a49ad17 f_d83477d60d3fd88e f_1a95672a7897ce7a f_1a91f32a9169665e f_6ccea0bf1a583a3e f_7fdb8d987e4ff574 f_be740391df21b575]
     card flag setting ""
+    gate data.flag_confirmed flag -> flag findings [f_81873d6371e5c237]
     check stood
     entail meets_definition=false reason_supported=false; entail meets_definition=true reason_supported=true
     reason A forum post states images used for age verification may be processed by third-party providers, but Roblox does not publicly guarantee a fixed retention period for the images of children.
@@ -44,10 +43,9 @@ diagnose Roblox age 9 verdict no findings 194 (conflict pass replaced the confli
     quote f_7fdb8d987e4ff574 risk rating: Users are free to opt-out of using facial age estimation if they are not comfortable, though Roblox does say that no information is saved or stored.
     quote f_be740391df21b575 risk news: Roblox told the BBC it is "disappointed" that it is being sued based on "misrepresentations and sensationalised claims". The company's spokesperson said in a statement that it shares Paxton's commitment to keeping children safe online and that it has introduced measures to remove bad actors and protect its users.
   age_gating  risks 18 mitigations 7 other 2
-    conflict pass flag setting "" cited 3 [f_f73b923a2223192e f_cc470501d4ba96a2 f_f27d3f03ad121edd]
-    first-pass fallback: the conflict pass's grade was made unknown by the checks, so the first pass's grade stands
-    judge (first pass) flag setting "" cited 17 [f_f73b923a2223192e f_4664135da69b100d f_dfef30c38968f70c f_8197a153550302ef f_de9b9f1b5ac6adeb f_d8950f2c1e34a1ef f_e35aa6158d65e9e5 f_c70fe6ae86dec525 f_979e8a567e65fc3b f_a1593284f949ef2a f_cc470501d4ba96a2 f_f27d3f03ad121edd f_1975b590b853b2c8 f_0589aecce0f71e51 f_86801b37f1e17275 f_ed2aac5c14c3bb92 f_db84dd461d903489]
+    judge flag setting "" cited 3 [f_f73b923a2223192e f_cc470501d4ba96a2 f_f27d3f03ad121edd]
     card flag setting ""
+    gate age_gating.flag_confirmed flag -> flag findings [f_f73b923a2223192e f_cc470501d4ba96a2 f_f27d3f03ad121edd]
     check stood
     age-gate event=wrong_age_assignment witness="if a four year old does it and it says that they are twenty five then what do they do" actual_age="four year old" assigned_age="twenty five"
     reason A review reports a four year old attempted face verification and the system assigned them an age of twenty five.
@@ -58,6 +56,7 @@ diagnose Roblox age 9 verdict no findings 194 (conflict pass replaced the confli
     judge flag setting "" cited 21 [f_99d787be8d0bf74c f_d4c614fe03358dea f_2b802b187656359b f_08f1157eb8532858 f_b12f60a545dad3a6 f_984749ba8671edf1 f_cff5ae07353ea541 f_7bfc294c87ff4e36 f_4132e355653730d0 f_cb8c641ae80b5f09 f_6fab8dae3bd61975 f_7552aad2b36d618c f_4bde3c145681082c f_5662cca1c891f2fa f_d473c3ff24182f62 f_8f1be93b269b5300 f_09c37db024437e51 f_807e706a86b8984f f_9a1ab141822489be f_3fb5e60ef6db480e f_9e293112f24a5877]
     citation citation outside the area: f_9e293112f24a5877 is in money
     card flag setting ""
+    gate content.flag_confirmed flag -> flag findings [f_99d787be8d0bf74c f_d4c614fe03358dea f_08f1157eb8532858 f_b12f60a545dad3a6 f_984749ba8671edf1 f_7bfc294c87ff4e36 f_4132e355653730d0 f_cb8c641ae80b5f09 f_6fab8dae3bd61975 f_7552aad2b36d618c f_4bde3c145681082c f_5662cca1c891f2fa f_d473c3ff24182f62 f_8f1be93b269b5300 f_09c37db024437e51 f_807e706a86b8984f]
     check stood
     entail meets_definition=true reason_supported=true
     reason A forum post states within seconds, the 'Street Code' game showed an intense, fiery car accident and prompted the player to decide whether to shoot or save an officer.
@@ -82,10 +81,9 @@ diagnose Roblox age 9 verdict no findings 194 (conflict pass replaced the confli
     quote f_9a1ab141822489be risk forum: Parents should be mindful that [cyberbullying](/node/84823) can still occur in these spaces, whether it's directed at your child or comes from your child, so it's important to stay involved and aware by having conversations with kids about their online behavior and how to react to others.
     quote f_3fb5e60ef6db480e risk forum: Parents should be mindful that [cyberbullying](/node/84823) can still occur in these spaces, whether it's directed at your child or comes from your child
   developer_record  risks 12 mitigations 2 other 3
-    conflict pass flag setting "" cited 3 [f_13ff2ba3714f5fe6 f_e204bd321f8845bc f_9b73e24e8700228c]
-    first-pass fallback: the conflict pass's grade was made unknown by the checks, so the first pass's grade stands
-    judge (first pass) flag setting "" cited 14 [f_13ff2ba3714f5fe6 f_8736d0e1e6498704 f_838b9aee48cfadd9 f_e204bd321f8845bc f_0f1760de4f440c84 f_f6bf1a99d221a93f f_9b73e24e8700228c f_622ea3ac7da8e963 f_936fa34c97679429 f_0ed3df61f79a71d4 f_aa9eaec0ec5b5fc2 f_2ce4fec7f41cb6ad f_82070b28854d06d1 f_9e49600efe60b36b]
+    judge flag setting "" cited 3 [f_13ff2ba3714f5fe6 f_e204bd321f8845bc f_9b73e24e8700228c]
     card flag setting ""
+    gate developer_record.flag_confirmed flag -> flag findings [f_13ff2ba3714f5fe6]
     check stood
     entail meets_definition=true reason_supported=true
     reason A news report states Texas Attorney General Ken Paxton says he has sued Roblox over 'flagrantly ignoring' safety laws and 'deceiving parents' about the dangers the online video gaming platform poses to young people.
