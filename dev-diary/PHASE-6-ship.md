@@ -114,6 +114,26 @@ Judging runs on our key. Set the host for it: demo cards precomputed, the daily 
 
 ---
 
+### T6.7: Alternatives on the demo cards (optional)
+```yaml
+requires:   T6.3
+fixture-ok: no (live checks)
+size:       S · mid
+owns:       testdata/demo-cards/, tools/eval (alternatives only)
+status:     not-started (optional; the user decides whether to run it)
+```
+The demo cards carry no safer alternatives: an alternative needs a live check, and the user stopped live runs. This task is the one exception, if the user chooses it.
+
+How alternatives work on `main` (T3.12): for a "no" or "yes with settings" card, one Tavily search ("safer <genre> like <title> for a <age> year old", about 1 credit) finds pages; a rule-based parser takes product names from them; each candidate, up to three, gets a full check (gather, Nano read, Ultra judge, about $0.11 and 9 Tavily credits each); only a candidate whose verdict beats the original's reaches the card (yes beats yes with settings beats no; unclear never does). Earlier live runs found candidates for Roblox and Khan but none that beat the original, and Roblox's candidates were Roblox experiences. The Nano-read finder (T3.13) was superseded and never merged.
+
+1. Run the alternatives step live for the two cards that can show one: Roblox (9) and Minecraft (9). Spend cap about $0.80 and 60 Tavily credits.
+2. A kept alternative and its own card are stored with the demo cards and loaded by `seed-cards`; the recompute test covers the original cards only, since an alternative's check is a live result.
+3. If no candidate beats the original, record that and change nothing.
+
+**Done when:** the run is reported with its spend, and any kept alternative opens from its demo card; or the user leaves this task unrun.
+
+---
+
 ## Exit Criteria
 
 - [ ] Hosted demo live, calling Token Factory at runtime.
@@ -122,3 +142,4 @@ Judging runs on our key. Set the host for it: demo cards precomputed, the daily 
 - [ ] Video public and under three minutes.
 - [ ] Submission complete on Devpost.
 - [ ] Judging posture set and every switch exercised.
+- [ ] Optional, if the user runs T6.7: alternatives on the demo cards.

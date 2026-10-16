@@ -184,7 +184,7 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 | P3 | 16 / 17 | Closed. T3.13 superseded (draft PR #36 closed unmerged). All exit criteria are ticked. The work after the task list (the Ultra judge, the rule gate, App Store facts, the controls search) is summarised under "Closed" in the phase file. |
 | P4 | 7 / 7 | Closed. `serve` runs the whole server, run end to end live; progress shows during a check and a late page catches up (T4.7). The live visitor-key check moves to P6. |
 | P5 | 9 / 9 | Closed. Every page is built and wired, and its text was rewritten with the user (T5.9); the rules are in `docs/voice.md`. |
-| P6 | 0 / 6 | Started: T6.3's cards are built and pinned; loading them waits for the deploy (T6.1). |
+| P6 | 0 / 7 | Started: T6.3's cards are built and pinned; loading them waits for the deploy (T6.1). T6.7 (alternatives on the demo cards) is optional and waits for the user. |
 
 ---
 
@@ -192,6 +192,7 @@ The demo is built around one moment. The policy says chat is filtered, but revie
 
 Newest first. One entry per closed task, finding, or split.
 
+- **T6.7 filed, optional.** Alternatives on the demo cards need live checks, which the user has stopped. T6.7 holds the option: run the alternatives step live for Roblox and Minecraft (about $0.80, 60 Tavily credits) and store any candidate that beats the original. The user decides whether to run it.
 - **T6.3 cards built, loading waits for T6.1.** The three demo cards are computed offline from gather 0 at the eval's ages and committed in `testdata/demo-cards/`: Roblox (9) **no** (money and content flagged), Minecraft (9) **yes with settings** (Xbox "You can join multiplayer games" set to "Block", "Ask to Buy", "Ask App Not to Track"), Khan Academy Kids (5) **yes**. `TestDemoCardsMatchReplay` recomputes them and fails on any difference; `cards.Store.Seed` and `before-yes seed-cards` load them idempotently and delete nothing; a web spec parses and renders each in both themes at phone and desktop width. No model or search call. Known limits: the cards carry no alternatives; `Recent` shows only the newest card per title and age, so a newer stored card at the same age would hide a demo card; settings read as the judge copied them from the quotes (Minecraft's money setting starts lower-case). No existing card store was found on this machine. Validated by the orchestrator: the diff, the card files read directly, the gate on `main` after the merge.
 - **T6.3 rewritten, by user decision.** Not a live precompute on the host: the three demo cards are computed offline from the recordings set (gather 0) by the current pipeline, pinned by a recompute test, and loaded with a `seed-cards` command so visitors browse them from "Previous checks" without spending. Alternatives and extra common titles are dropped. Claimed by the demo-cards agent.
 - **P4 and P5 closed.** Both phase files end with a "Closed" section. P4's live visitor-key check and the replacement of the server's stored cards move to P6. P5 notes the two card details added after its task list: the "Help page" source label and information-only rule checks.
