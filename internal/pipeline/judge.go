@@ -141,14 +141,31 @@ func judgePrompt(title string, age int, areas []checklist.Area, fs []finding.Fin
 	return b.String(), shortToReal
 }
 
+// ShortCitationIDs is the short-id map judgePrompt builds for the findings in
+// areas: each short id the prompt shows, to its real finding id. A diagnosis
+// reads a judge reply through it, so it maps the citations as Judge does. The
+// same findings and areas give the same map, whichever pass is asked.
+func ShortCitationIDs(areas []checklist.Area, fs []finding.Finding) map[string]string {
+	_, ids := judgePrompt("", 0, areas, fs, nil, false)
+	return ids
+}
+
+// MapShortCitation is the real finding id for one cited id: the map's entry
+// for a short id, or the id itself when the map has no such short id, so an
+// unknown id still fails the citation check.
+func MapShortCitation(shortToReal map[string]string, id string) string {
+	if real, ok := shortToReal[id]; ok {
+		return real
+	}
+	return id
+}
+
 func mapShortCitations(grades []checklist.Grade, shortToReal map[string]string) []checklist.Grade {
 	out := slices.Clone(grades)
 	for i := range out {
 		out[i].Findings = slices.Clone(out[i].Findings)
 		for n, id := range out[i].Findings {
-			if real, ok := shortToReal[id]; ok {
-				out[i].Findings[n] = real
-			}
+			out[i].Findings[n] = MapShortCitation(shortToReal, id)
 		}
 	}
 	return out
