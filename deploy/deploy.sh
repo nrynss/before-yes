@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Deploy Before Yes to the shared Hetzner box behind Traefik, with tenant.sh.
+# Deploy Before Yes to the shared Hetzner box behind Traefik (the tenant.sh pattern).
 #
 # Usage:
 #   deploy/deploy.sh [hostname]               build the current commit, ship it, run it
@@ -20,7 +20,7 @@ PORT="8080"
 DEFAULT_HOSTNAME="beforeyes.nryn.dev"
 REMOTE_ENV="/opt/before-yes/.env.deploy"
 VOLUME="beforeyes-data"
-TENANT_SH="${TENANT_SH:-$HOME/work/hetzner-hosting/tenant.sh}"
+
 SSH_KEY="${BEFORE_YES_SSH_KEY:-$HOME/.ssh/id_ed25519_hetzner}"
 
 if [[ -f "$ROOT/deploy/origin.env" ]]; then
@@ -78,15 +78,36 @@ fi
 echo "→ Ensuring the data volume exists"
 ssh_host "docker volume create $VOLUME >/dev/null"
 
-echo "→ Running $IMAGE behind Traefik with tenant.sh"
-FOLEYFLOW_HETZNER_HOST="$ORIGIN_IP" FOLEYFLOW_SSH_KEY="$SSH_KEY" \
-  "$TENANT_SH" "$NAME" "$HOSTNAME_ARG" "$PORT" "$IMAGE" \
-  --env-file "$REMOTE_ENV" -v "$VOLUME:/data"
+# The same container and Traefik labels tenant.sh sets, run here directly:
+# tenant.sh passes its Host rule to the remote shell inside double quotes, so
+# the backticks around the hostname run as a command and the rule comes out
+# as Host() with no host. Single quotes keep the backticks literal.
+echo "→ Running $IMAGE behind Traefik"
+ssh_host "docker network create proxy >/dev/null 2>&1 || true
+docker rm -f $NAME >/dev/null 2>&1 || true
+docker run -d --name $NAME --restart unless-stopped --network proxy \
+  --env-file '$REMOTE_ENV' -v '$VOLUME:/data' \
+  -l traefik.enable=true \
+  -l 'traefik.http.routers.$NAME.rule=Host(\`$HOSTNAME_ARG\`)' \
+  -l 'traefik.http.routers.$NAME.entrypoints=websecure' \
+  -l 'traefik.http.routers.$NAME.tls.certresolver=letsencrypt' \
+  -l 'traefik.http.services.$NAME.loadbalancer.server.port=$PORT' \
+  '$IMAGE' >/dev/null"
+echo "  router rule: $(ssh_host "docker inspect -f '{{ index .Config.Labels \"traefik.http.routers.$NAME.rule\" }}' $NAME")"
 
-echo "→ Checking /healthz on the origin (bypasses public DNS)"
-sleep 8
-ssh_host "curl -k -fsS --resolve ${HOSTNAME_ARG}:443:127.0.0.1 https://${HOSTNAME_ARG}/healthz" \
-  && echo "  healthz ok" || echo "  healthz not answering yet; retry in 30s, or check: docker logs $NAME"
+echo "→ Checking /healthz through Traefik on the origin (bypasses public DNS)"
+ok=""
+for _ in 1 2 3 4 5 6 7 8 9 10 11 12; do
+  sleep 10
+  if ssh_host "curl -k -fsS --resolve ${HOSTNAME_ARG}:443:127.0.0.1 https://${HOSTNAME_ARG}/healthz" >/dev/null 2>&1; then
+    ok=1; break
+  fi
+done
+if [[ -z "$ok" ]]; then
+  echo "error: /healthz did not answer through Traefik within two minutes; check: docker logs $NAME, docker logs traefik" >&2
+  exit 1
+fi
+echo "  healthz ok"
 
 echo "━━━ Deployed $IMAGE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo "  Next, if the DNS record is not there yet, add it in Cloudflare:"

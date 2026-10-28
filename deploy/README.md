@@ -57,7 +57,7 @@ deploy/deploy.sh
 The script:
 1. refuses a dirty git tree, then builds the image tagged `before-yes:<commit>`;
 2. copies the image to the box with `docker save | docker load` (no registry);
-3. runs it with `tenant.sh`, on the `proxy` network, with `--env-file` and the volume;
+3. runs it on the `proxy` network with the same Traefik labels as `tenant.sh` (quoted so the remote shell keeps the hostname), with `--env-file` and the volume, then waits up to two minutes for `/healthz` through Traefik and fails if it does not answer;
 4. checks `/healthz` on the box.
 
 ## 4. DNS record (Cloudflare, once)
