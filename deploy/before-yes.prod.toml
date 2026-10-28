@@ -1,0 +1,74 @@
+# Before Yes production settings, baked into the image as /app/before-yes.toml.
+# Based on before-yes.toml.example. This file holds REFERENCES to keys, never
+# values. The keys come from the container environment: deploy/deploy.sh passes
+# the host env file (/opt/before-yes/.env.deploy) with --env-file. See deploy/README.md.
+
+listen   = "0.0.0.0:8080"
+data_dir = "/data"
+web_dir  = "/app/web"
+
+# live = true runs real checks on Token Factory and Tavily.
+live = true
+
+country      = "us"
+review_pages = 10
+
+card_max_age_hours     = 168
+evidence_max_age_hours = 168
+
+# Judge switches, the same as before-yes.toml.example.
+judge_fast  = { chat_template_kwargs = { enable_thinking = false }, repetition_penalty = 1.1 }
+judge_think = { chat_template_kwargs = { enable_thinking = true }, temperature = 0.6, top_p = 0.95, repetition_penalty = 1.05 }
+
+# Reader: Nemotron 3 Nano on Token Factory, as before-yes.toml.example.
+[reader]
+provider   = "tokenfactory"
+base_url   = "https://api.tokenfactory.nebius.com/v1"
+model      = "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B"
+input_per_m  = 0.06
+output_per_m = 0.24
+max_tokens   = 8192
+per_minute   = 100
+
+[reader.extra]
+chat_template_kwargs = { enable_thinking = false }
+
+# Judge: Nemotron 3 Ultra on Token Factory, as before-yes.toml.example.
+[judge]
+provider   = "tokenfactory"
+base_url   = "https://api.tokenfactory.nebius.com/v1"
+model      = "nvidia/Nemotron-3-Ultra-550b-a55b"
+input_per_m  = 1.00
+output_per_m = 3.00
+max_tokens   = 16000
+per_minute   = 60
+
+# Spend ceilings, as before-yes.toml.example.
+[budget]
+model_usd              = 20
+tavily_credits_monthly = 900
+daily_fresh_checks     = 5
+
+# Key references: the environment variable named by var. Keel's env source
+# reads the process environment, which Docker fills from the host env file.
+[secrets.reader]
+source = "env"
+var    = "NEBIUS_KEY"
+read   = "at_use"
+
+[secrets.judge]
+source = "env"
+var    = "NEBIUS_KEY"
+read   = "at_use"
+
+[secrets.tavily]
+source = "env"
+var    = "TAVILY_KEY"
+read   = "at_use"
+
+# Optional gate passcode, left off as in before-yes.toml.example. To turn it on,
+# add BEFORE_YES_PASSCODE to the host env file and uncomment this table.
+# [gate.passcode]
+# source = "env"
+# var    = "BEFORE_YES_PASSCODE"
+# read   = "at_use"

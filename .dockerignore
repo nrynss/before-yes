@@ -1,0 +1,16 @@
+# Keep secrets, local state and build debris out of the build context.
+.git
+.claude
+.env
+.env.*
+!.env.example
+*.db
+*.db-wal
+*.db-shm
+data/
+scratch/
+before-yes.toml
+deploy/origin.env
+web/node_modules/
+web/build/
+web/.svelte-kit/
