@@ -342,7 +342,7 @@ func TestConfigCommandAndExample(t *testing.T) {
 	if err := os.WriteFile(envFile, []byte("NEBIUS_KEY=test-value-nebius\nTAVILY_KEY=test-value-tavily\n"), 0o600); err != nil {
 		t.Fatal(err)
 	}
-	text := strings.ReplaceAll(string(ex), "/home/nryn/work/before-yes/.env", envFile)
+	text := strings.ReplaceAll(string(ex), `path   = ".env"`, `path   = "`+envFile+`"`)
 	text = strings.Replace(text, `data_dir = "data"`, `data_dir = "`+filepath.Join(dir, "data")+`"`, 1)
 	path := filepath.Join(dir, "before-yes.toml")
 	if err := os.WriteFile(path, []byte(text), 0o600); err != nil {
