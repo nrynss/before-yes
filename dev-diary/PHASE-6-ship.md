@@ -19,14 +19,12 @@ parallel: low
 requires:   T4.4, T5.1, T0.2
 fixture-ok: no
 size:       M · mid
-owns:       deploy/, Makefile
-status:     not-started
+owns:       deploy/, Dockerfile, .dockerignore, the backup command in cmd/before-yes
+status:     in-review (files built and checked locally; the server step is the user's)
 ```
-One Go binary plus the built Chaaya app, on the existing Hetzner box behind Traefik, using `~/work/hetzner-hosting/tenant.sh`. Compute stays off the Nebius credit. Only the model call runs on Nebius, which the FAQ confirms is enough.
+One container on the existing Hetzner box behind Traefik, started by `~/work/hetzner-hosting/tenant.sh` with `--restart unless-stopped`, like the box's other apps. The image holds the Go binary and the built web app. Compute stays off the Nebius credit; only the model calls run on Token Factory. The host's keys sit in a `0600` env file (`NEBIUS_KEY`, `TAVILY_KEY`); the data directory is a Docker volume; a host cron runs `before-yes backup` nightly into the volume and keeps the newest 14. Production settings (`deploy/before-yes.prod.toml`) point the reader (Nano) and the judge (Ultra, with its sampling switches, pinned by a test) at Token Factory.
 
-A systemd unit, a settings file that references keys in a `0600` env file on the host, the data directory on persistent disk, and a nightly `sqlite.Backup`. Production settings point both roles at Token Factory.
-
-Read `~/.claude/CLAUDE.md` on systemd before writing the unit: `StartLimit*` keys go in `[Unit]`, and the runtime property is what gets verified.
+The URL is `beforeyes.nryn.dev`: a proxied Cloudflare A record to the box, already added. The box's address stays out of the repo; `deploy/deploy.sh` reads it from the gitignored `deploy/origin.env`. `deploy/README.md` is the runbook.
 
 **Done when:** The public URL serves the app, `/healthz` answers, a live check on a non-demo title completes on Token Factory, and the ledger shows the charge.
 
