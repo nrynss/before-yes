@@ -24,10 +24,12 @@ The sampling settings were needed because Ultra looped at temperature 0. Thinkin
 
 Why each model has its role: Nano is cheap enough to read everything, and the checklist needs that volume. Ultra makes the judgements, so it gets the most capable model.
 
+Before the judge sees anything, every finding's quote must appear in the source it names, after normalisation. This is a string match in code, not the model's word, and a finding that fails it is dropped.
+
 After the model steps, these checks run. The model cannot skip any of them.
 
 1. **Citation pruning.** A grade must cite verified findings from its own area. A bad citation id is removed. The grade stands while at least one verified, in-area citation remains. An "ok" grade with no citation becomes "not enough evidence".
-2. **Grounding.** A finding survives only if its quote appears in the source text it names, after normalisation. This is a string match, not the model's word.
+2. **Grounding.** A "needs a setting change" grade must name a setting that one of its cited control quotes names. A setting no quote names becomes "not enough evidence".
 3. **Entailment.** For each concern or setting grade, Ultra (thinking off) answers two questions: do the cited findings meet the area's definition for this child's age, and does the grade's reason say only what the quotes support. A "no" makes the grade "not enough evidence". A failed call keeps the grade and records the failure.
 4. **Rule gate.** Deterministic Go code, with no model call. It can veto, cap, confirm or raise a grade based on what the verified quotes say. Every action appears on the card in "About this check", under Rule checks, with the reason in plain words.
 5. **Decide.** `checklist.Decide` turns the six grades into the verdict. The verdict is computed from the grades, not generated.
