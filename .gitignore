@@ -10,3 +10,4 @@ web/build/
 node_modules/
 before-yes.toml
 .claude/worktrees/
+deploy/origin.env
