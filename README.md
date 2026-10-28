@@ -176,8 +176,8 @@ Then, from the repository root:
 pnpm --dir web install --frozen-lockfile
 pnpm --dir web build
 
-# 2. Settings. Copy the example, then point the three [secrets.*] path
-#    entries at your own .env. The example points at the author's machine.
+# 2. Settings. The example reads the keys from .env in the folder you run
+#    before-yes from, so run every command below from the repository root.
 cp before-yes.toml.example before-yes.toml
 
 # 3. Build the binary.
@@ -198,7 +198,7 @@ Two things to know:
 - `serve` reads `live` from `before-yes.toml`. With `live = true`, starting a check on a new title makes paid calls. Set `live = false` to browse the demo cards without spending.
 - `./before-yes check "Roblox" -age 9` runs a full check and spends. The offline replay runs no check: `go run ./tools/eval -models replay`.
 
-For a fresh clone, step 2 is the step most likely to fail. The `path` entries in `before-yes.toml.example` point at a file that will not exist on your machine.
+`before-yes config` lists every setting and whether each key resolved, without printing the keys. Run it first if a check fails to start.
 
 ## Deploying
 

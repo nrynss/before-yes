@@ -2,7 +2,8 @@
 #
 # This file holds REFERENCES to keys, never key values. Keel refuses a literal
 # secret here. Each [secrets.*] table names an env file and a variable inside it.
-# The keys themselves stay in /home/nryn/work/before-yes/.env (mode 0600, gitignored).
+# The keys themselves stay in .env in the repository root (mode 0600, gitignored);
+# the path is relative to the folder you run before-yes from.
 # See docs/keys.md for where each key comes from.
 
 # Where the server listens and where its data lives.
@@ -162,19 +163,19 @@ daily_fresh_checks     = 5
 # Key references. Each one names the env file, the variable inside it, and when to read it.
 [secrets.reader]
 source = "env_file"
-path   = "/home/nryn/work/before-yes/.env"
+path   = ".env"
 var    = "NEBIUS_KEY"
 read   = "at_use"
 
 [secrets.judge]
 source = "env_file"
-path   = "/home/nryn/work/before-yes/.env"
+path   = ".env"
 var    = "NEBIUS_KEY"
 read   = "at_use"
 
 [secrets.tavily]
 source = "env_file"
-path   = "/home/nryn/work/before-yes/.env"
+path   = ".env"
 var    = "TAVILY_KEY"
 read   = "at_use"
 
@@ -183,6 +184,6 @@ read   = "at_use"
 # to the env file before this reference will resolve.
 # [gate.passcode]
 # source = "env_file"
-# path   = "/home/nryn/work/before-yes/.env"
+# path   = ".env"
 # var    = "BEFORE_YES_PASSCODE"
 # read   = "at_use"
