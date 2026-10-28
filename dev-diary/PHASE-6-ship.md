@@ -20,7 +20,7 @@ requires:   T4.4, T5.1, T0.2
 fixture-ok: no
 size:       M · mid
 owns:       deploy/, Dockerfile, .dockerignore, the backup command in cmd/before-yes
-status:     in-review (files built and checked locally; the server step is the user's)
+status:     done
 ```
 One container on the existing Hetzner box behind Traefik, started by `~/work/hetzner-hosting/tenant.sh` with `--restart unless-stopped`, like the box's other apps. The image holds the Go binary and the built web app. Compute stays off the Nebius credit; only the model calls run on Token Factory. The host's keys sit in a `0600` env file (`NEBIUS_KEY`, `TAVILY_KEY`); the data directory is a Docker volume; a host cron runs `before-yes backup` nightly into the volume and keeps the newest 14. Production settings (`deploy/before-yes.prod.toml`) point the reader (Nano) and the judge (Ultra, with its sampling switches, pinned by a test) at Token Factory.
 
@@ -36,10 +36,10 @@ requires:   T3.6b, T6.1
 fixture-ok: no
 size:       M · frontier
 owns:       README.md, docs/
-status:     not-started
+status:     done
 ```
 The rules ask for the Nemotron use and the Token Factory help to be highlighted, so they come first:
-- **How Nemotron is used:** Nano reads every source into quoted findings, and Super judges the checklist, with thinking on for conflicted areas. Use real numbers from T3.6b: findings per title, quotes dropped, cost per check.
+- **How Nemotron is used:** Nano reads every source into quoted findings, and Ultra judges the checklist, with thinking on for conflicted areas, followed by the checks the model cannot skip and the rule gate. Use the current recorded numbers: findings per title, quotes dropped, cost per check (`docs/budget.md`, the gather-0 replay).
 - **Where Token Factory helped:** cost per check, the OpenAI-style API that made the switch two settings, and anything T2.1b found.
 
 Then: what it does, the checklist, why it is not "just use ChatGPT", the architecture diagram, how to run it locally, Keel and Chaaya as declared dependencies, and the Apache-2.0 licence.
@@ -54,7 +54,7 @@ requires:   T6.1 (to load them on the host)
 fixture-ok: yes (recorded gather and judge replies; no live call)
 size:       S · mid
 owns:       testdata/demo-cards/, the seed-cards command in cmd/before-yes, internal/cards (seeding only)
-status:     blocked (cards built and pinned; loading them on the host needs T6.1)
+status:     done
 ```
 Rewritten by user decision. Visitors and judges browse cards from the home page's "Previous checks" list without spending. Those cards are the three the current pipeline computes on the eval's recordings set (gather 0): Roblox **no**, Minecraft **yes with settings**, Khan Academy Kids **yes**. They come from the recorded evidence and judge replies, through the rule gate and `checklist.Decide`, never hand-written; a test recomputes them and fails if a stored file differs. A `seed-cards` command loads them into the host's card store, once, at unguessable ids. Nothing is re-run live: the user stopped further runs, and a live judge samples, so a re-run could disagree with the recordings. Alternatives and extra common titles are dropped, since they would need live runs. Old stored cards are not deleted; any replacement backs the store file up first.
 
@@ -134,9 +134,9 @@ How alternatives work on `main` (T3.12): for a "no" or "yes with settings" card,
 
 ## Exit Criteria
 
-- [ ] Hosted demo live, calling Token Factory at runtime.
-- [ ] README leads with Nemotron and Token Factory, using measured numbers.
-- [ ] Demo cards computed from the recordings and browsable from "Previous checks".
+- [x] Hosted demo live, calling Token Factory at runtime. (T6.1: https://beforeyes.nryn.dev; a live check of Duolingo ABC at 6 completed on Token Factory)
+- [x] README leads with Nemotron and Token Factory, using measured numbers. (T6.2; a fresh clone runs by following it)
+- [x] Demo cards computed from the recordings and browsable from "Previous checks". (T6.3, seeded on the host)
 - [ ] Video public and under three minutes.
 - [ ] Submission complete on Devpost.
 - [ ] Judging posture set and every switch exercised.
