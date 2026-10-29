@@ -24,11 +24,15 @@ Best Use of Tavily
 
 ### Inspiration
 
-A parent gets asked "can I have Roblox?" several times a week, each time about a different title. The answers are spread across a privacy policy nobody reads, the terms of service, hundreds of reviews, parent forums and the occasional regulator's fine. A chatbot gives a fluent summary of a few of those pages, differently each time, and does not say where any claim came from.
+I am a father of two, aged 9 and 7. I work deep in technology, and I still find it hard to know what my kids play. My wife and relatives find it much harder. Protecting our children in this day and age is important. A healthy child needs boundaries. Getting hooked on the wrong app or game can give a child trauma and open them to abuse.
+
+News shows why parents worry. [NBC Chicago](https://www.nbcchicago.com/consumer/fortnite-video-game-maker-hit-with-largest-ftc-fine-after-allegedly-putting-kids-at-risk-using-unfair-payment-practices/3025838/), 19 Dec 2022, reports the FTC's record Epic Games settlement over Fortnite. Status: settled. [FOX 4](https://www.fox4news.com/news/ken-paxton-texas-ag-lawsuit-roblox-childrens-safety), 6 Nov 2025, reports Texas's lawsuit against Roblox over child safety. Status: an allegation, not a finding. [The Associated Press via WTOP](https://wtop.com/national/2026/03/new-mexico-jury-finds-meta-violated-consumer-protection-law-at-trial-about-child-safety), 25 Mar 2026, reports a New Mexico jury found Meta violated child safety law and ordered $375 million. Meta says it will appeal.
+
+A parent like me gets asked "can I have Roblox?" several times a week, each time about a different title. The answers are spread across a privacy policy nobody reads, the terms of service, hundreds of reviews, parent forums and the occasional regulator's fine. A chatbot gives a fluent summary of a few of those pages, differently each time, and does not say where any claim came from.
 
 Before Yes reads the whole public record for one title and one child's age. It returns a verdict, and each concern links to the quote it rests on.
 
-<!-- source: BRIEF.md, "Problem" and "Against just use ChatGPT" -->
+<!-- source: the author's own words; ~/work/demo-shoot/before-yes/evidence/sources.md (cases 02, 05, 06); docs/video-script.md, "Opening screenshots"; BRIEF.md, "Problem" and "Against just use ChatGPT" -->
 
 ### What it does
 
