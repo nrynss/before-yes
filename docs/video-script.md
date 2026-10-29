@@ -1,66 +1,94 @@
 # Before Yes: demo video script
 
-The demo video is music with captions and no voiceover. It runs 1 minute 51 seconds as rendered, under the 3-minute limit. It shows the real hosted app at https://beforeyes.nryn.dev, recorded at 1920×1080, plus title cards drawn for the film. No third-party logos or branded footage appear. App names appear only as data on the cards.
+The demo video is music with captions and title cards, and no voiceover. It runs 1 minute 50 seconds as rendered (109.6 seconds), under the 3-minute limit. It shows the hosted app at https://beforeyes.nryn.dev, recorded at 1920×1080, plus title cards drawn for the film. It names the sponsors, NVIDIA Nemotron and Nebius Token Factory, as text. No third-party logos or branded footage appear. App names appear only as data on the cards.
 
-The film is built from the working folder `~/work/demo-shoot/before-yes/`, which is outside the repository. Its `script.md` is the full script with the source of every number. This document gives the beats, the shot list and the rebuild steps.
+The film is built from the working folder `~/work/demo-shoot/before-yes/`, which is outside the repository. Its `script.md` holds the full script with the source of every number. This document gives the beats, the shot list, the live check and the rebuild steps.
 
 ## Story
 
-A child asks for three things. One is a yes. One is a yes with settings. One is a no. The side-by-side compare shows two cards at once. A short beat explains how a check works. The film closes on what one check costs in model spend, and on the fact that it works on any title now.
+Three requests from a child, each answered for that child's age: a yes, a yes with settings and a no. Between the title and the requests, a short technical section explains how a check works, from the gather to the code-side checks and the cost. The side-by-side compare shows two cards at once. The film closes on the sponsors, the author and the links.
 
 ## Beats
 
-Captions are at most 25 words, with no semicolons and no em dashes. Timings are the rendered length of each beat. Card beats carry their text on the card, not as a caption.
+Captions are at most 25 words, with no semicolons and no em or en dashes. Lengths are the rendered length of each beat.
 
 | # | Beat | Length | Picture | Caption or card text |
 |---|---|---|---|---|
-| 00 | title | 6.1s | Title card | "A child asks for an app or a game. The parent checks it before saying yes." |
-| 01 | asks | 8.1s | Card: three requests, for ages 5 and 9 | "Before Yes gives each request one answer for that child's age." |
-| 02 | how | 14.1s | Card: four steps and the models | "Tavily gathers the sources." "Nemotron-3 Nano reads every source." "Nemotron-3 Ultra judges." "Code checks every quote." Footer: "Every model call runs on Nebius Token Factory." |
-| 03 | form, Khan Academy Kids | 8.8s | Live home page, form filled, not submitted | "The parent types the title and the child's age, then starts the check." |
-| 04 | Khan Academy Kids card | 10.2s | Live card, verdict boxed | "Khan Academy Kids for age 5. Five areas are OK, so the answer is yes." |
-| 05 | form, Minecraft | 7.6s | Live home page, form filled, not submitted | "The next request is Minecraft, for a 9-year-old." |
-| 06 | Minecraft card | 11.1s | Live card, "Settings to change" boxed | "Minecraft for age 9 is yes, with these settings. The card names three settings to turn on." |
-| 07 | form, Roblox | 7.4s | Live home page, form filled, not submitted | "The last request is Roblox, also for a 9-year-old." |
-| 08 | Roblox card | 11.1s | Live card, "Why this is a concern" boxed in red | "Roblox for age 9 gets a no. The App Store listing says games may contain optional in-game purchases, including loot boxes." |
-| 09 | compare | 11.1s | Live compare page, purchases row boxed | "Side by side, the same six areas. On purchases, Roblox is a concern and Minecraft needs a setting." |
-| 10 | cost | 9.1s | Card: the cost and the claim | "$0.107", "Model spend for one fresh check, the mean of nine measured checks.", "It works on any title, now." |
-| 11 | outro | 6.5s | Card: name, tagline, address, licence | "beforeyes.nryn.dev", "Apache-2.0". Music fades out. |
+| 00 | title | 6.0s | Card | "Before Yes", "Research first. Yes next.", "A child asks for an app or a game. The parent checks it before saying yes.", "Built on NVIDIA Nemotron, served on Nebius Token Factory", "by Narayan SS" |
+| 01 | asks | 5.0s | Card: three requests | "Before Yes gives each request one answer for that child's age." |
+| 02 | gather | 8.0s | Card: eight searches by kind | "Tavily runs eight searches, by kind." App Store listing facts. |
+| 03 | read | 8.0s | Card: findings with quotes | "Nemotron-3 Nano reads every source, in chunks." Thinking off: 183 output tokens with thinking on, 4 with it off. |
+| 04 | quote | 7.0s | Card: drop-rate table | "Code checks every quote before the judge sees it." Dropped: 36.7%, 35.7%, 27.7%. |
+| 05 | judge | 8.0s | Card | "Nemotron-3 Ultra grades six areas." Sampling settings for each pass. "Ultra looped at temperature 0, so its calls set their own sampling." |
+| 06 | checks | 8.0s | Card | "Five checks the model cannot skip." Citation pruning, grounding, entailment, rule gate, `checklist.Decide`. |
+| 07 | cost | 7.0s | Card | "$0.107" model spend per fresh check, the mean of nine. Limits: $20 of model credit, 5 checks a UTC day, 900 Tavily credits a month. |
+| 08 | stack | 6.0s | Card | Go on Keel v0.7.3, Svelte 5 on Chaaya 0.4.2, SQLite, Nebius Token Factory. |
+| 09b | live verdict | 6.0s | Live card: YouTube Kids (7), verdict boxed red | "YouTube Kids for age 7 gets a no. Reviewers report sexual content, horror videos and violence." |
+| 09c | live cost | 6.0s | Live card: "AI processing cost" boxed | "About this check lists the model cost of this check: $0.09419692 USD." |
+| 10 | khan | 6.5s | Live card: Khan Academy Kids (5) | "Khan Academy Kids for age 5: five areas are OK, so the answer is yes." |
+| 11 | minecraft | 6.5s | Live card: Minecraft (9) | "Minecraft for age 9: yes, with settings. The card names three settings to turn on." |
+| 12 | roblox | 7.5s | Live card: Roblox (9), deciding quote boxed | "Roblox for age 9: no. The App Store listing says games may contain optional in-game purchases, including lootboxes." |
+| 13 | compare | 7.0s | Live compare page, purchases row boxed | "Side by side, on purchases Roblox is a concern and Minecraft needs a setting." |
+| 14 | outro | 7.0s | Card: sponsors, author, links | "Built on NVIDIA Nemotron, served on Nebius Token Factory", "by Narayan SS", beforeyes.nryn.dev, github.com/nrynss/before-yes, Apache-2.0. |
 
-Total: 111.4 seconds.
+Total: 109.6 seconds.
+
+## The live check
+
+One real check was run on the hosted site, from the home page: the title and age were typed, and "Check this title" was pressed.
+
+| Field | Value |
+|---|---|
+| Title | YouTube Kids |
+| Age | 7 |
+| Verdict | No (content concern: reviewers report sexual content, horror videos and violence) |
+| Model cost on the page | $0.09419692 USD |
+| Tavily credits on the page | 9 |
+| Fresh checks used | 1 of 2 allowed |
+
+The stored card is on the film (beats 09b and 09c). The progress stream is not. The recording of the check was made in one take, but the overlay's green wipe covered every frame of it, because the recorder never ran the wipe-out step. The take was dropped, and no second check was run, because the first one finished. The rule for a second check applies only when the first fails to finish.
+
+The card's own stats record 500 reviews from the App Store review feed. `README.md` says that feed returns nothing now. Check whether that is still true before the next film.
 
 ## Numbers on screen
 
 | Number | Where it comes from |
 |---|---|
-| Five areas are OK (04) | The Khan Academy Kids card: five of six area rows read "OK". |
-| Three settings (06) | The Minecraft card's "Settings to change" list. |
-| Six areas (09) | The compare page's six area rows, and "What it does" in `README.md`. |
-| Eight Tavily searches (02) | `README.md`, "What it does": "Each check runs eight Tavily searches, plus extracts." |
-| $0.107 and nine checks (10) | `README.md`, "Measurements": mean model cost per fresh check of $0.106976, the mean of nine checks, rounded for the card. Also `docs/budget.md`, "Current plan-6 figures". |
+| Eight searches, and their kinds (02) | `README.md`, "What it does" step 2; `internal/pipeline/gather.go`, `Plan` |
+| 183 and 4 output tokens (03) | `README.md`, "Where Token Factory helped"; `before-yes.toml.example`, `[reader.extra]` |
+| 36.7%, 35.7%, 27.7% (04) | `README.md`, Measurements, "Quotes dropped, gather 0" |
+| 60,000 characters per page (03, not on screen) | `README.md`, Measurements, "Text read per page" |
+| Repetition penalty 1.1; thinking-on temperature 0.6, top_p 0.95, repetition penalty 1.05 (05) | `before-yes.toml.example`, `judge_fast` and `judge_think` |
+| Five checks (06) | `README.md`, "How Nemotron is used", items 1 to 5 |
+| $0.107, the mean of nine checks (07) | `README.md`, Measurements; `docs/budget.md`, "Current plan-6 figures" ($0.106976) |
+| $20, 5 a UTC day, 900 Tavily credits a month (07) | `README.md`, Measurements, "Spend ceilings" |
+| Keel v0.7.3, Chaaya 0.4.2 (08) | `README.md`, "Dependencies"; `go.mod`; `web/package.json` |
+| Six areas (05, 13) | `README.md`, "What it does" |
+| $0.09419692 (09c) | The live card's "About this check" (`AI processing cost`), read from the stored card |
 
 ## Shot list
 
-The three demo cards are stored on the hosted site. Their ids come from `GET /api/cards`.
+The demo cards are stored on the hosted site. Their ids come from `GET /api/cards`.
 
 | Title (age) | Card id | Verdict |
 |---|---|---|
 | Khan Academy Kids (5) | `c_9ed68a4856013cae0e5c9d915ce2eb85` | Yes |
 | Minecraft (9) | `c_5e0e0212770a089dbe25827782909513` | Yes, with these settings |
 | Roblox (9) | `c_0ea8b8f1a19ba6588a12f6e3a437906c` | No |
+| YouTube Kids (7), the live check | `c_1eb9e27d825c31d5f104a4cc8dd1e64b` | No |
 
-- **Form beats (03, 05, 07):** the home page loads. The title and the age are typed one character at a time, through the input event only. The submit button is never pressed and no Enter is sent, so no check starts and nothing is spent.
-- **Card beats (04, 06, 08):** `/card/{id}` loads. The page zooms onto the evidence over about 1.5 seconds, and a box draws around it.
-- **Compare beat (09):** `/compare/{roblox id}/{minecraft id}` loads, and the purchases row is boxed.
-- **Title, how, cost and outro (00, 01, 02, 10, 11):** cards from `slides/cards.html` in the working folder.
+- **Card beats (10 to 12, 09b, 09c):** `/card/{id}` loads. The page zooms onto the evidence, and a box draws around it.
+- **Compare beat (13):** `/compare/{roblox id}/{minecraft id}` loads, and the purchases row is boxed.
+- **Title, tech, cost, stack and outro (00 to 08, 14):** cards from `slides/cards.html` in the working folder.
 
 ## Rebuilding the video
 
-Run these from `~/work/demo-shoot/before-yes/`. `README.md` in that folder has the details.
+Run these from `~/work/demo-shoot/before-yes/`. Its `README.md` has the details.
 
-1. `python3 gen_music.py` writes `music/before-yes-music.mp3`. Set `MUSIC_LENGTH_MS` to override its length. The ElevenLabs key comes from the environment or from `.env` files the script names. It is never printed.
-2. `node record.mjs` records every beat into `takes/`. Pass beat ids to record only some, for example `node record.mjs 04-khan,08-roblox`. This needs Google Chrome and the Playwright package in `/home/nryn/work/lambo/scripts/recording/`.
-3. `node assemble.mjs before-yes-demo.mp4` joins the takes, lays the music under them and writes `video/before-yes-demo.mp4`. It fails above 175 seconds.
-4. `ffprobe -v error -show_entries format=duration -of csv=p=0 video/before-yes-demo.mp4` confirms the length.
+1. `MUSIC_LENGTH_MS=190000 python3 gen_music.py` writes `music/before-yes-music.mp3`. Ask for longer than the film, because the assembly trims it. The ElevenLabs key is read from the environment or from the `.env` files the script names, and is never printed.
+2. `node record.mjs` records the card and demo beats into `takes/`. Beats with `"live": true` or `"skip": true` are skipped. Pass beat ids to record only some.
+3. `node live.mjs "<title>" <age> [take-id]` records a real check on the hosted site, in one take, with its event log. This spends model and Tavily credit. Run it only when a fresh check is wanted, and check the daily limit first. It must also run the overlay's wipe-out step, or the take is covered.
+4. `node assemble.mjs before-yes-demo.mp4` joins the takes and lays the music under them. A beat with `"length"` keeps only its first seconds. A live beat is cut from its event log, with its stage waits sped up, and `"skip": true` leaves it out. It fails above 175 seconds.
+5. `ffprobe -v error -show_entries format=duration -of csv=p=0 video/before-yes-demo.mp4` confirms the length.
 
-Re-recording a live beat is safe at any time. The cards and the three stored demo cards are read only.
+Re-recording a card or demo beat is safe at any time. Those pages are read only.
