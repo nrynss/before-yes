@@ -123,6 +123,7 @@ func (s *Server) GatedHandler(cfg GateConfig) (http.Handler, error) {
 	if err != nil {
 		return nil, fmt.Errorf("server: gate: %w", err)
 	}
+	checks = s.passcodeCounted(checks)
 	mux := http.NewServeMux()
 	mux.Handle("POST /api/checks", checks)
 	mux.Handle("/", inner)

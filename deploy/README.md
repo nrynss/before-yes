@@ -92,8 +92,9 @@ curl -s -o /dev/null -w '%{http_code}\n' https://beforeyes.nryn.dev/
 
 ## 7. Nightly backup
 
-The container runs `before-yes backup`, which copies both databases
-(`before-yes.db` for cards and the rest, `spend.db` for the spend meter) into
+The container runs `before-yes backup`, which copies each database
+(`before-yes.db` for cards and the rest, `spend.db` for the spend meter,
+`usage.db` for the usage counts) into
 `/data/backups/` using SQLite's own backup, then keeps the 14 newest copies of
 each. Run it nightly from cron on the box:
 
@@ -142,9 +143,38 @@ curl -s https://beforeyes.nryn.dev/healthz
 Restore only the file pairs you need. Use the same stamp for both files so the
 cards and the meter agree.
 
+## 11. Usage counts
+
+The owners can see whether people use the app. The server counts events per
+UTC day in `usage.db` under the data directory. Nothing else is stored: no IP
+addresses, no user agents, no titles, no ages, no keys, no cookies and no ids.
+The app sets no cookie and loads no browser storage or third-party script. A
+counter failure is logged at warn and never fails a request.
+
+The events and their meaning are in the README's "Usage counts" section. The
+counts are private: no HTTP route or page shows them.
+
+Read them from your workstation (needs ssh access to the box, as `deploy/seed.sh`
+does):
+
+```sh
+deploy/usage.sh             # the last 14 UTC days, newest first, with a totals row
+deploy/usage.sh -days 30    # any span from 1 to 3650 days
+```
+
+Or on the box: `docker exec beforeyes /app/before-yes usage -config /app/before-yes.toml`.
+Before any event is counted the command prints `no usage recorded yet`.
+
+`usage.db` is copied by the nightly backup (step 7) like the other databases.
+Step 10 restores only the cards and the meter. To restore the counts too, copy
+`usage-<stamp>.db` to `/data/usage.db` in the same way, and remove its `-wal`
+and `-shm` files. The counts are never reset by a deploy, because the volume
+keeps them.
+
 ## Where things are
 
 - `Dockerfile`: the image (web build, Go build, distroless runtime, non-root).
 - `deploy/before-yes.prod.toml`: production settings, baked into the image.
 - `deploy/deploy.sh`: build, copy, run. `deploy/seed.sh`: load the demo cards.
+- `deploy/usage.sh`: print the usage counts over ssh (section 11).
 - `deploy/origin.env`: your origin address (gitignored; see the example file).

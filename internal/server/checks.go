@@ -28,6 +28,7 @@ import (
 	"github.com/nrynss/before-yes/internal/pipeline"
 	"github.com/nrynss/before-yes/internal/spend"
 	"github.com/nrynss/before-yes/internal/tavily"
+	"github.com/nrynss/before-yes/internal/usage"
 )
 
 const (
@@ -61,6 +62,9 @@ type Server struct {
 	CardMaxAge    time.Duration
 	Log           *slog.Logger
 	Checks        Checks
+	// Usage counts the events the server sees (internal/usage). Nil counts
+	// nothing.
+	Usage Usage
 
 	// joins maps a running check on our keys to its job, so a second
 	// identical request joins it (docs/api.md step 4). Handler makes it.
@@ -245,6 +249,7 @@ func (s *Server) startCheck(w http.ResponseWriter, r *http.Request) {
 			if !strings.HasPrefix(cid, "c_") {
 				cid = "c_" + cid
 			}
+			s.count(usage.EventCacheHit)
 			writeJSON(w, http.StatusOK, map[string]string{"card_id": cid})
 			return
 		}
@@ -272,6 +277,7 @@ func (s *Server) startCheck(w http.ResponseWriter, r *http.Request) {
 				if !strings.HasPrefix(cid, "c_") {
 					cid = "c_" + cid
 				}
+				s.count(usage.EventCacheHit)
 				writeJSON(w, http.StatusOK, map[string]string{"card_id": cid})
 				return
 			}
@@ -295,7 +301,7 @@ func (s *Server) startCheck(w http.ResponseWriter, r *http.Request) {
 	if !ok {
 		return
 	}
-	fn := adm.wrap(s.work(adm.p, req, ref))
+	fn := s.outcomeCounted(adm.wrap(s.work(adm.p, req, ref)))
 	if !visitor && s.joins != nil {
 		inner, t := fn, s.joins
 		fn = func(ctx context.Context, report func(job.Progress)) ([]byte, error) {
@@ -306,8 +312,14 @@ func (s *Server) startCheck(w http.ResponseWriter, r *http.Request) {
 	jid, err := s.Runner.StartKind(ctx, JobKind, fn)
 	if err != nil {
 		adm.release()
-	} else if !visitor && s.joins != nil {
-		s.joins.running[key] = joinEntry{jid: jid, ref: ref}
+	} else {
+		s.count(usage.EventCheckStarted)
+		if visitor {
+			s.count(usage.EventVisitorKeys)
+		}
+		if !visitor && s.joins != nil {
+			s.joins.running[key] = joinEntry{jid: jid, ref: ref}
+		}
 	}
 	if errors.Is(err, job.ErrLimit) {
 		w.Header().Set("Retry-After", "20")
@@ -608,6 +620,7 @@ func (s *Server) getCard(w http.ResponseWriter, r *http.Request) {
 	if !strings.HasPrefix(card.ID, "c_") {
 		card.ID = "c_" + card.ID
 	}
+	s.count(usage.EventCardView)
 	writeJSON(w, http.StatusOK, card)
 }
 

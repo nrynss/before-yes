@@ -19,6 +19,7 @@ import (
 	"github.com/nrynss/before-yes/internal/pipeline"
 	"github.com/nrynss/before-yes/internal/spend"
 	"github.com/nrynss/before-yes/internal/tavily"
+	"github.com/nrynss/before-yes/internal/usage"
 )
 
 // Visitor key headers on POST /api/checks. A visitor sends both or
@@ -222,6 +223,7 @@ func (s *Server) admit(w http.ResponseWriter, r *http.Request, ref string) (admi
 	}
 	hold, err := s.Checks.BeginCheck(r.Context(), ref)
 	if errors.Is(err, cost.ErrOverBudget) {
+		s.count(usage.EventCapRefused)
 		wire.WriteError(w, http.StatusPaymentRequired, CodeBudgetExhausted, "today's budget for fresh checks is spent", map[string]string{"pool": "daily_checks"})
 		return admission{}, false
 	}
