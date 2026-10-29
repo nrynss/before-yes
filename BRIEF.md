@@ -2,6 +2,13 @@
 
 > A child asks for an app, a game or a YouTube channel. Before the parent says yes, Before Yes reads everything written about it and returns a verdict for that child's age, with every red flag linked to the sentence that supports it.
 
+## Changed since this brief
+
+- The judge is Nemotron-3 Ultra 550B-A55B, not Super.
+- Chaaya is 0.4.2, not 0.4.1.
+- Apple's review feed went dark during the build, so the App Store web page read through Tavily is the fallback.
+- The current figures are in `README.md` and `docs/budget.md`.
+
 *Entry for the [Nebius × NVIDIA Global AI Hackathon](https://nebiusglobalaihackathon.devpost.com/). Draft dated 12 Oct 2026. Concept decided 7 Oct; event rules, prizes and the reasoning behind the choice are in `~/work/hackathons/nebius-nvidia.md`.*
 
 ## Event facts
