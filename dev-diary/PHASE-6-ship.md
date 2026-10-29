@@ -86,7 +86,7 @@ requires:   T6.2, T6.4
 fixture-ok: no
 size:       S · user
 owns:       docs/submission.md
-status:     done (the repository is still private; the user makes it public)
+status:     done
 ```
 An agent drafts every field in `docs/submission.md`: the description, the track (**Best Apps and Agents**), the side award (**Best Use of Tavily**), the repository and demo URLs, the video link, and the feedback on Token Factory and the NVIDIA models, drawn from the handoff log. The user reviews and submits.
 
