@@ -194,7 +194,7 @@ What to fix:
 
 - Repository: https://github.com/nrynss/before-yes
 - Live demo: https://beforeyes.nryn.dev
-- Video: VIDEO_URL_TBD
+- Video: https://www.youtube.com/watch?v=n2nyM6GFvAY
 
 ---
 
@@ -203,7 +203,7 @@ What to fix:
 - [ ] The repository is public at https://github.com/nrynss/before-yes. This draft cannot check it.
 - [ ] GitHub's About panel shows the Apache-2.0 licence. The `LICENSE` file is in the repository.
 <!-- source: LICENSE; BRIEF.md, "Event facts" (licence required) -->
-- [ ] The video is public on YouTube, runs under three minutes, and its link replaces `VIDEO_URL_TBD` above.
+- [x] The video is public on YouTube, runs 2 minutes 48 seconds, and its link is above.
 - [ ] The Token Factory account is active and the credit has landed, since the Devpost FAQ says some countries cannot onboard to billing.
 <!-- source: BRIEF.md, "From the Devpost FAQ" -->
 - [ ] https://beforeyes.nryn.dev loads, and the three demo cards open from "Previous checks".
