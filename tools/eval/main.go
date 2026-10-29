@@ -253,7 +253,11 @@ func runOne(root, models string, e Expectation) (res Result) {
 		tc.Retry.Sleep = func(context.Context, time.Duration) error { return nil }
 	}
 
-	reader, judge := chatters(root, models, e.Slug)
+	reader, judge, err := chatters(root, models, e.Slug)
+	if err != nil {
+		res.Err = err.Error()
+		return res
+	}
 	tr := &callTrace{}
 	reader = &tracingChatter{inner: reader, role: "reader", tr: tr}
 	judge = &tracingChatter{inner: judge, role: "judge", tr: tr}
@@ -346,9 +350,10 @@ func entailChatter(judge pipeline.Chatter) pipeline.Chatter {
 	return judge
 }
 
-func chatters(root, models, slug string) (pipeline.Chatter, pipeline.Chatter) {
+func chatters(root, models, slug string) (pipeline.Chatter, pipeline.Chatter, error) {
 	if models == "live" {
-		return liveChatters(root, slug)
+		r, j := liveChatters(root, slug)
+		return r, j, nil
 	}
 	dir := replyDir(root, slug, "")
 	recorded := false
@@ -356,9 +361,17 @@ func chatters(root, models, slug string) (pipeline.Chatter, pipeline.Chatter) {
 		recorded = true
 	}
 	if models == "replay" || (models == "auto" && recorded) {
-		return &replayer{dir: dir, role: "reader", model: "recorded-reader"}, &replayer{dir: dir, role: "judge", model: "recorded-judge"}
+		rm, err := recordedModel(dir, "reader")
+		if err != nil {
+			return nil, nil, err
+		}
+		jm, err := recordedModel(dir, "judge")
+		if err != nil {
+			return nil, nil, err
+		}
+		return &replayer{dir: dir, role: "reader", model: rm}, &replayer{dir: dir, role: "judge", model: jm}, nil
 	}
-	return keywordReader{}, stanceJudge{}
+	return keywordReader{}, stanceJudge{}, nil
 }
 
 // replayMisses says how many replayed calls had no recording, or "" when

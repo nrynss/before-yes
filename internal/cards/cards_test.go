@@ -39,21 +39,21 @@ func openDB(t *testing.T) *sqlite.DB {
 }
 
 // Seed stores a card once: a second seed of the same card returns the same
-// id and inserts nothing, and a card that differs in its body is a new row.
+// id and inserts nothing, and a card with another checked time is a new row.
 func TestSeedIsIdempotent(t *testing.T) {
 	ctx := context.Background()
 	s := openStore(t)
 	card := mk("Roblox", 9, checklist.No, t0)
-	first, inserted, err := s.Seed(ctx, card)
-	if err != nil || !inserted {
-		t.Fatalf("first seed: id %q inserted %v err %v", first, inserted, err)
+	first, out, err := s.Seed(ctx, card)
+	if err != nil || out != SeedInserted {
+		t.Fatalf("first seed: id %q outcome %q err %v", first, out, err)
 	}
 	if !id.Valid(strings.TrimPrefix(first, "c_")) {
 		t.Fatalf("seed id %q is not a public card id", first)
 	}
-	again, inserted, err := s.Seed(ctx, card)
-	if err != nil || inserted || again != first {
-		t.Fatalf("second seed: id %q inserted %v err %v; want %q, not inserted", again, inserted, err, first)
+	again, out, err := s.Seed(ctx, card)
+	if err != nil || out != SeedKept || again != first {
+		t.Fatalf("second seed: id %q outcome %q err %v; want %q, kept", again, out, err, first)
 	}
 	count := func() int {
 		var n int
@@ -70,14 +70,45 @@ func TestSeedIsIdempotent(t *testing.T) {
 		t.Fatalf("Get(%s) = id %q verdict %q err %v", first, got.ID, got.Verdict, err)
 	}
 	other := mk("Roblox", 9, checklist.Yes, t0.Add(time.Hour))
-	if _, inserted, err := s.Seed(ctx, other); err != nil || !inserted {
-		t.Fatalf("a different card: inserted %v err %v", inserted, err)
+	if _, out, err := s.Seed(ctx, other); err != nil || out != SeedInserted {
+		t.Fatalf("a different card: outcome %q err %v", out, err)
 	}
 	if n := count(); n != 2 {
 		t.Fatalf("%d rows, want 2", n)
 	}
 	if _, _, err := s.Seed(ctx, pipeline.Card{Title: "x"}); !errors.Is(err, ErrInvalid) {
 		t.Fatalf("a card with no CheckedAt: err %v, want ErrInvalid", err)
+	}
+}
+
+// A stored card with the same identity but another body (a recomputed demo
+// card) is replaced in place: the row and its public id stay, no row is added,
+// and Get returns the new body.
+func TestSeedReplacesChangedBody(t *testing.T) {
+	ctx := context.Background()
+	s := openStore(t)
+	old := mk("Roblox", 9, checklist.No, t0)
+	pub, out, err := s.Seed(ctx, old)
+	if err != nil || out != SeedInserted {
+		t.Fatalf("first seed: outcome %q err %v", out, err)
+	}
+	fresh := old
+	fresh.Stats.ReaderModel = "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B"
+	fresh.Stats.JudgeModel = "nvidia/Nemotron-3-Ultra-550b-a55b"
+	again, out, err := s.Seed(ctx, fresh)
+	if err != nil || out != SeedReplaced || again != pub {
+		t.Fatalf("reseed with a new body: id %q outcome %q err %v; want %q, replaced", again, out, err, pub)
+	}
+	var n int
+	if err := s.r.QueryRowContext(ctx, `SELECT COUNT(*) FROM cards`).Scan(&n); err != nil || n != 1 {
+		t.Fatalf("%d rows after a replace, want 1 (err %v)", n, err)
+	}
+	got, err := s.Get(ctx, pub)
+	if err != nil || got.ID != pub || got.Stats.JudgeModel != fresh.Stats.JudgeModel || got.Stats.ReaderModel != fresh.Stats.ReaderModel {
+		t.Fatalf("Get after replace: id %q models %q %q err %v", got.ID, got.Stats.ReaderModel, got.Stats.JudgeModel, err)
+	}
+	if _, out, err := s.Seed(ctx, fresh); err != nil || out != SeedKept {
+		t.Fatalf("seed of the replaced card again: outcome %q err %v, want kept", out, err)
 	}
 }
 
