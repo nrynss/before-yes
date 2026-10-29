@@ -87,8 +87,8 @@ Token Factory's OpenAI-style API made the judge switch a settings change: the ho
 
 ### Challenges
 
-- **The Apple review feed went dark.** It returns HTTP 200 with no entries, the same answer as an app nobody reviewed. We read reviews from the App Store web page through Tavily instead. That gives three or four reviews per title, with no rating or date.
-<!-- source: dev-diary/feedback.md, "Apple App Store" -->
+- **The Apple review feed went dark during the build.** It returned HTTP 200 with no entries, the same answer as an app nobody reviewed. We added a fallback that reads reviews from the App Store web page through Tavily, which gives three or four reviews per title with no rating or date. The feed was back for the final live check, which read 500 reviews, so the pipeline tries the feed first and keeps the fallback.
+<!-- source: dev-diary/feedback.md, "Apple App Store" and "The customer-review feed came back" -->
 - **Ultra looped at temperature 0.** Sampling settings fixed it. See the model section above.
 - **Verdicts move between gathers.** On the three demo titles, Roblox is **no** on all three recorded gathers. Minecraft is yes with settings on one and unclear on two. Khan Academy Kids is yes on two and unclear on one. We recorded the movement rather than tuning it away.
 <!-- source: docs/budget.md, "Verdicts after the re-record"; README.md, "Known limits" -->
@@ -153,7 +153,7 @@ Tavily does two jobs in every check, and each one changes the verdict.
 
 <!-- source: internal/pipeline/gather.go, Plan; internal/pipeline/gather.go, maxDocChars -->
 
-Apple's review feed returns nothing now, so a basic Tavily extract of the App Store listing page supplies the reviews. The listing facts (price, age rating, privacy label, Kids category and advisories) come from Apple's public listing data, not from Tavily.
+Apple's review feed is tried first. When it returns nothing, as it did for most of the build, a basic Tavily extract of the App Store listing page supplies the reviews. The listing facts (price, age rating, privacy label, Kids category and advisories) come from Apple's public listing data, not from Tavily.
 <!-- source: README.md, "What it does" step 2; dev-diary/feedback.md, "Apple App Store" -->
 
 Each check spends 8 to 10 Tavily credits, measured on the replay: 9, 8 and 9 credits for the three demo titles.

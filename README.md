@@ -76,7 +76,7 @@ Reproduce the replay with `go run ./tools/eval -models replay` from the reposito
 ## What it does
 
 1. **Enter a title and the child's age.** Ages 3 to 17.
-2. **Gather the public sources.** The App Store listing (price, age rating, privacy label, Kids category and advisories) and reviews from the store page. The publisher's privacy policy and terms of service. Reddit threads, parent forums, news and regulator coverage, rating pages, and the title's own parental-controls help pages. Each check runs eight Tavily searches, plus extracts. Apple's public review feed is tried first and falls back to the store page when it returns nothing, which it currently does.
+2. **Gather the public sources.** The App Store listing (price, age rating, privacy label, Kids category and advisories) and reviews from the store page. The publisher's privacy policy and terms of service. Reddit threads, parent forums, news and regulator coverage, rating pages, and the title's own parental-controls help pages. Each check runs eight Tavily searches, plus extracts. Apple's public review feed is tried first. When it returns nothing, the pipeline falls back to the store page, which gives three or four reviews per title. The feed returned reviews on the latest live check.
 3. **Read.** Nano turns each source into quoted findings. Findings whose quotes do not match the source are dropped.
 4. **Judge.** Ultra grades the six areas for the child's age, then the checks above run.
 5. **Read the card.** The verdict, the six areas, the settings to turn on, and each concern with its quotes under "Why this is a concern". "Read the source quotes" opens the quote and its source. "About this check" lists the sources, the findings excluded, the models used, the cost, and the rule checks.
@@ -156,7 +156,7 @@ flowchart LR
 - **Verdicts change between gathers.** Minecraft and Khan Academy Kids moved between verdicts on live evidence (see Measurements). The expected verdicts were guesses made before the pipeline ran (`testdata/titles/README.md`).
 - **Minecraft's contact grade is borderline.** Its cited quotes for contact and age gating are weaker than the card's reasons. The check accepted them. This is recorded in `dev-diary/feedback.md`.
 - **No alternatives on the demo cards.** The alternatives step needs live checks, and the demo cards were built from recordings.
-- **Apple's review feed returns no reviews now.** The store page gives three or four reviews per title, without ratings or dates.
+- **Apple's review feed can go dark without notice.** It has done so before. When it does, the store page gives three or four reviews per title, without ratings or dates. It returned reviews on the latest live check.
 - **Google Play is not read.** It has no official API, and scraping it is out of scope.
 - **Every demo card is an iOS app.**
 

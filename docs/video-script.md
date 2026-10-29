@@ -66,7 +66,7 @@ Two fresh checks were run on the hosted site, both typed and submitted from the 
 
 Check 2's card: 45 sources read, 500 reviews from the App Store review feed, 43 source sections with none unread, 58 quotes that could not be verified and 7 findings without a source quote. Its "Why this is a concern" quote is a review: "I only have 31 characters and I can't buy bundles for the paying. There 10.99 per character." The card also lists "Ask App Not to Track" under "Settings to change".
 
-The card's own stats record 500 reviews from the App Store review feed. `README.md` says that feed returns nothing now. Check whether that is still true before the next film.
+The card's own stats record 500 reviews from the App Store review feed. `README.md` was corrected: the feed returned reviews on this check.
 
 ## Numbers on screen
 
