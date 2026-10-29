@@ -68,7 +68,7 @@ requires:   T6.3, T0.6
 fixture-ok: no
 size:       M · user
 owns:       docs/video-script.md
-status:     not-started
+status:     done
 ```
 An agent writes the script and the shot list. The user records and uploads.
 
@@ -86,7 +86,7 @@ requires:   T6.2, T6.4
 fixture-ok: no
 size:       S · user
 owns:       docs/submission.md
-status:     not-started
+status:     done (the repository is still private; the user makes it public)
 ```
 An agent drafts every field in `docs/submission.md`: the description, the track (**Best Apps and Agents**), the side award (**Best Use of Tavily**), the repository and demo URLs, the video link, and the feedback on Token Factory and the NVIDIA models, drawn from the handoff log. The user reviews and submits.
 
@@ -141,3 +141,17 @@ How alternatives work on `main` (T3.12): for a "no" or "yes with settings" card,
 - [ ] Submission complete on Devpost.
 - [ ] Judging posture set and every switch exercised.
 - [ ] Optional, if the user runs T6.7: alternatives on the demo cards.
+
+---
+
+### T6.8: Private usage counter
+```yaml
+requires:   T6.1
+fixture-ok: yes
+size:       S · light
+owns:       internal/usage, internal/server (usage hooks), cmd/before-yes (usage command), deploy/usage.sh
+status:     done
+```
+Added on the user's request to know whether people use the product, visible only to the owner. Daily counts per event in `usage.db` (home, card view, compare view, cache hit, check started, finished or failed, cap refused, visitor keys, passcode refused). No IPs, user agents, titles or ids are stored, no cookie is set, and no HTTP route exposes the counts. The owner reads them with `deploy/usage.sh`, which runs `before-yes usage` in the container over SSH.
+
+**Done when:** The counts move on the deployed host when a page is opened, and `/api/usage` answers 404.
