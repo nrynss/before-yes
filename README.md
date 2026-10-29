@@ -200,6 +200,16 @@ Two things to know:
 
 `before-yes config` lists every setting and whether each key resolved, without printing the keys. Run it first if a check fails to start.
 
+## Usage counts
+
+The owners can see whether people use the app. The server counts how often each event happens, per UTC day, in its own database file (`usage.db` under `data_dir`).
+
+- **What is counted:** `home` (the index page served), `card_view` (a stored card fetched by id), `compare_view` (a compare page served), `cache_hit` (a check answered from a stored card), `check_started` (a fresh check accepted), `check_finished` (a fresh check that produced a card), `check_failed`, `cap_refused` (refused by the daily cap or a spend budget), `visitor_keys` (a fresh check run on a visitor's own keys) and `passcode_refused` (a check refused by the passcode gate).
+- **What is not counted:** no IP addresses, no user agents, no titles, no ages, no keys, no cookies, no ids of any kind. The app sets no cookie and loads no browser storage or third-party script. A count is one number per event per day. A counter failure is logged at warn and never fails or slows a request.
+- **How to read it:** on the server, `docker exec beforeyes /app/before-yes usage -config /app/before-yes.toml` prints one row per day, newest first (14 days by default; add `-days N`), one column per event, and a totals row. From a workstation, [`deploy/usage.sh`](deploy/usage.sh) runs the same command over ssh. No HTTP route or page shows the counts.
+
+Package: [`internal/usage`](internal/usage). Operations: [`deploy/README.md`](deploy/README.md#11-usage-counts).
+
 ## Deploying
 
 The app ships as one container, built from the repository's `Dockerfile`, on a Hetzner host behind Traefik. The container holds the Go binary and the built web app. Its data is a Docker volume, and a nightly job runs `before-yes backup`. The host does no model work. Model, search and App Store calls go out from the container. The runbook, including the DNS record, the host key file and rollback, is [`deploy/README.md`](deploy/README.md).

@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"path"
 	"strings"
+
+	"github.com/nrynss/before-yes/internal/usage"
 )
 
 // App is the whole HTTP surface: the API (normally Server.GatedHandler),
@@ -22,14 +24,15 @@ func App(api http.Handler, st *Status, web fs.FS) http.Handler {
 	mux.HandleFunc("GET /healthz", healthz)
 	mux.Handle("/api/", api)
 	if web != nil {
-		mux.Handle("/", spa(web))
+		mux.Handle("/", spa(web, st))
 	}
 	return mux
 }
 
 // spa serves web, falling back to index.html for a path that is not a
-// file. Only GET and HEAD are answered.
-func spa(web fs.FS) http.Handler {
+// file. Only GET and HEAD are answered. A GET of the index page counts
+// home, and a GET of a compare page (compare/{a}/{b}) counts compare_view.
+func spa(web fs.FS, st *Status) http.Handler {
 	files := http.FileServerFS(web)
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodGet && r.Method != http.MethodHead {
@@ -40,10 +43,16 @@ func spa(web fs.FS) http.Handler {
 		p := strings.TrimPrefix(path.Clean("/"+r.URL.Path), "/")
 		if p != "" {
 			if fi, err := fs.Stat(web, p); err != nil || fi.IsDir() {
+				if r.Method == http.MethodGet && strings.HasPrefix(p, "compare/") {
+					countUsage(st.Usage, st.log(), usage.EventCompareView)
+				}
 				w.Header().Set("Cache-Control", "no-cache")
 				http.ServeFileFS(w, r, web, "index.html")
 				return
 			}
+		}
+		if p == "" && r.Method == http.MethodGet {
+			countUsage(st.Usage, st.log(), usage.EventHome)
 		}
 		files.ServeHTTP(w, r)
 	})

@@ -29,6 +29,7 @@ import (
 	"github.com/nrynss/before-yes/internal/server"
 	"github.com/nrynss/before-yes/internal/spend"
 	"github.com/nrynss/before-yes/internal/tavily"
+	counts "github.com/nrynss/before-yes/internal/usage"
 )
 
 // dbName is the application's database file under data_dir: cards, jobs,
@@ -61,9 +62,19 @@ type core struct {
 	DB       *sqlite.DB
 	DBPath   string
 	lock     *os.File
+	// usageDB and recorder are set by NewServeApp only.
+	usageDB  *sqlite.DB
+	recorder *counts.Recorder
 }
 
 func (c *core) Close() {
+	// The recorder drains first, while its database is still open.
+	if c.recorder != nil {
+		c.recorder.Close()
+	}
+	if c.usageDB != nil {
+		_ = c.usageDB.Close()
+	}
 	if c.Meter != nil {
 		_ = c.Meter.Close()
 	}
@@ -180,6 +191,17 @@ func NewServeApp(ctx context.Context, s Settings, log *slog.Logger) (*ServeApp, 
 	if err != nil {
 		return fail(err)
 	}
+	// The usage counts sit in their own file, so their writes never share
+	// a handle with the cards and jobs.
+	c.usageDB, err = sqlite.Open(ctx, sqlite.Config{Path: filepath.Join(s.DataDir, usageName), BusyTimeout: 5 * time.Second})
+	if err != nil {
+		return fail(err)
+	}
+	us, err := counts.Open(ctx, c.usageDB)
+	if err != nil {
+		return fail(err)
+	}
+	c.recorder = counts.NewRecorder(us, log)
 	c.Pipeline.Cache = ev
 	flags, err := flagstore.Open(ctx, flagstore.Config{DB: c.DB})
 	if err != nil {
@@ -194,7 +216,7 @@ func NewServeApp(ctx context.Context, s Settings, log *slog.Logger) (*ServeApp, 
 	a.Server = &server.Server{
 		Pipeline: c.Pipeline, Runner: runner, Broker: broker, Cards: cs,
 		EvidenceCache: ev, CardMaxAge: time.Duration(s.CardMaxAgeHours) * time.Hour,
-		Log: log, Checks: c.Meter,
+		Log: log, Checks: c.Meter, Usage: c.recorder,
 	}
 	api, err := a.Server.GatedHandler(server.GateConfig{Passcode: passcode, Flags: flags, Live: live, Log: log})
 	if err != nil {
@@ -205,7 +227,7 @@ func NewServeApp(ctx context.Context, s Settings, log *slog.Logger) (*ServeApp, 
 		web = os.DirFS(s.WebDir)
 		a.WebServed = true
 	}
-	a.Handler = server.App(api, &server.Status{Meter: c.Meter, Flags: flags, Live: live}, web)
+	a.Handler = server.App(api, &server.Status{Meter: c.Meter, Flags: flags, Live: live, Usage: c.recorder, Log: log}, web)
 	return a, nil
 }
 

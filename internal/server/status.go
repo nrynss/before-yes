@@ -1,6 +1,7 @@
 package server
 
 import (
+	"log/slog"
 	"net/http"
 
 	"github.com/nrynss/keel/flag"
@@ -18,6 +19,18 @@ type Status struct {
 	// (T4.3). Nil Flags reports Live's default.
 	Flags flag.Store
 	Live  flag.Bool
+	// Usage counts the page views the app serves (home, compare_view). Nil
+	// counts nothing. Log receives a counter's fault; nil discards.
+	Usage Usage
+	Log   *slog.Logger
+}
+
+// log returns the status's logger, discarding when none is set.
+func (st *Status) log() *slog.Logger {
+	if st.Log != nil {
+		return st.Log
+	}
+	return slog.New(slog.DiscardHandler)
 }
 
 // statusBody is the GET /api/status body

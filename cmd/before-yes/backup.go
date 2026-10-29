@@ -17,7 +17,8 @@ const backupDirName = "backups"
 
 // backupData writes a consistent copy of each database under data_dir into
 // the backups folder, named by the UTC time, then removes the oldest copies
-// of each database beyond keep. A database that does not exist yet is
+// of each database beyond keep. The databases are the application's, the
+// meter's and the usage counts'. A database that does not exist yet is
 // skipped, so a backup never creates an empty database. Copies are made with
 // keel's sqlite.Backup (VACUUM INTO, then rename), so a copy is never half
 // written, even while serve runs.
@@ -30,7 +31,7 @@ func backupData(ctx context.Context, s Settings, keep int, stdout io.Writer) err
 		return err
 	}
 	stamp := time.Now().UTC().Format("20060102T150405Z")
-	for _, name := range []string{dbName, spendName} {
+	for _, name := range []string{dbName, spendName, usageName} {
 		src := filepath.Join(s.DataDir, name)
 		if _, err := os.Stat(src); err != nil {
 			fmt.Fprintf(stdout, "skipped\t%s\tnot found\n", name)

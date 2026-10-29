@@ -6,6 +6,7 @@
 //	before-yes config [-config before-yes.toml]
 //	before-yes seed-cards [-config before-yes.toml] [-dir testdata/demo-cards]
 //	before-yes backup     [-config before-yes.toml] [-keep 14]
+//	before-yes usage      [-config before-yes.toml] [-days 14]
 package main
 
 import (
@@ -66,6 +67,12 @@ func run(ctx context.Context, args []string, stdout, stderr io.Writer) int {
 			return 2
 		}
 		err = backupData(ctx, s, o.keep, stdout)
+	case "usage":
+		if o.title != "" {
+			usage(stderr)
+			return 2
+		}
+		err = usageReport(ctx, s, o.days, time.Now(), stdout)
 	default:
 		usage(stderr)
 		return 2
@@ -78,7 +85,7 @@ func run(ctx context.Context, args []string, stdout, stderr io.Writer) int {
 }
 
 func usage(w io.Writer) {
-	fmt.Fprintln(w, "usage: before-yes serve|check|config|seed-cards|backup [-config file] [-age N] [-dir demo-cards] [-keep N] [title]")
+	fmt.Fprintln(w, "usage: before-yes serve|check|config|seed-cards|backup|usage [-config file] [-age N] [-dir demo-cards] [-keep N] [-days N] [title]")
 }
 
 // serve listens until ctx ends.
@@ -108,6 +115,7 @@ type options struct {
 	age    int
 	dir    string
 	keep   int
+	days   int
 	title  string
 }
 
@@ -122,6 +130,7 @@ func parseArgs(cmd string, rest []string, stderr io.Writer) (options, bool) {
 	fl.IntVar(&o.age, "age", 9, "the child's age (check)")
 	fl.StringVar(&o.dir, "dir", "testdata/demo-cards", "the card files to store (seed-cards)")
 	fl.IntVar(&o.keep, "keep", 14, "copies to keep of each database (backup)")
+	fl.IntVar(&o.days, "days", 14, "UTC days to report, newest first (usage)")
 	var words []string
 	for {
 		if err := fl.Parse(rest); err != nil {
