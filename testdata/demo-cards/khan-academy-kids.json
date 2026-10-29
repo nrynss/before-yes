@@ -1085,7 +1085,7 @@
     "tavily_credits": 9,
     "read_cost_nano": 8659560,
     "judge_cost_nano": 87703000,
-    "reader_model": "recorded-reader",
-    "judge_model": "recorded-judge"
+    "reader_model": "nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B",
+    "judge_model": "nvidia/Nemotron-3-Ultra-550b-a55b"
   }
 }

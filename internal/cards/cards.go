@@ -131,71 +131,119 @@ func (s *Store) Put(ctx context.Context, card pipeline.Card) (string, error) {
 	return pub, nil
 }
 
-// Seed stores card under a fresh Keel id unless the store already holds the
-// same card, and returns its public id and whether it inserted a row. The
-// same card is one with the same title, age, checklist version and checked
-// time whose body is equal once both ids are cleared, so running Seed twice
-// with one card stores it once and returns the same id both times. A card
-// that differs only in its id is the same card. A card with a zero CheckedAt,
-// or with no title, is refused with ErrInvalid.
-func (s *Store) Seed(ctx context.Context, card pipeline.Card) (pubID string, inserted bool, err error) {
+// SeedOutcome says what Seed did with a card.
+type SeedOutcome string
+
+const (
+	// SeedInserted: the store had no such card, so a new row was added.
+	SeedInserted SeedOutcome = "inserted"
+	// SeedKept: the store already held the same card; nothing changed.
+	SeedKept SeedOutcome = "kept"
+	// SeedReplaced: the store held the card's identity (title, age, checklist
+	// version and checked time) with another body. That row's title, verdict
+	// and body were replaced in place, so its public id and URL stay the same.
+	SeedReplaced SeedOutcome = "replaced"
+)
+
+// Seed stores card so that the store holds it once, and returns its public id
+// and what it did. The same card is one with the same title, age, checklist
+// version and checked time whose body is equal once both ids are cleared, so
+// running Seed twice with one card stores it once and returns the same id both
+// times. A card that differs only in its id is the same card. A stored card
+// with the same title, age, checklist version and checked time but another
+// body (for example, a demo card recomputed after a model change) is replaced
+// in place, not duplicated. A card with a different checked time is a new
+// row. A card with a zero CheckedAt, or with no title, is refused with
+// ErrInvalid.
+func (s *Store) Seed(ctx context.Context, card pipeline.Card) (pubID string, out SeedOutcome, err error) {
 	if err := check(card); err != nil {
-		return "", false, err
+		return "", "", err
 	}
 	want, err := sameBody(card)
 	if err != nil {
-		return "", false, fmt.Errorf("cards: seed: %w", err)
+		return "", "", fmt.Errorf("cards: seed: %w", err)
 	}
 	tx, err := s.w.BeginTx(ctx, nil)
 	if err != nil {
-		return "", false, fmt.Errorf("cards: seed: %w", err)
+		return "", "", fmt.Errorf("cards: seed: %w", err)
 	}
 	defer func() { _ = tx.Rollback() }() // a no-op once committed
 	rows, err := tx.QueryContext(ctx,
 		`SELECT id, body FROM cards WHERE title_key = ? AND age = ? AND checklist = ? AND created_at = ? ORDER BY seq`,
 		TitleKey(card.Title), card.Age, card.ChecklistVersion, card.CheckedAt.UnixMilli())
 	if err != nil {
-		return "", false, fmt.Errorf("cards: seed: %w", err)
+		return "", "", fmt.Errorf("cards: seed: %w", err)
 	}
+	replace := "" // the oldest row with this identity and another body
 	for rows.Next() {
 		var raw string
 		var body []byte
 		if err := rows.Scan(&raw, &body); err != nil {
 			_ = rows.Close()
-			return "", false, fmt.Errorf("cards: seed: %w", err)
+			return "", "", fmt.Errorf("cards: seed: %w", err)
 		}
 		var stored pipeline.Card
 		if err := json.Unmarshal(body, &stored); err != nil {
 			_ = rows.Close()
-			return "", false, fmt.Errorf("cards: seed: the stored body does not decode: %w", err)
+			return "", "", fmt.Errorf("cards: seed: the stored body does not decode: %w", err)
 		}
 		got, err := sameBody(stored)
 		if err != nil {
 			_ = rows.Close()
-			return "", false, fmt.Errorf("cards: seed: %w", err)
+			return "", "", fmt.Errorf("cards: seed: %w", err)
 		}
 		if bytes.Equal(got, want) {
 			_ = rows.Close()
-			return "c_" + raw, false, nil
+			return "c_" + raw, SeedKept, nil
+		}
+		if replace == "" {
+			replace = raw
 		}
 	}
 	if err := rows.Err(); err != nil {
 		_ = rows.Close()
-		return "", false, fmt.Errorf("cards: seed: %w", err)
+		return "", "", fmt.Errorf("cards: seed: %w", err)
 	}
 	_ = rows.Close()
+	if replace != "" {
+		pub := "c_" + replace
+		if err := update(ctx, tx, replace, pub, card); err != nil {
+			return "", "", err
+		}
+		if err := tx.Commit(); err != nil {
+			return "", "", fmt.Errorf("cards: seed: %w", err)
+		}
+		return pub, SeedReplaced, nil
+	}
 	raw, err := id.New()
 	if err != nil {
-		return "", false, fmt.Errorf("cards: seed: %w", err)
+		return "", "", fmt.Errorf("cards: seed: %w", err)
 	}
 	pub := "c_" + raw
 	if err := insert(ctx, tx, raw, pub, card); err != nil {
-		return "", false, err
+		return "", "", err
 	}
 	if err := tx.Commit(); err != nil {
-		return "", false, fmt.Errorf("cards: seed: %w", err)
+		return "", "", fmt.Errorf("cards: seed: %w", err)
 	}
-	return pub, true, nil
+	return pub, SeedInserted, nil
+}
+
+// update replaces the title, verdict and body of the row rawID, keeping its id.
+// The body's own id is pubID, as insert sets it.
+func update(ctx context.Context, ex execer, rawID, pubID string, card pipeline.Card) error {
+	card.ID = pubID
+	body, err := json.Marshal(card)
+	if err != nil {
+		return fmt.Errorf("cards: seed: %w", err)
+	}
+	_, err = ex.ExecContext(ctx,
+		`UPDATE cards SET title = ?, verdict = ?, body = ? WHERE id = ?`,
+		card.Title, string(card.Verdict), body, rawID)
+	if err != nil {
+		return fmt.Errorf("cards: seed: %w", err)
+	}
+	return nil
 }
 
 // sameBody is the card's stored encoding with its id cleared, so two cards

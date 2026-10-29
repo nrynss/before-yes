@@ -70,7 +70,10 @@ func evaluateReasonCases(root, models string) ([]Result, error) {
 		if err != nil {
 			return nil, err
 		}
-		_, judge := chatters(root, models, c.Slug)
+		_, judge, err := chatters(root, models, c.Slug)
+		if err != nil {
+			return nil, err
+		}
 		fast, think := judgeSwitches(models)
 		got, err := (&pipeline.Judge{Model: judge, Meter: m, Entail: entailChatter(judge), Fast: fast, Think: think, ThinkMaxTokens: pipeline.DefaultThinkMaxTokens}).Judge(context.Background(), c.Title, c.Age, "reason-case", c.Findings, nil)
 		r := Result{Title: c.Title, Age: c.Age, GotVerdict: got.Verdict, Findings: len(c.Findings), JudgeNano: int64(got.Cost)}

@@ -45,6 +45,38 @@ func ReplyKey(role string, msgs []model.Message, o model.Options) string {
 	return hex.EncodeToString(h.Sum(nil))[:24]
 }
 
+// recordedModel is the model id that answered the recordings under dir/role,
+// the id each live reply reported when it was recorded. It returns "" when the
+// role has no recordings (a role a replay never calls; a call it does make is
+// counted as a miss). It fails when a recording names no model, or when two
+// names differ, since a card must not name a model that did not run.
+func recordedModel(dir, role string) (string, error) {
+	names, err := filepath.Glob(filepath.Join(dir, role, "*.json"))
+	if err != nil {
+		return "", err
+	}
+	found := ""
+	for _, n := range names {
+		b, err := os.ReadFile(n)
+		if err != nil {
+			return "", err
+		}
+		var rec Recording
+		if err := json.Unmarshal(b, &rec); err != nil {
+			return "", fmt.Errorf("eval: recording %s: %w", n, err)
+		}
+		switch {
+		case rec.Model == "":
+			return "", fmt.Errorf("eval: recording %s names no model", n)
+		case found == "":
+			found = rec.Model
+		case rec.Model != found:
+			return "", fmt.Errorf("eval: %s recordings name two models, %s and %s", filepath.Join(dir, role), found, rec.Model)
+		}
+	}
+	return found, nil
+}
+
 var errNoRecording = errors.New("eval: no recorded reply for this call")
 
 // replayer answers from recordings. A call with no recording fails, which
