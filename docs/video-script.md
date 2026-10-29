@@ -1,12 +1,12 @@
 # Before Yes: demo video script
 
-The demo video is music with captions and title cards, and no voiceover. It runs 2 minutes 15 seconds as rendered (135.1 seconds), under the 3-minute limit. It shows the hosted app at https://beforeyes.nryn.dev, recorded at 1920×1080, plus title cards drawn for the film. It names the sponsors, NVIDIA Nemotron and Nebius Token Factory, as text. No third-party logos or branded footage appear. App names appear only as data on the cards.
+The demo video is music with captions and title cards, and no voiceover. It runs 2 minutes 48 seconds as rendered (168.4 seconds), under the 3-minute limit. It shows the hosted app at https://beforeyes.nryn.dev, recorded at 1920×1080, plus title cards drawn for the film. It names the sponsors, NVIDIA Nemotron and Nebius Token Factory, as text. The opening shows three news screenshots whose logos and mastheads are blurred, with their headlines left readable. No other third-party logos or branded footage appear. App names appear only as data on the cards.
 
 The film is built from the working folder `~/work/demo-shoot/before-yes/`, which is outside the repository. Its `script.md` holds the full script with the source of every number. This document gives the beats, the live checks, the shot list and the rebuild steps.
 
 ## Story
 
-The title and the sponsors come first. A short technical section then explains how a check works: the gather, the reading, the quote check, the judge, the checks the model cannot skip, the cost and the stack. A live check on the hosted site follows, from the form to the verdict and its cost. Three demo cards and the side-by-side compare come after it. The film closes on the sponsors, the author and the links.
+The title and the sponsors come first. A short personal opening follows: three text cards, three news screenshots of harm to children from apps, games and platforms, and two more cards that lead to the tool. A short technical section then explains how a check works: the gather, the reading, the quote check, the judge, the checks the model cannot skip, the cost and the stack. A live check on the hosted site follows, from the form to the verdict and its cost. Three demo cards and the side-by-side compare come after it. The film closes on the sponsors, the author and the links.
 
 ## Beats
 
@@ -15,6 +15,14 @@ Captions are at most 25 words, with no semicolons and no em or en dashes. Length
 | # | Beat | Length | Picture | Caption or card text |
 |---|---|---|---|---|
 | 00 | title | 6.0s | Card | "Before Yes", "Research first. Yes next.", "A child asks for an app or a game. The parent checks it before saying yes.", "Built on NVIDIA Nemotron, served on Nebius Token Factory", "by Narayan SS" |
+| 00a | intro, father | 4.5s | Quiet text card, no box | "I am a father of two. They are 9 and 7." |
+| 00b | intro, work | 4.5s | Quiet text card | "I work deep in technology, and I still find it hard to know what my kids are playing." |
+| 00c | intro, family | 4.5s | Quiet text card | "For my wife and our relatives, it is much harder." |
+| 00d | news, FTC 2022 | 3.5s | Blurred screenshot of evidence/02. Zooms from the full page to the headline and standfirst. Tag in the bottom-right corner. | Tag: "FTC settlement, Dec 2022". Headline as on the page. Sources below. |
+| 00e | news, Texas 2025 | 3.5s | Blurred screenshot of evidence/05. Zooms to the headline and The Brief. Tag. | Tag: "Lawsuit (allegation), Nov 2025". |
+| 00f | news, New Mexico 2026 | 3.5s | Blurred screenshot of evidence/06. Zooms to the headline; this page has no standfirst. Tag. | Tag: "Jury verdict, Mar 2026, Meta says it will appeal". |
+| 00g | intro, boundaries | 4.5s | Quiet text card | "A healthy child needs boundaries. The wrong app or game can bring trauma, and open the door to abuse." |
+| 00h | intro, built | 4.5s | Quiet text card | "So I built Before Yes." |
 | 01 | asks | 5.0s | Card: three requests | "Before Yes gives each request one answer for that child's age." |
 | 02 | gather | 8.0s | Card: eight searches by kind | "Tavily runs eight searches, by kind." App Store listing facts. |
 | 03 | read | 8.0s | Card: findings with quotes | "Nemotron-3 Nano reads every source, in chunks." Thinking off: 183 output tokens with thinking on, 4 with it off. |
@@ -31,9 +39,21 @@ Captions are at most 25 words, with no semicolons and no em or en dashes. Length
 | 13 | compare | 7.0s | Live compare page, purchases row boxed | "Side by side, on purchases Roblox is a concern and Minecraft needs a setting." |
 | 14 | outro | 7.0s | Card: sponsors, author, links | "Built on NVIDIA Nemotron, served on Nebius Token Factory", "by Narayan SS", beforeyes.nryn.dev, github.com/nrynss/before-yes, Apache-2.0. |
 
-Total: 135.1 seconds. Beat 09 runs 63.0 s to 94.0 s in the film, after the eight cards.
+Total: 168.4 seconds. Beat 09 runs 96.3 s to 127.3 s in the film, after the opening and the eight cards.
 
 Within beat 09, each stage's first 3 seconds play at normal speed with its caption. The rest of the wait plays 20 times faster. The alternatives wait of about ten minutes becomes about 30 seconds of film. The cost caption on the live take is not used, because it read "USD USD". Beat 09c shows the same cost from the stored card instead.
+
+## Opening screenshots
+
+Beats 00d to 00f show three news pages. Each picture is a blurred copy from `evidence/` in the working folder. The raw captures are never used. On each page the logos, mastheads, ads, pop-ups and third-party photos are blurred, so no logo is visible. The headlines, standfirsts, bylines and dates stay readable. Nothing was logged into, no paywall was passed, and no cookie banner was accepted.
+
+| Beat | Outlet and date | Source URL |
+|---|---|---|
+| 00d | NBC 5 Chicago (NBC Chicago), Dec 19, 2022. Status: settled. | https://www.nbcchicago.com/consumer/fortnite-video-game-maker-hit-with-largest-ftc-fine-after-allegedly-putting-kids-at-risk-using-unfair-payment-practices/3025838/?amp=1 |
+| 00e | FOX 4 Dallas-Fort Worth (byline FOX 7 Austin), Nov 6, 2025. Status: allegation. | https://www.fox4news.com/news/ken-paxton-texas-ag-lawsuit-roblox-childrens-safety |
+| 00f | The Associated Press, via WTOP News, Mar 25, 2026 (verdict Tuesday, Mar 24). Status: jury verdict; Meta says it will appeal. | https://wtop.com/national/2026/03/new-mexico-jury-finds-meta-violated-consumer-protection-law-at-trial-about-child-safety |
+
+The tags and their dates and statuses come from `evidence/sources.md`. Row 06 says Meta will appeal, so its tag does not say the case is under appeal.
 
 ## The live checks
 
@@ -63,6 +83,7 @@ The card's own stats record 500 reviews from the App Store review feed. `README.
 | Keel v0.7.3, Chaaya 0.4.2 (08) | `README.md`, "Dependencies"; `go.mod`; `web/package.json` |
 | Six areas (05, 13) | `README.md`, "What it does" |
 | $0.0667664 USD, 9 credits (09, 09c) | Subway Surfers card's "About this check": `AI processing cost`, `Search credits used` |
+| Dates and statuses on the opening tags (00d to 00f) | `evidence/sources.md`, rows 02, 05 and 06 |
 
 ## Shot list
 
@@ -78,7 +99,7 @@ The demo cards are stored on the hosted site. Their ids come from `GET /api/card
 - **Live form and progress (09):** the home page, the title and age typed one key at a time, then "Check this title" pressed. The progress page follows through every stage, and then the card opens.
 - **Card beats (10 to 12, 09c):** `/card/{id}` loads. The page zooms onto the evidence, and a box draws around it.
 - **Compare beat (13):** `/compare/{roblox id}/{minecraft id}` loads, and the purchases row is boxed.
-- **Title, tech, cost, stack and outro (00 to 08, 14):** cards from `slides/cards.html` in the working folder.
+- **Title, opening, tech, cost, stack and outro (00 to 08, 14):** cards from `slides/cards.html` in the working folder. The opening cards are ids `intro-1` to `intro-5`, and the screenshots are `shot-02`, `shot-05` and `shot-06`. Each screenshot's zoom is set by its `data-box` and `data-s` attributes.
 
 ## Rebuilding the video
 
